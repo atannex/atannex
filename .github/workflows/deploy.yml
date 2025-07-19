@@ -2,9 +2,10 @@ name: 🚀 Deploy Laravel App to HostGator
 
 on:
   push:
-    branches: [main] # Trigger deployment on push to main branch
+    branches: [main]
 
-permissions: {} # Restrictive by default (update as needed)
+permissions:
+  contents: read
 
 jobs:
   deploy:
@@ -14,6 +15,10 @@ jobs:
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v3
+        with:
+          repository: atannex/atannex
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
 
       - name: 🐘 Setup PHP with Required Extensions
         uses: shivammathur/setup-php@v2
