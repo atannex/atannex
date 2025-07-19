@@ -40,7 +40,7 @@
         "psr-4": {
             "App\\": "app/",
             "Atannex\\": "atannex/",
-            "lebialem\\": "lebialem/",
+            "Lebialem\\": "lebialem/",
             "Ngangagah\\": "ngangagah/",
             "Lekeateh\\": "lekeateh/",
             "Morfaw\\": "morfaw/",
