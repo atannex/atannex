@@ -1,0 +1,88 @@
+<?php
+
+namespace Atannex\Interactors;
+
+use Lekeateh\GetBreakingPost;
+use Lekeateh\GetComingSoonPost;
+use Lekeateh\GetEditorPick;
+use Lekeateh\GetEditorWeeklyPick;
+use Lekeateh\GetFeaturedPost;
+use Lekeateh\GetHeadlineOfTheDay;
+use Lekeateh\GetHotPicksPost;
+use Lekeateh\GetJustPublishedPost;
+use Lekeateh\GetLatestPostInCategory;
+use Lekeateh\GetMostCommentedPost;
+use Lekeateh\GetMostEngagedPost;
+use Lekeateh\GetMostLikedPost;
+use Lekeateh\GetMostReadPost;
+use Lekeateh\GetMostSharedPost;
+use Lekeateh\GetMostViewedAndCommentedPost;
+use Lekeateh\GetMostViewedAndLikedPost;
+use Lekeateh\GetMostViewedAndSharedPost;
+use Lekeateh\GetMostViewedPost;
+use Lekeateh\GetMostViewedPostThisWeek;
+use Lekeateh\GetMostViewedPostToday;
+use Lekeateh\GetMostViewedSharedLikedAndCommentedPost;
+use Lekeateh\GetPopularPost;
+use Lekeateh\GetPopularPostInCategory;
+use Lekeateh\GetPostByAuthor;
+use Lekeateh\GetPostByCategory;
+use Lekeateh\GetPostByMonth;
+use Lekeateh\Regions\GetPostBySubdivision;
+use Lekeateh\Regions\GetPostByFondom;
+use Lekeateh\GetPostByTag;
+use Lekeateh\GetPostByToday;
+use Lekeateh\GetPostByTwoWeeks;
+use Lekeateh\GetPostByVillage;
+use Lekeateh\GetPostByWeek;
+use Lekeateh\GetRecentPost;
+use Lekeateh\GetThisWeekTopPost;
+use Lekeateh\GetTodayStories;
+use Lekeateh\GetTopPostInTag;
+use Lekeateh\GetTopRatedPost;
+use Lekeateh\GetTrendingPost;
+use Lekeateh\GetTrendingPostInTag;
+
+class Foundation
+{
+    use GetBreakingPost;
+    use GetComingSoonPost;
+    use GetEditorPick;
+    use GetFeaturedPost;
+    use GetHeadlineOfTheDay;
+    use GetHotPicksPost;
+    use GetJustPublishedPost;
+    use GetLatestPostInCategory;
+    use GetMostCommentedPost;
+    use GetMostEngagedPost;
+    use GetMostLikedPost;
+    use GetMostReadPost;
+    use GetMostSharedPost;
+    use GetMostViewedAndCommentedPost;
+    use GetMostViewedAndLikedPost;
+    use GetMostViewedAndSharedPost;
+    use GetMostViewedPost;
+    use GetMostViewedPostThisWeek;
+    use GetMostViewedPostToday;
+    use GetMostViewedSharedLikedAndCommentedPost;
+    use GetPopularPost;
+    use GetPopularPostInCategory;
+    use GetPostByAuthor;
+    use GetPostByCategory;
+    use GetPostByFondom;
+    use GetPostByMonth;
+    use GetPostBySubdivision;
+    use GetPostByTag;
+    use GetPostByToday;
+    use GetPostByTwoWeeks;
+    use GetPostByVillage;
+    use GetPostByWeek;
+    use GetRecentPost;
+    use GetTodayStories;
+    use GetTopPostInTag;
+    use GetTopRatedPost;
+    use GetTrendingPost;
+    use GetTrendingPostInTag;
+    use GetThisWeekTopPost;
+    use GetEditorWeeklyPick;
+}

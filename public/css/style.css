@@ -1,0 +1,80 @@
+/* Smart positioning for dropdowns */
+.main-menu .sub-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    z-index: 1000;
+}
+
+/* Check if dropdown would go off-screen and reposition */
+.main-menu li:last-child .sub-menu,
+.main-menu li:nth-last-child(2) .sub-menu,
+.main-menu li:nth-last-child(3) .sub-menu {
+    right: 0;
+    left: auto;
+}
+
+/* For nested dropdowns, position to the left when parent is right-aligned */
+.main-menu .sub-menu .sub-menu {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    right: auto;
+}
+
+/* When parent dropdown is right-aligned, nested should go left */
+.main-menu li:last-child .sub-menu .sub-menu,
+.main-menu li:nth-last-child(2) .sub-menu .sub-menu,
+.main-menu li:nth-last-child(3) .sub-menu .sub-menu {
+    left: auto;
+    right: 100%;
+}
+
+/* JavaScript-based solution for more precise detection */
+.main-menu .sub-menu.dropdown-right {
+    right: 0;
+    left: auto;
+}
+
+.main-menu .sub-menu.dropdown-right .sub-menu {
+    right: 100%;
+    left: auto;
+}
+
+/* images */
+@media (min-width: 768px) {
+    .top-stories-main-center {
+        width: 600px !important;
+        height: 625px !important;
+        object-fit: cover;
+    }
+    .top-stories-left-sidebar {
+        width: 288px !important;
+        height: 288px !important;
+        object-fit: cover;
+    }
+    .top-stories-right-sidebar {
+        width: 100px !important;
+        height: 100px !important;
+        object-fit: cover;
+    }
+
+    .small-image-carousel {
+        width: 288px !important;
+        height: 187px !important;
+        object-fit: cover;
+    }
+
+    .large-carousel-image {
+        width: 392px !important;
+        height: 310px !important;
+        object-fit: cover;
+    }
+
+    .page-banner {
+        width: 1224px !important;
+        height: 100px !important;
+        object-fit: cover;
+    }
+}

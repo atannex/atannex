@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Models\Regions;
+
+use App\Models\User;
+use App\Enums\Status;
+use App\Models\Others\SocialMedia;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Pivots\EmployeeDepartment;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+class Employee extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'employee_number',
+        'job_title',
+        'hire_date',
+        'employment_type',
+        'status',
+    ];
+
+    protected $casts = [
+        'hire_date' => 'date',
+        'status' => Status::class,
+    ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function departments(): BelongsToMany
+    {
+        return $this->belongsToMany(Department::class, 'employee_departments')
+            ->withTimestamps()
+            ->using(EmployeeDepartment::class);
+    }
+
+
+    public function socialMedia(): MorphMany
+    {
+        return $this->morphMany(SocialMedia::class, 'owner');
+    }
+}
