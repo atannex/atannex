@@ -72,6 +72,6 @@ trait Helper
     {
         return Gallery::flagged(Flag::PUBLISHED())
             ->whereType($type)
-            ->first();
+            ->firstOrFail();
     }
 }
