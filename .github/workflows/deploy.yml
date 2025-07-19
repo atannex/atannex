@@ -1,0 +1,58 @@
+name: 🚀 Deploy Laravel App to HostGator
+
+on:
+  push:
+    branches: [main] # Trigger deployment on push to main branch
+
+permissions: {} # Restrictive by default (update as needed)
+
+jobs:
+  deploy:
+    name: 🚀 HostGator FTP Deployment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🐘 Setup PHP with Required Extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, bcmath, intl, fileinfo
+          tools: composer
+
+      - name: 📦 Install Production Dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: 🔧 Setup Node.js Environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: 🛠️ Compile Frontend Assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: ⚙️ Optimize Laravel for Production
+        run: |
+          cp .env.production .env
+          php artisan config:clear
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          php artisan storage:link || true
+
+      - name: 📂 Prepare Laravel for Shared Hosting
+        run: bash ./deploy-to-shared.sh
+
+      - name: 🚀 Upload Files to HostGator via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v3.1.0
+        with:
+          ftp-server: ${{ secrets.FTP_HOST }}
+          ftp-username: ${{ secrets.FTP_USERNAME }}
+          ftp-password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          server-dir: /
+          local-dir: ./deploy/
