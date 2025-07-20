@@ -1,0 +1,42 @@
+name: Update Laravel Packages
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 3 * * 1' # Weekly on Monday at 03:00 UTC (optional schedule)
+
+jobs:
+  update-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'    # Adjust PHP version to your project
+          extensions: mbstring, bcmath, pcntl, tokenizer, xml, curl, json
+          tools: composer
+
+      - name: Install dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist
+
+      - name: Update Laravel packages
+        run: composer update --no-interaction --no-progress
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          echo "::set-output name=changed::$(git status --porcelain)"
+
+      - name: Commit and push changes if any
+        if: steps.git-check.outputs.changed != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add composer.json composer.lock
+          git commit -m "chore: update Laravel packages via GitHub Actions [skip ci]"
+          git push origin main
