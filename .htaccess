@@ -1,47 +1,16 @@
-###############################################################################
-# 🌐 Apache Rewrite & Routing Configuration for Laravel (HostGator Shared)
-###############################################################################
-
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
 
-    ###########################################################################
-    # 🔒 Prevent direct access to `/public` folder
-    ###########################################################################
+    # First, redirect any direct access to public folder
     RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+public/([^\s]+)? [NC]
     RewriteRule ^ /%1 [R=301,L,NC]
 
-    ###########################################################################
-    # 📦 Laravel Routing: Send all non-file requests to public/index.php
-    ###########################################################################
-    RewriteCond %{REQUEST_FILENAME} !-f
+    # If the requested resource doesn't exist, send to public/index.php
     RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ public/index.php [QSA,L]
 
-    ###########################################################################
-    # 🏠 Route root requests explicitly
-    ###########################################################################
+    # If accessing the root, route through public/index.php
     RewriteRule ^$ public/index.php [L]
 </IfModule>
-
-###############################################################################
-# 🚫 Disable directory listing
-###############################################################################
-Options -Indexes
-
-###############################################################################
-# ✅ Default index files
-###############################################################################
-DirectoryIndex index.php index.html
-
-###############################################################################
-# 🔐 Block access to hidden files and Laravel internals
-###############################################################################
-<FilesMatch "^\.">
-    Order allow,deny
-    Deny from all
-</FilesMatch>
-
-# Block direct access to sensitive directories
-RedirectMatch 403 ^/(vendor|storage|bootstrap|resources)/.*$
