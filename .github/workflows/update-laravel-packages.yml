@@ -10,6 +10,8 @@ on:
 jobs:
   update-packages:
     runs-on: ubuntu-latest
+    env:
+      DB_DATABASE: database/database.sqlite  # Customize your SQLite database path here
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -17,9 +19,14 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'    # Adjust PHP version to your project
+          php-version: '8.1'    # Adjust PHP version to your project, 8.4 doesn't exist yet
           extensions: mbstring, bcmath, pcntl, tokenizer, xml, curl, json
           tools: composer
+
+      - name: Create SQLite database file
+        run: |
+          mkdir -p $(dirname $DB_DATABASE)
+          touch $DB_DATABASE
 
       - name: Install dependencies
         run: composer install --no-progress --no-suggest --prefer-dist
@@ -30,10 +37,14 @@ jobs:
       - name: Check for changes
         id: git-check
         run: |
-          echo "::set-output name=changed::$(git status --porcelain)"
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Commit and push changes if any
-        if: steps.git-check.outputs.changed != ''
+        if: steps.git-check.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
