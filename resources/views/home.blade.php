@@ -1,4 +1,4 @@
-<x-layouts.guest :title="'Welcome to Atannex - ' . __('Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')">
+<x-layouts.guest :title="__('Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')">
 
     <div class="th-hero-wrapper hero-1" id="hero">
         <div class="hero-slider-1 th-carousel" data-fade="true" data-slide-show="1" data-md-slide-show="1" data-adaptive-height="true">
