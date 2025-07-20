@@ -3,8 +3,7 @@
 use App\Http\Controllers\DocumentController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('using-the-atannex')
-    ->name('document.')
+Route::name('document.')
     ->controller(DocumentController::class)
     ->group(function () {
         Route::get('{type}', 'index')
