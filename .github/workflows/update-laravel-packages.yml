@@ -19,7 +19,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'    # Adjust PHP version to your project, 8.4 doesn't exist yet
+          php-version: '8.4'    # Adjust PHP version to your project, 8.4 doesn't exist yet
           extensions: mbstring, bcmath, pcntl, tokenizer, xml, curl, json
           tools: composer
 
