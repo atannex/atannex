@@ -2,7 +2,7 @@
 
     @foreach ($category->sections as $section)
 
-    @include("sections.{$section->slug}", ['section' => $section])
+    @includeIf("sections.{$section->slug}", ['section' => $section])
 
     @endforeach
 
