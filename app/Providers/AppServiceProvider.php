@@ -15,9 +15,9 @@ use App\Observers\WidgetObserver;
 use App\Observers\SectionObserver;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Lebialem\Adapters\SectionAdapter;
+use Lebialem\Adapters\WidgetAdapter;
 use Ngangagah\Handlers\Navigation;
-use Lebialem\Adapters\Widget as AdaptersWidget;
-use Lebialem\Adapters\Section as AdaptersSection;
 
 /**
  * Class AppServiceProvider
@@ -63,8 +63,8 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function registerObservers(): void
     {
-        Section::observe(new SectionObserver(new AdaptersSection()));
-        Widget::observe(new WidgetObserver(new AdaptersWidget()));
+        Section::observe(new SectionObserver(new SectionAdapter()));
+        Widget::observe(new WidgetObserver(new WidgetAdapter()));
         Page::observe(PageObserver::class);
     }
 

@@ -3,16 +3,16 @@
 namespace App\Observers;
 
 use App\Models\Pages\Section;
-use Lebialem\Adapters\Section as AdaptersSection;
+use Lebialem\Adapters\SectionAdapter;
 
 class SectionObserver
 {
     /**
      * Create a new observer instance.
      *
-     * @param AdaptersSection $viewService The manager for handling section view operations
+     * @param SectionAdapter $viewService The manager for handling section view operations
      */
-    public function __construct(protected readonly AdaptersSection $viewService) {}
+    public function __construct(protected readonly SectionAdapter $viewService) {}
 
     /**
      * Handle the Section "created" event.
@@ -20,7 +20,7 @@ class SectionObserver
      * @param Section $section The section model instance
      * @return void
      */
-    public function created(Section $section): void
+    public function created(SectionAdapter $section): void
     {
         $this->viewService->createView($section);
     }
@@ -31,7 +31,7 @@ class SectionObserver
      * @param Section $section The section model instance
      * @return void
      */
-    public function updated(Section $section): void
+    public function updated(SectionAdapter $section): void
     {
         if ($section->wasChanged('slug')) {
             $originalSlug = $section->getOriginal('slug');
@@ -47,7 +47,7 @@ class SectionObserver
      * @param Section $section The section model instance
      * @return void
      */
-    public function deleted(Section $section): void
+    public function deleted(SectionAdapter $section): void
     {
         $this->viewService->deleteView($section->slug);
     }
@@ -58,7 +58,7 @@ class SectionObserver
      * @param Section $section The section model instance
      * @return void
      */
-    public function forceDeleted(Section $section): void
+    public function forceDeleted(SectionAdapter $section): void
     {
         $this->viewService->deleteView($section->slug);
     }

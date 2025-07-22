@@ -4,7 +4,7 @@ namespace Lebialem\Adapters;
 
 use Atangageih\Filters\HandleCreation;
 
-final class Widget
+final class WidgetAdapter
 {
     use HandleCreation;
 

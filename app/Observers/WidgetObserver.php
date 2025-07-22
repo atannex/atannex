@@ -3,16 +3,16 @@
 namespace App\Observers;
 
 use App\Models\Pages\Widget;
-use Lebialem\Adapters\Widget as AdaptersWidget;
+use Lebialem\Adapters\WidgetAdapter;
 
 class WidgetObserver
 {
     /**
      * Create a new observer instance.
      *
-     * @param AdaptersWidget $viewService The manager for handling widget view operations
+     * @param WidgetAdapter $viewService The manager for handling widget view operations
      */
-    public function __construct(protected readonly AdaptersWidget $viewService) {}
+    public function __construct(protected readonly WidgetAdapter $viewService) {}
 
     /**
      * Handle the Widget "created" event.
@@ -20,7 +20,7 @@ class WidgetObserver
      * @param Widget $widget The widget model instance
      * @return void
      */
-    public function created(Widget $widget): void
+    public function created(WidgetAdapter $widget): void
     {
         $this->viewService->createView($widget);
     }
@@ -31,7 +31,7 @@ class WidgetObserver
      * @param Widget $widget The widget model instance
      * @return void
      */
-    public function updated(Widget $widget): void
+    public function updated(WidgetAdapter $widget): void
     {
         if ($widget->wasChanged('slug')) {
             $originalSlug = $widget->getOriginal('slug');
@@ -47,7 +47,7 @@ class WidgetObserver
      * @param Widget $widget The widget model instance
      * @return void
      */
-    public function deleted(Widget $widget): void
+    public function deleted(WidgetAdapter $widget): void
     {
         $this->viewService->deleteView($widget->slug);
     }
@@ -58,7 +58,7 @@ class WidgetObserver
      * @param Widget $widget The widget model instance
      * @return void
      */
-    public function forceDeleted(Widget $widget): void
+    public function forceDeleted(WidgetAdapter $widget): void
     {
         $this->viewService->deleteView($widget->slug);
     }
