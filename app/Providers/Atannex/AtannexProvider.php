@@ -2,9 +2,12 @@
 
 namespace App\Providers\Atannex;
 
+use App\Events\PostPublished;
 use Ngangagah\Handlers\Navigation;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Event;
+use App\Listeners\HandlePostPublished;
+use Illuminate\Support\ServiceProvider;
 
 /**
  * Service provider for Atannex-specific bindings and shared data.
@@ -21,6 +24,11 @@ class AtannexProvider extends ServiceProvider
      */
     public function boot(Navigation $navigation): void
     {
+        Event::listen(
+            PostPublished::class,
+            HandlePostPublished::class
+        );
+
         $this->shareNavigationData($navigation);
     }
 

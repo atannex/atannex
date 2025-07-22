@@ -2,6 +2,10 @@
 
 return [
 
+      'webhook' => [
+        'post_published' => env('WEBHOOK_POST_PUBLISHED_URL', null),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Third Party Services

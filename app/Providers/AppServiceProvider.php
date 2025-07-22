@@ -7,6 +7,7 @@ use App\Enums\Flag;
 use App\Enums\Icons;
 use App\Enums\Image;
 use App\Enums\PostType;
+use App\Events\PostPublished;
 use App\Models\Pages\Page;
 use App\Models\Pages\Widget;
 use App\Models\Pages\Section;
@@ -28,7 +29,6 @@ use Ngangagah\Handlers\Navigation;
  */
 class AppServiceProvider extends ServiceProvider
 {
-
     /**
      * Bootstrap any application services.
      *
