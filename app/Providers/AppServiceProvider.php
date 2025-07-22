@@ -13,7 +13,6 @@ use App\Models\Pages\Section;
 use App\Observers\PageObserver;
 use App\Observers\WidgetObserver;
 use App\Observers\SectionObserver;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Lebialem\Adapters\SectionAdapter;
 use Lebialem\Adapters\WidgetAdapter;
@@ -29,17 +28,6 @@ use Ngangagah\Handlers\Navigation;
  */
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * Currently empty, but can be used to bind services, interfaces, or other container entries.
-     *
-     * @return void
-     */
-    public function register(): void
-    {
-        // Intentionally left blank
-    }
 
     /**
      * Bootstrap any application services.
@@ -49,11 +37,10 @@ class AppServiceProvider extends ServiceProvider
      * @param Navigation $navigation Navigation handler for shared navigation data
      * @return void
      */
-    public function boot(Navigation $navigation): void
+    public function boot(): void
     {
         $this->registerObservers();
         $this->bootEnums();
-        $this->shareNavigationData($navigation);
     }
 
     /**
@@ -80,16 +67,5 @@ class AppServiceProvider extends ServiceProvider
         Binding::boot();
         Icons::boot();
         Image::boot();
-    }
-
-    /**
-     * Share navigation data with all views.
-     *
-     * @param Navigation $navigation
-     * @return void
-     */
-    protected function shareNavigationData(Navigation $navigation): void
-    {
-        View::share('global', $navigation->getPageNavigation());
     }
 }
