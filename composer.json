@@ -25,6 +25,7 @@
         "laravel/ui": "*",
         "livewire/livewire": "^3.6",
         "spatie/laravel-permission": "^6.20",
+        "spatie/laravel-sitemap": "^7.3",
         "spatie/laravel-sluggable": "^3.7"
     },
     "require-dev": {
