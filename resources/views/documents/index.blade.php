@@ -1,6 +1,5 @@
 <x-layouts.guest :title="isset($type) ? ($type . ' - ' . __('top stories, breaking news & headlines') . ' | ' . config('app.name')) : config('app.name')">
 
-    <!-- Breadcrumb Component -->
     <x-partials.breadcrumb />
 
     @php
@@ -9,7 +8,6 @@
     $isTestimonialType = request()->routeIs('document.index') && request('type') === 'testimonials';
     @endphp
 
-    <!-- Standard Document Types Section -->
     @if($isValidDocumentType)
     <section class="space-top space-extra-bottom">
         <div class="container">
@@ -59,13 +57,13 @@
                     </div>
                 </div>
 
-                <!-- Document Sidebar -->
+
                 @include('documents.aside', ['documents' => $documents->reverse()->values()])
             </div>
         </div>
     </section>
 
-    <!-- Testimonials Section -->
+
     @elseif($isTestimonialType)
     <section class="space-top space-extra-bottom">
         <div class="container">
