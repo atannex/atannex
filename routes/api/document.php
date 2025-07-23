@@ -3,16 +3,21 @@
 use App\Http\Controllers\DocumentController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('documents')
-    ->name('document.')
-    ->controller(DocumentController::class)
-    ->middleware('api')
-    ->group(function () {
-        Route::get('{type}', 'index')
-            ->name('index')
-            ->where('type', '^(privacy|terms|faq|guidelines|testimonials|help-center)$');
+$typePattern = implode('|', config('reserved.types'));
 
-        Route::get('{type}/{slug}', 'show')
+Route::prefix('documents')
+    ->middleware(['throttle:60,1', 'api'])
+    ->name('document.')
+    ->group(function () use ($typePattern) {
+        Route::apiResource('/', DocumentController::class)
+            ->parameters(['' => 'document'])
+            ->except(['show']);
+
+        Route::get('{type}', [DocumentController::class, 'index'])
+            ->name('index')
+            ->where('type', "^($typePattern)$");
+
+        Route::get('{type}/{slug}', [DocumentController::class, 'show'])
             ->name('show')
-            ->where('type', '^(privacy|terms|faq|guidelines|testimonials|help-center)$');
+            ->where('type', "^($typePattern)$");
     });

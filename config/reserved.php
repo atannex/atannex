@@ -2,6 +2,15 @@
 
 return [
 
+    'types' => [
+        'privacy',
+        'terms',
+        'faq',
+        'guidelines',
+        'testimonials',
+        'help-center',
+    ],
+
     'slugs' => [
 
         /*
@@ -33,26 +42,6 @@ return [
         'faqs',             // /faqs
         'gallery',          // /gallery
         'testimonials',     // /testimonials
-
-        /*
-        |--------------------------------------------------------------------------
-        | Document Routes
-        |--------------------------------------------------------------------------
-        | Routes handled by DocumentController, grouped under /using-the-atannex.
-        */
-        'using-the-atannex', // Prefix for all document-related pages
-
-        /*
-        |--------------------------------------------------------------------------
-        | Admin & CMS Control Panel
-        |--------------------------------------------------------------------------
-        | Common admin entry points that should not conflict with dynamic slugs.
-        */
-        'admin',            // /admin
-        'dashboard',        // /dashboard
-        'panel',            // /panel (for future expansion)
-        'cms',              // /cms (for future CMS dashboard or API)
-
     ],
 
 ];

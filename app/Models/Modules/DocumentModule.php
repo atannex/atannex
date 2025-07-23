@@ -11,14 +11,27 @@ class DocumentModule extends Model
 {
     use SoftDeletes;
 
+    /**
+     * The associated table.
+     *
+     * @var string
+     */
     protected $table = 'document_modules';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'document_id',
         'content',
         'flag',
     ];
 
+    /**
+     * Get the document that owns this module.
+     */
     public function document(): BelongsTo
     {
         return $this->belongsTo(Document::class, 'document_id');

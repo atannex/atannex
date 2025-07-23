@@ -4,63 +4,92 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Documents\DocumentResource;
 use Atangageih\Services\DocumentService;
-use Illuminate\View\View;
-use InvalidArgumentException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
-/**
- * Controller for handling document-related HTTP requests.
- */
 class DocumentController extends Controller
 {
+    protected const VALID_DOCUMENT_TYPES = [
+        'privacy',
+        'terms',
+        'faq',
+        'guidelines',
+        'testimonials',
+        'help-center',
+    ];
+
+    public function __construct(
+        protected readonly DocumentService $documentService
+    ) {}
+
     /**
-     * DocumentController constructor.
+     * Get a list of documents by type.
      *
-     * @param DocumentService $documentService The document service instance
+     * @param string $type
+     * @return JsonResponse
+     *
+     * @throws ValidationException
      */
-    public function __construct(protected readonly DocumentService $documentService)
+    public function index(string $type): JsonResponse
     {
+        $this->validateDocumentType($type);
+
+        $documents = $this->documentService
+            ->getDocumentsByType($type)
+            ->load(['author', 'modules']);
+
+        return response()->json([
+            'data' => DocumentResource::collection($documents),
+            'meta' => [
+                'type' => $type,
+                'count' => $documents->count(),
+            ],
+        ]);
     }
 
     /**
-     * Display a listing of documents by type.
+     * Get a specific document by type and slug.
      *
-     * @param string $type The document type to filter by
-     * @return View The index view with documents
-     * @throws InvalidArgumentException If type is empty
-     */
-    public function index(string $type): View
-    {
-        if (empty($type)) {
-            throw new InvalidArgumentException('Document type cannot be empty');
-        }
-
-        $documents = $this->documentService->getDocumentsByType($type);
-
-        return view('documents.index', compact('documents', 'type'));
-    }
-
-    /**
-     * Display a specific document by type and slug.
+     * @param string $type
+     * @param string $slug
+     * @return JsonResponse
      *
-     * @param string $type The document type
-     * @param string $slug The document slug
-     * @return View The show view with document module and related documents
-     * @throws InvalidArgumentException If type or slug is empty
-     * @throws ModelNotFoundException If no matching document module is found
+     * @throws ValidationException
      */
-    public function show(string $type, string $slug): View
+    public function show(string $type, string $slug): JsonResponse
     {
-        if (empty($type) || empty($slug)) {
-            throw new InvalidArgumentException('Type and slug cannot be empty');
-        }
+        $this->validateDocumentType($type);
 
-        $module = $this->documentService->getModuleByTypeAndSlug($type, $slug);
-        $documents = $this->documentService->getDocumentsByType($type)
+        $document = $this->documentService->getDocumentByTypeAndSlug($type, $slug)
+            ->load(['author', 'modules']);
+
+        $relatedDocuments = $this->documentService
+            ->getDocumentsByType($type)
             ->filter(fn($doc) => $doc->slug !== $slug)
-            ->values();
+            ->values()
+            ->load(['author']);
 
-        return view('documents.show', compact('module', 'type', 'documents'));
+        return response()->json([
+            'data' => new DocumentResource($document),
+            'related' => DocumentResource::collection($relatedDocuments),
+        ]);
+    }
+
+    /**
+     * Validate the document type against allowed values.
+     *
+     * @param string $type
+     * @return void
+     *
+     * @throws ValidationException
+     */
+    protected function validateDocumentType(string $type): void
+    {
+        Validator::make(['type' => $type], [
+            'type' => ['required', 'string', 'in:' . implode(',', self::VALID_DOCUMENT_TYPES)],
+        ])->validate();
     }
 }

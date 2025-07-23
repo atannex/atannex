@@ -34,10 +34,6 @@ final class DocumentService
      */
     public function getDocumentsByType(string $type): Collection
     {
-        if (empty($type)) {
-            throw new InvalidArgumentException('Document type cannot be empty');
-        }
-
         return $this->interface->getPublishedDocumentsByType($type);
     }
 
@@ -50,12 +46,8 @@ final class DocumentService
      * @throws InvalidArgumentException If type or slug is empty
      * @throws ModelNotFoundException If no matching document module is found
      */
-    public function getModuleByTypeAndSlug(string $type, string $slug): ?DocumentModule
+    public function getDocumentByTypeAndSlug(string $type, string $slug): ?DocumentModule
     {
-        if (empty($type) || empty($slug)) {
-            throw new InvalidArgumentException('Type and slug cannot be empty');
-        }
-
         return $this->interface->findModuleByTypeAndSlug($type, $slug);
     }
 }
