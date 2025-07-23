@@ -16,7 +16,7 @@ class Document extends Model
     use SoftDeletes, EnableSlug, EnableScope;
 
     /**
-     * The attribute used to generate the slug.
+     * The attribute used to generate the slug
      */
     protected string $slugSource = 'title';
 
