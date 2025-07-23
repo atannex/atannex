@@ -5,7 +5,6 @@ namespace Atangageih\Repositories;
 use App\Models\Pages\Page;
 use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 use Atangageih\Contracts\PageInterface;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -27,37 +26,33 @@ class PageRepository implements PageInterface
             ->get();
     }
 
-
     /**
-     * Get all published and active home pages, cached for 1 hour.
+     * Get all published and active home pages.
      *
      * @return Collection
      */
     public function getAllHomePages(): Collection
     {
-        return Cache::remember('page_navigation_items', 3600, function () {
-            return Page::active()->get();
-        });
+        return Page::active()->get();
     }
+
+    /**
+     * Get a single active home page by slug with active sections and widgets.
+     *
+     * @param string $slug
+     * @return Page|null
+     */
     public function getHomePage(string $slug): ?Page
     {
-        return Cache::remember("page_{$slug}", 3600, function () use ($slug) {
-            return Page::query()
-                ->where('slug', $slug)
-                ->active()
-                ->with([
-                    'sections' => function ($query) {
-                        $query
-                            ->wherePivot('is_active', true)
-                            ->with([
-                                'widgets' => function ($widgetQuery) {
-                                    $widgetQuery
-                                        ->wherePivot('is_active', true);
-                                }
-                            ]);
-                    },
-                ])
-                ->firstOrFail();
-        });
+        return Page::query()
+            ->where('slug', $slug)
+            ->active()
+            ->with([
+                'sections' => function ($query) {
+                    $query->wherePivot('is_active', true)
+                        ->with(['widgets' => fn($widgetQuery) => $widgetQuery->wherePivot('is_active', true)]);
+                },
+            ])
+            ->firstOrFail();
     }
 }
