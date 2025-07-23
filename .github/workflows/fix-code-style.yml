@@ -7,24 +7,39 @@ jobs:
   fix-code-style:
     runs-on: ubuntu-latest
     steps:
+      # Checkout the PR or branch code
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.head_ref }}
-      - name: Set up Node
-        uses: actions/setup-node@v2
+          ref: ${{ github.head_ref || github.ref }}
+
+      # Setup Node.js for Prettier
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'   # Specify desired Node version for consistency
+
+      # Install PHP and JS dependencies
       - name: Install dependencies
         run: |
-          composer install --no-interaction
+          composer install --no-interaction --prefer-dist --optimize-autoloader
           npm ci
-      - name: Run Pint
+
+      # Run Laravel Pint for PHP code style fixing
+      - name: Run Laravel Pint
         run: composer pint
+
+      # Run Prettier for JS/CSS/JSON code style fixing
       - name: Run Prettier
         run: npm run prettier
-      - name: Pull changes
-        run: git pull
-      - name: Commit changes
+
+      # Pull latest changes to avoid conflicts before committing
+      - name: Pull latest changes
+        run: git pull --rebase
+
+      # Commit and push any style fixes automatically
+      - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: >
-            chore: fix code style
+          commit_message: "chore: fix code style"
+          branch: ${{ github.head_ref || github.ref }}
