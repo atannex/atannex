@@ -50,4 +50,12 @@ final class DocumentService
     {
         return $this->interface->findModuleByTypeAndSlug($type, $slug);
     }
+
+    public function getRelatedDocuments(string $type, string $excludeSlug)
+    {
+        return $this->getDocumentsByType($type)
+            ->filter(fn($doc) => $doc->slug !== $excludeSlug)
+            ->values()
+            ->load(['author']);
+    }
 }

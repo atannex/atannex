@@ -12,7 +12,7 @@ use Illuminate\Validation\ValidationException;
 
 class DocumentController extends Controller
 {
-    protected const VALID_DOCUMENT_TYPES = [
+    private const VALID_DOCUMENT_TYPES = [
         'privacy',
         'terms',
         'faq',
@@ -22,23 +22,14 @@ class DocumentController extends Controller
     ];
 
     public function __construct(
-        protected readonly DocumentService $documentService
+        private readonly DocumentService $documentService
     ) {}
 
-    /**
-     * Get a list of documents by type.
-     *
-     * @param string $type
-     * @return JsonResponse
-     *
-     * @throws ValidationException
-     */
     public function index(string $type): JsonResponse
     {
         $this->validateDocumentType($type);
 
-        $documents = $this->documentService
-            ->getDocumentsByType($type)
+        $documents = $this->documentService->getDocumentsByType($type)
             ->load(['author', 'modules']);
 
         return response()->json([
@@ -50,15 +41,6 @@ class DocumentController extends Controller
         ]);
     }
 
-    /**
-     * Get a specific document by type and slug.
-     *
-     * @param string $type
-     * @param string $slug
-     * @return JsonResponse
-     *
-     * @throws ValidationException
-     */
     public function show(string $type, string $slug): JsonResponse
     {
         $this->validateDocumentType($type);
@@ -66,9 +48,8 @@ class DocumentController extends Controller
         $document = $this->documentService->getDocumentByTypeAndSlug($type, $slug)
             ->load(['author', 'modules']);
 
-        $relatedDocuments = $this->documentService
-            ->getDocumentsByType($type)
-            ->filter(fn($doc) => $doc->slug !== $slug)
+        $relatedDocuments = $this->documentService->getDocumentsByType($type)
+            ->where('slug', '!=', $slug)
             ->values()
             ->load(['author']);
 
@@ -78,18 +59,11 @@ class DocumentController extends Controller
         ]);
     }
 
-    /**
-     * Validate the document type against allowed values.
-     *
-     * @param string $type
-     * @return void
-     *
-     * @throws ValidationException
-     */
-    protected function validateDocumentType(string $type): void
+    private function validateDocumentType(string $type): void
     {
-        Validator::make(['type' => $type], [
-            'type' => ['required', 'string', 'in:' . implode(',', self::VALID_DOCUMENT_TYPES)],
-        ])->validate();
+        Validator::make(
+            ['type' => $type],
+            ['type' => ['required', 'string', 'in:' . implode(',', self::VALID_DOCUMENT_TYPES)]]
+        )->validate();
     }
 }
