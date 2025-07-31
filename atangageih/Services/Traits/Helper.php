@@ -22,10 +22,6 @@ trait Helper
         return $this->safely(function () use ($media) {
             $platformEnum = Icons::coerce($media->platform);
 
-            if (!$platformEnum) {
-                throw new \UnexpectedValueException("Invalid platform: {$media->platform}");
-            }
-
             return [
                 'url'   => $media->url,
                 'label' => $platformEnum->getLabel(),
