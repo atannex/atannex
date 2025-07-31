@@ -1,13 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DocumentController;
 
 $typePattern = implode('|', config('reserved.types'));
 
-Route::get('{type}', function ($type) {
-    return view('documents.index', ['type' => $type]);
-})->where('type', "^($typePattern)$")->name('document.index');
+Route::name('document.')
+    ->group(function () use ($typePattern) {
+        Route::get('{type}', [DocumentController::class, 'index'])
+            ->where('type', "^($typePattern)$")
+            ->name('index');
 
-Route::get('{type}/{slug}', function ($type, $slug) {
-    return view('documents.show', ['type' => $type, 'slug' => $slug]);
-})->where('type', "^($typePattern)$")->name('document.show');
+        Route::get('{type}/{slug}', [DocumentController::class, 'show'])
+            ->where('type', "^($typePattern)$")
+            ->name('show');
+    });

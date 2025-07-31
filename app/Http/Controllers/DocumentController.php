@@ -1,69 +1,79 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Http\Controllers;
 
-use App\Http\Resources\Documents\DocumentResource;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Atangageih\Services\DocumentService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
 class DocumentController extends Controller
 {
-    private const VALID_DOCUMENT_TYPES = [
+    /**
+     * Supported document types for the site.
+     */
+    protected array $supportedTypes = [
         'privacy',
         'terms',
         'faq',
         'guidelines',
-        'testimonials',
         'help-center',
     ];
 
     public function __construct(
-        private readonly DocumentService $documentService
+        protected readonly DocumentService $documentService
     ) {}
 
-    public function index(string $type): JsonResponse
+    /**
+     * Display a list of documents for a given type.
+     */
+    public function index(Request $request, string $type): View
     {
-        $this->validateDocumentType($type);
+        $documents = $this->documentService->getDocumentsByType($type);
 
-        $documents = $this->documentService->getDocumentsByType($type)
-            ->load(['author', 'modules']);
-
-        return response()->json([
-            'data' => DocumentResource::collection($documents),
-            'meta' => [
-                'type' => $type,
-                'count' => $documents->count(),
-            ],
+        return view('documents.index', [
+            'documents'            => $documents,
+            'type'                 => $type,
+            'isValidDocumentType'  => $this->isSupportedType($type, $request),
+            'isTestimonialType'    => $this->isTestimonialType($type, $request),
         ]);
     }
 
-    public function show(string $type, string $slug): JsonResponse
+    /**
+     * Display a single document and related documents for the same type.
+     */
+    public function show(string $type, string $slug): View
     {
-        $this->validateDocumentType($type);
-
-        $document = $this->documentService->getDocumentByTypeAndSlug($type, $slug)
-            ->load(['author', 'modules']);
-
-        $relatedDocuments = $this->documentService->getDocumentsByType($type)
-            ->where('slug', '!=', $slug)
-            ->values()
-            ->load(['author']);
-
-        return response()->json([
-            'data' => new DocumentResource($document),
-            'related' => DocumentResource::collection($relatedDocuments),
+        return view('documents.show', [
+            'module'    => $this->documentService->getDocumentByTypeAndSlug($type, $slug),
+            'type'      => $type,
+            'documents' => $this->getRelatedDocuments($type, $slug),
         ]);
     }
 
-    private function validateDocumentType(string $type): void
+    /**
+     * Determine if the given type is a supported document type.
+     */
+    protected function isSupportedType(string $type, Request $request): bool
     {
-        Validator::make(
-            ['type' => $type],
-            ['type' => ['required', 'string', 'in:' . implode(',', self::VALID_DOCUMENT_TYPES)]]
-        )->validate();
+        return $request->routeIs('document.index') && in_array($type, $this->supportedTypes, true);
+    }
+
+    /**
+     * Determine if the given type is a testimonial.
+     */
+    protected function isTestimonialType(string $type, Request $request): bool
+    {
+        return $request->routeIs('document.index') && $type === 'testimonials';
+    }
+
+    /**
+     * Retrieve related documents by type, excluding the given slug.
+     */
+    protected function getRelatedDocuments(string $type, string $slug)
+    {
+        return $this->documentService
+            ->getDocumentsByType($type)
+            ->filter(fn($doc) => $doc->slug !== $slug)
+            ->values();
     }
 }

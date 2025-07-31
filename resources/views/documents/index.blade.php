@@ -2,12 +2,6 @@
 
     <x-partials.breadcrumb />
 
-    @php
-    $validTypes = ['privacy', 'terms', 'faq', 'guidelines', 'help-center'];
-    $isValidDocumentType = request()->routeIs('document.index') && in_array(request('type'), $validTypes);
-    $isTestimonialType = request()->routeIs('document.index') && request('type') === 'testimonials';
-    @endphp
-
     @if($isValidDocumentType)
     <section class="space-top space-extra-bottom">
         <div class="container">
