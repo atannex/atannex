@@ -7,39 +7,36 @@ use App\Models\Posts\Post;
 use App\Models\Pages\Category;
 use App\Models\Regions\Employee;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 use Atangageih\Services\Traits\Helper;
 use Atangageih\Contracts\CategoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
- * Service class for handling category-related business logic.
+ * Service class responsible for category-related operations.
  *
- * Acts as a facade to the CategoryInterface, providing a clean and consistent API
- * for category operations while delegating data access to the underlying repository.
+ * This class acts as a domain-level orchestrator between controllers and the
+ * data access layer (repository/contract). It centralizes category-related
+ * business logic and transforms data where necessary before presentation.
  */
 final class CategoryService
 {
     use Helper;
 
     /**
-     * Create a new CategoryService instance.
+     * Initialize the CategoryService with a category repository implementation.
      *
-     * @param CategoryInterface $interface The category contract implementation.
+     * @param CategoryInterface $interface Concrete implementation of the category contract.
      */
     public function __construct(
         protected readonly CategoryInterface $interface
     ) {}
 
     /**
-     * Retrieve paginated posts for a category and its descendants.
+     * Fetch paginated published posts for the given category and its descendant categories.
      *
-     * Fetches published posts associated with the specified category and its subcategories,
-     * returned in a paginated format for efficient data handling.
-     *
-     * @param Category $category The category to retrieve posts from.
-     * @param int $limit Number of posts per page (default: 50).
-     * @return LengthAwarePaginator Paginated collection of posts.
+     * @param Category $category The target category node.
+     * @param int $limit Number of posts per page (defaults to 50).
+     * @return LengthAwarePaginator Paginated result set of published posts.
      */
     public function getPostsByCategory(Category $category, int $limit = self::DEFAULT_PAGINATION_LIMIT): LengthAwarePaginator
     {
@@ -47,34 +44,29 @@ final class CategoryService
     }
 
     /**
-     * Retrieve published social media profiles for a given user.
+     * Retrieve and transform the published social media profiles of a given employee.
      *
-     * Maps and filters the user's published social media profiles, ensuring valid data
-     * and returning them in a clean collection.
+     * Applies transformation logic via the `mapSocialMedia()` helper and filters
+     * out any invalid or incomplete entries before returning the results.
      *
-     * @param Employee $user The user to fetch social media profiles for.
-     * @return Collection Collection of mapped and filtered social media profiles.
+     * @param Employee $user The employee for whom to retrieve social media profiles.
+     * @return Collection A collection of cleaned, mapped social media profiles.
      */
     public function getPublishedEmployeeSocialMedia(Employee $user): Collection
     {
-        $cacheKey = "published_user_social_media_transformed_{$user->id}";
-
-        return Cache::remember($cacheKey, now()->addHours(24), function () use ($user) {
-            return $this->interface->getPublishedEmployeeSocialMedia($user)
-                ->map(fn($media) => $this->mapSocialMedia($media))
-                ->filter()
-                ->values();
-        });
+        return $this->interface->getPublishedEmployeeSocialMedia($user)
+            ->map(fn($media) => $this->mapSocialMedia($media))
+            ->filter()
+            ->values();
     }
 
     /**
-     * Retrieve categories related to the specified category.
+     * Get related categories for a specific category, based on hierarchy logic.
      *
-     * Returns a collection of related categories, such as siblings or subcategories,
-     * based on the application's category hierarchy logic.
+     * Can include siblings, children, or other contextually relevant categories.
      *
-     * @param Category $category The category to find related categories for.
-     * @return Collection Collection of related Category instances.
+     * @param Category $category The category to base the relation on.
+     * @return Collection Related categories.
      */
     public function getRelatedCategoriesForCategory(Category $category): Collection
     {
@@ -82,14 +74,13 @@ final class CategoryService
     }
 
     /**
-     * Retrieve recent posts from categories related to the given post.
+     * Retrieve recent posts related to the category tree of the given post.
      *
-     * Fetches a collection of recent posts for recommendation purposes, such as
-     * "You may also like" sections, based on the post's category.
+     * Commonly used for "related articles" or "you might also like" sections.
      *
-     * @param Post $post The reference post to base the query on.
-     * @param int $limit Maximum number of recent posts to retrieve (default: 5).
-     * @return Collection Collection of recent Post instances.
+     * @param Post|null $post The reference post to extract category context from.
+     * @param int $limit Max number of recent posts to return (defaults to 5).
+     * @return Collection A collection of recent posts.
      */
     public function getRecentPosts(?Post $post, int $limit = self::DEFAULT_RECENT_POSTS_LIMIT): Collection
     {
@@ -97,14 +88,13 @@ final class CategoryService
     }
 
     /**
-     * Retrieve popular tags within the category tree of a tag's associated post.
+     * Fetch the most popular tags related to the tag's category tree.
      *
-     * Fetches tags with the highest count of published posts within the category tree
-     * of the tag's associated post, useful for trending or relevant tag displays.
+     * Useful for building tag clouds or recommending trending tags.
      *
-     * @param Tag|null $tag The tag to base the category tree on, or null for no filtering.
-     * @param int $limit Maximum number of popular tags to retrieve (default: 12).
-     * @return Collection Collection of popular Tag instances with post counts.
+     * @param Tag|null $tag A tag whose associated post's category tree will be used.
+     * @param int $limit Max number of tags to retrieve (default: 12).
+     * @return Collection Most-used tags with associated post counts.
      */
     public function getPopularTagsByTagCategoryTree(?Tag $tag, int $limit = self::DEFAULT_POPULAR_TAGS_LIMIT): Collection
     {
@@ -112,13 +102,11 @@ final class CategoryService
     }
 
     /**
-     * Retrieve paginated posts associated with a specific tag.
+     * Get paginated list of published posts filtered by the given tag.
      *
-     * Fetches published posts that have the specified tag, returned in a paginated format.
-     *
-     * @param Tag $tag The tag to filter posts by.
-     * @param int $limit Number of posts per page (default: 50).
-     * @return LengthAwarePaginator Paginated collection of posts.
+     * @param Tag $tag The tag to filter by.
+     * @param int $limit Number of results per page (default: 50).
+     * @return LengthAwarePaginator Paginated collection of posts tagged accordingly.
      */
     public function getPostsByTag(Tag $tag, int $limit = self::DEFAULT_PAGINATION_LIMIT): LengthAwarePaginator
     {
@@ -126,13 +114,12 @@ final class CategoryService
     }
 
     /**
-     * Retrieve categories related to the category tree of a given tag.
+     * Retrieve categories related to the tag's associated post's category tree.
      *
-     * Fetches related categories, such as siblings or leaf categories, within the
-     * category tree of the first post associated with the tag.
+     * This helps in expanding the discovery of related categories based on content tags.
      *
-     * @param Tag $tag The tag to base the category query on.
-     * @return Collection Collection of related Category instances.
+     * @param Tag $tag The tag from which to infer category relationships.
+     * @return Collection Related categories derived from the tag context.
      */
     public function getRelatedCategoriesForTag(Tag $tag): Collection
     {
@@ -140,14 +127,13 @@ final class CategoryService
     }
 
     /**
-     * Retrieve paginated posts by an author identified by their slug.
+     * Retrieve paginated published posts written by an author via slug path.
      *
-     * Fetches published posts authored by the user with the specified slug,
-     * returned in a paginated format.
+     * Designed to power author pages or public author feeds.
      *
-     * @param string $slugPath The author's unique slug.
-     * @param int $limit Number of posts per page (default: 15).
-     * @return LengthAwarePaginator Paginated collection of posts.
+     * @param string $slugPath The unique slug of the author.
+     * @param int $limit Pagination limit (default: 15).
+     * @return LengthAwarePaginator Paginated list of authored posts.
      */
     public function getPostsByAuthor(string $slugPath, int $limit = 15): LengthAwarePaginator
     {
