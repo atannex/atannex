@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * Livewire component for global search functionality, specifically for Post models.
  */
-class Web extends SearchComponent
+final class Web extends SearchComponent
 {
     /**
      * Defines the base Eloquent query for retrieving Post models with related data.
