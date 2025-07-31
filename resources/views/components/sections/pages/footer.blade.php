@@ -1,4 +1,4 @@
- <footer class="footer-wrapper footer-layout1" data-bg-src="assets/img/bg/footer_bg_1.png">
+ <footer class="footer-wrapper footer-layout1" data-bg-src="{{ asset('assets/img/bg/footer_bg_1.png') }}">
      <div class="widget-area">
          <div class="container">
              <div class="row justify-content-between">
