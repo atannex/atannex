@@ -8,7 +8,7 @@
         <form wire:submit.prevent="query">
             <div class="d-flex">
                 <input wire:model.live="query" type="text" placeholder="What are you looking for?" class="form-control">
-                <button type="submit" wire:loading.attr="disabled" class="btn btn-light" aria-label="Search">
+                <button type="submit" wire:loading.attr="disabled" aria-label="Search">
                     <i class="fal fa-search"></i>
                 </button>
             </div>
