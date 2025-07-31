@@ -1,11 +1,8 @@
 <aside class="sidebar-area">
     <div class="widget widget_tag_cloud">
-        <form class="search-form">
-            <input type="text" placeholder="Enter Keyword">
-            <button type="submit">
-                <i class="far fa-search"></i>
-            </button>
-        </form>
+
+        @livewire('search.post')
+
     </div>
     <div class="widget widget_categories">
         <h3 class="widget_title">{{ __("Categories") }}</h3>

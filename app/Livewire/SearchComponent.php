@@ -1,0 +1,176 @@
+<?php
+
+namespace App\Livewire;
+
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
+use Livewire\Component;
+use Livewire\WithPagination;
+
+abstract class SearchComponent extends Component
+{
+    use WithPagination;
+
+    public string $query = '';
+    public int $perPage = 10;
+    public string $sortBy = 'latest';
+
+    protected const VALID_SORT_OPTIONS = ['latest', 'oldest'];
+    protected const DEFAULT_SORT = 'latest';
+    protected const DEFAULT_PER_PAGE = 10;
+
+    /**
+     * Define the base query for the search.
+     *
+     * @return Builder
+     */
+    abstract protected function baseQuery(): Builder;
+
+    /**
+     * Specify the view to render.
+     *
+     * @return string
+     */
+    abstract protected function view(): string;
+
+    /**
+     * Define the fields to search on.
+     *
+     * @return array<string>
+     */
+    abstract protected function searchableFields(): array;
+
+    /**
+     * Reset pagination when the search query changes.
+     */
+    public function updatingQuery(): void
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Set the sorting option and reset pagination.
+     *
+     * @param string $sortBy
+     */
+    public function setSortBy(string $sortBy): void
+    {
+        $this->sortBy = $this->isValidSortOption($sortBy) ? $sortBy : self::DEFAULT_SORT;
+        $this->resetPage();
+    }
+
+    /**
+     * Render the component view with paginated results.
+     *
+     * @return View
+     */
+    public function render(): View
+    {
+        $queryBuilder = $this->applyFilters($this->baseQuery());
+
+        return view($this->view(), [
+            'items' => $queryBuilder->paginate($this->sanitizePerPage($this->perPage)),
+        ]);
+    }
+
+    /**
+     * Apply search and sorting filters to the query.
+     *
+     * @param Builder $queryBuilder
+     * @return Builder
+     */
+    protected function applyFilters(Builder $queryBuilder): Builder
+    {
+        return $this->applySorting(
+            $this->applySearch($queryBuilder)
+        );
+    }
+
+    /**
+     * Apply search conditions to the query.
+     *
+     * @param Builder $queryBuilder
+     * @return Builder
+     */
+    protected function applySearch(Builder $queryBuilder): Builder
+    {
+        $searchQuery = trim($this->query);
+
+        if (empty($searchQuery)) {
+            return $queryBuilder;
+        }
+
+        $search = '%' . $this->sanitizeSearch($searchQuery) . '%';
+
+        return $queryBuilder->where(function (Builder $query) use ($search) {
+            foreach ($this->searchableFields() as $field) {
+                $this->addSearchCondition($query, $field, $search);
+            }
+        });
+    }
+
+    /**
+     * Add a search condition for a specific field.
+     *
+     * @param Builder $query
+     * @param string $field
+     * @param string $search
+     */
+    protected function addSearchCondition(Builder $query, string $field, string $search): void
+    {
+        if (str_contains($field, '.')) {
+            [$relation, $column] = explode('.', $field, 2);
+            $query->orWhereHas($relation, fn (Builder $q) => $q->where($column, 'like', $search));
+        } else {
+            $query->orWhere($field, 'like', $search);
+        }
+    }
+
+    /**
+     * Apply sorting to the query.
+     *
+     * @param Builder $queryBuilder
+     * @return Builder
+     */
+    protected function applySorting(Builder $queryBuilder): Builder
+    {
+        return match ($this->sortBy) {
+            'oldest' => $queryBuilder->oldest('created_at'),
+            default => $queryBuilder->latest('created_at'),
+        };
+    }
+
+    /**
+     * Validate the sort option.
+     *
+     * @param string $option
+     * @return bool
+     */
+    protected function isValidSortOption(string $option): bool
+    {
+        return in_array($option, self::VALID_SORT_OPTIONS, true);
+    }
+
+    /**
+     * Sanitize the search query to prevent SQL injection.
+     *
+     * @param string $query
+     * @return string
+     */
+    protected function sanitizeSearch(string $query): string
+    {
+        return preg_replace('/[^a-zA-Z0-9\s\-_]/', '', $query);
+    }
+
+    /**
+     * Sanitize the perPage value to ensure it's a positive integer.
+     *
+     * @param mixed $perPage
+     * @return int
+     */
+    protected function sanitizePerPage(mixed $perPage): int
+    {
+        $perPage = (int) $perPage;
+        return $perPage > 0 ? $perPage : self::DEFAULT_PER_PAGE;
+    }
+}
