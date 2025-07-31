@@ -16,7 +16,7 @@
                                     {{ $post->category->name }}
                                 </a>
                                 <h3 class="box-title-30">
-                                    <a href="blog-details.html" class="hover-line">
+                                    <a href="#" class="hover-line">
                                         {{ $post->title }}
                                     </a>
                                 </h3>
@@ -33,7 +33,7 @@
                                         {{ $post->published_at->format('d M, Y') }}
                                     </a>
                                 </div>
-                                <a href="blog-details.html" class="th-btn style2">
+                                <a href="#" class="th-btn style2">
                                     {{ __("Read More") }}
                                     <i class="fas fa-arrow-up-right ms-2"></i>
                                 </a>
