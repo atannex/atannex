@@ -23,11 +23,6 @@
                                 <p class="blog-text">
                                     {!! Str::limit($post->description, 200) !!}
                                 </p>
-                                <h3 class="box-title-24">
-                                    <a class="hover-line" href="#">
-                                        {{ $post->title }}
-                                    </a>
-                                </h3>
                                 <div class="blog-meta">
                                     <a href="">
                                         <i class="far fa-user"></i>
