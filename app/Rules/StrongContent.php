@@ -1,0 +1,177 @@
+<?php
+
+namespace App\Rules;
+
+use Closure;
+use App\Enums\LeetspeakVariants;
+use App\Enums\Auth\RestrictedNames;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Contracts\Validation\ValidationRule;
+
+class StrongContent implements ValidationRule
+{
+    /**
+     * Validate the content based on various criteria.
+     *
+     * @param string $attribute
+     * @param mixed $value
+     * @param Closure $fail
+     */
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        $normalizedValue = mb_strtolower($value);
+
+        if ($this->containsRestrictedContent($normalizedValue, $value)) {
+            $this->logViolation($attribute, $value, 'bad language');
+            $fail(__('validation.custom.' . $attribute . '.inappropriate_language'));
+            return;
+        }
+
+        if ($this->hasExcessiveUppercase($value)) {
+            $this->logViolation($attribute, $value, 'excessive uppercase');
+            $fail(__('validation.custom.' . $attribute . '.excessive_uppercase'));
+            return;
+        }
+
+        if ($this->containsRepeatedCharacters($value)) {
+            $this->logViolation($attribute, $value, 'repeated characters');
+            $fail(__('validation.custom.' . $attribute . '.repeated_characters'));
+            return;
+        }
+
+        if ($this->containsExcessivePunctuation($value)) {
+            $this->logViolation($attribute, $value, 'excessive punctuation');
+            $fail(__('validation.custom.' . $attribute . '.excessive_punctuation'));
+            return;
+        }
+
+        if (strlen($value) < 10) {
+            $this->logViolation($attribute, $value, 'too short content');
+            $fail(__('validation.custom.' . $attribute . '.too_short'));
+            return;
+        }
+
+        if ($this->containsHtmlOrScripts($value)) {
+            $this->logViolation($attribute, $value, 'html or script content');
+            $fail(__('validation.custom.' . $attribute . '.html_or_script'));
+            return;
+        }
+
+        if ($this->containsUnintelligibleContent($value)) {
+            $this->logViolation($attribute, $value, 'unintelligible content');
+            $fail(__('validation.custom.' . $attribute . '.unintelligible_content'));
+        }
+    }
+
+    /**
+     * Check if the content contains restricted words or their leetspeak variants.
+     *
+     * @param string $normalizedValue
+     * @param string $originalValue
+     * @return bool
+     */
+    protected function containsRestrictedContent(string $normalizedValue, string $originalValue): bool
+    {
+        foreach (RestrictedNames::getValues() as $badWord) {
+            if (stripos($normalizedValue, $badWord) !== false || $this->containsLeetspeak($originalValue, $badWord)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if the content contains leetspeak obfuscation of a bad word.
+     *
+     * @param string $value
+     * @param string $badWord
+     * @return bool
+     */
+    protected function containsLeetspeak(string $value, string $badWord): bool
+    {
+        $pattern = '';
+        foreach (str_split($badWord) as $char) {
+            $escapedChar = preg_quote($char, '/');
+            $leetVariants = LeetspeakVariants::hasValue($char)
+                ? implode('', LeetspeakVariants::getLeetspeakValues()[$char])
+                : $escapedChar;
+            $pattern .= "[$leetVariants]";
+        }
+        return preg_match("/$pattern/i", $value) > 0;
+    }
+
+
+
+    /**
+     * Check if the content has excessive uppercase characters.
+     *
+     * @param string $value
+     * @return bool
+     */
+    protected function hasExcessiveUppercase(string $value): bool
+    {
+        $uppercaseContent = preg_replace('/[^A-Z]/', '', $value);
+        return strlen($uppercaseContent) / strlen($value) > 0.7;
+    }
+
+    /**
+     * Check if the content contains repeated characters.
+     *
+     * @param string $value
+     * @return bool
+     */
+    protected function containsRepeatedCharacters(string $value): bool
+    {
+        return preg_match('/(.)\\1{3,}/', $value) > 0;
+    }
+
+    /**
+     * Check if the content contains excessive punctuation.
+     *
+     * @param string $value
+     * @return bool
+     */
+    protected function containsExcessivePunctuation(string $value): bool
+    {
+        return preg_match('/[!?]{3,}/', $value) > 0;
+    }
+
+    /**
+     * Check if the content contains HTML tags or scripts.
+     *
+     * @param string $value
+     * @return bool
+     */
+    protected function containsHtmlOrScripts(string $value): bool
+    {
+        return preg_match('/<[^>]*script.*>|<[^>]*>|<\/[^>]*>/', $value) > 0;
+    }
+
+    /**
+     * Check if the content contains unintelligible content.
+     *
+     * @param string $value
+     * @return bool
+     */
+    protected function containsUnintelligibleContent(string $value): bool
+    {
+        return preg_match('/lorem ipsum/i', $value) > 0;
+    }
+
+    /**
+     * Log the detected content violation.
+     *
+     * @param string $attribute
+     * @param string $value
+     * @param string $reason
+     * @return void
+     */
+    protected function logViolation(string $attribute, string $value, string $reason): void
+    {
+        Log::warning("Content violation detected on '{$attribute}' with reason: {$reason}", [
+            'content' => $value,
+            'reason' => $reason,
+            'timestamp' => now(),
+        ]);
+    }
+}
