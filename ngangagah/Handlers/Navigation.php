@@ -6,7 +6,7 @@ use App\Enums\Image;
 use Atangageih\Services\PageService;
 use Atangageih\Services\Traits\Helper;
 
-final class Navigation
+final class Navigation extends GetPosts
 {
     use Helper;
 
@@ -26,6 +26,7 @@ final class Navigation
             'global_icons' => $this->getSocialMediaIcons(),
             'home' => $this->pageService->getAllHomePages(),
             'navs' => $this->pageService->getAllCategoryPages(),
+            'recentPosts'  => $this->getRecentPublishedPosts(4),
         ];
     }
 }

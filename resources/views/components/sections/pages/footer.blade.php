@@ -29,7 +29,7 @@
                  <div class="col-md-6 col-xl-auto">
                      <div class="widget footer-widget">
 
-                         {{-- @include('layouts.recent-posts') --}}
+                          @include('partials.recent-posts')
 
                      </div>
                  </div>

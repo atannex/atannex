@@ -24,7 +24,7 @@
         </div>
         <div class="widget">
 
-            {{-- @include('layouts.recent-posts') --}}
+            @include('partials.recent-posts')
 
         </div>
         <div class="widget newsletter-widget">
