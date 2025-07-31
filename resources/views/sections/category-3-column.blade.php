@@ -23,7 +23,7 @@
                       <div class="blog-meta">
                           <a href="#">
                               <i class="far fa-user"></i>
-                              {{ __(" By - ") . $post->author->name }}
+                              {{ __(" By - ") . $post->author->user->name }}
                           </a>
 
                           <a href="#">
