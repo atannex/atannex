@@ -2,6 +2,7 @@
 
     <x-sections.preloader />
 
+    @livewire('search.web')
 
     <x-sections.side-menu />
 
