@@ -1,6 +1,6 @@
 @foreach ($widget->tabs as $tab)
 @foreach ($tab['content'] as $post)
-<div class="col-xl-6 mt-4 mt-xl-0">
+<div class="mt-4 col-xl-6 mt-xl-0">
     <div class="dark-theme img-overlay2">
         <div class="blog-style3">
             <div class="blog-img">
@@ -20,9 +20,11 @@
                 </h3>
 
                 <div class="blog-meta">
-                    <a href="#">
-                        <i class="far fa-user"></i> {{ __("By - ") . $post->author->user->name }}
+                    <a href="{{ route('page.index', $post->author->user->slug) }}">
+                        <i class="far fa-user"></i>
+                        {{ __('By - ') . $post->author->user->name }}
                     </a>
+
                     <a href="#">
                         <i class="fal fa-calendar-days"></i> {{ $post->published_at->format('d M, Y') }}
                     </a>

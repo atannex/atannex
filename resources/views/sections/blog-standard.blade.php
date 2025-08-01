@@ -16,7 +16,7 @@
 
                     <div class="blog-content">
                         <div class="flex flex-wrap gap-3 blog-meta">
-                            <a class="author" href="#">
+                            <a href="{{ route('page.index', $blog->author->user->slug ) }}">
                                 <i class="far fa-user"></i> {{ __("By - ") . $blog->author->user->name }}
                             </a>
                             <a href="#">

@@ -5,10 +5,10 @@ namespace Atangageih\Repositories\Traits;
 use App\Models\User;
 use App\Models\Posts\Post;
 use App\Models\Pages\Category;
-use Atangageih\Filters\Helper;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Atangageih\Services\Traits\Helper;
 
 /**
  * Trait for handling post-related database queries in a structured and reusable manner.

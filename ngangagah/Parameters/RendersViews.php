@@ -4,6 +4,7 @@ namespace Ngangagah\Parameters;
 
 use Illuminate\View\View;
 use App\Models\Pages\Category;
+use App\Models\Regions\Employee;
 
 trait RendersViews
 {
@@ -31,5 +32,18 @@ trait RendersViews
             'relatedCategories' => $related,
             'recentPosts' => $recentPosts,
         ]);
+    }
+
+    /**
+     * Render the view for an author page.
+     *
+     * @param Employee $author
+     * @return View
+     */
+    protected function renderAuthorView(Employee $author): View
+    {
+        $user_medias  = $this->categoryService->getPublishedEmployeeSocialMedia($author);
+        $posts = $this->categoryService->getPostsByAuthor($author->user->slug);
+        return view('author', compact('posts', 'author', 'user_medias'));
     }
 }

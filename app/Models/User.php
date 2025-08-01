@@ -11,6 +11,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Ngangagah\Relations\UserRelation as RelationsUser;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
@@ -18,6 +19,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     use EnableSlug;
     use EnableSlug;
     use RelationsUser;
+    use HasRoles;
 
     protected string $slugSource = 'name';
 

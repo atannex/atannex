@@ -2,7 +2,7 @@
     <div class="container">
 
         @foreach($section->tabs as $index => $tab)
-        <div class="row align-items-center mb-3">
+        <div class="mb-3 row align-items-center">
             <div class="col">
                 <h2 class="sec-title has-line">{{ $tab['title'] }}</h2>
             </div>
@@ -36,7 +36,7 @@
                         </a>
                     </h3>
                     <div class="blog-meta">
-                        <a href="#">
+                        <a href="{{ route('page.index', $post->author->user->slug ) }}">
                             <i class="far fa-user"></i>{{ __('By - ') . $post->author->user->name }}
                         </a>
                         <a href="#">

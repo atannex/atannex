@@ -4,12 +4,14 @@ namespace App\Models\Regions;
 
 use App\Models\User;
 use App\Enums\Status;
+use App\Models\Posts\Post;
 use App\Models\Others\SocialMedia;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Pivots\EmployeeDepartment;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Employee extends Model
 {
@@ -43,5 +45,10 @@ class Employee extends Model
     public function socialMedia(): MorphMany
     {
         return $this->morphMany(SocialMedia::class, 'owner');
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class, 'author_id');
     }
 }

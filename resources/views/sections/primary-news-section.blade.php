@@ -42,7 +42,7 @@
                                             {{ Str::limit($post->description, 200) }}
                                         </p>
                                         <div class="blog-meta">
-                                            <a href="">
+                                            <a href="{{ route('page.index', $post->author->user->slug ) }}">
                                                 <i class="far fa-user"></i>
                                                 {{ __("By - ") . $post->author->user->name }}
                                             </a>
@@ -59,7 +59,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 mt-35 mt-xl-0 mb-10 sidebar-wrap">
+            <div class="mb-10 col-xl-3 mt-35 mt-xl-0 sidebar-wrap">
                 <div class="sidebar-area">
                     @foreach ($section->widgets as $widget)
                         @include("widgets.{$widget->slug}", ['widget' => $widget])

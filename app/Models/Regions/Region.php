@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Morfaw\Supports\EnableScope;
 use Morfaw\Supports\EnableSlug;
 use Ngangagah\Relations\RegionRelation;
-use Ngangagah\Relations\RegionRelationRelation as RelationsRegion;
 
 class Region extends Model
 {

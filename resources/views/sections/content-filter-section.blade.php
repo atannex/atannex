@@ -1,7 +1,7 @@
 <section class="space">
     <div class="container">
         @foreach ($section->tabs as $tabIndex => $tab)
-        <div class="row align-items-center mb-4">
+        <div class="mb-4 row align-items-center">
             <div class="col">
                 <h2 class="sec-title has-line">{{ $tab['title'] }}</h2>
             </div>
@@ -30,7 +30,7 @@
             <div class="row filter-item filter-{{ $region['id'] }} {{ $index === 0 ? 'active-filter' : '' }}">
 
                 @if ($featuredPost)
-                <div class="col-xl-6 mb-4 mb-xl-0">
+                <div class="mb-4 col-xl-6 mb-xl-0">
                     <article class="blog-style1 style-big">
                         <div class="blog-img">
                             <img src="{{ asset('storage/' . $featuredPost->image) }}" alt="{{ $featuredPost->title }}" class="img-fluid" loading="lazy" />
@@ -44,7 +44,7 @@
                             </a>
                         </h3>
                         <div class="blog-meta">
-                            <a href="#" title="{{ __('View posts by :author', ['author' => $featuredPost->author->user->name]) }}">
+                            <a href="{{ route('page.index', $featuredPost->author->user->slug ) }}" title="{{ __('View posts by :author', ['author' => $featuredPost->author->user->name]) }}">
                                 <i class="far fa-user" aria-hidden="true"></i>
                                 {{ __("By - ") . $featuredPost->author->user->name }}
                             </a>
@@ -75,7 +75,7 @@
                                     </a>
                                 </h3>
                                 <div class="blog-meta">
-                                    <a href="#" title="{{ __('View posts by :author', ['author' => $post->author->user->name]) }}">
+                                    <a href="{{ route('page.index', $post->author->user->slug ) }}" title="{{ __('View posts by :author', ['author' => $post->author->user->name]) }}">
                                         <i class="far fa-user" aria-hidden="true"></i>
                                         {{ __("By - ") . $post->author->user->name }}
                                     </a>

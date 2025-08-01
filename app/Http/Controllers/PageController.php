@@ -40,6 +40,10 @@ class PageController extends Controller
             return $this->renderPageView($slug);
         }
 
+        if ($author = $this->resolveAuthorBySlug($slug)) {
+            return $this->renderAuthorView($author);
+        }
+
         abort(404);
     }
 }
