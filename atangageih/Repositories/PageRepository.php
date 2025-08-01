@@ -7,13 +7,14 @@ use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
 use Atangageih\Contracts\PageInterface;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 
 class PageRepository implements PageInterface
 {
     /**
-     * Get all top-level published page categories with their children recursively loaded.
+     * Retrieve all top-level published page categories with their children recursively loaded.
      *
-     * @return Collection
+     * @return Collection<int, Category>
      */
     public function getAllCategoryPages(): Collection
     {
@@ -21,23 +22,25 @@ class PageRepository implements PageInterface
             ->published()
             ->whereNull('parent_id')
             ->with([
-                'children' => fn(HasMany $query) => $query->published()
+                'children' => fn (HasMany $query) => $query->published(),
             ])
             ->get();
     }
 
     /**
-     * Get all published and active home pages.
+     * Retrieve all published and active home pages.
      *
-     * @return Collection
+     * @return Collection<int, Page>
      */
     public function getAllHomePages(): Collection
     {
-        return Page::active()->get();
+        return Page::query()
+            ->active()
+            ->get();
     }
 
     /**
-     * Get a single active home page by slug with active sections and widgets.
+     * Retrieve a single active home page by slug, including only active sections and widgets.
      *
      * @param string $slug
      * @return Page|null
@@ -48,11 +51,13 @@ class PageRepository implements PageInterface
             ->where('slug', $slug)
             ->active()
             ->with([
-                'sections' => function ($query) {
+                'sections' => function (Builder $query) {
                     $query->wherePivot('is_active', true)
-                        ->with(['widgets' => fn($widgetQuery) => $widgetQuery->wherePivot('is_active', true)]);
+                        ->with([
+                            'widgets' => fn (Builder $widgetQuery) => $widgetQuery->wherePivot('is_active', true),
+                        ]);
                 },
             ])
-            ->firstOrFail();
+            ->first();
     }
 }

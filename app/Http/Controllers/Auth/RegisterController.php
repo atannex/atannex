@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\Posts\Fon;
 use App\Models\User;
 use App\Rules\Auth\StrongName;
 use App\Rules\Auth\StrongEmail;
