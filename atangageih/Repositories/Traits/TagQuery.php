@@ -5,8 +5,8 @@ namespace Atangageih\Repositories\Traits;
 use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
 use App\Models\Pages\Category;
-use Atangageih\Filters\Helper;
 use Illuminate\Support\Collection;
+use Atangageih\Services\Traits\Helper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 
