@@ -6,7 +6,7 @@
         @foreach ($tab['content'] as $post)
         <div class="dark-theme img-overlay2">
 
-            @include('components.post-card', ['post' => $post])
+            @include('components.posts.post-card', ['post' => $post])
         </div>
 
         @endforeach
