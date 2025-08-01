@@ -4,17 +4,18 @@
             <h3 class="widget_title">{{ __('Other :type', ['type' => e($type ?? '')]) }}</h3>
             <div class="recent-post-wrap">
                 @forelse($documents as $index => $item)
-                    <div class="recent-post">
-                        <div class="media-body">
-                            <h3 class="post-title">
-                                <a class="hover-line" href="{{ route('document.show', ['type' => $type, 'slug' => $item->slug]) }}">
-                                    {{ $index + 1 }}. {{ e($item->title) }}
-                                </a>
-                            </h3>
-                        </div>
+                <div class="recent-post">
+                    <div class="media-body">
+                        <h3 class="post-title">
+                            <a class="hover-line" href="{{ route('document.show', ['type' => $type, 'slug' => $item->slug]) }}">
+                                {{ $index + 1 }}. {{ e($item->title) }}
+                            </a>
+                        </h3>
                     </div>
+                </div>
                 @empty
-                    <p>{{ __('No related documents found.') }}</p>
+                <p>{{ __('No related') }} {{ $type }} {{ __('found.') }}</p>
+
                 @endforelse
             </div>
         </div>

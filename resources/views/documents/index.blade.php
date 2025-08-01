@@ -46,7 +46,7 @@
                             </div>
                         </div>
                         @empty
-                        <p>{{ __('No documents found.') }}</p>
+                        <p>{{ __('No') }} {{ $type }} {{ __('found.') }}</p>
                         @endforelse
                     </div>
                 </div>
