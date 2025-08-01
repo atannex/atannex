@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\WidgetSections\Schemas;
 
-use App\Enums\Filtering;
 use App\Enums\PostType;
 use App\Models\Tags\Tag;
 use Filament\Schemas\Schema;
@@ -23,7 +22,6 @@ class WidgetSectionForm
     {
         return $schema
             ->components([
-                // LEFT COLUMN - Widget Assignment & Configuration
                 Group::make()
                     ->schema([
                         Section::make('Widget Assignment')
@@ -80,7 +78,6 @@ class WidgetSectionForm
                     ])
                     ->columnSpan(1),
 
-                // RIGHT COLUMN - Widget Tabs Configuration
                 Group::make()
                     ->schema([
                         Section::make('Widget Tabs Configuration')
@@ -145,18 +142,6 @@ class WidgetSectionForm
                                                                     ->preload()
                                                                     ->visible(fn($get) => $get('type') === PostType::POST_BY_SUBDIVISION),
 
-
-                                                                // Region Content Filter
-                                                                Select::make('region_post_filter')
-                                                                    ->label('Region Content Filter')
-                                                                    ->options(Filtering::labels())
-                                                                    ->searchable()
-                                                                    ->preload()
-                                                                    ->placeholder('Choose region content type')
-                                                                    ->helperText('Choose the type of content to display for the selected region')
-                                                                    ->visible(fn($get) => $get('type') === PostType::POST_BY_FONDOM),
-
-                                                                // Tag Filter
                                                                 Select::make('tag_id')
                                                                     ->label('Filter by Tag')
                                                                     ->options(fn() => Tag::pluck('name', 'id')->toArray())
@@ -166,7 +151,6 @@ class WidgetSectionForm
                                                                     ->preload()
                                                                     ->visible(fn($get) => $get('type') === PostType::POST_BY_TAG),
 
-                                                                // Category Filter
                                                                 Select::make('category_id')
                                                                     ->label('Filter by Category')
                                                                     ->options(fn() => Category::doesntHave('children')->pluck('name', 'id')->toArray())

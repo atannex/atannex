@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\PageSections\Schemas;
 
 use App\Enums\PostType;
-use App\Enums\Filtering;
 use App\Models\Tags\Tag;
 use Filament\Schemas\Schema;
 use App\Models\Pages\Category;
@@ -143,18 +142,6 @@ class PageSectionForm
                                                                     ->preload()
                                                                     ->visible(fn($get) => $get('type') === PostType::POST_BY_SUBDIVISION),
 
-
-                                                                // Region Content Filter
-                                                                Select::make('region_post_filter')
-                                                                    ->label('Region Content Filter')
-                                                                    ->options(Filtering::labels())
-                                                                    ->searchable()
-                                                                    ->preload()
-                                                                    ->placeholder('Choose region content type')
-                                                                    ->helperText('Choose the type of content to display for the selected region')
-                                                                    ->visible(fn($get) => $get('type') === PostType::POST_BY_FONDOM),
-
-                                                                // Tag Filter
                                                                 Select::make('tag_id')
                                                                     ->label('Filter by Tag')
                                                                     ->options(fn() => Tag::pluck('name', 'id')->toArray())
@@ -164,7 +151,6 @@ class PageSectionForm
                                                                     ->preload()
                                                                     ->visible(fn($get) => $get('type') === PostType::POST_BY_TAG),
 
-                                                                // Category Filter
                                                                 Select::make('category_id')
                                                                     ->label('Filter by Category')
                                                                     ->options(fn() => Category::doesntHave('children')->pluck('name', 'id')->toArray())
