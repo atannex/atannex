@@ -9,6 +9,7 @@ use App\Filament\Resources\CategorySections\Schemas\CategorySectionForm;
 use App\Filament\Resources\CategorySections\Tables\CategorySectionsTable;
 use App\Models\Pivots\CategorySection;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CategorySectionResource extends Resource
 {
     protected static ?string $model = CategorySection::class;
+
+    protected static string | UnitEnum | null $navigationGroup = 'Settings';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
