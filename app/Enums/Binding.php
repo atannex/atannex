@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Enums;
 
 use BenSampo\Enum\Enum;
-use App\Models\Others\Atannex;
 use Atangageih\Filters\GetEnum;
 use App\Models\Regions\Employee;
 
@@ -19,7 +18,6 @@ final class Binding extends Enum
 {
     use GetEnum;
 
-    public const GLOBAL = Atannex::class;
     public const EMPLOYEE = Employee::class;
 
     /**
@@ -28,11 +26,6 @@ final class Binding extends Enum
     public static function boot(): void
     {
         static::setMetadata([
-            self::GLOBAL => [
-                'label' => 'Global (Entire Website)',
-                'color' => 'info',
-                'icon'  => 'heroicon-o-globe-alt'
-            ],
             self::EMPLOYEE => [
                 'label' => 'Employee',
                 'color' => 'success',

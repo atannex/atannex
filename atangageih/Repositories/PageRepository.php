@@ -7,7 +7,6 @@ use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
 use Atangageih\Contracts\PageInterface;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
 
 class PageRepository implements PageInterface
 {
