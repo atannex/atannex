@@ -1,5 +1,5 @@
 @foreach ($widget->tabs as $tab)
-<div class="col-xl-6 mb-4 mb-xl-0">
+<div class="mb-4 col-xl-6 mb-xl-0">
     <div class="row gy-4">
         @if (!empty($tab['content']))
 
@@ -17,7 +17,7 @@
         @foreach ($region['posts'] as $post)
         <div class="dark-theme img-overlay2">
 
-            @include('components.post-card', ['post' => $post])
+            @include('components.posts.post-card', ['post' => $post])
         </div>
 
         @endforeach
