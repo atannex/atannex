@@ -3,20 +3,20 @@
 namespace Ngangagah\Relations;
 
 use App\Models\Regions\Employee;
+use App\Models\Regions\Department;
 use App\Models\Pivots\EmployeeDepartment;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Regions\Department as RegionsDepartment;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-trait Department
+trait DepartmentRelation
 {
     /**
      * Parent department (if this is a sub-department).
      */
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(RegionsDepartment::class, 'parent_id');
+        return $this->belongsTo(Department::class, 'parent_id');
     }
 
     /**
@@ -24,7 +24,7 @@ trait Department
      */
     public function children(): HasMany
     {
-        return $this->hasMany(RegionsDepartment::class, 'parent_id');
+        return $this->hasMany(Department::class, 'parent_id');
     }
 
     public function manager(): BelongsTo

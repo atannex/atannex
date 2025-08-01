@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Morfaw\Supports\EnableScope;
 use Morfaw\Supports\EnableSlug;
-use Ngangagah\Relations\Region as RelationsRegion;
+use Ngangagah\Relations\RegionRelation;
+use Ngangagah\Relations\RegionRelationRelation as RelationsRegion;
 
 class Region extends Model
 {
     use SoftDeletes;
-    use RelationsRegion;
+    use RegionRelation;
     use EnableSlug;
     use EnableScope;
 

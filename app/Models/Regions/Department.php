@@ -7,14 +7,14 @@ use Morfaw\Supports\EnableSlug;
 use Morfaw\Supports\EnableScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Ngangagah\Relations\Department as RelationsDepartment;
+use Ngangagah\Relations\DepartmentRelation;
 
 class Department extends Model
 {
     use SoftDeletes;
     use EnableSlug;
     use EnableScope;
-    use RelationsDepartment;
+    use DepartmentRelation;
 
     protected string $slugSource = 'name';
 

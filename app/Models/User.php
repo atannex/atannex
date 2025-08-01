@@ -9,7 +9,7 @@ use Morfaw\Supports\EnableSlug;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Ngangagah\Relations\User as RelationsUser;
+use Ngangagah\Relations\UserRelation as RelationsUser;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail, FilamentUser

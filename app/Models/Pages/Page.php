@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Morfaw\Supports\EnablePath;
 use Morfaw\Supports\EnableScope;
 use Morfaw\Supports\EnableSlug;
-use Ngangagah\Relations\Page as RelationsPage;
+use Ngangagah\Relations\PageRelation;
 
 class Page extends Model
 {
     use SoftDeletes;
     use EnableSlug;
     use EnableScope;
-    use RelationsPage;
+    use PageRelation;
     use EnablePath;
 
     protected string $slugSource = 'title';

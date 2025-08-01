@@ -19,7 +19,7 @@ final class Post extends SearchComponent
      */
     protected function baseQuery(): Builder
     {
-        return PostModel::query()->with(['author', 'tags', 'category']);
+        return PostM::query()->with(['author', 'tags', 'category']);
     }
 
     /**

@@ -11,7 +11,7 @@ use App\Models\Regions\Region;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-trait Post
+trait PostRelation
 {
     public function tags(): BelongsToMany
     {

@@ -9,14 +9,14 @@ use Morfaw\Orchestrators\ImageCleanup;
 use Morfaw\Supports\EnablePath;
 use Morfaw\Supports\EnableScope;
 use Morfaw\Supports\EnableSlug;
-use Ngangagah\Relations\Post as RelationsPost;
+use Ngangagah\Relations\PostRelation;
 
 class Post extends Model
 {
     use SoftDeletes;
     use EnableSlug;
     use EnableScope;
-    use RelationsPost;
+    use PostRelation;
     use EnablePath;
     use ImageCleanup;
 

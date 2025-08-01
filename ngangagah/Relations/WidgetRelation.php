@@ -2,11 +2,9 @@
 
 namespace Ngangagah\Relations;
 
-use App\Models\Pages\Section;
-use App\Models\Pages\WidgetRevision;
 use App\Models\Pivots\WidgetSection;
+use Ngangagah\Relations\SectionRelation;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Trait Widget
@@ -16,17 +14,17 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *
  * @package Ngangagah\Relations
  */
-trait Widget
+trait WidgetRelation
 {
 
     /**
      * Get the sections that this widget belongs to in a many-to-many relationship.
      *
-     * @return BelongsToMany<Section>
+     * @return BelongsToMany<SectionRelation>
      */
     public function sections(): BelongsToMany
     {
-        return $this->belongsToMany(Section::class, 'widget_sections')
+        return $this->belongsToMany(SectionRelation::class, 'widget_sections')
             ->using(WidgetSection::class)
             ->withPivot([
                 'config',

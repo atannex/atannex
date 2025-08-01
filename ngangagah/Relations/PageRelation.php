@@ -2,13 +2,13 @@
 
 namespace Ngangagah\Relations;
 
-use App\Models\Pages\Page as PagesPage;
 use App\Models\Pages\Section;
 use App\Models\Pivots\PageSection;
+use App\Models\Pages\Page as PagesPage;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Trait Page
@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @package Ngangagah\Relations
  */
-trait Page
+trait PageRelation
 {
     use SoftDeletes;
 

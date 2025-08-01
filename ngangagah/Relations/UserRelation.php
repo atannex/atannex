@@ -6,7 +6,7 @@ use App\Models\Others\Contact;
 use App\Models\Controls\Session;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-trait User
+trait UserRelation
 {
     public function sessions(): HasMany
     {

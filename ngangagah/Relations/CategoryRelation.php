@@ -2,22 +2,22 @@
 
 namespace Ngangagah\Relations;
 
+use App\Models\Posts\Post;
 use App\Models\Pages\Section;
+use App\Models\Pages\Category;
 use App\Models\Pivots\CategorySection;
-use App\Models\Posts\Post as ModelPost;
-use App\Models\Pages\Category as PagesCategory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-trait Category
+trait CategoryRelation
 {
     /**
      * Parent category relation.
      */
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(PagesCategory::class, 'parent_id');
+        return $this->belongsTo(Category::class, 'parent_id');
     }
 
     /**
@@ -25,7 +25,7 @@ trait Category
      */
     public function children(): HasMany
     {
-        return $this->hasMany(PagesCategory::class, 'parent_id');
+        return $this->hasMany(Category::class, 'parent_id');
     }
 
     /**
@@ -33,7 +33,7 @@ trait Category
      */
     public function posts(): HasMany
     {
-        return $this->hasMany(ModelPost::class);
+        return $this->hasMany(Post::class);
     }
 
     public function sections(): BelongsToMany

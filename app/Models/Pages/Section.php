@@ -2,17 +2,17 @@
 
 namespace App\Models\Pages;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Morfaw\Supports\EnableScope;
 use Morfaw\Supports\EnableSlug;
-use Ngangagah\Relations\Section as RelationsSection;
+use Morfaw\Supports\EnableScope;
+use Illuminate\Database\Eloquent\Model;
+use Ngangagah\Relations\SectionRelation;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Section extends Model
 {
     use SoftDeletes;
     use EnableSlug;
-    use RelationsSection;
+    use SectionRelation;
     use EnableScope;
 
     protected string $slugSource = 'name';

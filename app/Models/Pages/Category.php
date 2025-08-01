@@ -9,14 +9,14 @@ use Morfaw\Supports\EnablePath;
 use Morfaw\Supports\EnableScope;
 use Morfaw\Supports\EnableSlug;
 use Morfaw\Supports\Resolver;
-use Ngangagah\Relations\Category as RelationsCategory;
+use Ngangagah\Relations\CategoryRelation;
 
 class Category extends Model
 {
     use SoftDeletes;
-    use RelationsCategory;
     use EnableSlug;
     use EnablePath;
+    use CategoryRelation;
     use EnableScope;
     use Hierarchy;
     use Resolver;

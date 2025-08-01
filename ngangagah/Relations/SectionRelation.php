@@ -18,12 +18,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * @package Ngangagah\Relations
  */
-trait Section
+trait SectionRelation
 {
     /**
      * Get the pages that this section belongs to in a many-to-many relationship.
      *
-     * @return BelongsToMany<Page>
+     * @return BelongsToMany<PageRelation>
      */
     public function pages(): BelongsToMany
     {
