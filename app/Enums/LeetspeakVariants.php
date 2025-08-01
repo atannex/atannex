@@ -1,9 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 use BenSampo\Enum\Enum;
 
+/**
+ * Enum for leetspeak variants of specific letters.
+ *
+ * @method static static A()
+ * @method static static E()
+ * @method static static I()
+ * @method static static O()
+ * @method static static S()
+ * @method static static T()
+ */
 final class LeetspeakVariants extends Enum
 {
     public const A = 'a';
@@ -28,19 +40,50 @@ final class LeetspeakVariants extends Enum
     ];
 
     /**
-     * Get all possible leetspeak variants for each letter.
+     * Cached leetspeak values.
+     *
+     * @var array<string, array<string>>|null
+     */
+    private static ?array $cachedLeetspeakValues = null;
+
+    /**
+     * Get all possible leetspeak variants for each letter, escaped for regex use.
      *
      * @return array<string, array<string>>
      */
     public static function getLeetspeakValues(): array
     {
-        $escaped = [];
+        if (self::$cachedLeetspeakValues !== null) {
+            return self::$cachedLeetspeakValues;
+        }
 
+        $escaped = [];
         foreach (self::VARIANT_MAP as $key => $variants) {
+            if (!self::hasValue($key)) {
+                throw new \InvalidArgumentException("Invalid enum value: {$key}");
+            }
             $escaped[$key] = self::escapeForRegex($variants);
         }
 
+        self::$cachedLeetspeakValues = $escaped;
         return $escaped;
+    }
+
+    /**
+     * Build a regex pattern for a given letter's variants.
+     *
+     * @param string $letter
+     * @return string
+     * @throws \InvalidArgumentException
+     */
+    public static function getRegexPattern(string $letter): string
+    {
+        $variants = self::getLeetspeakValues();
+        if (!isset($variants[$letter])) {
+            throw new \InvalidArgumentException("No variants found for letter: {$letter}");
+        }
+
+        return '[' . implode('', $variants[$letter]) . ']';
     }
 
     /**
@@ -51,6 +94,6 @@ final class LeetspeakVariants extends Enum
      */
     private static function escapeForRegex(array $variants): array
     {
-        return array_map(fn($v) => preg_quote($v, '/'), $variants);
+        return array_map(fn(string $v): string => preg_quote($v, '/'), $variants);
     }
 }
