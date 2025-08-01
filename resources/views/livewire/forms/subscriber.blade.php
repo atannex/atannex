@@ -1,6 +1,6 @@
 <div class="widget newsletter-widget">
-    <h3 class="widget_title">
-        {{ __('Subscribe') }}
+    <h3 class="box-title-24">
+        {{ __('Subscribe Our Newsletter') }}
     </h3>
 
     <p class="footer-text">
