@@ -22,7 +22,7 @@ class PageRepository implements PageInterface
             ->published()
             ->whereNull('parent_id')
             ->with([
-                'children' => fn (HasMany $query) => $query->published(),
+                'children' => fn(HasMany $query) => $query->published(),
             ])
             ->get();
     }
@@ -51,10 +51,10 @@ class PageRepository implements PageInterface
             ->where('slug', $slug)
             ->active()
             ->with([
-                'sections' => function (Builder $query) {
+                'sections' => function ($query) {
                     $query->wherePivot('is_active', true)
                         ->with([
-                            'widgets' => fn (Builder $widgetQuery) => $widgetQuery->wherePivot('is_active', true),
+                            'widgets' => fn($widgetQuery) => $widgetQuery->wherePivot('is_active', true),
                         ]);
                 },
             ])

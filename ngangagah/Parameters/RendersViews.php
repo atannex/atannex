@@ -2,10 +2,8 @@
 
 namespace Ngangagah\Parameters;
 
-use App\Enums\Flag;
 use Illuminate\View\View;
 use App\Models\Pages\Category;
-use App\Models\Regions\Region;
 
 trait RendersViews
 {
