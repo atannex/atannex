@@ -5,9 +5,11 @@ namespace Ngangagah\Relations;
 use App\Models\Tags\Tag;
 use App\Models\Pages\Category;
 use App\Models\Pivots\PostTag;
+use App\Models\Regions\Region;
 use App\Models\Regions\Employee;
 use App\Models\Pivots\PostRegion;
-use App\Models\Regions\Region;
+use App\Models\Modules\PostModule;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -18,7 +20,7 @@ trait PostRelation
         return $this->belongsToMany(Tag::class)
             ->using(PostTag::class)
             ->withTimestamps()
-            ->withPivot('id','post_id', 'tag_id');
+            ->withPivot('id', 'post_id', 'tag_id');
     }
     /**
      * Post belongs to a Category.
@@ -50,5 +52,14 @@ trait PostRelation
             ->using(PostRegion::class)
             ->withTimestamps()
             ->withPivot('deleted_at');
+    }
+    /**
+     * Get the post modules for the post.
+     *
+     * @return HasOne
+     */
+    public function postModules(): HasOne
+    {
+        return $this->hasOne(PostModule::class);
     }
 }
