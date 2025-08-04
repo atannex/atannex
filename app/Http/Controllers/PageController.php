@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Atangageih\Services\CategoryService;
-use Illuminate\View\View;
-use Illuminate\Http\Response;
-use Atangageih\Services\PageService;
+use App\Models\Modules\PostModule;
 use Atannex\Extension;
-use Ngangagah\Parameters\RendersViews;
+use Illuminate\View\View;
+use App\Models\Posts\Post;
+use Illuminate\Http\Response;
 use Morfaw\Supports\Resolver;
+use Atangageih\Services\PageService;
+use Ngangagah\Parameters\RendersViews;
+use Atangageih\Services\CategoryService;
 
 class PageController extends Controller
 {
@@ -42,6 +44,21 @@ class PageController extends Controller
 
         if ($author = $this->resolveAuthorBySlug($slug)) {
             return $this->renderAuthorView($author);
+        }
+
+        if (str_contains($slug, '/')) {
+            [$categorySlug, $postSlug] = explode('/', $slug, 2);
+
+            $postModule = PostModule::whereHas('post', function ($postQuery) use ($postSlug, $categorySlug) {
+                $postQuery->where('slug', $postSlug)
+                    ->whereHas('category', function ($categoryQuery) use ($categorySlug) {
+                        $categoryQuery->where('slug_path', $categorySlug);
+                    });
+            })->first();
+
+            if ($postModule) {
+                return view('shows.index', ['post' => $postModule->post]);
+            }
         }
 
         abort(404);

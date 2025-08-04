@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('post_modules', function (Blueprint $table) {
             $table->id();
             $table->json('module_modules')->nullable();
+            $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,4 +28,3 @@ return new class extends Migration
         Schema::dropIfExists('post_modules');
     }
 };
-

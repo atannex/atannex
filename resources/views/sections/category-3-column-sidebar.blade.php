@@ -6,7 +6,7 @@
                 <div class="blog-style1">
                     <div class="blog-img" data-overlay="black" data-opacity="4">
 
-                        <a href="#">
+                        <a href="{{ route('page.index', $post->author->user->slug) }}">
                             <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}">
                         </a>
 
@@ -16,7 +16,7 @@
                     </div>
 
                     <h3 class="box-title-24">
-                        <a class="hover-line" href="#">
+                        <a class="hover-line" href="{{ route('page.index', ['slug' => $post->category->slug_path . '/' . $post->slug]) }}">
                             {{ $post->title }}
                         </a>
                     </h3>
@@ -26,7 +26,7 @@
                             <i class="far fa-user"></i>
                             {{ __(" By - ") . $post->author->user->name }}
                         </a>
-                        <a href="#">
+                        <a href="{{ route('page.index', $post->author->user->slug) }}">
                             <i class="fal fa-calendar-days"></i> {{ $post->published_at->format('d M, Y') }}
                         </a>
                     </div>
