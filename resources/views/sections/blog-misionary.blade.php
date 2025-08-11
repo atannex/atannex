@@ -8,7 +8,7 @@
                         <div class="blog-style1">
                             <div class="blog-img">
 
-                                <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}">
+                               @include('partials.image')
 
                                 <a data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" href="{{ route('page.index', $post->category->slug_path) }}" class="category">
 
@@ -22,10 +22,7 @@
                                 </a>
                             </h3>
                             <div class="blog-meta">
-                                <a href="{{ route('page.index', $post->author->user->slug ) }}">
-                                    <i class="far fa-user"></i>
-                                    {{ __(" By - ") . $post->author->user->name }}
-                                </a>
+                                 @include('partials.author')
                                 <a href="#">
                                     <i class="fal fa-calendar-days"></i>
                                     {{ $post->published_at->format('d M, Y') }}

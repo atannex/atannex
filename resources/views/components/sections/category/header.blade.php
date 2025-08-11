@@ -5,14 +5,14 @@
                    <div class="col-auto d-none d-lg-inline-block">
                        <div class="header-logo">
                            <a href="{{ route('home') }}">
-                           <img class="dark-img" src="{{ asset('storage/'. $global['logo']->image) }}" class="img-fluid" style="max-width: 98px; height: 98px; object-fit: cover;">
+                           <img class="dark-img" src="{{ asset('storage/'. $global['logo']?->image) }}" class="img-fluid" style="max-width: 98px; height: 98px; object-fit: cover;">
                            </a>
                        </div>
                    </div>
-                   <div class="col text-center d-none d-md-block">
+                   <div class="text-center col d-none d-md-block">
                        <div class="header-ads">
                            <a href="{{ route('home') }}">
-                           <img class="dark-img" src="{{ asset('storage/'. $global['banner']->image) }}" />
+                           <img class="dark-img" src="{{ asset('storage/'. $global['banner']?->image) }}" />
                            </a>
                        </div>
                    </div>
@@ -35,7 +35,7 @@
                        <div class="col-auto d-lg-none d-block">
                            <div class="header-logo">
                                <a href="{{ route('home') }}">
-                               <img class="dark-img" src="{{ asset('storage/'. $global['logo']->image) }}" class="img-fluid" style="max-width: 70px; height: 70px; object-fit: cover;">
+                               <img class="dark-img" src="{{ asset('storage/'. $global['logo']?->image) }}" class="img-fluid" style="max-width: 70px; height: 70px; object-fit: cover;">
                                </a>
                            </div>
                        </div>

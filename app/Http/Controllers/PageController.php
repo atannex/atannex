@@ -2,65 +2,90 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Modules\PostModule;
 use Atannex\Extension;
 use Illuminate\View\View;
-use App\Models\Posts\Post;
-use Illuminate\Http\Response;
 use Morfaw\Supports\Resolver;
+use App\Models\Pages\Category;
+use App\Models\Modules\PostModule;
 use Atangageih\Services\PageService;
 use Ngangagah\Parameters\RendersViews;
 use Atangageih\Services\CategoryService;
 
 class PageController extends Controller
 {
-    use RendersViews;
-    use Resolver;
+    use RendersViews, Resolver;
 
     public function __construct(
         protected readonly PageService $pageService,
         protected readonly CategoryService $categoryService,
         protected readonly Extension $extension
     ) {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'verified', 'password.confirm']);
     }
 
     /**
-     * Handle a page request based on the slug.
+     * Resolve the requested slug and render the appropriate view.
      *
      * @param string $slug
-     * @return View|Response
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
      */
-    public function __invoke(string $slug): View|Response
+    public function resolve(string $slug)
     {
+
+        if ($view = $this->tryRenderHomePage($slug)) {
+            return $view;
+        }
 
         if ($category = $this->resolveCategoryFromSlugs($slug)) {
             return $this->renderCategoryView($category);
-        }
-
-        if ($this->pageService->getHomePage($slug)) {
-            return $this->renderPageView($slug);
         }
 
         if ($author = $this->resolveAuthorBySlug($slug)) {
             return $this->renderAuthorView($author);
         }
 
-        if (str_contains($slug, '/')) {
-            [$categorySlug, $postSlug] = explode('/', $slug, 2);
+        return $this->abortNotFound();
+    }
 
-            $postModule = PostModule::whereHas('post', function ($postQuery) use ($postSlug, $categorySlug) {
-                $postQuery->where('slug', $postSlug)
-                    ->whereHas('category', function ($categoryQuery) use ($categorySlug) {
-                        $categoryQuery->where('slug_path', $categorySlug);
-                    });
-            })->first();
+    private function tryRenderHomePage(string $slug): ?View
+    {
+        return $this->pageService->getHomePage($slug)
+            ? $this->renderPageView($slug)
+            : null;
+    }
 
-            if ($postModule) {
-                return view('shows.index', ['post' => $postModule->post]);
-            }
-        }
+    public function show(
+        string $year,
+        string $month,
+        string $day,
+        string $category,
+        string $slug
+    ) {
+        $categoryModel = $this->findCategory($category);
+        $postModule = $this->findPostModule($categoryModel, $slug, $year, $month, $day);
 
+        return view('shows.index', ['module' => $postModule]);
+    }
+
+    private function findCategory(string $slug): Category
+    {
+        return Category::where('slug', $slug)->firstOrFail();
+    }
+
+    private function findPostModule(Category $category, string $slug, string $year, string $month, string $day): PostModule
+    {
+        return PostModule::whereHas('post', function ($query) use ($slug, $category, $year, $month, $day) {
+            $query->where('slug', $slug)
+                ->where('category_id', $category->id)
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $month)
+                ->whereDay('created_at', $day);
+        })->with('post')->firstOrFail();
+    }
+
+    private function abortNotFound()
+    {
         abort(404);
     }
+
 }

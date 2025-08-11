@@ -15,6 +15,9 @@ class PostModuleForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
+            Select::make('post_id')
+                ->relationship('post', 'title')
+                ->default(null),
             Builder::make('module_content')
                 ->label('Content Sections')
                 ->columnSpanFull()
@@ -28,7 +31,7 @@ class PostModuleForm
                                 ->schema([
                                     Textarea::make('value')->label('Text')->rows(3),
                                 ])
-                                ->itemLabel(fn (array $state): ?string => str($state['value'] ?? '')->limit(30)),
+                                ->itemLabel(fn(array $state): ?string => str($state['value'] ?? '')->limit(30)),
                         ]),
 
                     Builder\Block::make('heading')
@@ -67,7 +70,7 @@ class PostModuleForm
                                         ->required(),
                                 ])
                                 ->columns(2)
-                                ->itemLabel(fn (array $state): ?string => ucfirst($state['mode'] ?? '')),
+                                ->itemLabel(fn(array $state): ?string => ucfirst($state['mode'] ?? '')),
                         ]),
 
                     Builder\Block::make('blockquote')
@@ -93,7 +96,7 @@ class PostModuleForm
                                 ->schema([
                                     TextInput::make('value')->label('List Item'),
                                 ])
-                                ->itemLabel(fn (array $state): ?string => str($state['value'] ?? '')->limit(30)),
+                                ->itemLabel(fn(array $state): ?string => str($state['value'] ?? '')->limit(30)),
                         ]),
                 ]),
         ]);

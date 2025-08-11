@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('post_modules', function (Blueprint $table) {
             $table->id();
-            $table->json('module_modules')->nullable();
+            $table->json('module_content')->nullable();
             $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();

@@ -1,4 +1,4 @@
-<x-layouts.app :title="$title">
+<x-layouts.base :title="$title">
 
 
     <x-sections.pages.header />
@@ -11,4 +11,4 @@
 
     <x-sections.pages.footer />
 
-</x-layouts.app>
+</x-layouts.base>

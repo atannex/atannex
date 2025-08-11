@@ -75,10 +75,7 @@
                                     </a>
                                 </h3>
                                 <div class="blog-meta">
-                                    <a href="{{ route('page.index', $post->author->user->slug ) }}" title="{{ __('View posts by :author', ['author' => $post->author->user->name]) }}">
-                                        <i class="far fa-user" aria-hidden="true"></i>
-                                        {{ __("By - ") . $post->author->user->name }}
-                                    </a>
+                                     @include('partials.author')
                                     <time datetime="{{ $post->published_at->format('Y-m-d') }}">
                                         <i class="fal fa-calendar-days" aria-hidden="true"></i>
                                         {{ $post->published_at->format('d M, Y') }}

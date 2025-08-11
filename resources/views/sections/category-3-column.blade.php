@@ -5,26 +5,21 @@
               <div class="col-xl-4 col-sm-6">
                   <div class="blog-style1">
                       <div class="blog-img">
-                          <a href="#">
-                              <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}">
-                          </a>
 
-                          <a data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" href="{{ route('page.index', $post->category->slug_path) }}" class="category">
-                              {{ $post->category->name }}
-                          </a>
+                          @include('partials.image')
+
+                         @include('partials.category')
 
                       </div>
 
                       <h3 class="box-title-24">
-                          <a class="hover-line" href="#">
-                              {{ $post->title }}
-                          </a>
+
+                        @include('partials.title')
+
                       </h3>
                       <div class="blog-meta">
-                          <a href="{{ route('page.index', $post->author->user->slug ) }}">
-                              <i class="far fa-user"></i>
-                              {{ __(" By - ") . $post->author->user->name }}
-                          </a>
+
+                          @include('partials.author')
 
                           <a href="#">
                               <i class="fal fa-calendar-days"></i>

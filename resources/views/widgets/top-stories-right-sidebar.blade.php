@@ -14,16 +14,18 @@
                 <div class="col-xl-12 col-md-6 border-blog">
                     <div class="blog-style2">
                         <div class="blog-img">
-                            <img class="img-fluid top-stories-right-sidebar" src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}">
+
+                            @include('partials.image')
+
                         </div>
                         <div class="blog-content">
-                            <a data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" href="#" class="category">
-                                {{ $post->category->name }}
-                            </a>
+
+                            @include('partials.category')
+
                             <h3 class="box-title-18">
-                                <a class="hover-line" href="#">
-                                    {{ Str::limit($post->title, 60) }}
-                                </a>
+
+                                @include('partials.title')
+
                             </h3>
                             <div class="blog-meta">
                                 <a href="#">

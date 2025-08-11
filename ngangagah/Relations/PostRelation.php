@@ -58,7 +58,7 @@ trait PostRelation
      *
      * @return HasOne
      */
-    public function postModules(): HasOne
+    public function modules(): HasOne
     {
         return $this->hasOne(PostModule::class);
     }

@@ -22,8 +22,8 @@ trait Resolver
     {
         $parentId = null;
 
-        foreach ($this->extractSlugs($slug) as $slugPart) {
-            $category = $this->findCategory($slugPart, $parentId);
+        foreach ($this->extractSlugs($slug) as $slugPath) {
+            $category = $this->findCategory($slugPath, $parentId);
 
             if (!$category) {
                 return null;

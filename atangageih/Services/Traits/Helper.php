@@ -13,43 +13,60 @@ trait Helper
 {
     use HandlesExceptions;
 
-    private const DEFAULT_PAGINATION_LIMIT = 50;
-    private const DEFAULT_RECENT_POSTS_LIMIT = 5;
-    private const DEFAULT_POPULAR_TAGS_LIMIT = 12;
+    protected const DEFAULT_PAGINATION_LIMIT      = 50;
+    protected const DEFAULT_RECENT_POSTS_LIMIT    = 5;
+    protected const DEFAULT_POPULAR_TAGS_LIMIT    = 12;
 
+    /**
+     * Map a SocialMedia model instance to a simplified array representation.
+     *
+     * @param  SocialMedia  $media
+     * @return array|null
+     */
     protected function mapSocialMedia(SocialMedia $media): ?array
     {
-        return $this->safely(function () use ($media) {
-            $platformEnum = Icons::coerce($media->platform);
+        $platform = Icons::coerce($media->platform);
 
-            return [
-                'url'   => $media->url,
-                'label' => $platformEnum->getLabel(),
-                'icon'  => $platformEnum->getIcon(),
-                'color' => $platformEnum->getColor(),
-            ];
-        }, 'Failed to map social media', ['media_id' => $media->id ?? null]);
+        if (! $platform) {
+            return null;
+        }
+
+        return [
+            'url'   => $media->url,
+            'label' => $platform->getLabel(),
+            'icon'  => $platform->getIcon(),
+            'color' => $platform->getColor(),
+        ];
     }
 
+    /**
+     * Retrieve all published global social media entries mapped with icons and metadata.
+     *
+     * @return Collection
+     */
     protected function getSocialMediaIcons(): Collection
     {
-        return $this->safely(function () {
-            return SocialMedia::flagged(Flag::PUBLISHED())
-                ->global()
-                ->orderBy('order')
-                ->get()
-                ->map(fn($media) => $this->mapSocialMedia($media))
-                ->filter()
-                ->values();
-        }, 'Failed to retrieve social media icons', collect());
+        return SocialMedia::flagged(Flag::PUBLISHED())
+            ->global()
+            ->orderBy('order')
+            ->get()
+            ->map(fn(SocialMedia $media) => $this->mapSocialMedia($media))
+            ->filter()
+            ->values();
     }
 
+    /**
+     * Retrieve a single published gallery image of the given type.
+     *
+     * @param  Image  $type
+     * @return Gallery|null
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
     protected function getGalleryImage(Image $type): ?Gallery
     {
-        return $this->safely(function () use ($type) {
-            return Gallery::flagged(Flag::PUBLISHED())
-                ->whereType($type)
-                ->firstOrFail();
-        }, "Failed to fetch gallery image of type {$type->value}");
+        return Gallery::flagged(Flag::PUBLISHED())
+            ->whereType($type)
+            ->first();
     }
 }

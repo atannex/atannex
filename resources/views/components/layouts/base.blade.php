@@ -14,10 +14,11 @@
 
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('storage/'. $global['favicon']->image) }}">
-    <link rel="icon" type="image/svg+xml" href="{{ asset('storage/'. $global['favicon']->image) }}">
-    <link rel="shortcut icon" href="{{ asset('storage/'. $global['favicon']->image) }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('storage/'. $global['favicon']->image) }}">
+    @php $favicon = asset('storage/' . $global['favicon']?->image) @endphp
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ $favicon }}">
+    <link rel="icon" type="image/svg+xml" href="{{ $favicon }}">
+    <link rel="shortcut icon" href="{{ $favicon }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ $favicon }}">
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

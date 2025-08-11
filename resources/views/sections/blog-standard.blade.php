@@ -6,19 +6,17 @@
                 <div class="th-blog blog-single has-post-thumbnail">
 
                     <div class="blog-img" data-overlay="black" data-opacity="4">
-                        <a href="#">
-                            <img src="{{ asset('storage/' . $blog->image) }}" alt="{{ config('app.name') }}">
-                        </a>
-                        <a href="{{ route('page.index', $blog->category->slug_path) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
+
+                        @include('partials.image')
+                        
+                        <a href="{{ route('page.index', $blog->category->slug) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
                             {{ $blog->category->name }}
                         </a>
                     </div>
 
                     <div class="blog-content">
                         <div class="flex flex-wrap gap-3 blog-meta">
-                            <a href="{{ route('page.index', $blog->author->user->slug ) }}">
-                                <i class="far fa-user"></i> {{ __("By - ") . $blog->author->user->name }}
-                            </a>
+                             @include('partials.author')
                             <a href="#">
                                 <i class="fal fa-calendar-days"></i> {{ $blog->published_at->format('d F, Y') }}
                             </a>

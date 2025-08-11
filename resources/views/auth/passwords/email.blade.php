@@ -6,7 +6,7 @@
                 <div class="col-md-8 col-xl-8">
                     <div class="quote-form-box">
                         <div class="text-center">
-                            <img src="{{ asset('storage/'. $global['logo']->image) }}" alt="Site Logo" style="max-width: 200px;" class="mb-3">
+                            <img src="{{ asset('storage/'. $global['logo']?->image) }}" alt="Site Logo" style="max-width: 200px;" class="mb-3">
                             <h4 class="form-title">Reset Password</h4>
                             <p class="form-description text-muted">
                                 Enter your email address and we’ll send you a link to reset your password.

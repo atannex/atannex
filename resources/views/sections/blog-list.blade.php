@@ -7,9 +7,9 @@
                     <div class="border-blog2">
                         <div class="blog-style4">
                             <div class="blog-img w-386">
-                                <a href="#">
-                                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}">
-                                </a>
+
+                                @include('partials.image')
+
                             </div>
                             <div class="blog-content">
                                 <a href="{{ route('page.index', $post->category->slug_path) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
@@ -24,10 +24,7 @@
                                     {!! Str::limit($post->description, 200) !!}
                                 </p>
                                 <div class="blog-meta">
-                                    <a href="{{ route('page.index', $post->author->user->slug ) }}">
-                                        <i class="far fa-user"></i>
-                                        {{ __(" By - ") . $post->author->user->name }}
-                                    </a>
+                                     @include('partials.author')
                                     <a href="#">
                                         <i class="fal fa-calendar-days"></i>
                                         {{ $post->published_at->format('d M, Y') }}

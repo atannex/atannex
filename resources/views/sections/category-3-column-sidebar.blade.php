@@ -6,27 +6,23 @@
                 <div class="blog-style1">
                     <div class="blog-img" data-overlay="black" data-opacity="4">
 
-                        <a href="{{ route('page.index', $post->author->user->slug) }}">
-                            <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}">
-                        </a>
+                       @include('partials.image')
 
-                        <a data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" href="{{ route('page.index', $post->category->slug_path) }}" class="category">
-                            {{ $post->category->name }}
-                        </a>
+                        @include('partials.category')
+
                     </div>
 
                     <h3 class="box-title-24">
-                        <a class="hover-line" href="{{ route('page.index', ['slug' => $post->category->slug_path . '/' . $post->slug]) }}">
-                            {{ $post->title }}
-                        </a>
+
+                        @include('partials.title')
+
                     </h3>
 
                     <div class="blog-meta">
-                        <a href="{{ route('page.index', $post->author->user->slug) }}">
-                            <i class="far fa-user"></i>
-                            {{ __(" By - ") . $post->author->user->name }}
-                        </a>
-                        <a href="{{ route('page.index', $post->author->user->slug) }}">
+
+                        @include('partials.author')
+
+                        <a href="#">
                             <i class="fal fa-calendar-days"></i> {{ $post->published_at->format('d M, Y') }}
                         </a>
                     </div>

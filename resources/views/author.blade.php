@@ -11,22 +11,23 @@
                         <div class="mb-4 border-blog">
                             <div class="blog-style4">
                                 <div class="blog-img w-270">
-                                    <img src="{{ asset('storage/' . $post->image) }}" class="img-fluid h-200" alt="{{ config('app.name') }}">
+
+                                    @include('partials.image')
+
                                 </div>
                                 <div class="blog-content">
-                                    <a href="{{ $post->category->slug_path }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
-                                        {{ $post->category->name }}
-                                    </a>
+
+                                    @include('partials.category')
+
                                     <h3 class="box-title-22">
-                                        <a class="hover-line" href="#">
-                                            {{ $post->title }}
-                                        </a>
+
+                                        @include('partials.title')
+
                                     </h3>
                                     <div class="blog-meta">
-                                        <a href="#">
-                                            <i class="far fa-user"></i>
-                                            {{ __("By - ") . $post->author->user->name }}
-                                        </a>
+
+                                        @include('partials.author')
+
                                         <a href="#">
                                             <i class="fal fa-calendar-days"></i>
                                             {{ $post->published_at->format('d M, Y') }}
@@ -47,51 +48,63 @@
 
                 </div>
 
+                @php
+                $user = $post->author->user;
+                @endphp
+
                 <div class="col-xl-4 sidebar-wrap">
                     <div class="mb-0 sidebar-area">
                         <div class="widget">
                             <div class="author-details">
                                 <div class="author-img">
-                                    <img src="{{ asset('storage/'. $post->author->user->image) }}" alt="Image">
+                                    <img src="{{ asset('storage/' . $user->image) }}" alt="Image">
                                 </div>
                                 <div class="author-content">
-                                    <h3 class="box-title-24">
-                                        {{ $post->author->user->name }}
-                                    </h3>
+                                    <h3 class="box-title-24">{{ $user->name }}</h3>
                                     <div class="info-wrap">
+                                        <span class="info">{{ $user->getRoleNames()->first() }}</span>
+                                        @if($user->posts_count)
                                         <span class="info">
-                                            {{ $post->author->user->getRoleNames()->first() }}
-                                        </span>
-                                        @if($post->author->user->posts_count)
-                                        <span class="info">
-                                            <strong>{{ __("Post: ") }}</strong>
-                                            {{ $post->author->user->posts_count }}
+                                            <strong>{{ __("Post: ") }}</strong>{{ $user->posts_count }}
                                         </span>
                                         @endif
                                     </div>
-                                    <p class="author-bio">{!! $post->author->user->bio !!}</p>
+                                    <p class="author-bio">{!! $user->bio !!}</p>
 
-                                    @if($post->author->user->email)
-                                    <div class="info-wrap top-border">
+                                    @php
+                                    $contacts = [
+                                    'email' => [
+                                    'label' => __("Email :"),
+                                    'value' => $user->email,
+                                    'href' => $user->email ? 'mailto:' . $user->email : null,
+                                    'display' => $user->email ? Str::limit($user->email, 25, '...') : null,
+                                    'wrapper_class' => 'info-wrap top-border'
+                                    ],
+                                    'phone' => [
+                                    'label' => __("Phone :"),
+                                    'value' => $user->tell,
+                                    'href' => $user->tell ? 'tel:' . $user->tell : null,
+                                    'display' => $user->tell,
+                                    'wrapper_class' => 'info-wrap'
+                                    ],
+                                    ];
+                                    @endphp
+
+                                    @foreach ($contacts as $contact)
+                                    @if ($contact['value'])
+                                    <div class="{{ $contact['wrapper_class'] }}">
+                                        <span class="info"><strong>{{ $contact['label'] }}</strong></span>
                                         <span class="info">
-                                            <strong>{{ __("Email :") }}</strong>
-                                        </span>
-                                        <span class="info">
-                                            <a href="mailto:{{ $post->author->user->email }}">{{ Str::limit($post->author->user->email, 25, '...') }}
-                                            </a>
+                                            @if ($contact['href'])
+                                            <a href="{{ $contact['href'] }}">{{ $contact['display'] }}</a>
+                                            @else
+                                            {{ $contact['display'] }}
+                                            @endif
                                         </span>
                                     </div>
                                     @endif
-                                    @if($post->author->user->tell)
-                                    <div class="info-wrap">
-                                        <span class="info">
-                                            <strong>{{ __("Phone :") }}</strong>
-                                        </span>
-                                        <span class="info">
-                                            <a href="tel:{{ $post->author->user->tell }}">{{ $post->author->user->tell }}</a>
-                                        </span>
-                                    </div>
-                                    @endif
+                                    @endforeach
+
                                     @if($user_medias)
                                     <h4 class="box-title-18">{{ __("Social Media") }}</h4>
                                     <div class="th-social">
@@ -107,6 +120,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>

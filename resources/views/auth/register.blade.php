@@ -6,7 +6,7 @@
                 <div class="col-md-8 col-xl-8">
                     <div class="card quote-form-box">
                         <div class="text-center">
-                            <img src="{{ asset('storage/' . $global['logo']->image) }}" alt="Logo" style="max-width: 200px;" class="mb-3">
+                            <img src="{{ asset('storage/' . $global['logo']?->image) }}" alt="Logo" style="max-width: 200px;" class="mb-3">
                             <p class="form-description text-muted">
                                 {{ __('Create an account to personalize your experience and access member-exclusive content.') }}
                             </p>
@@ -16,7 +16,7 @@
                             <form action="{{ route('register') }}" method="POST" class="contact-form">
                                 @csrf
 
-                                <div class="form-group mb-4">
+                                <div class="mb-4 form-group">
                                     <label for="name" class="form-label fw-medium form-text">
                                         {{ __('Full Name') }}
                                         <span class="text-danger">*</span>
@@ -27,7 +27,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="form-group mb-4">
+                                <div class="mb-4 form-group">
                                     <label for="email" class="form-label fw-medium form-text">
                                         {{ __('Email Address') }}
                                         <span class="text-danger">*</span>
@@ -39,14 +39,14 @@
                                     @enderror
                                 </div>
 
-                                <div class="form-group mb-4">
+                                <div class="mb-4 form-group">
                                     <label for="password" class="form-label fw-medium form-text">
                                         {{ __('Password') }}
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="input-group input-group-lg position-relative">
                                         <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror pe-5" placeholder="************" required>
-                                        <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y me-3 p-0 border-0 bg-transparent" onclick="togglePasswordVisibility('password', 'toggle-icon-password')" aria-label="{{ __('Toggle password visibility') }}">
+                                        <button type="button" class="p-0 bg-transparent border-0 btn position-absolute top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password', 'toggle-icon-password')" aria-label="{{ __('Toggle password visibility') }}">
                                             <i class="fas fa-eye text-muted fs-5" id="toggle-icon-password"></i>
                                         </button>
                                     </div>
@@ -56,7 +56,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="form-group mb-4">
+                                <div class="mb-4 form-group">
                                     <label for="password-confirm" class="form-label fw-medium form-text">
                                         {{ __('Confirm Password') }}
                                         <span class="text-danger">*</span>
@@ -64,7 +64,7 @@
                                     <input type="password" id="password-confirm" name="password_confirmation" class="form-control form-control-lg" required>
                                 </div>
 
-                                <div class="form-group mb-4">
+                                <div class="mb-4 form-group">
                                     <div class="form-check">
                                         <input class="form-check-input @error('terms') is-invalid @enderror" type="checkbox" name="terms" id="terms" {{ old('terms') ? 'checked' : '' }} required>
                                         <label class="form-check-label form-text" for="terms">
@@ -87,7 +87,7 @@
 
                                 <p class="mt-3 mb-0 form-messages"></p>
 
-                                <div class="text-center mt-4">
+                                <div class="mt-4 text-center">
                                     <p class="form-text">
                                         {{ __("Already have an account?") }}
                                         <a href="{{ route('login') }}" class="fw-bold">{{ __('Login here') }}</a>

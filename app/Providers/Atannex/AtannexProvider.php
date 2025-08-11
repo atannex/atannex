@@ -24,10 +24,10 @@ class AtannexProvider extends ServiceProvider
      */
     public function boot(Navigation $navigation): void
     {
-        Event::listen(
-            PostPublished::class,
-            HandlePostPublished::class
-        );
+        // Event::listen(
+        //     PostPublished::class,
+        //     HandlePostPublished::class
+        // );
 
         $this->shareNavigationData($navigation);
     }

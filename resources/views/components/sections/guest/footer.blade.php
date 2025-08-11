@@ -3,7 +3,7 @@
         <div class="container text-center">
             <div class="mb-30">
                 <a href="{{ route('home') }}">
-                    <img class="dark-img" src="{{ asset('storage/'. $global['logo']->image) }}" class="img-fluid" style="max-width: 90px; height: 90px; object-fit: cover;">
+                    <img class="dark-img" src="{{ asset('storage/'. $global['logo']?->image) }}" class="img-fluid" style="max-width: 90px; height: 90px; object-fit: cover;">
                 </a>
             </div>
             <div class="th-social style-black">
@@ -38,7 +38,7 @@
         </div>
     </div>
     <div class="container">
-        <div class="copyright-wrap text-center">
+        <div class="text-center copyright-wrap">
             <p class="copyright-text">
                 Copyright &copy; {{ now()->year }}
                 <a href="{{ route('home') }}">{{ config('app.name') }}</a>.

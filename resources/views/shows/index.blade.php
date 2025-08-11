@@ -1,4 +1,5 @@
-<x-layouts.app>
+<x-layouts.category :title="__('Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')">
+
     <section class="th-blog-wrapper blog-details space-top space-extra-bottom">
         <div class="container">
             <div class="row">
@@ -45,4 +46,4 @@
             </div>
         </div>
     </section>
-</x-layouts.app>
+</x-layouts.category>

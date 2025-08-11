@@ -2,14 +2,14 @@
 
 namespace App\Models\Pages;
 
+use Morfaw\Supports\Resolver;
+use Morfaw\Supports\EnablePath;
+use Morfaw\Supports\EnableSlug;
+use Morfaw\Supports\EnableScope;
 use Atangageih\Filters\Hierarchy;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Morfaw\Supports\EnablePath;
-use Morfaw\Supports\EnableScope;
-use Morfaw\Supports\EnableSlug;
-use Morfaw\Supports\Resolver;
 use Ngangagah\Relations\CategoryRelation;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {

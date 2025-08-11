@@ -5,8 +5,8 @@
 
             <div class="col-md-8 col-xl-7">
                 <div class="card quote-form-box">
-                    <div class="card-header text-center">
-                        <img src="{{ asset('storage/'. $global['logo']->image) }}" alt="Login Icon" style="max-width: 200px;" class="mb-3">
+                    <div class="text-center card-header">
+                        <img src="{{ asset('storage/'. $global['logo']?->image) }}" alt="Login Icon" style="max-width: 200px;" class="mb-3">
                         <h4 class="form-title">{{ __("Reset Password") }}</h4>
                         <p class="form-description text-muted">{{ __("Fill in the fields below to reset your password.") }}</p>
                     </div>
