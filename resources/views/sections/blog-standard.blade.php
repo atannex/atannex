@@ -8,15 +8,16 @@
                     <div class="blog-img" data-overlay="black" data-opacity="4">
 
                         @include('partials.image')
-                        
-                        <a href="{{ route('page.index', $blog->category->slug) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
-                            {{ $blog->category->name }}
-                        </a>
+
+                        @include('partials.category')
+
                     </div>
 
                     <div class="blog-content">
                         <div class="flex flex-wrap gap-3 blog-meta">
-                             @include('partials.author')
+
+                            @include('partials.author')
+
                             <a href="#">
                                 <i class="fal fa-calendar-days"></i> {{ $blog->published_at->format('d F, Y') }}
                             </a>
@@ -34,9 +35,7 @@
                             </a>
                         </div>
 
-                        <h2 class="blog-title box-title-30">
-                            <a href="#">{{ $blog->title }}</a>
-                        </h2>
+                        @include('partials.title')
 
                         <p class="blog-text">
                             {!! Str::limit($blog->description, 200) !!}
@@ -51,11 +50,15 @@
                 @endforeach
 
                 <x-partials.pagination :paginator="$posts" />
+
             </div>
 
             <div class="col-xxl-3 col-lg-4 sidebar-wrap">
+
                 @include('partials.aside')
+
             </div>
         </div>
     </div>
 </section>
+

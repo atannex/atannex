@@ -49,25 +49,25 @@ class PageController extends Controller
     }
 
     public function show(string $slug_path, string $slug) {
-        $categoryModel = $this->findCategory($slug_path);
-        $postModule = $this->findPostModule($categoryModel, $slug);
+        // $categoryModel = $this->findCategory($slug_path);
+        // $postModule = $this->findPostModule($categoryModel, $slug);
 
-        return view('shows.index', ['module' => $postModule]);
+        return view('shows.index');
     }
 
-    private function findCategory(string $slug): Category
-    {
-        return Category::where('slug_path', $slug)->first();
-    }
+    // private function findCategory(string $slug): Category
+    // {
+    //     return Category::where('slug', $slug)->first();
+    // }
 
-    private function findPostModule(Category $category, string $slug): PostModule
-    {
-        return PostModule::whereHas('post', function ($query) use ($slug, $category) {
-            $query->where('slug', $slug)
-                ->where('category_id', $category->slug); })
-            ->with('post')
-            ->first();
-    }
+    // private function findPostModule(Category $category, string $slug): PostModule
+    // {
+    //     return PostModule::whereHas('post', function ($query) use ($slug, $category) {
+    //         $query->where('slug', $slug)
+    //             ->where('category_id', $category->slug); })
+    //         ->with('post')
+    //         ->first();
+    // }
 
     private function abortNotFound()
     {
