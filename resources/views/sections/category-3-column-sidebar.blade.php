@@ -6,7 +6,7 @@
                 <div class="blog-style1">
                     <div class="blog-img" data-overlay="black" data-opacity="4">
 
-                       @include('partials.image')
+                        @include('partials.image')
 
                         @include('partials.category')
 
@@ -23,7 +23,8 @@
                         @include('partials.author')
 
                         <a href="#">
-                            <i class="fal fa-calendar-days"></i> {{ $post->published_at->format('d M, Y') }}
+                            <i class="fal fa-calendar-days"></i>
+                            {{ $post->published_at->format('d M, Y') }}
                         </a>
                     </div>
                 </div>

@@ -31,9 +31,22 @@ class Category extends Model
         'description',
         'published_at',
         'parent_id',
+        'slug_path',
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function (Category $category) {
+            if ($category->parent_id === '') {
+                $category->parent_id = null;
+            }
+            $category->slug_path = $category->getSlugPathAttribute();
+        });
+    }
 }

@@ -23,12 +23,6 @@ class PageController extends Controller
         $this->middleware(['auth', 'verified', 'password.confirm']);
     }
 
-    /**
-     * Resolve the requested slug and render the appropriate view.
-     *
-     * @param string $slug
-     * @return \Illuminate\View\View|\Illuminate\Http\Response
-     */
     public function resolve(string $slug)
     {
 
@@ -54,33 +48,25 @@ class PageController extends Controller
             : null;
     }
 
-    public function show(
-        string $year,
-        string $month,
-        string $day,
-        string $category,
-        string $slug
-    ) {
-        $categoryModel = $this->findCategory($category);
-        $postModule = $this->findPostModule($categoryModel, $slug, $year, $month, $day);
+    public function show(string $slug_path, string $slug) {
+        $categoryModel = $this->findCategory($slug_path);
+        $postModule = $this->findPostModule($categoryModel, $slug);
 
         return view('shows.index', ['module' => $postModule]);
     }
 
     private function findCategory(string $slug): Category
     {
-        return Category::where('slug', $slug)->firstOrFail();
+        return Category::where('slug_path', $slug)->first();
     }
 
-    private function findPostModule(Category $category, string $slug, string $year, string $month, string $day): PostModule
+    private function findPostModule(Category $category, string $slug): PostModule
     {
-        return PostModule::whereHas('post', function ($query) use ($slug, $category, $year, $month, $day) {
+        return PostModule::whereHas('post', function ($query) use ($slug, $category) {
             $query->where('slug', $slug)
-                ->where('category_id', $category->id)
-                ->whereYear('created_at', $year)
-                ->whereMonth('created_at', $month)
-                ->whereDay('created_at', $day);
-        })->with('post')->firstOrFail();
+                ->where('category_id', $category->slug); })
+            ->with('post')
+            ->first();
     }
 
     private function abortNotFound()
