@@ -7,6 +7,7 @@ use Illuminate\View\View;
 use Morfaw\Supports\Resolver;
 use App\Models\Pages\Category;
 use App\Models\Modules\PostModule;
+use App\Models\Posts\Post;
 use Atangageih\Services\PageService;
 use Ngangagah\Parameters\RendersViews;
 use Atangageih\Services\CategoryService;
@@ -30,12 +31,20 @@ class PageController extends Controller
             return $view;
         }
 
-        if ($category = $this->resolveCategoryFromSlugs($slug)) {
+        if ($category = Category::where('slug_path', $slug)->first()) {
             return $this->renderCategoryView($category);
         }
 
         if ($author = $this->resolveAuthorBySlug($slug)) {
             return $this->renderAuthorView($author);
+        }
+
+        if ($posts = Post::where('slug_path', $slug)->first()) {
+            $module = PostModule::whereHas('post', function ($query) use ($slug) {
+                $query->where('slug_path', $slug);
+            })->with('post')->firstOrFail();
+
+            return view('shows.index', compact('module'));
         }
 
         return $this->abortNotFound();
@@ -48,30 +57,8 @@ class PageController extends Controller
             : null;
     }
 
-    public function show(string $slug_path, string $slug) {
-        // $categoryModel = $this->findCategory($slug_path);
-        // $postModule = $this->findPostModule($categoryModel, $slug);
-
-        return view('shows.index');
-    }
-
-    // private function findCategory(string $slug): Category
-    // {
-    //     return Category::where('slug', $slug)->first();
-    // }
-
-    // private function findPostModule(Category $category, string $slug): PostModule
-    // {
-    //     return PostModule::whereHas('post', function ($query) use ($slug, $category) {
-    //         $query->where('slug', $slug)
-    //             ->where('category_id', $category->slug); })
-    //         ->with('post')
-    //         ->first();
-    // }
-
     private function abortNotFound()
     {
         abort(404);
     }
-
 }

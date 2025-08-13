@@ -6,34 +6,13 @@ use App\Enums\Flag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Morfaw\Orchestrators\ImageCleanup;
-use Morfaw\Supports\EnablePath;
 use Morfaw\Supports\EnableScope;
 use Morfaw\Supports\EnableSlug;
 use Ngangagah\Relations\PostRelation;
 
-/**
- * Class Post
- *
- * Represents a news post or article.
- *
- * @package App\Models\Posts
- *
- * @property int $id
- * @property string $title
- * @property string $slug
- * @property int $flag
- * @property int $category_id
- * @property int $author_id
- * @property int|null $updated_by
- * @property string|null $description
- * @property string|null $image
- * @property \Illuminate\Support\Carbon|null $published_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- */
 class Post extends Model
 {
-    use SoftDeletes, EnableSlug, EnableScope, PostRelation, EnablePath, ImageCleanup;
+    use SoftDeletes, EnableSlug, EnableScope, PostRelation, ImageCleanup;
 
     /**
      * The source attribute for slug generation.
@@ -50,6 +29,7 @@ class Post extends Model
     protected $fillable = [
         'title',
         'slug',
+        'slug_path',
         'flag',
         'category_id',
         'author_id',
@@ -76,4 +56,15 @@ class Post extends Model
     protected $attributes = [
         'flag' => Flag::DRAFT,
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($post) {
+            if ($post->category) {
+                $post->slug_path = $post->category->slug_path . '/' . $post->slug;
+            }
+        });
+    }
 }

@@ -4,7 +4,6 @@ namespace App\Models\Pages;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Morfaw\Supports\EnablePath;
 use Morfaw\Supports\EnableScope;
 use Morfaw\Supports\EnableSlug;
 use Ngangagah\Relations\PageRelation;
@@ -15,7 +14,6 @@ class Page extends Model
     use EnableSlug;
     use EnableScope;
     use PageRelation;
-    use EnablePath;
 
     protected string $slugSource = 'title';
 
