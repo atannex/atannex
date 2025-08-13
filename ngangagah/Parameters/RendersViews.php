@@ -37,7 +37,7 @@ trait RendersViews
 
         $relatedTags = $post ? $this->tagService->getTagsForPost($post->id) : collect();
 
-        $navigation = $post ? $this->getPostNavigation($post) : collect();
+        $navigation = $post ? $this->getPostNavigation($post)  : collect();
 
         $relatedCategories = $category
             ? $this->categoryService->getRelatedCategoriesForCategory($category)
@@ -104,8 +104,10 @@ trait RendersViews
             ->with('post')
             ->firstOrFail();
 
+        $medias = $this->categoryService->getPublishedEmployeeSocialMedia($module->post->author);
+
         $data = array_merge(
-            compact('module'),
+            compact('module', 'medias'),
             $this->getCommonViewData($category, $post)
         );
 

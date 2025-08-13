@@ -32,7 +32,7 @@
 
                     <x-shows.navigation :navigation="$navigation" />
 
-                    <x-shows.author :module="$module" />
+                    <x-shows.author :module="$module" :medias="$medias" />
 
                     @livewire('forms.comment')
 

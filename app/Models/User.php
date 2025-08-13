@@ -9,6 +9,7 @@ use Morfaw\Supports\EnableSlug;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Ngangagah\Relations\UserRelation as RelationsUser;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
@@ -20,6 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     use EnableSlug;
     use RelationsUser;
     use HasRoles;
+    use SoftDeletes;
 
     protected string $slugSource = 'name';
 
