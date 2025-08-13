@@ -35,14 +35,14 @@
             @foreach($items as $post)
             <article class="flex gap-3 recent-post">
                 <div class="w-20 h-20 overflow-hidden rounded media-img">
-                    <a href="#">
+                    <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}">
                         <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="object-cover w-full h-full">
                     </a>
                 </div>
 
                 <div class="media-body">
                     <h4 class="text-sm font-semibold leading-tight post-title">
-                        <a href="#" class="hover:underline" aria-disabled="true">
+                        <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="hover:underline" aria-disabled="true">
                             {{ Str::limit($post->title, 60) }}
                         </a>
                     </h4>
