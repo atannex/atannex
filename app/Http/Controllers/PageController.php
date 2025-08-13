@@ -38,9 +38,9 @@ class PageController extends Controller
             return $this->renderCategoryView($category);
         }
 
-        if ($tag = PostTag::where('slug_path', $slug)->first()) {
-            return $this->renderCategoryView($tag);
-        }
+        // if ($tag = PostTag::where('slug_path', $slug)->first()) {
+        //     return $this->renderCategoryView($tag);
+        // }
 
         if ($author = $this->resolveAuthorBySlug($slug)) {
             return $this->renderAuthorView($author);
