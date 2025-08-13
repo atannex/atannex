@@ -32,6 +32,7 @@ class CategoryRepository implements CategoryInterface
     {
         return $employee->socialMedia()
             ->where('flag', Flag::PUBLISHED)
+            ->where('is_global', false)
             ->orderBy('order')
             ->get();
     }

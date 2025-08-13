@@ -1,50 +1,50 @@
-<x-layouts.category :title="$module->post->title . ' ' . __(' - Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')" >
+<x-layouts.category :title="$module->post->title . ' ' . __(' - Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')">
 
 
-<section class="th-blog-wrapper blog-details space-top space-extra-bottom">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
+    <section class="th-blog-wrapper blog-details space-top space-extra-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
 
-                <x-shows.header-content :module="$module" />
+                    <x-shows.header-content :module="$module" />
 
-            </div>
-            <div class="col-xxl-9 col-lg-8">
+                </div>
+                <div class="col-xxl-9 col-lg-8">
 
-                <div class="th-blog blog-single">
-                    <div class="blog-content-wrap">
-                        <div class="share-links-wrap">
+                    <div class="th-blog blog-single">
+                        <div class="blog-content-wrap">
+                            <div class="share-links-wrap">
 
-                            <x-shows.share-links />
+                                <x-shows.share-links />
 
-                        </div>
-                        <div class="blog-content">
+                            </div>
+                            <div class="blog-content">
 
-                            <x-shows.info />
+                                <x-shows.info />
 
-                            <x-shows.content />
+                                <x-shows.content />
 
-                            <x-shows.related-tag :relatedTags="$relatedTags"/>
+                                <x-shows.related-tag :relatedTags="$relatedTags" />
 
+                            </div>
                         </div>
                     </div>
+
+                    <x-shows.navigation :navigation="$navigation" />
+
+                    <x-shows.author :module="$module" />
+
+                    @livewire('forms.comment')
+
+                    <x-shows.related-posts :relatedPosts="$relatedPosts" />
+
                 </div>
+                <div class="col-xxl-3 col-lg-4 sidebar-wrap">
 
-                <x-shows.navigation :navigation="$navigation"/>
+                    @include('partials.aside')
 
-                <x-shows.author />
-
-                @livewire('forms.comment')
-
-                <x-shows.related-posts :relatedPosts="$relatedPosts" />
-
-            </div>
-            <div class="col-xxl-3 col-lg-4 sidebar-wrap">
-
-                @include('partials.aside')
-
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 </x-layouts.category>

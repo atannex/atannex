@@ -46,14 +46,16 @@ trait Helper
      */
     protected function getSocialMediaIcons(): Collection
     {
-        return SocialMedia::flagged(Flag::PUBLISHED())
-            ->global()
+        return SocialMedia::query()
+            ->where('flag', Flag::PUBLISHED)
+            ->where('is_global', true)
             ->orderBy('order')
             ->get()
             ->map(fn(SocialMedia $media) => $this->mapSocialMedia($media))
             ->filter()
             ->values();
     }
+
 
     /**
      * Retrieve a single published gallery image of the given type.

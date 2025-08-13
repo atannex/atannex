@@ -13,7 +13,12 @@ use Ngangagah\Relations\PostRelation;
 
 class Post extends Model
 {
-    use SoftDeletes, EnableSlug, EnableScope, PostRelation, ImageCleanup, Bootable;
+    use SoftDeletes;
+    use EnableSlug;
+    use EnableScope;
+    use PostRelation;
+    use ImageCleanup;
+    use Bootable;
 
     /**
      * The source attribute for slug generation.
