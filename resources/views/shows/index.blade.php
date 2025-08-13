@@ -1,49 +1,50 @@
-<x-layouts.category :title="__('Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')">
+<x-layouts.category :title="$module->post->title . ' ' . __(' - Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')" >
 
-    <section class="th-blog-wrapper blog-details space-top space-extra-bottom">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
 
-                    <x-shows.header-content :module="$module"/>
+<section class="th-blog-wrapper blog-details space-top space-extra-bottom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
 
-                </div>
-                <div class="col-xxl-9 col-lg-8">
+                <x-shows.header-content :module="$module" />
 
-                    <div class="th-blog blog-single">
-                        <div class="blog-content-wrap">
-                            <div class="share-links-wrap">
+            </div>
+            <div class="col-xxl-9 col-lg-8">
 
-                                <x-shows.share-links />
+                <div class="th-blog blog-single">
+                    <div class="blog-content-wrap">
+                        <div class="share-links-wrap">
 
-                            </div>
-                            <div class="blog-content">
+                            <x-shows.share-links />
 
-                                <x-shows.info />
+                        </div>
+                        <div class="blog-content">
 
-                                <x-shows.content />
+                            <x-shows.info />
 
-                                <x-shows.related-tag />
+                            <x-shows.content />
 
-                            </div>
+                            <x-shows.related-tag />
+
                         </div>
                     </div>
-
-                    <x-shows.navigation />
-
-                    <x-shows.author />
-
-                    @livewire('forms.comment')
-
-                    <x-shows.related-posts />
-
                 </div>
-                <div class="col-xxl-3 col-lg-4 sidebar-wrap">
 
-                    <x-shows.aside />
+                <x-shows.navigation />
 
-                </div>
+                <x-shows.author />
+
+                @livewire('forms.comment')
+
+                <x-shows.related-posts />
+
+            </div>
+            <div class="col-xxl-3 col-lg-4 sidebar-wrap">
+
+                @include('partials.aside')
+
             </div>
         </div>
-    </section>
+    </div>
+</section>
 </x-layouts.category>
