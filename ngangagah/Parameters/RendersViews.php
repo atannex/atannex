@@ -31,6 +31,7 @@ trait RendersViews
             'posts' => $posts,
             'relatedCategories' => $related,
             'recentPosts' => $recentPosts,
+            'popularTags' => $this->tagService->getPopularTags()
         ]);
     }
 

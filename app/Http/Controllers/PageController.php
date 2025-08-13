@@ -7,10 +7,12 @@ use Illuminate\View\View;
 use Morfaw\Supports\Resolver;
 use App\Models\Pages\Category;
 use App\Models\Modules\PostModule;
+use App\Models\Pivots\PostTag;
 use App\Models\Posts\Post;
 use Atangageih\Services\PageService;
 use Ngangagah\Parameters\RendersViews;
 use Atangageih\Services\CategoryService;
+use Atangageih\Services\TagService;
 
 class PageController extends Controller
 {
@@ -19,7 +21,8 @@ class PageController extends Controller
     public function __construct(
         protected readonly PageService $pageService,
         protected readonly CategoryService $categoryService,
-        protected readonly Extension $extension
+        protected readonly Extension $extension,
+        protected readonly TagService $tagService
     ) {
         $this->middleware(['auth', 'verified', 'password.confirm']);
     }
@@ -45,6 +48,10 @@ class PageController extends Controller
             })->with('post')->firstOrFail();
 
             return view('shows.index', compact('module'));
+        }
+
+        if ($tag = PostTag::where('slug_path', $slug)->first()) {
+            return $this->renderCategoryView($tag);
         }
 
         return $this->abortNotFound();

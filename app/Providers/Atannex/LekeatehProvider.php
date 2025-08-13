@@ -2,8 +2,10 @@
 
 namespace App\Providers\Atannex;
 
-use Illuminate\Support\ServiceProvider;
+use Atangageih\Contracts\TagInterface;
 use Atangageih\Contracts\PageInterface;
+use Illuminate\Support\ServiceProvider;
+use Atangageih\Repositories\TagRepository;
 use Atangageih\Contracts\CategoryInterface;
 use Atangageih\Contracts\DocumentInterface;
 use Atangageih\Repositories\PageRepository;
@@ -43,6 +45,11 @@ class LekeatehProvider extends ServiceProvider
         $this->app->bind(
             DocumentInterface::class,
             DocumentRepository::class
+        );
+
+        $this->app->bind(
+            TagInterface::class,
+            TagRepository::class
         );
     }
 }

@@ -58,6 +58,6 @@ class Tag extends Model
         return $this->belongsToMany(Post::class)
             ->using(PostTag::class)
             ->withTimestamps()
-            ->withPivot('id', 'post_id', 'tag_id');
+            ->withPivot('id', 'post_id', 'tag_id', 'slug_path');
     }
 }
