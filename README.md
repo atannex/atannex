@@ -55,7 +55,7 @@ Explore Atannex to discover rich cultural narratives, breaking news, and upcomin
 ### Contact & Partnerships
 
 For inquiries, collaborations, or media requests, please reach out to:  
-[Insert Contact Email or Contact Form Link]
+[atannex.info@gmail.com]
 
 ---
 
