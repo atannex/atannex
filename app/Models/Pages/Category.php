@@ -2,6 +2,7 @@
 
 namespace App\Models\Pages;
 
+use App\Models\Traits\Bootable;
 use Morfaw\Supports\Resolver;
 use Morfaw\Supports\EnableSlug;
 use Morfaw\Supports\EnableScope;
@@ -18,6 +19,7 @@ class Category extends Model
     use EnableScope;
     use Hierarchy;
     use Resolver;
+    use Bootable;
 
     protected string $slugSource = 'name';
 
@@ -36,14 +38,4 @@ class Category extends Model
         'published_at' => 'datetime',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saving(function ($category) {
-            $category->slug_path = $category->parent
-                ? $category->parent->slug_path . '/' . $category->slug
-                : $category->slug;
-        });
-    }
 }

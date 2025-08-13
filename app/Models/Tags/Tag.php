@@ -13,11 +13,20 @@ use Morfaw\Supports\EnableSlug;
 
 class Tag extends Model
 {
-    use SoftDeletes;
-    use EnableSlug;
+    use SoftDeletes, EnableSlug;
 
+    /**
+     * Source field for slug generation.
+     *
+     * @var string
+     */
     protected string $slugSource = 'name';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'slug',
@@ -25,21 +34,30 @@ class Tag extends Model
         'parent_id',
     ];
 
+    /**
+     * Get the parent tag.
+     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Tag::class, 'parent_id');
     }
 
+    /**
+     * Get the child tags.
+     */
     public function children(): HasMany
     {
         return $this->hasMany(Tag::class, 'parent_id');
     }
 
+    /**
+     * The posts that belong to the tag.
+     */
     public function posts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class)
             ->using(PostTag::class)
             ->withTimestamps()
-            ->withPivot('id','post_id', 'tag_id');
+            ->withPivot('id', 'post_id', 'tag_id');
     }
 }

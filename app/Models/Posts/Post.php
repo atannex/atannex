@@ -3,6 +3,7 @@
 namespace App\Models\Posts;
 
 use App\Enums\Flag;
+use App\Models\Traits\Bootable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Morfaw\Orchestrators\ImageCleanup;
@@ -12,7 +13,7 @@ use Ngangagah\Relations\PostRelation;
 
 class Post extends Model
 {
-    use SoftDeletes, EnableSlug, EnableScope, PostRelation, ImageCleanup;
+    use SoftDeletes, EnableSlug, EnableScope, PostRelation, ImageCleanup, Bootable;
 
     /**
      * The source attribute for slug generation.
@@ -57,14 +58,4 @@ class Post extends Model
         'flag' => Flag::DRAFT,
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saving(function ($post) {
-            if ($post->category) {
-                $post->slug_path = $post->category->slug_path . '/' . $post->slug;
-            }
-        });
-    }
 }
