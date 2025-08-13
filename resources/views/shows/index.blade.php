@@ -36,7 +36,7 @@
 
                 @livewire('forms.comment')
 
-                <x-shows.related-posts />
+                <x-shows.related-posts :relatedPosts="$relatedPosts" />
 
             </div>
             <div class="col-xxl-3 col-lg-4 sidebar-wrap">

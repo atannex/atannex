@@ -7,10 +7,18 @@ use App\Models\Posts\Post;
 use App\Models\Pages\Category;
 use App\Models\Regions\Employee;
 use App\Models\Modules\PostModule;
+use Ngangagah\Handlers\Traits\GetRelatedPost;
 
+/**
+ * Trait RendersViews
+ *
+ * Provides reusable rendering methods for various types of pages and
+ * guarantees stable view data keys to avoid undefined variable errors.
+ */
 trait RendersViews
 {
     use PageContent;
+    use GetRelatedPost;
 
     /**
      * Render a view with the given data.
@@ -20,24 +28,24 @@ trait RendersViews
         return view($view, $data);
     }
 
-    /**
-     * Fetch common data for category and post views.
-     */
+
     private function getCommonViewData(?Category $category = null, ?Post $post = null): array
     {
-        $data = [
-            'popularTags' => $this->tagService->getPopularTags(),
-        ];
+        $popularTags = $this->tagService->getPopularTags();
 
-        if ($category) {
-            $data['relatedCategories'] = $this->categoryService->getRelatedCategoriesForCategory($category);
-        }
+        $relatedCategories = $category
+            ? $this->categoryService->getRelatedCategoriesForCategory($category)
+            : collect();
 
-        if ($post) {
-            $data['recentPosts'] = $this->categoryService->getRecentPosts($post);
-        }
+        $recentPosts = $post
+            ? $this->categoryService->getRecentPosts($post)
+            : collect();
 
-        return $data;
+        $relatedPosts = $post
+            ? $this->getRelatedPosts($post)
+            : collect();
+
+        return compact('popularTags', 'relatedCategories', 'recentPosts', 'relatedPosts');
     }
 
     /**
@@ -48,7 +56,10 @@ trait RendersViews
         $page = $this->pageService->getHomePage($slug);
         $this->resolveContent($page, $slug);
 
-        return $this->render('pages', compact('page'));
+        return $this->render('pages', array_merge(
+            compact('page'),
+            $this->getCommonViewData()
+        ));
     }
 
     /**
@@ -57,9 +68,11 @@ trait RendersViews
     protected function renderCategoryView(Category $category): View
     {
         $posts = $this->categoryService->getPostsByCategory($category);
+        $firstPost = $posts->first();
+
         $data = array_merge(
             compact('category', 'posts'),
-            $this->getCommonViewData($category, $posts->first())
+            $this->getCommonViewData($category, $firstPost)
         );
 
         return $this->render('category', $data);
@@ -71,7 +84,10 @@ trait RendersViews
     protected function renderPostShow(Category $category, string $slug): View
     {
         $post = Post::where('slug_path', $slug)->firstOrFail();
-        $module = PostModule::whereHas('post', fn($query) => $query->where('slug_path', $slug))
+
+        $module = PostModule::whereHas('post', function ($query) use ($slug) {
+            $query->where('slug_path', $slug);
+        })
             ->with('post')
             ->firstOrFail();
 
