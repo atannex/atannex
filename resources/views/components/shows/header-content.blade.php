@@ -1,29 +1,31 @@
-<a href="blog.html" class="category" data-theme-color="#019D9E">
-    Travels
+<a data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" href="{{ route('page.index', ['slug' => $module->post->category->slug_path]) }}" class="category">
+    {{ $module->post->category->name }}
 </a>
 
-<h2 class="blog-title">
-    From mountains to seas, cultures unite — travel, the bridge that connects hearts worldwide.
-</h2>
+<h2 class="blog-title">{{ $module->post->title }}</h2>
 
 <div class="blog-meta">
-    <a class="author" href="author.html">
-        <i class="far fa-user"></i> By - Tnews
+    <a class="author" href="{{ route('page.index', $module->post->author->user->slug) }}">
+        <i class="far fa-user"></i>
+        {{ __('By - ') . $module->post->author->user->name }}
     </a>
 
-    <a href="blog.html">
-        <i class="fal fa-calendar-days"></i> 21 June, 2023
+    <a href="{{ route('page.index', ['slug' => $module->post->category->slug_path]) }}">
+        <i class="fal fa-calendar-days"></i>
+        {{ $module->post->created_at->format('d F, Y') }}
     </a>
 
     <a href="blog-details.html">
-        <i class="far fa-comments"></i> Comments (3)
+        <i class="far fa-comments"></i>
+        Comments ({{ $module->post->comments_count ?? 0 }})
     </a>
 
-    <span>
-        <i class="far fa-book-open"></i> 5 Mins Read
-    </span>
+    {{-- <span>
+        <i class="far fa-book-open"></i>
+        {{ $module->readingTime() }} {{ Str::plural('Min', $module->readingTime()) }} Read
+    </span> --}}
 </div>
 
 <div class="mb-40 blog-img">
-    <img src="assets/img/blog/blog_details_1.jpg" alt="Blog Image">
+    <img src="{{ asset('storage/' . $module->post->image) }}" alt="{{ $module->post->title }}">
 </div>

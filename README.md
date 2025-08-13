@@ -32,7 +32,7 @@ Our vision is to become the leading online destination for Lebialem culture and 
 
 ## Target Audience
 
-- **LeLebialem Diaspora:** Individuals and families living outside Lebialem seeking to stay connected to their roots and heritage.  
+- **Lebialem Diaspora:** Individuals and families living outside Lebialem seeking to stay connected to their roots and heritage.  
 - **Cultural Enthusiasts & Scholars:** Researchers, students, and anyone interested in Lebialem culture and Middle Eastern heritage.  
 - **Community Organizations:** NGOs, cultural institutions, and social groups working to promote Lebialem culture and support Lebialem communities worldwide.  
 - **General Public:** Anyone interested in learning about Lebialem culture, current affairs, and community developments.

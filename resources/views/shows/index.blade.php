@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-12">
 
-                    <x-shows.header-content />
+                    <x-shows.header-content :module="$module"/>
 
                 </div>
                 <div class="col-xxl-9 col-lg-8">
