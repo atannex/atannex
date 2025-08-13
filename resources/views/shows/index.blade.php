@@ -24,7 +24,7 @@
 
                             <x-shows.content />
 
-                            <x-shows.related-tag />
+                            <x-shows.related-tag :relatedTags="$relatedTags"/>
 
                         </div>
                     </div>

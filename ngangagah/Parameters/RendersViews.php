@@ -32,6 +32,7 @@ trait RendersViews
     private function getCommonViewData(?Category $category = null, ?Post $post = null): array
     {
         $popularTags = $this->tagService->getPopularTags();
+        $relatedTags = $this->tagService->getTagsForPost($post->id);
 
         $relatedCategories = $category
             ? $this->categoryService->getRelatedCategoriesForCategory($category)
@@ -45,7 +46,7 @@ trait RendersViews
             ? $this->getRelatedPosts($post)
             : collect();
 
-        return compact('popularTags', 'relatedCategories', 'recentPosts', 'relatedPosts');
+        return compact('popularTags', 'relatedTags' ,'relatedCategories', 'recentPosts', 'relatedPosts');
     }
 
     /**
