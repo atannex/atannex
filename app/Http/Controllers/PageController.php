@@ -38,6 +38,10 @@ class PageController extends Controller
             return $this->renderCategoryView($category);
         }
 
+        if ($tag = PostTag::where('slug_path', $slug)->first()) {
+            return $this->renderCategoryView($tag);
+        }
+
         if ($author = $this->resolveAuthorBySlug($slug)) {
             return $this->renderAuthorView($author);
         }
@@ -48,10 +52,6 @@ class PageController extends Controller
             })->with('post')->firstOrFail();
 
             return view('shows.index', compact('module'));
-        }
-
-        if ($tag = PostTag::where('slug_path', $slug)->first()) {
-            return $this->renderCategoryView($tag);
         }
 
         return $this->abortNotFound();
