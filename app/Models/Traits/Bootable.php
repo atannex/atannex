@@ -78,7 +78,7 @@ trait Bootable
     protected function cascadeSlugPathUpdates()
     {
         if ($this instanceof Category) {
-            $this->posts()->with('postTags.tag')->get()->each(function (Post $post) {
+            $this->posts()->with('tags.tag')->get()->each(function (Post $post) {
                 $post->updateSlugPath();
                 $post->saveQuietly();
                 $post->cascadePostTagSlugPathUpdates();
@@ -94,7 +94,7 @@ trait Bootable
         if ($this instanceof Post) {
             $categorySlug = $this->getRelatedSlugPath('category');
             if ($categorySlug) {
-                $this->postTags()->with('tag')->get()->each(function (PostTag $postTag) use ($categorySlug) {
+                $this->tags()->with('tag')->get()->each(function (PostTag $postTag) use ($categorySlug) {
                     $postTag->slug_path = rtrim($categorySlug, '/') . '/' . $postTag->tag->slug;
                     $postTag->saveQuietly();
                 });
@@ -114,7 +114,7 @@ trait Bootable
                 $post->clearRelatedSlugPaths();
             });
         } elseif ($this instanceof Post) {
-            $this->postTags()->get()->each(function (PostTag $postTag) {
+            $this->tags()->get()->each(function (PostTag $postTag) {
                 $postTag->slug_path = null;
                 $postTag->saveQuietly();
             });
