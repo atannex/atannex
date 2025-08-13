@@ -32,7 +32,7 @@
 
                     </h4>
                     <div class="recent-post-meta">
-                        <a href="#">
+                        <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}">
                             <i class="fal fa-calendar-days"></i>
                             {{ $post->published_at->format('d M, Y') }}
                         </a>
