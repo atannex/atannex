@@ -30,7 +30,7 @@
                     </div>
                 </div>
 
-                <x-shows.navigation />
+                <x-shows.navigation :navigation="$navigation"/>
 
                 <x-shows.author />
 

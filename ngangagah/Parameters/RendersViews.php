@@ -7,6 +7,7 @@ use App\Models\Posts\Post;
 use App\Models\Pages\Category;
 use App\Models\Regions\Employee;
 use App\Models\Modules\PostModule;
+use Ngangagah\Handlers\Traits\GetPostNavigation;
 use Ngangagah\Handlers\Traits\GetRelatedPost;
 
 /**
@@ -19,6 +20,7 @@ trait RendersViews
 {
     use PageContent;
     use GetRelatedPost;
+    use GetPostNavigation;
 
     /**
      * Render a view with the given data.
@@ -33,6 +35,7 @@ trait RendersViews
     {
         $popularTags = $this->tagService->getPopularTags();
         $relatedTags = $this->tagService->getTagsForPost($post->id);
+        $navigation = $this->getPostNavigation($post);
 
         $relatedCategories = $category
             ? $this->categoryService->getRelatedCategoriesForCategory($category)
@@ -46,7 +49,7 @@ trait RendersViews
             ? $this->getRelatedPosts($post)
             : collect();
 
-        return compact('popularTags', 'relatedTags' ,'relatedCategories', 'recentPosts', 'relatedPosts');
+        return compact('popularTags', 'relatedTags', 'navigation' ,'relatedCategories', 'recentPosts', 'relatedPosts');
     }
 
     /**
