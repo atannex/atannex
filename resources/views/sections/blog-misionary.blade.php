@@ -8,21 +8,20 @@
                         <div class="blog-style1">
                             <div class="blog-img">
 
-                               @include('partials.image')
+                                @include('partials.image')
 
-                                <a data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" href="{{ route('page.index', $post->category->slug_path) }}" class="category">
+                                @include('partials.category')
 
-                                    {{ $post->category->name }}
-
-                                </a>
                             </div>
                             <h3 class="box-title-24">
-                                <a class="hover-line" href="#">
-                                    {{ $post->title }}
-                                </a>
+
+                                @include('partials.title')
+
                             </h3>
                             <div class="blog-meta">
-                                 @include('partials.author')
+
+                                @include('partials.author')
+
                                 <a href="#">
                                     <i class="fal fa-calendar-days"></i>
                                     {{ $post->published_at->format('d M, Y') }}
@@ -35,7 +34,9 @@
             </div>
 
             <div class="col-xxl-3 col-lg-4 sidebar-wrap">
+
                 @include('partials.aside')
+
             </div>
         </div>
     </div>

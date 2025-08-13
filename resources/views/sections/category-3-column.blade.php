@@ -8,13 +8,13 @@
 
                           @include('partials.image')
 
-                         @include('partials.category')
+                          @include('partials.category')
 
                       </div>
 
                       <h3 class="box-title-24">
 
-                        @include('partials.title')
+                          @include('partials.title')
 
                       </h3>
                       <div class="blog-meta">
@@ -35,3 +35,4 @@
           <x-partials.pagination :paginator="$posts" />
       </div>
   </section>
+

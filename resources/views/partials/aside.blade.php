@@ -9,8 +9,7 @@
         <ul>
             @foreach ($relatedCategories as $category)
             <li>
-                <a  href="{{ route('page.index', $category->slug_path) }}"
-                    >
+                <a href="{{ route('page.index', $category->slug_path) }}">
                     {{ $category->name }}
                 </a>
             </li>
@@ -23,13 +22,14 @@
             @forelse ($recentPosts as $post)
             <div class="recent-post">
                 <div class="media-img">
-                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}">
+
+                    @include('partials.image')
                 </div>
                 <div class="media-body">
                     <h4 class="post-title">
-                        <a class="hover-line" href="#">
-                            {{ \Illuminate\Support\Str::limit($post->title, 60) }}
-                        </a>
+
+                        @include('partials.title')
+
                     </h4>
                     <div class="recent-post-meta">
                         <a href="#">
@@ -47,22 +47,23 @@
 
     {{-- <div class="widget widget_tag_cloud">
         <h3 class="widget_title">{{ __("Popular Tags") }}</h3>
-        <div class="tagcloud">
-            @forelse ($popularTags as $tag)
-            @php
-            $post = $tag->posts->first();
-            $categoryPath = $post->category->slug_path;
-            @endphp
+    <div class="tagcloud">
+        @forelse ($popularTags as $tag)
+        @php
+        $post = $tag->posts->first();
+        $categoryPath = $post->category->slug_path;
+        @endphp
 
-            @if ($post && $categoryPath)
-            <a href="{{ url($categoryPath . '/' . $tag->slug) }}">
-                {{ $tag->name }}
-            </a>
-            @endif
-            @empty
-            <p>{{ __("No popular tags available.") }}</p>
-            @endforelse
-        </div>
+        @if ($post && $categoryPath)
+        <a href="{{ url($categoryPath . '/' . $tag->slug) }}">
+            {{ $tag->name }}
+        </a>
+        @endif
+        @empty
+        <p>{{ __("No popular tags available.") }}</p>
+        @endforelse
+    </div>
     </div> --}}
 
 </aside>
+

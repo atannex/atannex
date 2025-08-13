@@ -64,18 +64,21 @@
                         <div class="col-xl-6 col-sm-6 border-blog two-column">
                             <article class="blog-style1">
                                 <div class="blog-img">
-                                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="img-fluid" loading="lazy" />
-                                    <a data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" href="{{ route('page.index', $post->category->slug_path) }}" class="category" aria-label="{{ __('View :category posts', ['category' => $post->category->name]) }}">
-                                        {{ $post->category->name }}
-                                    </a>
+
+                                    @include('partials.image')
+
+                                    @include('partials.category')
+
                                 </div>
                                 <h3 class="box-title-22">
-                                    <a class="hover-line" href="#" title="{{ $post->title }}">
-                                        {{ Str::limit($post->title, 50) }}
-                                    </a>
+
+                                    @include('partials.title')
+
                                 </h3>
                                 <div class="blog-meta">
-                                     @include('partials.author')
+
+                                    @include('partials.author')
+
                                     <time datetime="{{ $post->published_at->format('Y-m-d') }}">
                                         <i class="fal fa-calendar-days" aria-hidden="true"></i>
                                         {{ $post->published_at->format('d M, Y') }}
@@ -94,4 +97,3 @@
         @endforeach
     </div>
 </section>
-

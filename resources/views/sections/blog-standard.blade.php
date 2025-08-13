@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col-xxl-9 col-lg-8">
-                @foreach ($posts as $blog)
+                @foreach ($posts as $post)
                 <div class="th-blog blog-single has-post-thumbnail">
 
                     <div class="blog-img" data-overlay="black" data-opacity="4">
@@ -19,26 +19,26 @@
                             @include('partials.author')
 
                             <a href="#">
-                                <i class="fal fa-calendar-days"></i> {{ $blog->published_at->format('d F, Y') }}
+                                <i class="fal fa-calendar-days"></i> {{ $post->published_at->format('d F, Y') }}
                             </a>
                             <a href="#">
                                 <i class="far fa-comments"></i>
-                                {{ trans_choice(':count Comment|:count Comments', $blog->comment_count ?? 0, ['count' => $blog->comment_count ?? 0]) }}
+                                {{ trans_choice(':count Comment|:count Comments', $post->comment_count ?? 0, ['count' => $post->comment_count ?? 0]) }}
                             </a>
                             <a href="#">
                                 <i class="far fa-thumbs-up"></i>
-                                {{ trans_choice(':count Like|:count Likes', $blog->like_count ?? 0, ['count' => $blog->like_count ?? 0]) }}
+                                {{ trans_choice(':count Like|:count Likes', $post->like_count ?? 0, ['count' => $post->like_count ?? 0]) }}
                             </a>
                             <a href="#">
                                 <i class="far fa-star"></i>
-                                {{ number_format($blog->average_rating ?? 0, 1) }} / 5
+                                {{ number_format($post->average_rating ?? 0, 1) }} / 5
                             </a>
                         </div>
 
                         @include('partials.title')
 
                         <p class="blog-text">
-                            {!! Str::limit($blog->description, 200) !!}
+                            {!! Str::limit($post->description, 200) !!}
                         </p>
 
                         <a href="#" class="th-btn style2">
@@ -61,4 +61,3 @@
         </div>
     </div>
 </section>
-

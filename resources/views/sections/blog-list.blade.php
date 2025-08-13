@@ -12,19 +12,21 @@
 
                             </div>
                             <div class="blog-content">
-                                <a href="{{ route('page.index', $post->category->slug_path) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
-                                    {{ $post->category->name }}
-                                </a>
+
+                                @include('partials.category')
+
                                 <h3 class="box-title-30">
-                                    <a href="#" class="hover-line">
-                                        {{ $post->title }}
-                                    </a>
+
+                                    @include('partials.title')
+
                                 </h3>
                                 <p class="blog-text">
                                     {!! Str::limit($post->description, 200) !!}
                                 </p>
                                 <div class="blog-meta">
-                                     @include('partials.author')
+
+                                    @include('partials.author')
+
                                     <a href="#">
                                         <i class="fal fa-calendar-days"></i>
                                         {{ $post->published_at->format('d M, Y') }}
@@ -43,7 +45,9 @@
             </div>
 
             <div class="col-xxl-3 col-lg-4 sidebar-wrap">
+
                 @include('partials.aside')
+
             </div>
         </div>
     </div>
