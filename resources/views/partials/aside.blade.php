@@ -44,26 +44,16 @@
             @endforelse
         </div>
     </div>
-
-    {{-- <div class="widget widget_tag_cloud">
+    <div class="widget widget_tag_cloud">
         <h3 class="widget_title">{{ __("Popular Tags") }}</h3>
-    <div class="tagcloud">
-        @forelse ($popularTags as $tag)
-        @php
-        $post = $tag->posts->first();
-        $categoryPath = $post->category->slug_path;
-        @endphp
-
-        @if ($post && $categoryPath)
-        <a href="{{ url($categoryPath . '/' . $tag->slug) }}">
-            {{ $tag->name }}
-        </a>
-        @endif
-        @empty
-        <p>{{ __("No popular tags available.") }}</p>
-        @endforelse
+        <div class="tagcloud">
+            @forelse ($popularTags as $tag)
+            <a href="{{ route('page.index', ['slug' => $tag->slug_path]) }}" title="{{ $tag->name }}">
+                {{ $tag->name }}
+            </a>
+            @empty
+            <p>{{ __("No popular tags available.") }}</p>
+            @endforelse
+        </div>
     </div>
-    </div> --}}
-
 </aside>
-
