@@ -1,20 +1,11 @@
+
 <div class="share-links">
-    <span class="share-links-title">Share Post:</span>
+    <span class="share-links-title">{{__("Share Post: ")}}</span>
     <div class="multi-social">
-        <a href="https://facebook.com/" target="_blank">
-            <i class="fab fa-facebook-f"></i>
+        @foreach ($shares as $share)
+        <a href="{{ $share['share_url'] }}" target="_blank" style="color: {{ $share['color'] }}" title="Share on {{ $share['label'] }}" class="social-link">
+        <i class="{{ $share['icon'] }}"></i>
         </a>
-        <a href="https://twitter.com/" target="_blank">
-            <i class="fab fa-twitter"></i>
-        </a>
-        <a href="https://linkedin.com/" target="_blank">
-            <i class="fab fa-linkedin-in"></i>
-        </a>
-        <a href="https://pinterest.com/" target="_blank">
-            <i class="fab fa-pinterest-p"></i>
-        </a>
-        <a href="https://instagram.com/" target="_blank">
-            <i class="fab fa-instagram"></i>
-        </a>
-    </div>
+        @endforeach
+</div>
 </div>

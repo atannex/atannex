@@ -106,8 +106,10 @@ trait RendersViews
 
         $medias = $this->categoryService->getPublishedEmployeeSocialMedia($module->post->author);
 
+        $shares = $this->share($module->post);
+
         $data = array_merge(
-            compact('module', 'medias'),
+            compact('module', 'medias', 'shares'),
             $this->getCommonViewData($category, $post)
         );
 
@@ -129,5 +131,44 @@ trait RendersViews
         );
 
         return $this->render('author', $data);
+    }
+
+
+    /**
+     * Generate share URLs for all social media platforms for a given post.
+     *
+     * @param Post $post The post to share.
+     * @return array Array of share data for each platform.
+     */
+    protected function share(Post $post): array
+    {
+        $postUrl = url("/posts/{$post->slug_path}");
+        $text = $post->title;
+
+        $platforms = $this->socialShare->getAllPlatforms();
+        $shares = [];
+
+        foreach ($platforms as $platform => $data) {
+            $shares[] = [
+                'platform' => $platform,
+                'label' => $data['label'],
+                'icon' => $data['icon'],
+                'color' => $data['color'],
+                'share_url' => $this->socialShare->share(
+                    platform: $platform,
+                    url: $postUrl,
+                    text: $text,
+                    image: $post->image_url ?? null,
+                    utm: [
+                        'source' => 'website',
+                        'medium' => 'social',
+                        'campaign' => 'post_share',
+                        'content' => $post->slug_path,
+                    ]
+                ),
+            ];
+        }
+
+        return $shares;
     }
 }

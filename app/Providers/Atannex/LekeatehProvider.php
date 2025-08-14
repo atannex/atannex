@@ -9,8 +9,10 @@ use Atangageih\Repositories\TagRepository;
 use Atangageih\Contracts\CategoryInterface;
 use Atangageih\Contracts\DocumentInterface;
 use Atangageih\Repositories\PageRepository;
+use Atangageih\Contracts\SocialShareInterface;
 use Atangageih\Repositories\CategoryRepository;
 use Atangageih\Repositories\DocumentRepository;
+use Atangageih\Repositories\SocialShareRepository;
 
 /**
  * Lekeateh service provider for binding repository implementations to interfaces.
@@ -50,6 +52,12 @@ class LekeatehProvider extends ServiceProvider
         $this->app->bind(
             TagInterface::class,
             TagRepository::class
+        );
+
+
+        $this->app->bind(
+            SocialShareInterface::class,
+            SocialShareRepository::class
         );
     }
 }
