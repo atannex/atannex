@@ -158,7 +158,7 @@ trait RendersViews
                     platform: $platform,
                     url: $postUrl,
                     text: $text,
-                    image: $post->image ?? null,
+                    image: $post->image,
                     utm: [
                         'source' => 'website',
                         'medium' => 'social',
