@@ -19,12 +19,9 @@ class Comment extends Component
 
     public int $postId;
     public ?int $parentId = null;
-    public bool $isReplying = false;
-    public ?int $replyingToId = null;
-    public string $search = '';
-
     public ?int $editingCommentId = null;
-    public int $perPage = 3;
+    public string $search = '';
+    public int $perPage = 5;
 
     public function mount(int $postId): void
     {
@@ -45,35 +42,28 @@ class Comment extends Component
     {
         $this->validate();
 
-        $isUpdate = (bool) $this->editingCommentId;
-
-        if ($isUpdate && !$this->isReplying) {
-            session()->flash('error', 'Editing can only be done via reply form.');
-            return;
-        }
-
-        $isUpdate ? $this->updateComment() : $this->createComment();
+        $this->editingCommentId
+            ? $this->updateComment()
+            : $this->createComment();
 
         $this->resetCommentState();
         $this->resetPage();
         $this->search = '';
 
-        session()->flash('message', $isUpdate ? 'Comment updated!' : 'Comment posted successfully!');
-
-        $this->dispatch('comment-posted', [
-            'postId' => $this->postId,
-            'parentId' => $this->replyingToId,
-            'isUpdate' => $isUpdate,
-        ]);
+        session()->flash('message', $this->editingCommentId ? 'Comment updated!' : 'Comment posted successfully!');
+        $this->dispatch('comment-posted');
     }
 
     protected function createComment(): void
     {
         CommentModel::create([
-            'user_id'   => Auth::id(),
-            'post_id'   => $this->postId,
-            'parent_id' => $this->replyingToId,
-            'body'      => $this->comment,
+            'user_id'    => Auth::id(),
+            'post_id'    => $this->postId,
+            'parent_id'  => $this->parentId,
+            'comment'    => $this->comment,
+            'status'     => 'approved',
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
         ]);
     }
 
@@ -83,7 +73,13 @@ class Comment extends Component
 
         $this->authorize('update', $comment);
 
-        $comment->update(['body' => $this->comment]);
+        $comment->update([
+            'comment'   => $this->comment,
+            'edited_at' => now(),
+            'edited_by' => Auth::id(),
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
     }
 
     public function edit(int $commentId): void
@@ -93,11 +89,8 @@ class Comment extends Component
         $this->authorize('update', $comment);
 
         $this->editingCommentId = $comment->id;
-        $this->comment = $comment->body;
-
-        $this->isReplying = true;
+        $this->comment = $comment->comment;
         $this->parentId = $comment->parent_id;
-        $this->replyingToId = $comment->parent_id ?? $comment->id;
 
         $this->dispatch('focus-comment-input');
     }
@@ -108,6 +101,7 @@ class Comment extends Component
 
         $this->authorize('delete', $comment);
 
+        $comment->update(['deleted_by' => Auth::id()]);
         $comment->delete();
 
         session()->flash('message', 'Comment deleted.');
@@ -117,8 +111,7 @@ class Comment extends Component
     #[On('reply-to-comment')]
     public function setReplyTo(int $commentId): void
     {
-        $this->parentId = $this->replyingToId = $commentId;
-        $this->isReplying = true;
+        $this->parentId = $commentId;
         $this->comment = '';
         $this->editingCommentId = null;
 
@@ -141,18 +134,17 @@ class Comment extends Component
         $this->reset([
             'comment',
             'parentId',
-            'isReplying',
-            'replyingToId',
             'editingCommentId',
         ]);
     }
 
     public function render()
     {
-        $comments = CommentModel::with(['user', 'children.user', 'post'])
+        $comments = CommentModel::approved()
+            ->topLevel()
+            ->withAllReplies()
             ->where('post_id', $this->postId)
-            ->whereNull('parent_id')
-            ->when($this->search, fn($query) => $query->where('body', 'like', "%{$this->search}%"))
+            ->when($this->search, fn($query) => $query->where('comment', 'like', "%{$this->search}%"))
             ->latest()
             ->paginate($this->perPage);
 

@@ -14,54 +14,103 @@ class CommentForm
     {
         return $schema
             ->components([
+                // Related post
                 Select::make('post_id')
+                    ->label('Post')
                     ->relationship('post', 'title')
                     ->required(),
+
+                // Parent comment
                 Select::make('parent_id')
-                    ->relationship('parent', 'id')
+                    ->label('Parent Comment')
+                    ->relationship('parent', 'comment')
+                    ->placeholder('No parent (top-level comment)')
                     ->default(null),
+
+                // Main comment text
                 Textarea::make('comment')
+                    ->label('Comment')
                     ->required()
                     ->columnSpanFull(),
-                TextInput::make('status')
+
+                // Status
+                Select::make('status')
+                    ->label('Status')
+                    ->options([
+                        'pending'  => 'Pending',
+                        'approved' => 'Approved',
+                        'rejected' => 'Rejected',
+                    ])
                     ->required()
                     ->default('pending'),
+
+                // Author
                 Select::make('user_id')
+                    ->label('Author')
                     ->relationship('user', 'name')
                     ->required(),
+
+                // IP information
                 TextInput::make('ip_address')
+                    ->label('IP Address')
                     ->default(null),
+
                 TextInput::make('ip_country')
+                    ->label('IP Country')
                     ->default(null),
+
+                // User agent
                 Textarea::make('user_agent')
+                    ->label('User Agent')
                     ->default(null)
                     ->columnSpanFull(),
+
+                // Counts
                 TextInput::make('likes_count')
-                    ->required()
+                    ->label('Likes')
                     ->numeric()
                     ->default(0),
+
                 TextInput::make('dislikes_count')
-                    ->required()
+                    ->label('Dislikes')
                     ->numeric()
                     ->default(0),
+
                 TextInput::make('replies_count')
-                    ->required()
+                    ->label('Replies')
                     ->numeric()
                     ->default(0),
-                DateTimePicker::make('edited_at'),
+
+                // Edited info
+                DateTimePicker::make('edited_at')
+                    ->label('Edited At'),
+
                 TextInput::make('edited_reason')
+                    ->label('Edited Reason')
                     ->default(null),
-                TextInput::make('edited_by')
-                    ->numeric()
+
+                Select::make('edited_by')
+                    ->label('Edited By')
+                    ->relationship('editedBy', 'name')
                     ->default(null),
-                TextInput::make('deleted_by')
-                    ->numeric()
+
+                Select::make('deleted_by')
+                    ->label('Deleted By')
+                    ->relationship('deletedBy', 'name')
                     ->default(null),
-                DateTimePicker::make('reviewed_at'),
-                TextInput::make('reviewed_by')
-                    ->numeric()
+
+                // Review info
+                DateTimePicker::make('reviewed_at')
+                    ->label('Reviewed At'),
+
+                Select::make('reviewed_by')
+                    ->label('Reviewed By')
+                    ->relationship('reviewedBy', 'name')
                     ->default(null),
+
+                // Moderation notes
                 Textarea::make('moderation_notes')
+                    ->label('Moderation Notes')
                     ->default(null)
                     ->columnSpanFull(),
             ]);

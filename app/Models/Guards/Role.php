@@ -3,7 +3,6 @@
 namespace App\Models\Guards;
 
 use App\Models\Regions\Employee;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Models\Role as SpatieRole;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Role extends SpatieRole
 {
-    use SoftDeletes;
-
     /**
      * The attributes that are mass assignable.
      *

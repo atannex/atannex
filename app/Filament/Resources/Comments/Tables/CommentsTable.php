@@ -17,56 +17,99 @@ class CommentsTable
     {
         return $table
             ->columns([
+                // Display related post title
                 TextColumn::make('post.title')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('parent.id')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('Post')
+                    ->sortable()
+                    ->searchable(),
+
+                // Display parent comment (if exists)
+                TextColumn::make('parent.comment')
+                    ->label('Parent Comment')
+                    ->limit(50)
+                    ->sortable()
+                    ->searchable(),
+
+                // Comment status
                 TextColumn::make('status')
+                    ->sortable()
                     ->searchable(),
+
+                // Comment author
                 TextColumn::make('user.name')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('User')
+                    ->sortable()
+                    ->searchable(),
+
+                // IP information
                 TextColumn::make('ip_address')
+                    ->label('IP Address')
                     ->searchable(),
+
                 TextColumn::make('ip_country')
+                    ->label('Country')
                     ->searchable(),
+
+                // Counts
                 TextColumn::make('likes_count')
-                    ->numeric()
+                    ->label('Likes')
                     ->sortable(),
+
                 TextColumn::make('dislikes_count')
-                    ->numeric()
+                    ->label('Dislikes')
                     ->sortable(),
+
                 TextColumn::make('replies_count')
-                    ->numeric()
+                    ->label('Replies')
                     ->sortable(),
+
+                // Edited information
                 TextColumn::make('edited_at')
+                    ->label('Edited At')
                     ->dateTime()
                     ->sortable(),
+
                 TextColumn::make('edited_reason')
+                    ->label('Edited Reason')
+                    ->limit(50)
                     ->searchable(),
-                TextColumn::make('edited_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('deleted_by')
-                    ->numeric()
-                    ->sortable(),
+
+                TextColumn::make('editedBy.name')
+                    ->label('Edited By')
+                    ->sortable()
+                    ->searchable(),
+
+                // Deleted and reviewed information
+                TextColumn::make('deletedBy.name')
+                    ->label('Deleted By')
+                    ->sortable()
+                    ->searchable(),
+
                 TextColumn::make('reviewed_at')
+                    ->label('Reviewed At')
                     ->dateTime()
                     ->sortable(),
-                TextColumn::make('reviewed_by')
-                    ->numeric()
-                    ->sortable(),
+
+                TextColumn::make('reviewedBy.name')
+                    ->label('Reviewed By')
+                    ->sortable()
+                    ->searchable(),
+
+                // Timestamps
                 TextColumn::make('created_at')
+                    ->label('Created At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
+                    ->label('Updated At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('deleted_at')
+                    ->label('Deleted At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

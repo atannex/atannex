@@ -3,15 +3,12 @@
 namespace App\Models\Guards;
 
 use App\Models\Regions\Employee;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Permission\Models\Permission as SpatiePermission;
 
 class Permission extends SpatiePermission
 {
-    use SoftDeletes;
-
     /**
      * The attributes that are mass assignable.
      *

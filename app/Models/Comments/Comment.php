@@ -2,16 +2,22 @@
 
 namespace App\Models\Comments;
 
-use App\Models\User;
-use App\Models\Posts\Post;
+use App\Models\Comments\Traits\GeoIP;
+use App\Models\Comments\Traits\Scoping;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Ngangagah\Relations\CommentRelation;
 
 class Comment extends Model
 {
     use SoftDeletes;
+    use GeoIP;
+    use CommentRelation;
+    use Scoping;
+
+    protected $with = ['user'];
+
+    protected $table = 'comments';
 
     protected $fillable = [
         'post_id',
@@ -34,38 +40,16 @@ class Comment extends Model
         'moderation_notes',
     ];
 
-    public function post(): BelongsTo
-    {
-        return $this->belongsTo(Post::class);
-    }
+    protected $casts = [
+        'edited_at'        => 'datetime',
+        'reviewed_at'      => 'datetime',
+        'moderation_notes' => 'array',
+    ];
 
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(Comment::class, 'parent_id');
-    }
-
-    public function replies(): HasMany
-    {
-        return $this->hasMany(Comment::class, 'parent_id');
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function editedBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'edited_by');
-    }
-
-    public function deletedBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'deleted_by');
-    }
-
-    public function reviewedBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'reviewed_by');
-    }
+    protected $attributes = [
+        'likes_count'    => 0,
+        'dislikes_count' => 0,
+        'replies_count'  => 0,
+        'status'         => 'pending',
+    ];
 }

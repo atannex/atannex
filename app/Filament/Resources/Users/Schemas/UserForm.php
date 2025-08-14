@@ -2,11 +2,12 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\DateTimePicker;
 
 class UserForm
 {
@@ -56,6 +57,17 @@ class UserForm
                 DateTimePicker::make('last_login_at'),
                 TextInput::make('last_login_ip')
                     ->default(null),
+                Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->preload()
+                    ->label('Roles'),
+                Select::make('permissions')
+                    ->relationship('permissions', 'name')
+                    ->multiple()
+                    ->searchable()
+                    ->preload()
+                    ->preload()
+                    ->label('Permissions'),
             ]);
     }
 }

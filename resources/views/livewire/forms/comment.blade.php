@@ -13,13 +13,12 @@
         </ul>
 
         <div class="mt-3">
-
             <x-partials.pagination :paginator="$comments" />
-
         </div>
     </div>
 
-    @if (!$replyingToId)
+    {{-- Only show form if not replying --}}
+    @if (!$parentId)
     <div class="mt-4 th-comment-form">
         <div class="mb-3 form-title">
             <h3 class="blog-inner-title">{{ __('Leave a Comment') }}</h3>
@@ -50,10 +49,9 @@
                         <i class="fas fa-arrow-up-right ms-2"></i>
                     </button>
                 </div>
-
-                <p class="mt-3 mb-0 form-messages" aria-live="polite"></p>
             </form>
         </div>
     </div>
     @endif
 </div>
+
