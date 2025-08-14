@@ -33,10 +33,20 @@
         </div>
         @endif
 
-        <div class="px-3 py-4 rounded quote-form-box position-relative bg-grey">
+        <div class="comment-form-container">
             <form wire:submit.prevent="submit" class="contact-form">
-                <div class="mb-3">
-                    <textarea wire:model.defer="comment" placeholder="{{ __('Write a Comment*') }}" class="form-control" rows="5"></textarea>
+                <div class="mb-1">
+                    <textarea wire:model.defer="comment" placeholder="{{ __('Write a Comment*') }}" class="auto-expand-textarea" style="
+        height: auto;
+        min-height: 1.5em;  /* approximate single line height */
+        overflow:hidden;
+        resize:none;
+        border: none;
+        border-bottom: 2px solid #ffffff;
+        border-radius: 0;
+        outline: none;
+    "></textarea>
+
                     @error('comment')
                     <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -44,7 +54,7 @@
 
                 <div class="form-btn">
                     <button type="submit" class="th-btn" wire:loading.attr="disabled">
-                        <span wire:loading.remove>{{ __('Post Comment') }}</span>
+                        <span wire:loading.remove>{{ __('Comment') }}</span>
                         <span wire:loading>{{ __('Posting...') }}</span>
                         <i class="fas fa-arrow-up-right ms-2"></i>
                     </button>
@@ -54,4 +64,3 @@
     </div>
     @endif
 </div>
-
