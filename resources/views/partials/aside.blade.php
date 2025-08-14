@@ -9,7 +9,7 @@
         <ul>
             @foreach ($relatedCategories as $category)
             <li>
-                <a href="{{ route('page.index', $category->slug_path) }}">
+                <a data-bg-src="{{ asset('storage/'. $post->image) }}" href="{{ route('page.index', $category->slug_path) }}">
                     {{ $category->name }}
                 </a>
             </li>

@@ -41,7 +41,7 @@
                 </div>
                 <div class="col-xxl-3 col-lg-4 sidebar-wrap">
 
-                    @include('partials.aside')
+                    @include('partials.aside', ['post' => $module->post])
 
                 </div>
             </div>
