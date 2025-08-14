@@ -8,12 +8,16 @@
         <h3 class="widget_title">{{ __("Categories") }}</h3>
         <ul>
             @foreach ($relatedCategories as $category)
+            @php
+            $firstPost = $category->posts->first();
+            @endphp
             <li>
-                <a data-bg-src="{{ asset('storage/'. $post->image) }}" href="{{ route('page.index', $category->slug_path) }}">
+                <a data-bg-src="{{ $firstPost ? asset('storage/' . $firstPost->image) : '' }}" href="{{ route('page.index', $category->slug_path) }}">
                     {{ $category->name }}
                 </a>
             </li>
             @endforeach
+
         </ul>
     </div>
     <div class="widget">
