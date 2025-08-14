@@ -34,7 +34,7 @@
 
                     <x-shows.author :module="$module" :medias="$medias" />
 
-                    @livewire('forms.comment')
+                    <livewire:forms.comment wire:key="comments-{{ $module->post->id }}" :postId="$module->post->id" />
 
                     <x-shows.related-posts :relatedPosts="$relatedPosts" />
 
