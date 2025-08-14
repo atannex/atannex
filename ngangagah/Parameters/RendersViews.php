@@ -142,7 +142,7 @@ trait RendersViews
      */
     protected function share(Post $post): array
     {
-        $postUrl = url("/posts/{$post->slug_path}");
+        $postUrl = url("/{$post->slug_path}");
         $text = $post->title;
 
         $platforms = $this->socialShare->getAllPlatforms();
