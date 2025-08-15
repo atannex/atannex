@@ -1,5 +1,6 @@
 <x-layouts.base :title="$title">
 
+    <x-sections.preloader />
 
     <x-sections.pages.header />
 
