@@ -2,257 +2,156 @@
 
 namespace App\Livewire\Forms;
 
-use App\Models\Comments\Comment as CommentModel;
-use App\Rules\Auth\StrongName;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\On;
-use Livewire\Attributes\Rule;
 use Livewire\Component;
+use Livewire\Attributes\On;
 use Livewire\WithPagination;
+use Livewire\Attributes\Rule;
+use App\Contracts\Commentable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Comments\Comment as CommentModel;
 
-/**
- * Class Comment
- *
- * A Livewire component for managing comments on a post, including creating, editing,
- * deleting, and replying to comments with pagination and search functionality.
- */
 class Comment extends Component
 {
     use WithPagination;
 
-    /**
-     * The comment text input by the user.
-     *
-     * @var string|null
-     */
-    #[Rule(['required', 'min:3', new StrongName], as: 'comment')]
+    #[Rule(['required', 'string', 'min:3', 'max:5000'], as: 'comment')]
     public ?string $comment = null;
 
-    /**
-     * The ID of the post the comments belong to.
-     *
-     * @var int
-     */
-    public int $postId;
-
-    /**
-     * The ID of the parent comment (for replies).
-     *
-     * @var int|null
-     */
+    public Commentable $commentable;
     public ?int $parentId = null;
+    public array $shownRepliesCount = [];
+    public int $perPage = 10;
 
-    /**
-     * The ID of the comment being edited (if any).
-     *
-     * @var int|null
-     */
-    public ?int $editingCommentId = null;
+    const EVENT_COMMENT_POSTED = 'comment-posted';
+    const EVENT_COMMENT_DELETED = 'comment-deleted';
 
-    /**
-     * The search query for filtering comments.
-     *
-     * @var string
-     */
-    public string $search = '';
-
-    /**
-     * The number of comments to display per page.
-     *
-     * @var int
-     */
-    public int $perPage = 5;
-
-    /**
-     * Initialize the component with the post ID.
-     *
-     * @param int $postId
-     * @return void
-     */
-    public function mount(int $postId): void
+    public function mount(Commentable $commentable): void
     {
-        $this->postId = $postId;
+        $this->commentable = $commentable;
+        $this->shownRepliesCount = [];
     }
 
-    /**
-     * Validate the comment input when it is updated.
-     *
-     * @return void
-     */
-    public function updatedComment(): void
-    {
-        $this->validateOnly('comment');
-    }
-
-    /**
-     * Reset pagination when the search query is updated.
-     *
-     * @return void
-     */
-    public function updatedSearch(): void
-    {
-        $this->resetPage();
-    }
-
-    /**
-     * Submit the comment form, either creating a new comment or updating an existing one.
-     *
-     * @return void
-     */
     public function submit(): void
     {
         $this->validate();
 
-        $this->editingCommentId ? $this->updateComment() : $this->createComment();
+        if (!Auth::check()) {
+            session()->flash('error', __('You must be logged in to post a comment.'));
+            return;
+        }
 
-        $this->resetCommentState();
-        $this->resetPage();
-        $this->search = '';
+        try {
+            CommentModel::create([
+                'user_id'          => Auth::id(),
+                'commentable_type' => get_class($this->commentable),
+                'commentable_id'   => $this->commentable->id,
+                'parent_id'        => $this->parentId,
+                'comment'          => $this->sanitizeComment($this->comment),
+            ]);
 
-        session()->flash('message', $this->editingCommentId ? 'Comment updated!' : 'Comment posted successfully!');
-        $this->dispatch('comment-posted');
+            session()->flash('message', __('Comment posted successfully!'));
+            $this->dispatch(self::EVENT_COMMENT_POSTED);
+            $this->resetPage();
+            $this->resetCommentState();
+        } catch (\Throwable $e) {
+            Log::error('Comment submission failed: ' . $e->getMessage());
+            session()->flash('error', __('Failed to post comment. Please try again.'));
+        }
     }
 
-    /**
-     * Create a new comment in the database.
-     *
-     * @return void
-     */
-    protected function createComment(): void
+    protected function sanitizeComment(string $comment): string
     {
-        CommentModel::create([
-            'user_id'    => Auth::id(),
-            'post_id'    => $this->postId,
-            'parent_id'  => $this->parentId,
-            'comment'    => $this->comment,
-            'status'     => 'approved',
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-        ]);
+        return clean($comment, 'comment');
     }
 
-    /**
-     * Update an existing comment in the database.
-     *
-     * @return void
-     */
-    protected function updateComment(): void
+    protected function isAuthorized(CommentModel $comment): bool
     {
-        $comment = CommentModel::findOrFail($this->editingCommentId);
-
-        $this->authorize('update', $comment);
-
-        $comment->update([
-            'comment'     => $this->comment,
-            'edited_at'   => now(),
-            'edited_by'   => Auth::id(),
-            'ip_address'  => request()->ip(),
-            'user_agent'  => request()->userAgent(),
-        ]);
+        return Auth::id() === $comment->user_id;
     }
 
-    /**
-     * Prepare the form for editing an existing comment.
-     *
-     * @param int $commentId
-     * @return void
-     */
-    public function edit(int $commentId): void
-    {
-        $comment = CommentModel::findOrFail($commentId);
-
-        $this->authorize('update', $comment);
-
-        $this->editingCommentId = $comment->id;
-        $this->comment = $comment->comment;
-        $this->parentId = $comment->parent_id;
-
-        $this->dispatch('focus-comment-input');
-    }
-
-    /**
-     * Delete a comment and mark the user who deleted it.
-     *
-     * @param int $commentId
-     * @return void
-     */
-    public function delete(int $commentId): void
-    {
-        $comment = CommentModel::findOrFail($commentId);
-
-        $this->authorize('delete', $comment);
-
-        $comment->update(['deleted_by' => Auth::id()]);
-        $comment->delete();
-
-        session()->flash('message', 'Comment deleted.');
-        $this->resetPage();
-    }
-
-    /**
-     * Set the form to reply to a specific comment.
-     *
-     * @param int $commentId
-     * @return void
-     */
     #[On('reply-to-comment')]
-    public function setReplyTo(int $commentId): void
+    public function setReplyTo(int $commentId, string $username): void
     {
         $this->parentId = $commentId;
-        $this->comment = '';
-        $this->editingCommentId = null;
-
-        $this->dispatch('focus-comment-input');
+        $this->comment = '@' . $username . ' ';
+        $this->dispatch('focus-comment-input')->self();
     }
 
-    /**
-     * Refresh the comments list when a comment is posted.
-     *
-     * @return void
-     */
-    #[On('comment-posted')]
-    public function refreshComments(): void
+    #[On('edit-comment')]
+    public function editComment(int $commentId): void
     {
-        $this->resetPage();
+        $comment = CommentModel::findOrFail($commentId);
+
+        if ($this->isAuthorized($comment)) {
+            $this->comment = $comment->comment;
+            $this->parentId = $comment->parent_id;
+            $this->dispatch('edit-comment-form', ['commentId' => $commentId]);
+        } else {
+            session()->flash('error', __('You are not authorized to edit this comment.'));
+        }
     }
 
-    /**
-     * Cancel the reply or edit mode and reset the form.
-     *
-     * @return void
-     */
+    #[On('delete-comment')]
+    public function deleteComment(int $commentId): void
+    {
+        $comment = CommentModel::findOrFail($commentId);
+
+        if ($this->isAuthorized($comment)) {
+            $comment->delete();
+            session()->flash('message', __('Comment deleted successfully!'));
+            $this->dispatch(self::EVENT_COMMENT_DELETED);
+            $this->resetPage();
+        } else {
+            session()->flash('error', __('You are not authorized to delete this comment.'));
+        }
+    }
+
     public function cancelReply(): void
     {
         $this->resetCommentState();
     }
 
-    /**
-     * Reset the comment form state to its initial values.
-     *
-     * @return void
-     */
     protected function resetCommentState(): void
     {
-        $this->reset(['comment', 'parentId', 'editingCommentId']);
+        $this->reset(['comment', 'parentId']);
     }
 
-    /**
-     * Render the comment component view with paginated comments.
-     *
-     * @return \Illuminate\Contracts\View\View
-     */
+    public function loadMoreReplies(int $commentId): void
+    {
+        $totalReplies = CommentModel::where('parent_id', $commentId)->count();
+        $current = $this->shownRepliesCount[$commentId] ?? 0;
+        if ($current < $totalReplies) {
+            $this->shownRepliesCount[$commentId] = min($current + 4, $totalReplies);
+        }
+    }
+
+    public function collapseReplies(int $commentId): void
+    {
+        $this->shownRepliesCount[$commentId] = 0;
+    }
+
+    public function loadMoreComments(): void
+    {
+        $this->perPage += 10;
+    }
+
     public function render()
     {
-        $comments = CommentModel::approved()
+        $comments = $this->commentable
+            ->comments()
             ->topLevel()
-            ->withAllReplies()
-            ->where('post_id', $this->postId)
-            ->when($this->search, fn ($query) => $query->where('comment', 'like', "%{$this->search}%"))
+            ->with(['user', 'replies.user', 'replies.parent'])
             ->latest()
             ->paginate($this->perPage);
 
         return view('livewire.forms.comment', [
             'comments' => $comments,
+            'shownRepliesCount' => $this->shownRepliesCount,
+            'replyingTo' => $this->parentId ? [
+                'commentId' => $this->parentId,
+                'username' => CommentModel::find($this->parentId)?->user->name ?? ''
+            ] : null,
         ]);
     }
 }

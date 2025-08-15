@@ -34,7 +34,7 @@
 
                     <x-shows.author :module="$module" :medias="$medias" />
 
-                    <livewire:forms.comment wire:key="comments-{{ $module->post->id }}" :postId="$module->post->id" />
+                    <livewire:forms.comment wire:key="comments-{{ $module->post->id }}" :commentable="$module->post" />
 
                     <x-shows.related-posts :relatedPosts="$relatedPosts" />
 
@@ -48,3 +48,4 @@
         </div>
     </section>
 </x-layouts.category>
+

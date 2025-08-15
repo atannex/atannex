@@ -2,6 +2,7 @@
 
 namespace App\Models\Posts;
 
+use App\Contracts\Commentable;
 use App\Enums\Flag;
 use App\Models\Traits\Bootable;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Morfaw\Supports\EnableScope;
 use Morfaw\Supports\EnableSlug;
 use Ngangagah\Relations\PostRelation;
 
-class Post extends Model
+class Post extends Model implements Commentable
 {
     use SoftDeletes;
     use EnableSlug;

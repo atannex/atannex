@@ -1,4 +1,4 @@
-
+{{--
 <div class="content">
     <p>
         Fuel your competitive spirit, chase victory, and let sports be your legacy encapsulates the
@@ -103,4 +103,4 @@
         achievable in your game.
     </p>
 </div>
-
+ --}}

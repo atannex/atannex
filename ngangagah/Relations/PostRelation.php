@@ -6,11 +6,13 @@ use App\Models\Tags\Tag;
 use App\Models\Pages\Category;
 use App\Models\Pivots\PostTag;
 use App\Models\Regions\Region;
+use App\Models\Comments\Comment;
 use App\Models\Regions\Employee;
 use App\Models\Pivots\PostRegion;
 use App\Models\Modules\PostModule;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 trait PostRelation
@@ -61,5 +63,12 @@ trait PostRelation
     public function modules(): HasOne
     {
         return $this->hasOne(PostModule::class);
+    }
+
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable')
+            ->whereNull('parent_id')
+            ->latest();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Ngangagah\Relations;
 
+use App\Models\Comments\Comment;
 use App\Models\Others\Contact;
 use App\Models\Controls\Session;
 use App\Models\Regions\Employee;
@@ -31,5 +32,10 @@ trait UserRelation
     public function isEmployee(): bool
     {
         return $this->employee()->exists();
+    }
+
+    public function comments():HasMany
+    {
+        return $this->hasMany(Comment::class);
     }
 }
