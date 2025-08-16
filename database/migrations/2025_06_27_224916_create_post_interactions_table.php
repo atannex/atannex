@@ -15,21 +15,21 @@ return new class extends Migration
             $table->timestamp('liked_at')->useCurrent();
             $table->timestamps();
             $table->softDeletes();
-
             $table->unique(['post_id', 'user_id'], 'uniq_post_likes_post_user');
+            $table->index(['post_id', 'liked_at'], 'idx_post_likes_post_liked_at');
         });
 
         Schema::create('post_ratings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('post_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->tinyInteger('rating')->unsigned();
+            $table->unsignedTinyInteger('rating');
             $table->text('review')->nullable();
             $table->string('rating_source', 255)->nullable();
             $table->timestamps();
             $table->softDeletes();
-
             $table->unique(['post_id', 'user_id'], 'uniq_post_ratings_post_user');
+            $table->index(['post_id'], 'idx_post_ratings_post');
         });
 
         Schema::create('post_shares', function (Blueprint $table) {
@@ -42,7 +42,6 @@ return new class extends Migration
             $table->timestamp('shared_at')->useCurrent();
             $table->timestamps();
             $table->softDeletes();
-
             $table->index(['post_id', 'platform'], 'idx_post_shares_post_platform');
         });
 
@@ -68,7 +67,6 @@ return new class extends Migration
             $table->string('referer_url', 255)->nullable();
             $table->timestamps();
             $table->softDeletes();
-
             $table->index(['post_id', 'user_id'], 'idx_post_views_post_user');
         });
     }

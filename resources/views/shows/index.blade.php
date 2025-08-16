@@ -20,7 +20,7 @@
                             </div>
                             <div class="blog-content">
 
-                                <x-shows.info />
+                                <livewire:show.info :postId="$module->post->id" />
 
                                 <x-shows.content />
 

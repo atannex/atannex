@@ -2,25 +2,32 @@
 
 namespace App\Models\Pivots;
 
-use App\Models\User;
-use App\Models\Posts\Post;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
-class PostShare extends Model
+/**
+ * Class PostShare
+ *
+ * Represents a share of a post by a user on a platform.
+ * Uses BatchedEngagement trait to queue engagement updates asynchronously.
+ */
+class PostShare extends BaseEngagement
 {
-    use SoftDeletes;
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'post_id',
+        'user_id',
+        'platform',
+        'share_url',
+        'share_count',
+        'shared_at',
+    ];
 
-    protected $fillable = ['post_id', 'user_id', 'platform', 'share_url', 'share_count', 'shared_at'];
-
-    public function post(): BelongsTo
-    {
-        return $this->belongsTo(Post::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    /**
+     * The attributes that should be cast to dates.
+     *
+     * @var array<int, string>
+     */
+    protected $dates = ['shared_at'];
 }

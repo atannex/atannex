@@ -2,25 +2,24 @@
 
 namespace App\Models\Pivots;
 
-use App\Models\User;
-use App\Models\Posts\Post;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
-class PostRating extends Model
+/**
+ * Class PostRating
+ *
+ * Represents a rating (and optional review) given by a user on a post.
+ * Uses BatchedEngagement trait to queue engagement updates asynchronously.
+ */
+class PostRating extends BaseEngagement
 {
-    use SoftDeletes;
-
-    protected $fillable = ['post_id', 'user_id', 'rating', 'review', 'rating_source'];
-
-    public function post(): BelongsTo
-    {
-        return $this->belongsTo(Post::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'post_id',
+        'user_id',
+        'rating',
+        'review',
+        'rating_source',
+    ];
 }
