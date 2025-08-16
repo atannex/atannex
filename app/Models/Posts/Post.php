@@ -63,16 +63,4 @@ class Post extends Model implements Commentable
     protected $attributes = [
         'flag' => Flag::DRAFT,
     ];
-
-    /**
-     * Check if the post is liked by a specific user.
-     */
-    public function isLikedBy(?int $userId): bool
-    {
-        if (!$userId) {
-            return false;
-        }
-
-        return $this->likes()->where('user_id', $userId)->exists();
-    }
 }
