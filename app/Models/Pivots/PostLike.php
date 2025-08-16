@@ -26,6 +26,5 @@ class PostLike extends BaseEngagement
      *
      * @var array<int, string>
      */
-    protected $dates = ['liked_at'];
-
+    protected $dates = ['deleted_at', 'liked_at'];
 }

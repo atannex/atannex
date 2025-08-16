@@ -2,6 +2,7 @@
 
 namespace Ngangagah\Relations;
 
+use App\Models\User;
 use App\Models\Tags\Tag;
 use App\Models\Pages\Category;
 use App\Models\Pivots\PostTag;
@@ -16,10 +17,10 @@ use App\Models\Pivots\PostRegion;
 use App\Models\Modules\PostModule;
 use App\Models\Pivots\PostEngagement;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Trait PostRelation
@@ -106,14 +107,26 @@ trait PostRelation
             ->latest();
     }
 
-    /**
-     * One-to-Many relationship with PostLikes.
-     *
-     * @return HasMany
-     */
-    public function likes(): HasMany
+    public function likes():BelongsToMany
     {
-        return $this->hasMany(PostLike::class);
+        return $this->belongsToMany(User::class, 'post_likes')
+            ->using(PostLike::class)
+            ->withPivot('liked_at', 'deleted_at')
+            ->withTimestamps();
+    }
+
+    public function isLikedBy(User $user)
+    {
+        return $this->likes()->wherePivot('user_id', $user->id)
+            ->whereNull('post_likes.deleted_at')
+            ->exists();
+    }
+
+    public function likesCount()
+    {
+        return $this->likes()
+            ->whereNull('post_likes.deleted_at')
+            ->count();
     }
 
     /**

@@ -31,19 +31,16 @@ class LekeatehProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Bind the PageInterface to the PageRepository
         $this->app->bind(
             PageInterface::class,
             PageRepository::class
         );
 
-        // Bind the CategoryInterface to the CategoryRepository
         $this->app->bind(
             CategoryInterface::class,
             CategoryRepository::class
         );
 
-        // Bind the DocumentInterface to the DocumentRepository
         $this->app->bind(
             DocumentInterface::class,
             DocumentRepository::class

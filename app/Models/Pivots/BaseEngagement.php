@@ -4,9 +4,9 @@ namespace App\Models\Pivots;
 
 use App\Models\Posts\Post;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * Abstract base class for all engagement pivot models.
@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * includes soft deletion support to preserve engagement history without
  * permanently removing records from the database.
  */
-abstract class BaseEngagement extends Model
+abstract class BaseEngagement extends Pivot
 {
     use SoftDeletes;
 
