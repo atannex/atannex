@@ -31,25 +31,23 @@ class PageController extends Controller
 
     public function resolve(string $slug): View
     {
-
         if ($this->pageService->getHomePage($slug)) {
             return $this->renderPageView($slug);
         }
 
-        if ($category = Category::where('slug_path', $slug)->first()) {
+        if ($category = $this->resolveCategory($slug)) {
             return $this->renderCategoryView($category);
         }
 
-        if ($postTag = PostTag::with('tag', 'post.category')
-            ->where('slug_path', $slug)->first()) {
+        if ($postTag = $this->resolveTag($slug)) {
             return $this->renderTagView($postTag);
         }
 
-        if ($author = $this->resolveAuthorBySlug($slug)) {
+        if ($author = $this->resolveAuthor($slug)) {
             return $this->renderAuthorView($author);
         }
 
-        if ($post = Post::where('slug_path', $slug)->first()) {
+        if ($post = $this->resolvePost($slug)) {
             return $this->renderPostShow($post->category, $slug);
         }
 
