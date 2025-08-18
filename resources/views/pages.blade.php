@@ -1,4 +1,4 @@
-<x-layouts.page :title="$seo_title($page->title)">
+<x-layouts.page :title="seo_title($page->title)">
 
     @foreach ($page->sections as $section)
 
