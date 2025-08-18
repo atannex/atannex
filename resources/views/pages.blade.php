@@ -1,4 +1,4 @@
-<x-layouts.page :title="$page->title . ' - ' . __('Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')">
+<x-layouts.page :title="$seo_title($page->title)">
 
     @foreach ($page->sections as $section)
 
