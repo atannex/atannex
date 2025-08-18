@@ -8,116 +8,106 @@ use App\Models\Pivots\PostTag;
 
 trait Bootable
 {
-    /**
-     * Boot the trait.
-     */
     protected static function boot()
     {
         parent::boot();
 
-        // Handle slug_path updates on saving
-        static::saving(function ($model) {
-            $model->updateSlugPath();
-        });
+        static::saving(fn($model) => $model->updateSlugPath());
 
-        // Cascade updates to related models after save
         static::saved(function ($model) {
-            if ($model instanceof Category) {
-                $model->cascadeSlugPathUpdates();
-            } elseif ($model instanceof Post) {
-                $model->cascadePostTagSlugPathUpdates();
-            }
+            $model->cascadeSlugPathUpdates();
         });
 
-        // Handle slug_path cleanup on delete
         static::deleting(function ($model) {
-            if ($model instanceof Category || $model instanceof Post) {
-                $model->clearRelatedSlugPaths();
-            }
+            $model->clearRelatedSlugPaths();
         });
     }
 
     /**
-     * Generate slug_path for the model.
+     * Update slug_path safely.
      */
     public function updateSlugPath()
     {
         if ($this instanceof Category) {
-            $parentSlug = $this->getRelatedSlugPath('parent');
-            $this->slug_path = $parentSlug ? rtrim($parentSlug, '/') . '/' . $this->slug : $this->slug;
+            $this->slug_path = $this->buildSlugPath($this->getRelatedSlugPath('parent'), $this->slug);
         } elseif ($this instanceof Post) {
-            $categorySlug = $this->getRelatedSlugPath('category');
-            $this->slug_path = $categorySlug ? rtrim($categorySlug, '/') . '/' . $this->slug : null;
+            $this->slug_path = $this->buildSlugPath($this->getRelatedSlugPath('category'), $this->slug);
         } elseif ($this instanceof PostTag) {
-            $this->loadMissing(['post.category', 'tag']);
             $post = $this->post;
             $tag = $this->tag;
-            $this->slug_path = ($post && $post->category && $tag)
-                ? rtrim($post->category->slug_path, '/') . '/' . $tag->slug
-                : ($tag ? $tag->slug : null);
+            $categorySlug = $post->category->slug_path ?? null;
+
+            $this->slug_path = $categorySlug
+                ? $this->buildSlugPath($categorySlug, $tag->slug ?? null)
+                : ($tag->slug ?? null);
         }
     }
 
     /**
-     * Get slug_path from a related model.
-     *
-     * @param string $relation
-     * @return string|null
+     * Build a slug path safely.
      */
-    protected function getRelatedSlugPath($relation)
+    protected function buildSlugPath(?string $base, ?string $slug): ?string
     {
-        if ($this->relationLoaded($relation)) {
-            return $this->$relation->slug_path ?? null;
-        }
-        return $this->$relation ? $this->$relation->slug_path : null;
+        return $slug ? ($base ? rtrim($base, '/') . '/' . $slug : $slug) : null;
     }
 
     /**
-     * Cascade slug_path updates to related posts and postTags.
+     * Get slug_path from related model.
+     */
+    protected function getRelatedSlugPath(string $relation): ?string
+    {
+        return $this->$relation->slug_path ?? null;
+    }
+
+    /**
+     * Cascade slug_path updates to related models.
      */
     protected function cascadeSlugPathUpdates()
     {
         if ($this instanceof Category) {
-            $this->posts()->with('tags.tag')->get()->each(function (Post $post) {
-                $post->updateSlugPath();
-                $post->saveQuietly();
-                $post->cascadePostTagSlugPathUpdates();
-            });
-        }
-    }
-
-    /**
-     * Cascade slug_path updates to related postTags.
-     */
-    protected function cascadePostTagSlugPathUpdates()
-    {
-        if ($this instanceof Post) {
+            $this->posts()->with('tags.tag')->get()->each(fn(Post $post) => $post->cascadeSlugUpdate());
+        } elseif ($this instanceof Post) {
             $categorySlug = $this->getRelatedSlugPath('category');
             if ($categorySlug) {
                 $this->tags()->with('tag')->get()->each(function (PostTag $postTag) use ($categorySlug) {
-                    $postTag->slug_path = rtrim($categorySlug, '/') . '/' . $postTag->tag->slug;
-                    $postTag->saveQuietly();
+                    if ($postTag->tag) {
+                        $postTag->slug_path = $this->buildSlugPath($categorySlug, $postTag->tag->slug);
+                        $postTag->saveQuietly();
+                    }
                 });
             }
         }
     }
 
     /**
-     * Clear slug_path for related models on delete.
+     * Helper to cascade slug update for a post.
+     */
+    protected function cascadeSlugUpdate(): void
+    {
+        $this->updateSlugPath();
+        $this->saveQuietly();
+        $this->cascadeSlugPathUpdates();
+    }
+
+    /**
+     * Clear related slug_paths safely.
      */
     protected function clearRelatedSlugPaths()
     {
         if ($this instanceof Category) {
-            $this->posts()->get()->each(function (Post $post) {
-                $post->slug_path = null;
-                $post->saveQuietly();
-                $post->clearRelatedSlugPaths();
-            });
+            $this->posts()->get()->each(fn(Post $post) => $post->clearSlugPath());
         } elseif ($this instanceof Post) {
-            $this->tags()->get()->each(function (PostTag $postTag) {
-                $postTag->slug_path = null;
-                $postTag->saveQuietly();
-            });
+            $this->tags()->with('tag')->get()->each(fn(PostTag $postTag) => $postTag->update(['slug_path' => null]));
         }
+    }
+
+    /**
+     * Clear slug path for a single post recursively.
+     */
+    protected function clearSlugPath(): void
+    {
+        $this->slug_path = null;
+        $this->saveQuietly();
+        $this->cascadeSlugPathUpdates();
     }
 }

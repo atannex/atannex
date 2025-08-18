@@ -41,6 +41,9 @@
         "phpunit/phpunit": "^11.5.3"
     },
     "autoload": {
+        "files": [
+            "helper.php"
+        ],
         "psr-4": {
             "App\\": "app/",
             "Atannex\\": "atannex/",

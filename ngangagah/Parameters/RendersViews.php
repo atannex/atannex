@@ -7,58 +7,93 @@ use App\Models\Posts\Post;
 use App\Models\Pages\Category;
 use App\Models\Regions\Employee;
 use App\Models\Modules\PostModule;
+use App\Models\Pivots\PostTag;
 use Ngangagah\Handlers\Traits\GetPostNavigation;
 use Ngangagah\Handlers\Traits\GetRelatedPost;
 
-/**
- * Trait RendersViews
- *
- * Provides reusable rendering methods for various types of pages and
- * guarantees stable view data keys to avoid undefined variable errors.
- */
 trait RendersViews
 {
-    use PageContent;
-    use GetRelatedPost;
-    use GetPostNavigation;
+    use PageContent, GetRelatedPost, GetPostNavigation;
 
     /**
-     * Render a view with the given data.
+     * Render a view with merged data.
      */
-    protected function render(string $view, array $data = []): View
+    protected function render(string $view, array $data = [], array $extra = []): View
     {
-        return view($view, $data);
+        return view($view, array_merge($data, $extra));
     }
 
-
-    private function getCommonViewData(?Category $category = null, ?Post $post = null): array
+    /**
+     * Build common view data for categories/posts.
+     */
+    private function buildCommonViewData(?Category $category = null, ?Post $post = null): array
     {
-        $popularTags = $this->tagService->getPopularTags();
+        return [
+            'popularTags'      => $this->tagService->getPopularTags(),
+            'relatedTags'      => $post ? $this->tagService->getTagsForPost($post->id) : collect(),
+            'navigation'       => $post ? $this->getPostNavigation($post) : collect(),
+            'relatedCategories' => $category ? $this->categoryService->getRelatedCategoriesForCategory($category) : collect(),
+            'recentPosts'      => $post ? $this->categoryService->getRecentPosts($post) : collect(),
+            'relatedPosts'     => $post ? $this->getRelatedPosts($post) : collect(),
+        ];
+    }
 
-        $relatedTags = $post ? $this->tagService->getTagsForPost($post->id) : collect();
+    /**
+     * Build social share data for a post.
+     */
+    private function buildSocialShareData(Post $post): array
+    {
+        $postUrl = $this->getPostUrl($post);
 
-        $navigation = $post ? $this->getPostNavigation($post)  : collect();
+        return collect($this->socialShare->getAllPlatforms())
+            ->map(fn($data, $platform) => [
+                'platform'   => $platform,
+                'label'      => $data['label'],
+                'icon'       => $data['icon'],
+                'color'      => $data['color'],
+                'share_url'  => $this->socialShare->share(
+                    platform: $platform,
+                    url: $postUrl,
+                    text: $post->title,
+                    image: $post->image,
+                    utm: $this->getUtmParams($post->slug_path)
+                ),
+            ])->values()->toArray();
+    }
 
-        $relatedCategories = $category
-            ? $this->categoryService->getRelatedCategoriesForCategory($category)
-            : collect();
+    /**
+     * Render a single post page.
+     */
+    protected function renderPostShow(Category $category, string $slug): View
+    {
+        $post   = Post::where('slug_path', $slug)->firstOrFail();
+        $module = PostModule::with('post')
+            ->whereHas('post', fn($q) => $q->where('slug_path', $slug))
+            ->firstOrFail();
 
-        $recentPosts = $post
-            ? $this->categoryService->getRecentPosts($post)
-            : collect();
+        return $this->render('shows.index', [
+            'module'  => $module,
+            'medias'  => $this->categoryService->getPublishedEmployeeSocialMedia($module->post->author),
+            'shares'  => $this->buildSocialShareData($module->post),
+        ], $this->buildCommonViewData($category, $post));
+    }
 
-        $relatedPosts = $post
-            ? $this->getRelatedPosts($post)
-            : collect();
+    /**
+     * Render posts associated with a specific tag.
+     */
+    protected function renderTagView(PostTag $postTag): View
+    {
+        $tag   = $postTag->tag;
+        $first = $tag->posts->first();
 
-        return compact(
-            'popularTags',
-            'relatedTags',
-            'navigation',
-            'relatedCategories',
-            'recentPosts',
-            'relatedPosts'
-        );
+        return $this->render('tag', [
+            'seoTitle'         => seo_title($tag->name),
+            'tag'              => $tag,
+            'posts'            => $this->categoryService->getPostsByTag($tag),
+            'relatedCategories' => $this->categoryService->getRelatedCategoriesForTag($tag),
+            'recentPosts'      => $first ? $this->categoryService->getRecentPosts($first, 6) : collect(),
+            'popularTags'      => $this->tagService->getPopularTags(8),
+        ]);
     }
 
     /**
@@ -69,10 +104,7 @@ trait RendersViews
         $page = $this->pageService->getHomePage($slug);
         $this->resolveContent($page, $slug);
 
-        return $this->render('pages', array_merge(
-            compact('page'),
-            $this->getCommonViewData()
-        ));
+        return $this->render('pages', ['page' => $page], $this->buildCommonViewData());
     }
 
     /**
@@ -81,39 +113,11 @@ trait RendersViews
     protected function renderCategoryView(Category $category): View
     {
         $posts = $this->categoryService->getPostsByCategory($category);
-        $firstPost = $posts->first();
 
-        $data = array_merge(
-            compact('category', 'posts'),
-            $this->getCommonViewData($category, $firstPost)
-        );
-
-        return $this->render('category', $data);
-    }
-
-    /**
-     * Render a single post page.
-     */
-    protected function renderPostShow(Category $category, string $slug): View
-    {
-        $post = Post::where('slug_path', $slug)->firstOrFail();
-
-        $module = PostModule::whereHas('post', function ($query) use ($slug) {
-            $query->where('slug_path', $slug);
-        })
-            ->with('post')
-            ->firstOrFail();
-
-        $medias = $this->categoryService->getPublishedEmployeeSocialMedia($module->post->author);
-
-        $shares = $this->share($module->post);
-
-        $data = array_merge(
-            compact('module', 'medias', 'shares'),
-            $this->getCommonViewData($category, $post)
-        );
-
-        return $this->render('shows.index', $data);
+        return $this->render('category', [
+            'category' => $category,
+            'posts'    => $posts,
+        ], $this->buildCommonViewData($category, $posts->first()));
     }
 
     /**
@@ -121,54 +125,31 @@ trait RendersViews
      */
     protected function renderAuthorView(Employee $author): View
     {
-        $data = array_merge(
-            [
-                'author' => $author,
-                'posts' => $this->categoryService->getPostsByAuthor($author->user->slug),
-                'user_medias' => $this->categoryService->getPublishedEmployeeSocialMedia($author),
-            ],
-            $this->getCommonViewData()
-        );
-
-        return $this->render('author', $data);
+        return $this->render('author', [
+            'author'      => $author,
+            'posts'       => $this->categoryService->getPostsByAuthor($author->user->slug),
+            'user_medias' => $this->categoryService->getPublishedEmployeeSocialMedia($author),
+        ], $this->buildCommonViewData());
     }
 
+    /**
+     * Get the full URL for a post.
+     */
+    private function getPostUrl(Post $post): string
+    {
+        return url($post->slug_path);
+    }
 
     /**
-     * Generate share URLs for all social media platforms for a given post.
-     *
-     * @param Post $post The post to share.
-     * @return array Array of share data for each platform.
+     * Standard UTM parameters for post sharing.
      */
-    protected function share(Post $post): array
+    private function getUtmParams(string $slugPath): array
     {
-        $postUrl = url("/{$post->slug_path}");
-        $text = $post->title;
-
-        $platforms = $this->socialShare->getAllPlatforms();
-        $shares = [];
-
-        foreach ($platforms as $platform => $data) {
-            $shares[] = [
-                'platform' => $platform,
-                'label' => $data['label'],
-                'icon' => $data['icon'],
-                'color' => $data['color'],
-                'share_url' => $this->socialShare->share(
-                    platform: $platform,
-                    url: $postUrl,
-                    text: $text,
-                    image: $post->image,
-                    utm: [
-                        'source' => 'website',
-                        'medium' => 'social',
-                        'campaign' => 'post_share',
-                        'content' => $post->slug_path,
-                    ]
-                ),
-            ];
-        }
-
-        return $shares;
+        return [
+            'source'   => 'website',
+            'medium'   => 'social',
+            'campaign' => 'post_share',
+            'content'  => $slugPath,
+        ];
     }
 }

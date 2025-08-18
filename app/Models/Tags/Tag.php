@@ -23,31 +23,57 @@ class Tag extends Model
     protected string $slugSource = 'name';
 
     /**
-     * The attributes that are mass assignable.
+     * Attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
         'name',
-        'slug',
         'description',
         'parent_id',
     ];
+
+    /**
+     * Relationships to always eager load.
+     *
+     * @var array<string>
+     */
+    protected $with = [
+        'children',
+    ];
+
+    /**
+     * Boot method to handle cascading soft deletes.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (Tag $tag) {
+            $tag->children()->delete();
+        });
+    }
 
     /**
      * Get the parent tag.
      */
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(Tag::class, 'parent_id');
+        return $this->belongsTo(Tag::class, 'parent_id')->withDefault();
     }
 
     /**
-     * Get the child tags.
+     * Get the immediate child tags.
      */
     public function children(): HasMany
     {
         return $this->hasMany(Tag::class, 'parent_id');
+    }
+
+    /**
+     * Get all descendant tags recursively.
+     */
+    public function allChildren(): HasMany
+    {
+        return $this->children()->with('allChildren');
     }
 
     /**
@@ -58,6 +84,14 @@ class Tag extends Model
         return $this->belongsToMany(Post::class)
             ->using(PostTag::class)
             ->withTimestamps()
-            ->withPivot('id', 'post_id', 'tag_id', 'slug_path');
+            ->withPivot('slug_path');
+    }
+
+    /**
+     * Scope to fetch only top-level tags.
+     */
+    public function scopeTopLevel($query)
+    {
+        return $query->whereNull('parent_id');
     }
 }

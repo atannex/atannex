@@ -39,7 +39,7 @@ trait PostRelation
         return $this->belongsToMany(Tag::class)
             ->using(PostTag::class)
             ->withTimestamps()
-            ->withPivot('id', 'post_id', 'tag_id');
+            ->withPivot('slug_path');
     }
 
     /**
@@ -107,7 +107,7 @@ trait PostRelation
             ->latest();
     }
 
-    public function likes():BelongsToMany
+    public function likes(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'post_likes')
             ->using(PostLike::class)

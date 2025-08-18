@@ -7,6 +7,7 @@ use Illuminate\View\View;
 use App\Models\Posts\Post;
 use Morfaw\Supports\Resolver;
 use App\Models\Pages\Category;
+use App\Models\Pivots\PostTag;
 use Atangageih\Services\TagService;
 use Atangageih\Services\PageService;
 use Ngangagah\Parameters\RendersViews;
@@ -15,7 +16,8 @@ use Atangageih\Services\SocialShareService;
 
 class PageController extends Controller
 {
-    use RendersViews, Resolver;
+    use RendersViews;
+    use Resolver;
 
     public function __construct(
         protected readonly PageService $pageService,
@@ -38,10 +40,10 @@ class PageController extends Controller
             return $this->renderCategoryView($category);
         }
 
-        // 3. Tag page (uncomment and implement if needed)
-        // if ($tag = PostTag::where('slug_path', $slug)->first()) {
-        //     return $this->renderTagView($tag);
-        // }
+        if ($postTag = PostTag::with('tag', 'post.category')
+            ->where('slug_path', $slug)->first()) {
+            return $this->renderTagView($postTag);
+        }
 
         if ($author = $this->resolveAuthorBySlug($slug)) {
             return $this->renderAuthorView($author);

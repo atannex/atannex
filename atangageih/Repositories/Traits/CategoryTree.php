@@ -49,6 +49,7 @@ trait CategoryTree
             ->whereDoesntHave('children')
             ->withCount(['posts' => fn(Builder $query) => $query->published()])
             ->orderByDesc('posts_count')
+            ->limit(12)
             ->get();
     }
 
