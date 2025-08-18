@@ -1,4 +1,4 @@
-<x-layouts.page :title="$author->user->name . ' - ' . __('Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')">
+<x-layouts.page :title="seo_title($author->user->name)">
 
     <x-partials.breadcrumb />
 

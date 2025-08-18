@@ -1,4 +1,4 @@
-<x-layouts.category :title="$category->name . ' - ' . __('Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')">
+<x-layouts.category :title="seo_title($category->name)">
 
     @foreach ($category->sections as $section)
 
