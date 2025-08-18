@@ -29,7 +29,7 @@
                  <div class="col-md-6 col-xl-auto">
                      <div class="widget footer-widget">
 
-                          @include('partials.recent-posts')
+                         @include('partials.recent-posts')
 
                      </div>
                  </div>
@@ -68,7 +68,7 @@
                          <ul>
                              <li><a href="{{ route('home') }}">{{ __("Home") }}</a></li>
                              <li>
-                                 <a href="{{ route('about') }}">{{ __('About Us') }}</a>
+                                 <a href="javascript:void(0)">{{ __('About Us') }}</a>
                              </li>
                              <li>
                                  <a href="{{ route('document.index', ['type' => 'faq']) }}">
@@ -76,7 +76,7 @@
                                  </a>
                              </li>
                              <li>
-                                 <a href="{{ route('contact') }}">{{ __('Contact Us') }}</a>
+                                 <a href="javascript:void(0)">{{ __('Contact Us') }}</a>
                              </li>
                          </ul>
                      </div>

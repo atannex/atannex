@@ -31,7 +31,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('contact') }}">{{ __('Contact Us') }}</a>
+                        <a href="javascript:void(0)">{{ __('Contact Us') }}</a>
                     </li>
                 </ul>
             </div>
