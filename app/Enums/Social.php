@@ -20,103 +20,104 @@ use BenSampo\Enum\Enum;
  */
 final class Social extends Enum
 {
-    public const FACEBOOK  = 'facebook';
-    public const X         = 'x';
-    public const LINKEDIN  = 'linkedin';
-    public const WHATSAPP  = 'whatsapp';
-    public const REDDIT    = 'reddit';
+    public const FACEBOOK = 'facebook';
+    public const X = 'x';
+    public const LINKEDIN = 'linkedin';
+    public const WHATSAPP = 'whatsapp';
+    public const REDDIT = 'reddit';
     public const PINTEREST = 'pinterest';
-    public const TELEGRAM  = 'telegram';
-    public const TUMBLR    = 'tumblr';
+    public const TELEGRAM = 'telegram';
+    public const TUMBLR = 'tumblr';
 
     private const PLATFORM_DATA = [
         self::FACEBOOK => [
-            'label'     => 'Facebook',
-            'icon'      => 'fab fa-facebook-f',
-            'color'     => '#1877F2',
+            'label' => 'Facebook',
+            'icon' => 'fab fa-facebook-f',
+            'color' => '#1877F2',
             'share_url' => 'https://www.facebook.com/sharer/sharer.php?u=',
         ],
         self::X => [
-            'label'     => 'X',
-            'icon'      => 'fab fa-x-twitter',
-            'color'     => '#000000',
+            'label' => 'X',
+            'icon' => 'fab fa-twitter',
+            'color' => '#000000',
             'share_url' => 'https://x.com/intent/tweet?url=',
         ],
         self::LINKEDIN => [
-            'label'     => 'LinkedIn',
-            'icon'      => 'fab fa-linkedin-in',
-            'color'     => '#0A66C2',
+            'label' => 'LinkedIn',
+            'icon' => 'fab fa-linkedin-in',
+            'color' => '#0A66C2',
             'share_url' => 'https://www.linkedin.com/sharing/share-offsite/?url=',
         ],
         self::WHATSAPP => [
-            'label'     => 'WhatsApp',
-            'icon'      => 'fab fa-whatsapp',
-            'color'     => '#25D366',
+            'label' => 'WhatsApp',
+            'icon' => 'fab fa-whatsapp',
+            'color' => '#25D366',
             'share_url' => 'https://api.whatsapp.com/send?text=',
         ],
         self::REDDIT => [
-            'label'     => 'Reddit',
-            'icon'      => 'fab fa-reddit',
-            'color'     => '#FF4500',
+            'label' => 'Reddit',
+            'icon' => 'fab fa-reddit',
+            'color' => '#FF4500',
             'share_url' => 'https://www.reddit.com/submit?url=',
         ],
         self::PINTEREST => [
-            'label'     => 'Pinterest',
-            'icon'      => 'fab fa-pinterest',
-            'color'     => '#E60023',
+            'label' => 'Pinterest',
+            'icon' => 'fab fa-pinterest',
+            'color' => '#E60023',
             'share_url' => 'https://pinterest.com/pin/create/button/?url=',
         ],
         self::TELEGRAM => [
-            'label'     => 'Telegram',
-            'icon'      => 'fab fa-telegram',
-            'color'     => '#0088CC',
+            'label' => 'Telegram',
+            'icon' => 'fab fa-telegram',
+            'color' => '#0088CC',
             'share_url' => 'https://t.me/share/url?url=',
         ],
         self::TUMBLR => [
-            'label'     => 'Tumblr',
-            'icon'      => 'fab fa-tumblr',
-            'color'     => '#36465D',
+            'label' => 'Tumblr',
+            'icon' => 'fab fa-tumblr',
+            'color' => '#36465D',
             'share_url' => 'https://www.tumblr.com/widgets/share/tool?canonicalUrl=',
         ],
     ];
 
     /**
-     * Get all platforms data.
-     *
-     * @return array<string, array{label:string, icon:string, color:string, share_url:string}>
+     * Get platform data for a specific platform.
      */
-    public static function all(): array
+    public static function getPlatformData(string $value): array
     {
-        return self::PLATFORM_DATA;
+
+        return self::PLATFORM_DATA[$value];
     }
 
     /**
-     * Get platform-specific data.
-     *
-     * @return array{label:string, icon:string, color:string, share_url:string}
+     * Get the label for a platform.
      */
-    public function data(): array
+    public static function getLabel(string $value): string
     {
-        return self::PLATFORM_DATA[$this->value];
+        return self::getPlatformData($value)['label'];
     }
 
-    public function label(): string
+    /**
+     * Get the Font Awesome icon class for a platform.
+     */
+    public static function getIconClass(string $value): string
     {
-        return $this->data()['label'];
+        return self::getPlatformData($value)['icon'];
     }
 
-    public function icon(): string
+    /**
+     * Get the brand color for a platform.
+     */
+    public static function getColor(string $value): string
     {
-        return $this->data()['icon'];
+        return self::getPlatformData($value)['color'];
     }
 
-    public function color(): string
+    /**
+     * Get the share URL for a platform.
+     */
+    public static function getShareUrl(string $value): string
     {
-        return $this->data()['color'];
-    }
-
-    public function shareUrl(): string
-    {
-        return $this->data()['share_url'];
+        return self::getPlatformData($value)['share_url'];
     }
 }
