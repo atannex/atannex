@@ -47,6 +47,7 @@ trait RendersViews
             ->first();
 
         return $this->render('shows.index', [
+            'shares'  => $this->buildSocialShareData($module->post),
             'module'  => $module,
             'medias'  => $module?->post ? $this->categoryService->getPublishedEmployeeSocialMedia($module->post->author) : collect(),
         ], $this->buildCommonViewData($category, $post));

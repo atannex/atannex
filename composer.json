@@ -21,12 +21,15 @@
         "bensampo/laravel-enum": "^6.12",
         "filament/filament": "^4.0",
         "geoip2/geoip2": "^3.2",
+        "jorenvanhocht/laravel-share": "^4.2",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "laravel/ui": "*",
         "livewire/livewire": "^3.6",
         "mews/purifier": "^3.4",
+        "spatie/laravel-activitylog": "^4.10",
+        "spatie/laravel-medialibrary": "^11.14",
         "spatie/laravel-permission": "^6.21",
         "spatie/laravel-sitemap": "^7.3",
         "spatie/laravel-sluggable": "^3.7"
@@ -38,7 +41,8 @@
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "phpunit/phpunit": "^11.5.3",
+        "spatie/laravel-error-share": "^1.0"
     },
     "autoload": {
         "files": [

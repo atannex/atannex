@@ -9,7 +9,8 @@ use Ngangagah\Parameters\Traits\Normalize;
 
 trait PageContent
 {
-    use Normalize, Entities;
+    use Normalize;
+    use Entities;
 
 
     /**

@@ -10,7 +10,6 @@ use Atangageih\Services\TagService;
 use Atangageih\Services\PageService;
 use Ngangagah\Parameters\RendersViews;
 use Atangageih\Services\CategoryService;
-use Atangageih\Services\SocialShareService;
 
 class PageController extends Controller
 {
@@ -22,7 +21,6 @@ class PageController extends Controller
         protected readonly CategoryService $categoryService,
         protected readonly Extension $extension,
         protected readonly TagService $tagService,
-        protected readonly SocialShareService $socialShare,
         protected readonly GetPosts $postService
     ) {
         $this->middleware(['auth', 'verified', 'password.confirm']);
