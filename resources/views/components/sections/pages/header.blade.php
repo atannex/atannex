@@ -46,11 +46,15 @@
                             <ul>
                                 <li class="d-none d-sm-inline-block">
                                     <i class="far fa-user"></i>
-                                    <a href="blog.html" class="text-decoration-none">
+                                    @if(Auth::check())
+                                    <a href="{{ Auth::user()->employee ? url('/admin') : route('home') }}" class="text-decoration-none">
                                         {{ Auth::user()->name }}
                                     </a>
-
+                                    @else
+                                    <a href="{{ route('home') }}" class="text-decoration-none">{{ Auth::user()->name }}</a>
+                                    @endif
                                 </li>
+
                                 <li>
                                     <div class="social-links">
                                         @foreach ($global['global_icons'] as $media)
