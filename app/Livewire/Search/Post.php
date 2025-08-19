@@ -2,12 +2,12 @@
 
 namespace App\Livewire\Search;
 
-use App\Livewire\SearchComponent;
+use App\Livewire\Search\Abstracts\Searchable;
 use App\Models\Posts\Post as PostModel;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Validate;
 
-final class Post extends SearchComponent
+final class Post extends Searchable
 {
     #[Validate('string|max:255')]
     public string $query = '';

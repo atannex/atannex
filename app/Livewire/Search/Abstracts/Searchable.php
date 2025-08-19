@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Search\Abstracts;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-abstract class SearchComponent extends Component
+abstract class Searchable extends Component
 {
     use WithPagination;
 
