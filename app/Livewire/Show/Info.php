@@ -112,9 +112,9 @@ class Info extends Component
         $this->ratedAt = $this->post->ratedAt();
         $this->ratingClicks = $this->userRating ?? 0;
 
-        $this->isShared = $this->post->isSharedByUser();
-        $this->sharesCount = $this->post->sharesCount();
-        $this->sharedAt = $this->post->sharedAt();
+        // $this->isShared = $this->post->isSharedByUser();
+        // $this->sharesCount = $this->post->sharesCount();
+        // $this->sharedAt = $this->post->sharedAt();
     }
 
     /**

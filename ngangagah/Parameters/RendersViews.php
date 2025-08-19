@@ -8,10 +8,12 @@ use App\Models\Pages\Category;
 use App\Models\Pivots\PostTag;
 use App\Models\Regions\Employee;
 use App\Models\Modules\PostModule;
+use Ngangagah\Parameters\Traits\SocialShare;
 
 trait RendersViews
 {
     use PageContent;
+    use SocialShare;
 
     /**
      * Render a view with merged data.
@@ -34,29 +36,6 @@ trait RendersViews
             'recentPosts'      => $post ? $this->categoryService->getRecentPosts($post) : collect(),
             'relatedPosts'     => $post ? $this->postService->getRelatedPosts($post) : collect(),
         ];
-    }
-
-    /**
-     * Build social share data for a post.
-     */
-    private function buildSocialShareData(Post $post): array
-    {
-        $postUrl = $this->getPostUrl($post);
-
-        return collect($this->socialShare->getAllPlatforms())
-            ->map(fn($data, $platform) => [
-                'platform'   => $platform,
-                'label'      => $data['label'],
-                'icon'       => $data['icon'],
-                'color'      => $data['color'],
-                'share_url'  => $this->socialShare->share(
-                    platform: $platform,
-                    url: $postUrl,
-                    text: $post->title,
-                    image: $post->image,
-                    utm: $this->getUtmParams($post->slug_path)
-                ),
-            ])->values()->toArray();
     }
 
     /**
@@ -128,26 +107,5 @@ trait RendersViews
             'posts'       => $this->categoryService->getPostsByAuthor($author->user->slug),
             'user_medias' => $this->categoryService->getPublishedEmployeeSocialMedia($author),
         ], $this->buildCommonViewData());
-    }
-
-    /**
-     * Get the full URL for a post.
-     */
-    private function getPostUrl(Post $post): string
-    {
-        return url($post->slug_path);
-    }
-
-    /**
-     * Standard UTM parameters for post sharing.
-     */
-    private function getUtmParams(string $slugPath): array
-    {
-        return [
-            'source'   => 'website',
-            'medium'   => 'social',
-            'campaign' => 'post_share',
-            'content'  => $slugPath,
-        ];
     }
 }
