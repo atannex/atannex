@@ -4,6 +4,10 @@ namespace App\Models\Posts;
 
 use App\Contracts\Commentable;
 use App\Enums\Flag;
+use App\Livewire\Traits\HasLikes;
+use App\Livewire\Traits\HasRatings;
+use App\Livewire\Traits\HasShares;
+use App\Livewire\Traits\HasViews;
 use App\Models\Traits\Bootable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,6 +24,10 @@ class Post extends Model implements Commentable
     use PostRelation;
     use ImageCleanup;
     use Bootable;
+    use HasLikes;
+    use HasRatings;
+    use HasShares;
+    use HasViews;
 
     /**
      * The source attribute for slug generation.

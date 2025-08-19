@@ -2,22 +2,15 @@
 
 namespace Ngangagah\Relations;
 
-use App\Models\User;
 use App\Models\Tags\Tag;
 use App\Models\Pages\Category;
 use App\Models\Pivots\PostTag;
 use App\Models\Regions\Region;
-use App\Models\Pivots\PostLike;
-use App\Models\Pivots\PostView;
 use App\Models\Comments\Comment;
-use App\Models\Pivots\PostShare;
 use App\Models\Regions\Employee;
-use App\Models\Pivots\PostRating;
 use App\Models\Pivots\PostRegion;
 use App\Models\Modules\PostModule;
-use App\Models\Pivots\PostEngagement;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -105,67 +98,5 @@ trait PostRelation
         return $this->morphMany(Comment::class, 'commentable')
             ->whereNull('parent_id')
             ->latest();
-    }
-
-    public function likes(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'post_likes')
-            ->using(PostLike::class)
-            ->withPivot('liked_at', 'deleted_at')
-            ->withTimestamps();
-    }
-
-    public function isLikedBy(User $user)
-    {
-        return $this->likes()->wherePivot('user_id', $user->id)
-            ->whereNull('post_likes.deleted_at')
-            ->exists();
-    }
-
-    public function likesCount()
-    {
-        return $this->likes()
-            ->whereNull('post_likes.deleted_at')
-            ->count();
-    }
-
-    /**
-     * One-to-Many relationship with PostRatings.
-     *
-     * @return HasMany
-     */
-    public function ratings(): HasMany
-    {
-        return $this->hasMany(PostRating::class);
-    }
-
-    /**
-     * One-to-Many relationship with PostShares.
-     *
-     * @return HasMany
-     */
-    public function shares(): HasMany
-    {
-        return $this->hasMany(PostShare::class);
-    }
-
-    /**
-     * One-to-Many relationship with PostViews.
-     *
-     * @return HasMany
-     */
-    public function views(): HasMany
-    {
-        return $this->hasMany(PostView::class);
-    }
-
-    /**
-     * One-to-One relationship with PostEngagement.
-     *
-     * @return HasOne
-     */
-    public function engagement(): HasOne
-    {
-        return $this->hasOne(PostEngagement::class);
     }
 }

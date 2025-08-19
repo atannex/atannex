@@ -1,0 +1,86 @@
+<?php
+
+namespace App\Livewire\Traits;
+
+use App\Models\Interactions\Share;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+
+/**
+ * Trait Sharable
+ *
+ * Provides functionality for models to handle share interactions, including creating, counting, and retrieving share timestamps.
+ *
+ * @package App\Livewire\Traits
+ */
+trait HasShares
+{
+    /**
+     * Get the shares associated with the model.
+     *
+     * @return MorphMany
+     */
+    public function shares(): MorphMany
+    {
+        return $this->morphMany(Share::class, 'shareable');
+    }
+
+    /**
+     * Record a share for the model by the authenticated user on a specified platform.
+     *
+     * @param string $platform The platform where the share occurred (e.g., 'twitter', 'facebook').
+     * @param int $count The number of shares to record (default is 1).
+     * @return bool Returns true if the share was recorded or updated, false if the user is not authenticated or input is invalid.
+     */
+    public function share(string $platform, int $count = 1): bool
+    {
+        if (!Auth::check() || $count < 1 || empty(trim($platform))) {
+            return false;
+        }
+
+        $this->shares()->updateOrCreate(
+            [
+                'user_id' => Auth::id(),
+                'platform' => $platform,
+            ],
+            [
+                'share_count' => $count,
+                'shared_at' => now(),
+            ]
+        );
+
+        return true;
+    }
+
+    /**
+     * Get the total number of shares for the model.
+     *
+     * @return int
+     */
+    public function sharesCount(): int
+    {
+        return $this->shares()->sum('share_count');
+    }
+
+    /**
+     * Get the most recent share timestamp for the authenticated user, optionally filtered by platform.
+     *
+     * @param string|null $platform The platform to filter by (e.g., 'twitter', 'facebook'). If null, returns the latest across all platforms.
+     * @return Carbon|null The most recent shared_at timestamp or null if not shared or user is not authenticated.
+     */
+    public function lastSharedAt(?string $platform = null): ?Carbon
+    {
+        if (!Auth::check()) {
+            return null;
+        }
+
+        $query = $this->shares()->where('user_id', Auth::id());
+
+        if ($platform !== null && !empty(trim($platform))) {
+            $query->where('platform', $platform);
+        }
+
+        return $query->orderByDesc('shared_at')->value('shared_at');
+    }
+}
