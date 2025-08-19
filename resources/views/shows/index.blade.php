@@ -1,4 +1,4 @@
-<x-layouts.category :title="$module->post->title . ' ' . __(' - Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')">
+<x-layouts.category :title="seo_title($module->post->title)">
 
 
     <section class="th-blog-wrapper blog-details space-top space-extra-bottom">
@@ -15,7 +15,7 @@
                         <div class="blog-content-wrap">
                             <div class="share-links-wrap">
 
-                                <x-shows.share-links :shares="$shares" />
+                                <livewire:socials.social-share :shares="$module->post">
 
                             </div>
                             <div class="blog-content">
@@ -48,4 +48,3 @@
         </div>
     </section>
 </x-layouts.category>
-

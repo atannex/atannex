@@ -27,33 +27,6 @@ trait HasShares
     }
 
     /**
-     * Record a share for the model by the authenticated user on a specified platform.
-     *
-     * @param string $platform The platform where the share occurred (e.g., 'twitter', 'facebook').
-     * @param int $count The number of shares to record (default is 1).
-     * @return bool Returns true if the share was recorded or updated, false if the user is not authenticated or input is invalid.
-     */
-    public function share(string $platform, int $count = 1): bool
-    {
-        if (!Auth::check() || $count < 1 || empty(trim($platform))) {
-            return false;
-        }
-
-        $this->shares()->updateOrCreate(
-            [
-                'user_id' => Auth::id(),
-                'platform' => $platform,
-            ],
-            [
-                'share_count' => $count,
-                'shared_at' => now(),
-            ]
-        );
-
-        return true;
-    }
-
-    /**
      * Get the total number of shares for the model.
      *
      * @return int

@@ -8,12 +8,10 @@ use App\Models\Pages\Category;
 use App\Models\Pivots\PostTag;
 use App\Models\Regions\Employee;
 use App\Models\Modules\PostModule;
-use Ngangagah\Parameters\Traits\SocialShare;
 
 trait RendersViews
 {
     use PageContent;
-    use SocialShare;
 
     /**
      * Render a view with merged data.
@@ -29,12 +27,12 @@ trait RendersViews
     private function buildCommonViewData(?Category $category = null, ?Post $post = null): array
     {
         return [
-            'popularTags'      => $this->tagService->getPopularTags(),
-            'relatedTags'      => $post ? $this->tagService->getTagsForPost($post->id) : collect(),
-            'navigation'       => $post ? $this->postService->getPostNavigation($post) : collect(),
+            'popularTags'       => $this->tagService->getPopularTags(),
+            'relatedTags'       => $post ? $this->tagService->getTagsForPost($post->id) : collect(),
+            'navigation'        => $post ? $this->postService->getPostNavigation($post) : collect(),
             'relatedCategories' => $category ? $this->categoryService->getRelatedCategoriesForCategory($category) : collect(),
-            'recentPosts'      => $post ? $this->categoryService->getRecentPosts($post) : collect(),
-            'relatedPosts'     => $post ? $this->postService->getRelatedPosts($post) : collect(),
+            'recentPosts'       => $post ? $this->categoryService->getRecentPosts($post) : collect(),
+            'relatedPosts'      => $post ? $this->postService->getRelatedPosts($post) : collect(),
         ];
     }
 
@@ -43,15 +41,14 @@ trait RendersViews
      */
     protected function renderPostShow(Category $category, string $slug): View
     {
-        $post   = Post::where('slug_path', $slug)->firstOrFail();
+        $post   = Post::where('slug_path', $slug)->first();
         $module = PostModule::with('post')
             ->whereHas('post', fn($q) => $q->where('slug_path', $slug))
-            ->firstOrFail();
+            ->first();
 
         return $this->render('shows.index', [
             'module'  => $module,
-            'medias'  => $this->categoryService->getPublishedEmployeeSocialMedia($module->post->author),
-            'shares'  => $this->buildSocialShareData($module->post),
+            'medias'  => $module?->post ? $this->categoryService->getPublishedEmployeeSocialMedia($module->post->author) : collect(),
         ], $this->buildCommonViewData($category, $post));
     }
 
@@ -67,7 +64,7 @@ trait RendersViews
             'seoTitle'         => seo_title($tag->name),
             'tag'              => $tag,
             'posts'            => $this->categoryService->getPostsByTag($tag),
-            'relatedCategories' => $this->categoryService->getRelatedCategoriesForTag($tag),
+            'relatedCategories'=> $this->categoryService->getRelatedCategoriesForTag($tag),
             'recentPosts'      => $first ? $this->categoryService->getRecentPosts($first, 6) : collect(),
             'popularTags'      => $this->tagService->getPopularTags(8),
         ]);

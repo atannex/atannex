@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Atangageih\Services;
 
 use Atangageih\Contracts\SocialShareInterface;
+use App\Enums\Social;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Service class for handling social media sharing operations.
@@ -18,38 +21,39 @@ class SocialShareService
      */
     public function __construct(
         public readonly SocialShareInterface $socialShare,
-    ) {
-    }
+    ) {}
 
     /**
-     * Share a post to a specified social media platform.
+     * Share a post to a specified social media platform and optionally track the share.
      *
-     * @param string $platform The social media platform (e.g., Social::FACEBOOK).
+     * @param Social $platform The social media platform enum instance.
      * @param string $url The URL to share.
+     * @param Model|null $shareable The shareable entity (e.g., Post) for tracking, if applicable.
+     * @param User|null $user The user performing the share, if authenticated.
      * @param string|null $text Optional text to include in the share.
      * @param string|null $image Optional image URL for platforms that support images.
-     * @param array $utm Optional UTM parameters for tracking.
+     * @param array<string, string> $utm Optional UTM parameters for tracking.
      * @return string The complete share URL for the platform.
-     * @throws \InvalidArgumentException If the platform is invalid.
      */
     public function share(
-        string $platform,
+        Social $platform,
         string $url,
+        ?Model $shareable = null,
+        ?User $user = null,
         ?string $text = null,
         ?string $image = null,
         array $utm = []
     ): string {
-        return $this->socialShare->share($platform, $url, $text, $image, $utm);
+        return $this->socialShare->share($platform, $url, $shareable, $user, $text, $image, $utm);
     }
 
     /**
      * Get the display label for a platform.
      *
-     * @param string $platform The social media platform.
+     * @param Social $platform The social media platform enum instance.
      * @return string The platform's display label.
-     * @throws \InvalidArgumentException If the platform is invalid.
      */
-    public function getLabel(string $platform): string
+    public function getLabel(Social $platform): string
     {
         return $this->socialShare->getLabel($platform);
     }
@@ -57,11 +61,10 @@ class SocialShareService
     /**
      * Get the Font Awesome icon class for a platform.
      *
-     * @param string $platform The social media platform.
+     * @param Social $platform The social media platform enum instance.
      * @return string The platform's icon class.
-     * @throws \InvalidArgumentException If the platform is invalid.
      */
-    public function getIconClass(string $platform): string
+    public function getIconClass(Social $platform): string
     {
         return $this->socialShare->getIconClass($platform);
     }
@@ -69,11 +72,10 @@ class SocialShareService
     /**
      * Get the brand color for a platform.
      *
-     * @param string $platform The social media platform.
+     * @param Social $platform The social media platform enum instance.
      * @return string The platform's brand color (hex code).
-     * @throws \InvalidArgumentException If the platform is invalid.
      */
-    public function getColor(string $platform): string
+    public function getColor(Social $platform): string
     {
         return $this->socialShare->getColor($platform);
     }
@@ -81,7 +83,7 @@ class SocialShareService
     /**
      * Get all available platforms and their data.
      *
-     * @return array Array of platform data.
+     * @return array<string, array<string, string>> Array of platform data.
      */
     public function getAllPlatforms(): array
     {

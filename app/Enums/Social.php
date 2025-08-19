@@ -81,53 +81,50 @@ final class Social extends Enum
     ];
 
     /**
-     * Get platform data for a specific platform.
-     */
-    public static function getPlatformData(string $value): array
-    {
-        if (!isset(self::PLATFORM_DATA[$value])) {
-            throw new \InvalidArgumentException("Invalid social platform: {$value}");
-        }
-        return self::PLATFORM_DATA[$value];
-    }
-
-    /**
-     * Get the label for a platform.
-     */
-    public static function getLabel(string $value): string
-    {
-        return self::getPlatformData($value)['label'];
-    }
-
-    /**
-     * Get the Font Awesome icon class for a platform.
-     */
-    public static function getIconClass(string $value): string
-    {
-        return self::getPlatformData($value)['icon'];
-    }
-
-    /**
-     * Get the brand color for a platform.
-     */
-    public static function getColor(string $value): string
-    {
-        return self::getPlatformData($value)['color'];
-    }
-
-    /**
-     * Get the share URL for a platform.
-     */
-    public static function getShareUrl(string $value): string
-    {
-        return self::getPlatformData($value)['share_url'];
-    }
-
-    /**
      * Get all platform data.
      */
     public static function getAllPlatforms(): array
     {
         return self::PLATFORM_DATA;
+    }
+
+    /**
+     * Get platform-specific data by value.
+     */
+    public function data(): array
+    {
+        return self::PLATFORM_DATA[$this->value];
+    }
+
+    /**
+     * Get the human-readable label.
+     */
+    public function label(): string
+    {
+        return $this->data()['label'];
+    }
+
+    /**
+     * Get the Font Awesome icon class.
+     */
+    public function icon(): string
+    {
+        return $this->data()['icon'];
+    }
+
+    /**
+     * Get the brand color.
+     */
+    public function color(): string
+    {
+        return $this->data()['color'];
+    }
+
+    /**
+     * Get the share URL prefix.
+     */
+    public function shareUrl(): string
+    {
+        return $this->data()['share_url'];
     }
 }

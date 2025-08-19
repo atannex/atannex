@@ -4,42 +4,47 @@ declare(strict_types=1);
 
 namespace Atangageih\Repositories;
 
+use App\Models\User;
 use App\Enums\Social;
+use App\Models\Interactions\Share;
+use Illuminate\Database\Eloquent\Model;
 use Atangageih\Contracts\SocialShareInterface;
 
 /**
- * Repository for handling social media sharing functionality.
+ * Repository for handling social media sharing functionality and tracking.
  */
 class SocialShareRepository implements SocialShareInterface
 {
     /**
-     * Share a post to a specified social media platform.
+     * Share a post to a specified social media platform and track the share.
      *
-     * @param string $platform The social media platform (e.g., Social::FACEBOOK).
+     * @param Social $platform The social media platform enum instance.
      * @param string $url The URL to share.
+     * @param Model|null $shareable The shareable entity (e.g., Post).
+     * @param User|null $user The user performing the share, if authenticated.
      * @param string|null $text Optional text to include in the share.
      * @param string|null $image Optional image URL for platforms that support images.
-     * @param array $utm Optional UTM parameters for tracking.
+     * @param array<string, string> $utm Optional UTM parameters for tracking.
      * @return string The complete share URL for the platform.
-     * @throws \InvalidArgumentException If the platform is invalid.
      */
     public function share(
-        string $platform,
+        Social $platform,
         string $url,
+        ?Model $shareable = null,
+        ?User $user = null,
         ?string $text = null,
         ?string $image = null,
         array $utm = []
     ): string {
-        $platformData = Social::getPlatformData($platform);
+        $shareUrl = $platform->shareUrl() . urlencode($url);
 
         if (!empty($utm)) {
-            $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . http_build_query($utm);
+            $shareUrl .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . http_build_query($utm);
         }
 
-        $shareUrl = $platformData['share_url'] . urlencode($url);
-
+        // Special handling for platform-specific parameters
         if ($platform === Social::WHATSAPP && $text !== null) {
-            $shareUrl = $platformData['share_url'] . urlencode($text . ' ' . $url);
+            $shareUrl = $platform->shareUrl() . urlencode($text . ' ' . $url);
         } elseif ($platform === Social::PINTEREST && $image !== null) {
             $shareUrl .= '&media=' . urlencode($image);
             if ($text !== null) {
@@ -60,50 +65,62 @@ class SocialShareRepository implements SocialShareInterface
             }
         }
 
+        if ($shareable !== null) {
+            $this->trackShare($platform, $shareable, $user);
+        }
+
         return $shareUrl;
     }
 
     /**
-     * Get the display label for a platform.
+     * Track a share action in the database.
      *
-     * @param string $platform The social media platform.
-     * @return string The platform's display label.
-     * @throws \InvalidArgumentException If the platform is invalid.
+     * @param Social $platform The social media platform enum instance.
+     * @param Model $shareable The shareable entity (e.g., Post).
+     * @param User|null $user The user performing the share, if authenticated.
      */
-    public function getLabel(string $platform): string
+    protected function trackShare(Social $platform, Model $shareable, ?User $user): void
     {
-        return Social::getLabel($platform);
+        $share = Share::where([
+            'shareable_id' => $shareable->getKey(),
+            'shareable_type' => get_class($shareable),
+            'platform' => $platform->value,
+            'user_id' => $user?->getKey(),
+        ])->withTrashed()->first();
+
+        if ($share) {
+            $share->increment('share_count');
+            if ($share->trashed()) {
+                $share->restore();
+            }
+            $share->update(['shared_at' => now()]);
+        } else {
+            Share::create([
+                'shareable_id' => $shareable->getKey(),
+                'shareable_type' => get_class($shareable),
+                'user_id' => $user?->getKey(),
+                'platform' => $platform->value,
+                'share_count' => 1,
+                'shared_at' => now(),
+            ]);
+        }
     }
 
-    /**
-     * Get the Font Awesome icon class for a platform.
-     *
-     * @param string $platform The social media platform.
-     * @return string The platform's icon class.
-     * @throws \InvalidArgumentException If the platform is invalid.
-     */
-    public function getIconClass(string $platform): string
+    public function getLabel(Social $platform): string
     {
-        return Social::getIconClass($platform);
+        return $platform->label();
     }
 
-    /**
-     * Get the brand color for a platform.
-     *
-     * @param string $platform The social media platform.
-     * @return string The platform's brand color (hex code).
-     * @throws \InvalidArgumentException If the platform is invalid.
-     */
-    public function getColor(string $platform): string
+    public function getIconClass(Social $platform): string
     {
-        return Social::getColor($platform);
+        return $platform->icon();
     }
 
-    /**
-     * Get all available platforms and their data.
-     *
-     * @return array Array of platform data.
-     */
+    public function getColor(Social $platform): string
+    {
+        return $platform->color();
+    }
+
     public function getAllPlatforms(): array
     {
         return Social::getAllPlatforms();
