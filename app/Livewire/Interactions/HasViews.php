@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Traits;
+namespace App\Livewire\Interactions;
 
 use App\Models\Interactions\View;
 use Illuminate\Database\Eloquent\Relations\MorphMany;

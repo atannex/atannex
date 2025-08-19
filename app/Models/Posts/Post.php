@@ -4,10 +4,10 @@ namespace App\Models\Posts;
 
 use App\Contracts\Commentable;
 use App\Enums\Flag;
-use App\Livewire\Traits\HasLikes;
-use App\Livewire\Traits\HasRatings;
-use App\Livewire\Traits\HasShares;
-use App\Livewire\Traits\HasViews;
+use App\Livewire\Interactions\HasLikes;
+use App\Livewire\Interactions\HasRatings;
+use App\Livewire\Interactions\HasShares;
+use App\Livewire\Interactions\HasViews;
 use App\Models\Traits\Bootable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

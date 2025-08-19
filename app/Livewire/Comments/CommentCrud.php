@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Livewire\Traits;
+namespace App\Livewire\Comments;
 
 use Livewire\Attributes\On;
-use App\Livewire\Traits\CommentAuthorization;
 use App\Models\Comments\Comment as CommentModel;
 
 trait CommentCrud

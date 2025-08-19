@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Traits;
+namespace App\Livewire\Comments;
 
 use Livewire\WithPagination;
 

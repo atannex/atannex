@@ -5,11 +5,11 @@ namespace App\Livewire\Forms;
 use Livewire\Component;
 use Livewire\Attributes\Rule;
 use App\Contracts\Commentable;
-use App\Livewire\Traits\CommentCrud;
-use App\Livewire\Traits\CommentReply;
-use App\Livewire\Traits\CommentPagination;
-use App\Livewire\Traits\CommentSubmission;
-use App\Livewire\Traits\CommentAuthorization;
+use App\Livewire\Comments\CommentCrud;
+use App\Livewire\Comments\CommentReply;
+use App\Livewire\Comments\CommentPagination;
+use App\Livewire\Comments\CommentSubmission;
+use App\Livewire\Comments\CommentAuthorization;
 use App\Models\Comments\Comment as CommentModel;
 
 class Comment extends Component
