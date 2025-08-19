@@ -19,8 +19,8 @@ trait GetEditorWeeklyPick
      */
     public function getEditorWeeklyPicks(int $limit = 5, ?DateTimeInterface $start = null, ?DateTimeInterface $end = null): Collection
     {
-        $start = $start ?? Carbon::now()->startOfWeek(); // Default to start of current week (Monday)
-        $end = $end ?? Carbon::now()->endOfWeek(); // Default to end of current week (Sunday)
+        $start = $start ?? Carbon::now()->startOfWeek();
+        $end = $end ?? Carbon::now()->endOfWeek();
 
         return Post::query()
             ->published()

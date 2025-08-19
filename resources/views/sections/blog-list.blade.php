@@ -27,10 +27,7 @@
 
                                     @include('partials.author')
 
-                                    <a href="#">
-                                        <i class="fal fa-calendar-days"></i>
-                                        {{ $post->published_at->format('d M, Y') }}
-                                    </a>
+                                    @include('partials.date')
                                 </div>
                                 <a href="#" class="th-btn style2">
                                     {{ __("Read More") }}

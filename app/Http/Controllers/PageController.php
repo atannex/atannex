@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use Atannex\Extension;
 use Illuminate\View\View;
-use App\Models\Posts\Post;
 use Morfaw\Supports\Resolver;
-use App\Models\Pages\Category;
-use App\Models\Pivots\PostTag;
+use Ngangagah\Handlers\GetPosts;
 use Atangageih\Services\TagService;
 use Atangageih\Services\PageService;
 use Ngangagah\Parameters\RendersViews;
@@ -24,7 +22,8 @@ class PageController extends Controller
         protected readonly CategoryService $categoryService,
         protected readonly Extension $extension,
         protected readonly TagService $tagService,
-        protected readonly SocialShareService $socialShare
+        protected readonly SocialShareService $socialShare,
+        protected readonly GetPosts $postService
     ) {
         $this->middleware(['auth', 'verified', 'password.confirm']);
     }

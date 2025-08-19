@@ -5,15 +5,13 @@ namespace Ngangagah\Parameters;
 use Illuminate\View\View;
 use App\Models\Posts\Post;
 use App\Models\Pages\Category;
+use App\Models\Pivots\PostTag;
 use App\Models\Regions\Employee;
 use App\Models\Modules\PostModule;
-use App\Models\Pivots\PostTag;
-use Ngangagah\Handlers\Traits\GetPostNavigation;
-use Ngangagah\Handlers\Traits\GetRelatedPost;
 
 trait RendersViews
 {
-    use PageContent, GetRelatedPost, GetPostNavigation;
+    use PageContent;
 
     /**
      * Render a view with merged data.
@@ -31,10 +29,10 @@ trait RendersViews
         return [
             'popularTags'      => $this->tagService->getPopularTags(),
             'relatedTags'      => $post ? $this->tagService->getTagsForPost($post->id) : collect(),
-            'navigation'       => $post ? $this->getPostNavigation($post) : collect(),
+            'navigation'       => $post ? $this->postService->getPostNavigation($post) : collect(),
             'relatedCategories' => $category ? $this->categoryService->getRelatedCategoriesForCategory($category) : collect(),
             'recentPosts'      => $post ? $this->categoryService->getRecentPosts($post) : collect(),
-            'relatedPosts'     => $post ? $this->getRelatedPosts($post) : collect(),
+            'relatedPosts'     => $post ? $this->postService->getRelatedPosts($post) : collect(),
         ];
     }
 

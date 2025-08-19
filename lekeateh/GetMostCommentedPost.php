@@ -19,16 +19,16 @@ trait GetMostCommentedPost
      */
     public function getMostCommentedPosts(int $limit = 5, ?DateTimeInterface $start = null, ?DateTimeInterface $end = null): Collection
     {
-        $start = $start ?? Carbon::now()->subDays(30); // Default to last 30 days
+        $start = $start ?? Carbon::now()->subDays(30);
         $end = $end ?? Carbon::now();
 
         return Post::query()
             ->published()
-            ->withCount('comments') // Assumes a 'comments' relationship exists
+            ->withCount('comments')
             ->when($start, fn($query) => $query->where('published_at', '>=', $start))
             ->when($end, fn($query) => $query->where('published_at', '<=', $end))
-            ->orderByDesc('comments_count') // Order by comment count
-            ->orderByDesc('published_at') // Secondary sort by publication date
+            ->orderByDesc('comments_count')
+            ->orderByDesc('published_at')
             ->limit($limit)
             ->get();
     }
