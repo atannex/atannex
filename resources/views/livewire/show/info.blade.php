@@ -1,13 +1,11 @@
 <div class="blog-info-wrap">
     <div class="blog-metrics ms-sm-auto">
-        <!-- Likes -->
-        <button class="blog-info">
-            15k <i class="fas fa-thumbs-up"></i>
+        <button wire:click="{{ $isLiked ? 'unlike' : 'like' }}" class="blog-info {{ $isLiked ? 'text-blue-500' : 'text-gray-500' }} hover:text-blue-700 transition-colors">
+            {{ number_format($likesCount) }} <i class="fas fa-thumbs-up"></i>
         </button>
 
-        <!-- Views -->
-        <span class="blog-info">
-            126k <i class="fas fa-eye"></i>
+        <span class="text-gray-500 blog-info">
+            {{ number_format($viewsCount) }} <i class="fas fa-eye"></i>
         </span>
 
         <!-- Shares -->
@@ -15,9 +13,11 @@
             12k <i class="fas fa-share-nodes"></i>
         </span>
 
-        <!-- Rating -->
-        <span class="blog-info rating">
-            4.5 <i class="fas fa-star"></i>
-        </span>
+        <button wire:click="toggleRate" class="blog-info rating {{ $isRated ? 'text-yellow-500' : 'text-gray-500' }} hover:text-yellow-700 transition-colors">
+            {{ number_format($ratingCount) }} ({{ number_format($averageRating, 1) }})
+            @for ($i = 1; $i <= 5; $i++) <i class="{{ $isRated && $userRating >= $i ? 'fas fa-star' : 'far fa-star' }}"></i>
+                @endfor
+        </button>
+
     </div>
 </div>

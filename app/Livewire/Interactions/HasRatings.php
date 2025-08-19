@@ -2,34 +2,37 @@
 
 namespace App\Livewire\Interactions;
 
+use Illuminate\Support\Carbon;
 use App\Models\Interactions\Rating;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * Trait HasRatings
  *
- * Provides functionality for models to handle rating interactions, including creating, averaging, and retrieving ratings.
+ * Provides functionality for models to handle rating/unrating interactions using soft deletes.
  *
  * @package App\Livewire\Traits
  */
 trait HasRatings
 {
     /**
-     * Get the ratings associated with the model.
+     * Get the ratings associated with the model, including soft-deleted ones.
      *
      * @return MorphMany
      */
     public function ratings(): MorphMany
     {
-        return $this->morphMany(Rating::class, 'rateable');
+        return $this->morphMany(Rating::class, 'rateable')->withTrashed();
     }
 
     /**
-     * Add or update a rating for the model by the authenticated user.
+     * Add or restore a rating for the authenticated user.
      *
-     * @param int $value The rating value (must be between 1 and 5).
-     * @return bool Returns true if the rating was created or updated, false if the user is not authenticated or the value is invalid.
+     * @param int $value The rating value (1–5).
+     * @return bool Returns true if the rating was created/restored, false otherwise.
      */
     public function rate(int $value): bool
     {
@@ -37,41 +40,87 @@ trait HasRatings
             return false;
         }
 
-        $this->ratings()->updateOrCreate(
-            ['user_id' => Auth::id()],
-            [
-                'rating' => $value,
-                'rated_at' => now(),
-            ]
-        );
+        try {
+            $rating = $this->ratings()
+                ->withTrashed()
+                ->where('user_id', Auth::id())
+                ->first();
 
-        return true;
+            if ($rating && $rating->trashed()) {
+                $rating->restore();
+                $rating->update([
+                    'rating' => $value,
+                    'rated_at' => now(),
+                ]);
+                return true;
+            }
+
+            $this->ratings()->updateOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'rateable_id' => $this->id,
+                    'rateable_type' => get_class($this),
+                ],
+                [
+                    'rating' => $value,
+                    'rated_at' => now(),
+                ]
+            );
+
+            return true;
+        } catch (QueryException $e) {
+            Log::error('Rating error: ' . $e->getMessage());
+            return false;
+        }
     }
 
     /**
-     * Get the average rating for the model.
+     * Remove a rating (soft delete) for the authenticated user.
      *
-     * @return float|null The average rating or null if no ratings exist.
+     * @return bool Returns true if the rating was soft-deleted, false otherwise.
+     */
+    public function unrate(): bool
+    {
+        if (!Auth::check()) {
+            return false;
+        }
+
+        $rating = $this->ratings()
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if ($rating && !$rating->trashed()) {
+            $rating->delete();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the average rating for the model (active ratings only).
+     *
+     * @return float|null
      */
     public function averageRating(): ?float
     {
-        return $this->ratings()->avg('rating');
+        return $this->ratings()->whereNull('deleted_at')->avg('rating') ?: null;
     }
 
     /**
-     * Get the total number of ratings for the model.
+     * Get the total number of active ratings for the model.
      *
      * @return int
      */
     public function ratingCount(): int
     {
-        return $this->ratings()->count();
+        return $this->ratings()->whereNull('deleted_at')->count();
     }
 
     /**
-     * Get the rating given by the authenticated user.
+     * Get the rating given by the authenticated user (active rating only).
      *
-     * @return int|null The user's rating or null if not rated or user is not authenticated.
+     * @return int|null
      */
     public function userRating(): ?int
     {
@@ -79,6 +128,39 @@ trait HasRatings
             return null;
         }
 
-        return $this->ratings()->where('user_id', Auth::id())->value('rating');
+        return $this->ratings()
+            ->where('user_id', Auth::id())
+            ->whereNull('deleted_at')
+            ->value('rating');
+    }
+
+    /**
+     * Check if the authenticated user has rated the model (active rating only).
+     *
+     * @return bool
+     */
+    public function isRatedByUser(): bool
+    {
+        return Auth::check() && $this->ratings()
+            ->where('user_id', Auth::id())
+            ->whereNull('deleted_at')
+            ->exists();
+    }
+
+    /**
+     * Get the timestamp when the authenticated user rated the model.
+     *
+     * @return Carbon|null
+     */
+    public function ratedAt(): ?Carbon
+    {
+        if (!Auth::check()) {
+            return null;
+        }
+
+        return $this->ratings()
+            ->where('user_id', Auth::id())
+            ->whereNull('deleted_at')
+            ->value('rated_at');
     }
 }
