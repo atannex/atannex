@@ -44,7 +44,7 @@ trait RendersViews
         $post   = Post::where('slug_path', $slug)->first();
         $module = PostModule::with('post')
             ->whereHas('post', fn($q) => $q->where('slug_path', $slug))
-            ->first();
+            ->firstOrFail();
 
         return $this->render('shows.index', [
             'module'  => $module,

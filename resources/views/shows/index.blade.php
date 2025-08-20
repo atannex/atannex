@@ -15,12 +15,12 @@
                         <div class="blog-content-wrap">
                             <div class="share-links-wrap">
 
-                                {{-- <x-shows.social-share :post="$module->post" /> --}}
+                                {{-- <x-shows.social-share :share="$module->post" /> --}}
 
                             </div>
                             <div class="blog-content">
 
-                                <livewire:show.info :shares="$module->post" />
+                                <livewire:show.info :post="$module->post" />
 
                                 <x-shows.content />
 
