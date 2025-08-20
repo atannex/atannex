@@ -50,6 +50,7 @@
         ],
         "psr-4": {
             "App\\": "app/",
+            "Social\\": "social/",
             "Atannex\\": "atannex/",
             "Lebialem\\": "lebialem/",
             "Ngangagah\\": "ngangagah/",

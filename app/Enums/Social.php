@@ -21,13 +21,12 @@ use BenSampo\Enum\Enum;
 final class Social extends Enum
 {
     public const FACEBOOK = 'facebook';
-    public const X = 'x';
+    public const TWITTER = 'twitter';
     public const LINKEDIN = 'linkedin';
     public const WHATSAPP = 'whatsapp';
     public const REDDIT = 'reddit';
     public const PINTEREST = 'pinterest';
     public const TELEGRAM = 'telegram';
-    public const TUMBLR = 'tumblr';
 
     private const PLATFORM_DATA = [
         self::FACEBOOK => [
@@ -36,9 +35,9 @@ final class Social extends Enum
             'color' => '#1877F2',
             'share_url' => 'https://www.facebook.com/sharer/sharer.php?u=',
         ],
-        self::X => [
-            'label' => 'X',
-            'icon' => 'fab fa-twitter',
+        self::TWITTER => [
+            'label' => 'twitter',
+            'icon' => 'fab fa-x-twitter',
             'color' => '#000000',
             'share_url' => 'https://x.com/intent/tweet?url=',
         ],
@@ -72,12 +71,6 @@ final class Social extends Enum
             'color' => '#0088CC',
             'share_url' => 'https://t.me/share/url?url=',
         ],
-        self::TUMBLR => [
-            'label' => 'Tumblr',
-            'icon' => 'fab fa-tumblr',
-            'color' => '#36465D',
-            'share_url' => 'https://www.tumblr.com/widgets/share/tool?canonicalUrl=',
-        ],
     ];
 
     /**
@@ -85,7 +78,6 @@ final class Social extends Enum
      */
     public static function getPlatformData(string $value): array
     {
-
         return self::PLATFORM_DATA[$value];
     }
 
@@ -100,7 +92,7 @@ final class Social extends Enum
     /**
      * Get the Font Awesome icon class for a platform.
      */
-    public static function getIconClass(string $value): string
+    public static function getIcon(string $value): string
     {
         return self::getPlatformData($value)['icon'];
     }
