@@ -1,5 +1,7 @@
 # Atannex - *(Lebialem Community News)*
 
+![Project Logo](logo.png)
+
 ## *Overview*
 
 Atannex is a comprehensive digital platform dedicated to the Lebialem community across the globe. Our mission is to celebrate, promote, and preserve Lebialem culture, heritage, and identity by providing an engaging, centralized hub for cultural content, community news, and real-time updates. Atannex aims to empower Lebialem individuals and organizations by fostering cultural pride, facilitating communication, and supporting community-driven initiatives.
