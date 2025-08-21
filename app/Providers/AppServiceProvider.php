@@ -7,11 +7,8 @@ use App\Enums\Flag;
 use App\Enums\Icons;
 use App\Enums\Image;
 use App\Enums\PostType;
-use App\Events\PostPublished;
-use App\Models\Pages\Page;
 use App\Models\Pages\Widget;
 use App\Models\Pages\Section;
-use App\Observers\PageObserver;
 use App\Observers\WidgetObserver;
 use App\Observers\SectionObserver;
 use Illuminate\Support\ServiceProvider;
@@ -52,7 +49,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Section::observe(new SectionObserver(new SectionAdapter()));
         Widget::observe(new WidgetObserver(new WidgetAdapter()));
-        Page::observe(PageObserver::class);
     }
 
     /**
