@@ -9,8 +9,6 @@ use App\Models\Modules\DocumentModule;
 use Atangageih\Contracts\DocumentInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use InvalidArgumentException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Repository for handling document-related operations.
@@ -30,14 +28,9 @@ class DocumentRepository implements DocumentInterface
      *
      * @param string $type The document type to filter by
      * @return Collection<Document> Collection of published documents
-     * @throws InvalidArgumentException If type is empty
      */
     public function getPublishedDocumentsByType(string $type): Collection
     {
-        if (empty($type)) {
-            throw new InvalidArgumentException('Document type cannot be empty');
-        }
-
         return $this->basePublishedDocumentQuery()
             ->where('type', $type)
             ->with('modules')
@@ -51,15 +44,9 @@ class DocumentRepository implements DocumentInterface
      * @param string $type The document type
      * @param string $slug The document slug
      * @return DocumentModule|null The found document module or null
-     * @throws InvalidArgumentException If type or slug is empty
-     * @throws ModelNotFoundException If no matching document module is found
      */
     public function findModuleByTypeAndSlug(string $type, string $slug): ?DocumentModule
     {
-        if (empty($type) || empty($slug)) {
-            throw new InvalidArgumentException('Type and slug cannot be empty');
-        }
-
         $documentConstraints = function (Builder $query) use ($type, $slug): void {
             $query->where('type', $type)
                 ->where('slug', $slug);
