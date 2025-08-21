@@ -20,7 +20,13 @@ use App\Models\Traits\Bootable;
  */
 class Category extends Model implements Sluggable
 {
-    use SoftDeletes, EnableSlug, CategoryRelation, EnableScope, GetHierarchy, Resolver, Bootable;
+    use SoftDeletes;
+    use EnableSlug;
+    use CategoryRelation;
+    use EnableScope;
+    use GetHierarchy;
+    use Resolver;
+    use Bootable;
 
     /**
      * The attributes that are mass assignable.

@@ -13,7 +13,9 @@ use Morfaw\Supports\EnableSlug;
 
 class Document extends Model
 {
-    use SoftDeletes, EnableSlug, EnableScope;
+    use SoftDeletes;
+    use EnableSlug;
+    use EnableScope;
 
     /**
      * The attribute used to generate the slug

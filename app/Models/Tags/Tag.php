@@ -13,7 +13,8 @@ use Morfaw\Supports\EnableSlug;
 
 class Tag extends Model
 {
-    use SoftDeletes, EnableSlug;
+    use SoftDeletes;
+    use EnableSlug;
 
     /**
      * Source field for slug generation.

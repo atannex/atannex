@@ -25,7 +25,16 @@ use Ngangagah\Relations\PostRelation;
  */
 class Post extends Model implements Commentable, Sluggable
 {
-    use SoftDeletes, EnableSlug, EnableScope, PostRelation, ImageCleanup, Bootable, HasLikes, HasRatings, HasShares, HasViews;
+    use SoftDeletes;
+    use EnableSlug;
+    use EnableScope;
+    use PostRelation;
+    use ImageCleanup;
+    use Bootable;
+    use HasLikes;
+    use HasRatings;
+    use HasShares;
+    use HasViews;
 
     /**
      * The source attribute for slug generation.

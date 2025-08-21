@@ -6,8 +6,6 @@ use Morfaw\Supports\EnableSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ngangagah\Relations\WidgetRelation;
-use Ngangagah\Relations\WidgetRelationRelation as RelationsWidget;
-
 class Widget extends Model
 {
     use EnableSlug;
