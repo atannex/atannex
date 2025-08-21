@@ -14,7 +14,7 @@ trait PageView
     /**
      * Render a static page.
      */
-    protected function renderPageView(string $slug): View
+    public function renderPageView(string $slug): View
     {
         $page = $this->pageService->getHomePage($slug);
         $this->resolveContent($page, $slug);

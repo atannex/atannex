@@ -9,7 +9,7 @@ use Atannex\Sections\GetPostNavigation;
 use Atannex\Components\GetEditorWeeklyPick;
 use Atannex\Components\GetMostCommentedPost;
 
-class GetPosts
+class GetPost
 {
     use GetRecentPost;
     use GetPostNavigation;

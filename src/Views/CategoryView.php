@@ -13,7 +13,7 @@ trait CategoryView
     /**
      * Render a category page with related content.
      */
-    protected function renderCategoryView(Category $category): View
+    public function renderCategoryView(Category $category): View
     {
         $posts = $this->categoryService->getPostsByCategory($category);
 

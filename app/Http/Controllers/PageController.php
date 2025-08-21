@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use Atannex\Atannex;
 use Illuminate\View\View;
 use Atannex\Traits\Resolver;
-use Atannex\Binders\GetPosts;
+use Atannex\Binders\GetPost;
 use Atannex\Services\TagService;
 use Atannex\Services\PageService;
 use Atannex\Services\CategoryService;
-use Atannex\Views\ViewFacade;
+use Atannex\Binders\GetView;
 
 class PageController extends Controller
 {

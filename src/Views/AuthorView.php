@@ -13,7 +13,7 @@ trait AuthorView
     /**
      * Render the author profile page.
      */
-    protected function renderAuthorView(Employee $author): View
+    public function renderAuthorView(Employee $author): View
     {
         return $this->render('author', [
             'author'      => $author,

@@ -3,11 +3,11 @@
 namespace Atannex;
 
 use App\Enums\Image;
-use Atannex\Binders\GetPosts;
+use Atannex\Binders\GetPost;
 use Atannex\Services\PageService;
 use Atannex\Helpers\MediaHelper;
 
-final class GlobalData extends GetPosts
+final class GlobalData extends GetPost
 {
     use MediaHelper;
 

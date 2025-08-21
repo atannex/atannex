@@ -3,10 +3,10 @@
 namespace Atannex;
 
 use App\Enums\PostType;
-use Atannex\Binders\Foundation;
+use Atannex\Binders\GetComponent;
 use Illuminate\Support\Collection;
 
-final class Atannex extends Foundation
+final class Atannex extends GetComponent
 {
     private const POST_TYPE_METHODS = [
         PostType::BREAKING_POST        => 'getBreakingPosts',

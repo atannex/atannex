@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Atannex\Binders\GetPosts;
+use Atannex\Binders\GetPost;
 
 class HomeController extends Controller
 {
 
-    public function __construct(protected readonly GetPosts $postService) {}
+    public function __construct(protected readonly GetPost $postService) {}
     /**
      * Show the application dashboard.
      *

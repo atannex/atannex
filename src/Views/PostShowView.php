@@ -15,7 +15,7 @@ trait PostShowView
     /**
      * Render a single post page.
      */
-    protected function renderPostShow(Category $category, string $slug): View
+    public function renderPostShow(Category $category, string $slug): View
     {
         $post   = Post::where('slug_path', $slug)->first();
         $module = PostModule::with('post')

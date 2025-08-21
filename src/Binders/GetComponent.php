@@ -43,7 +43,7 @@ use Atannex\Components\GetMostViewedAndSharedPost;
 use Atannex\Components\GetMostViewedAndCommentedPost;
 use Atannex\Components\GetMostViewedSharedLikedAndCommentedPost;
 
-class Foundation
+class GetComponent
 {
     use GetBreakingPost;
     use GetComingSoonPost;

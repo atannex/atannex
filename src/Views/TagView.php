@@ -13,7 +13,7 @@ trait TagView
     /**
      * Render posts associated with a specific tag.
      */
-    protected function renderTagView(PostTag $postTag): View
+    public function renderTagView(PostTag $postTag): View
     {
         $tag   = $postTag->tag;
         $first = $tag->posts->first();
