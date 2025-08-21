@@ -6,7 +6,7 @@ use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
 use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
-use Atannex\Services\Traits\Helper;
+use Atannex\Helpers\MediaHelper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -15,7 +15,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 trait TagQuery
 {
-    use Helper;
+    protected const DEFAULT_PAGINATION_LIMIT      = 50;
+
+    protected const DEFAULT_POPULAR_TAGS_LIMIT    = 12;
 
     /**
      * Retrieve paginated posts associated with a specific tag.

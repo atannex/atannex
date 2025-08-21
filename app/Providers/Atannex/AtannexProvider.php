@@ -3,7 +3,7 @@
 namespace App\Providers\Atannex;
 
 use App\Models\User;
-use Atannex\Navigation;
+use Atannex\GlobalData;
 use App\Policies\UserPolicy;
 use App\Policies\CommentPolicy;
 use App\Models\Comments\Comment;
@@ -20,16 +20,16 @@ class AtannexProvider extends ServiceProvider
      * Bootstrap any application services.
      *
      * This method is automatically called after all other services are registered.
-     * It shares global navigation data across all views.
+     * It shares global data across all views.
      *
-     * @param Navigation $navigation The navigation handler instance.
+     * @param GlobalData $navigation The navigation handler instance.
      */
-    public function boot(Navigation $navigation): void
+    public function boot(GlobalData $globalData): void
     {
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Comment::class, CommentPolicy::class);
         Gate::after(fn($user) => $user->hasRole('Super Admin') ? true : null);
-        $this->shareNavigationData($navigation);
+        $this->shareGlobalData($globalData);
     }
 
     /**
@@ -38,10 +38,10 @@ class AtannexProvider extends ServiceProvider
      * This allows any Blade view to access the 'global' variable,
      * which contains structured navigation data (e.g., menus, links).
      *
-     * @param Navigation $navigation The navigation service providing page navigation data.
+     * @param GlobalData The navigation service providing GlobalData.
      */
-    protected function shareNavigationData(Navigation $navigation): void
+    protected function shareGlobalData(GlobalData $globalData): void
     {
-        View::share('global', $navigation->getPageNavigation());
+        View::share('global', $globalData->getGlobalData());
     }
 }

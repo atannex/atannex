@@ -5,11 +5,11 @@ namespace Atannex;
 use App\Enums\Image;
 use Atannex\Binders\GetPosts;
 use Atannex\Services\PageService;
-use Atannex\Services\Traits\Helper;
+use Atannex\Helpers\MediaHelper;
 
-final class Navigation extends GetPosts
+final class GlobalData extends GetPosts
 {
-    use Helper;
+    use MediaHelper;
 
     public function __construct(protected readonly PageService $pageService) {}
 
@@ -18,7 +18,7 @@ final class Navigation extends GetPosts
      *
      * @return array<string, mixed> The navigation data array
      */
-    public function getPageNavigation(): array
+    public function getGlobalData(): array
     {
         return [
             'logo' => $this->getGalleryImage(Image::LOGO()),

@@ -9,8 +9,8 @@ use App\Models\Posts\Post;
 use App\Models\Pages\Category;
 use App\Models\Regions\Employee;
 use Illuminate\Support\Collection;
-use Atannex\Services\Traits\Helper;
 use Atannex\Contracts\CategoryInterface;
+use Atannex\Helpers\MediaHelper;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -22,7 +22,13 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 final class CategoryService
 {
-    use Helper;
+    use MediaHelper;
+
+    protected const DEFAULT_PAGINATION_LIMIT      = 50;
+
+    protected const DEFAULT_RECENT_POSTS_LIMIT    = 5;
+
+    protected const DEFAULT_POPULAR_TAGS_LIMIT    = 12;
 
     /**
      * Initialize the CategoryService with a category repository implementation.

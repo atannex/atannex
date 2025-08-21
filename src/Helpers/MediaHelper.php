@@ -1,6 +1,6 @@
 <?php
 
-namespace Atannex\Services\Traits;
+namespace Atannex\Helpers;
 
 use App\Enums\Flag;
 use App\Enums\Icons;
@@ -9,14 +9,8 @@ use App\Models\Others\Gallery;
 use App\Models\Others\SocialMedia;
 use Illuminate\Support\Collection;
 
-trait Helper
+trait MediaHelper
 {
-    use HandlesExceptions;
-
-    protected const DEFAULT_PAGINATION_LIMIT      = 50;
-    protected const DEFAULT_RECENT_POSTS_LIMIT    = 5;
-    protected const DEFAULT_POPULAR_TAGS_LIMIT    = 12;
-
     /**
      * Map a SocialMedia model instance to a simplified array representation.
      *
