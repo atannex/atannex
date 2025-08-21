@@ -63,13 +63,13 @@
                         @auth
                         @if(auth()->id() === $reply->user_id)
                         <div class="gap-2 comment-actions d-flex align-items-center">
-                            <a wire:click="$dispatch('edit-comment', { commentId: {{ $reply->id }} })" class="text-muted" title="Edit">
+                            <a type="button" wire:click="$dispatch('edit-comment', { commentId: {{ $reply->id }} })" class="text-muted" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a wire:click="$dispatch('reply-to-comment', { commentId: {{ $reply->id }}, username: '{{ $reply->user->name }}' })" class="text-primary" title="Reply">
+                            <a type="button" wire:click="$dispatch('reply-to-comment', { commentId: {{ $reply->id }}, username: '{{ $reply->user->name }}' })" class="text-primary" title="Reply">
                                 <i class="fas fa-reply"></i>
                             </a>
-                            <a wire:click="$dispatch('delete-comment', { commentId: {{ $reply->id }} })" class="text-danger" title="Delete" onclick="return confirm('{{ __('Are you sure you want to delete this comment?') }}')">
+                            <a type="button" wire:click="$dispatch('delete-comment', { commentId: {{ $reply->id }} })" class="text-danger" title="Delete" onclick="return confirm('{{ __('Are you sure you want to delete this comment?') }}')">
                                 <i class="fas fa-trash"></i>
                             </a>
                         </div>
