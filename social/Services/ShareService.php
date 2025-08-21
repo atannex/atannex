@@ -7,7 +7,7 @@ namespace Social\Services;
 use Social\Contracts\ShareInterface;
 
 
-class SocialShareService
+class ShareService
 {
     public function __construct(
         protected ShareInterface $interface

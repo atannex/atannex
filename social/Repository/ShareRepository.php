@@ -6,7 +6,7 @@ namespace Social\Repository;
 
 use Social\Contracts\ShareInterface;
 
-class SocialShareRepository implements ShareInterface
+class ShareRepository implements ShareInterface
 {
 
 }
