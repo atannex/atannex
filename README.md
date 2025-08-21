@@ -1,6 +1,7 @@
 # Atannex - *(Lebialem Community News)*
 
-![Project Logo](logo.png)
+<!-- markdownlint-disable-next-line MD033 -->
+<img src="logo.png" alt="Project Logo" width="50" height="50"/>
 
 ## *Overview*
 
