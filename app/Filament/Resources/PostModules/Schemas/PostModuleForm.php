@@ -45,6 +45,9 @@ class PostModuleForm
                         ->schema([
                             FileUpload::make('src')
                                 ->label('Image')
+                                ->disk('public')
+                                ->visibility('public')
+                                ->directory('posts/images')
                                 ->image()
                                 ->required(),
                         ]),
@@ -56,18 +59,26 @@ class PostModuleForm
                             Repeater::make('images')
                                 ->label('Images (light/dark)')
                                 ->schema([
-                                    Select::make('mode')
-                                        ->label('Mode')
-                                        ->options([
-                                            'light' => 'Light',
-                                            'dark' => 'Dark',
-                                        ])
-                                        ->required(),
 
                                     FileUpload::make('path')
                                         ->label('Image')
                                         ->image()
-                                        ->required(),
+                                        ->disk('public')
+                                        ->visibility('public')
+                                        ->directory('posts/images')
+                                        ->image()
+                                        ->imageEditor()
+                                        ->imageEditorAspectRatios([
+                                            '16:9' => '16:9 (Recommended)',
+                                            '4:3' => '4:3 (Standard)',
+                                            '1:1' => '1:1 (Square)',
+                                        ])
+                                        ->maxSize(5120)
+                                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                        ->helperText('Recommended size: 1200x675px (16:9 ratio)')
+                                        ->imagePreviewHeight('250')
+                                        ->uploadingMessage('Uploading your image...')
+                                        ->columnSpanFull(),
                                 ])
                                 ->columns(2)
                                 ->itemLabel(fn(array $state): ?string => ucfirst($state['mode'] ?? '')),
@@ -85,6 +96,9 @@ class PostModuleForm
                         ->schema([
                             FileUpload::make('image')
                                 ->label('Image')
+                                ->disk('public')
+                                ->visibility('public')
+                                ->directory('posts/images')
                                 ->image(),
 
                             TextInput::make('heading')->label('Heading'),
