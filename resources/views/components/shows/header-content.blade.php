@@ -17,13 +17,13 @@
 
     <a href="blog-details.html">
         <i class="far fa-comments"></i>
-        Comments ({{ $module->post->comments_count ?? 0 }})
+        Comments ({{ $module->post->comments->count() ?? 0 }})
     </a>
 
-    {{-- <span>
+    <span>
         <i class="far fa-book-open"></i>
         {{ $module->readingTime() }} {{ Str::plural('Min', $module->readingTime()) }} Read
-    </span> --}}
+    </span>
 </div>
 
 <div class="mb-40 blog-img">
