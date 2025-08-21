@@ -3,6 +3,7 @@
 namespace App\Models\Posts;
 
 use App\Enums\Flag;
+use App\Models\Tags\Tag;
 use App\Contracts\Sluggable;
 use App\Contracts\Commentable;
 use App\Models\Pivots\PostTag;
@@ -89,10 +90,11 @@ class Post extends Model implements Commentable, Sluggable
         $categorySlug = $this->category?->slug_path;
 
         if ($categorySlug) {
-            $this->tags()->with('tag')->get()->each(function (PostTag $postTag) use ($categorySlug) {
-                if ($postTag->tag) {
-                    $postTag->slug_path = $this->buildSlugPath($categorySlug, $postTag->tag->slug);
-                    $postTag->saveQuietly();
+            $this->tags()->get()->each(function (Tag $tag) use ($categorySlug) {
+                $pivot = $tag->pivot;
+                if ($pivot) {
+                    $pivot->slug_path = $this->buildSlugPath($categorySlug, $tag->slug);
+                    $pivot->saveQuietly();
                 }
             });
         }

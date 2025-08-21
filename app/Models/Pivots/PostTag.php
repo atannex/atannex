@@ -21,14 +21,19 @@ class PostTag extends Pivot implements Sluggable
         'slug_path',
     ];
 
+    protected $casts = [
+        'post_id' => 'integer',
+        'tag_id' => 'integer',
+    ];
+
     public function post(): BelongsTo
     {
-        return $this->belongsTo(Post::class);
+        return $this->belongsTo(Post::class, 'post_id');
     }
 
     public function tag(): BelongsTo
     {
-        return $this->belongsTo(Tag::class);
+        return $this->belongsTo(Tag::class, 'tag_id');
     }
 
     public function getSlugBase(): string
