@@ -2,11 +2,11 @@
 
 namespace App\Models\Pages;
 
-use App\Models\Traits\Bootable;
 use Morfaw\Supports\Resolver;
+use App\Models\Traits\Bootable;
 use Morfaw\Supports\EnableSlug;
 use Morfaw\Supports\EnableScope;
-use Atangageih\Filters\Hierarchy;
+use Atangageih\Filters\GetHierarchy;
 use Illuminate\Database\Eloquent\Model;
 use Ngangagah\Relations\CategoryRelation;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,7 +17,7 @@ class Category extends Model
     use EnableSlug;
     use CategoryRelation;
     use EnableScope;
-    use Hierarchy;
+    use GetHierarchy;
     use Resolver;
     use Bootable;
 
