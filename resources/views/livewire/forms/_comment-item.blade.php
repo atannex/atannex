@@ -17,13 +17,13 @@
                 @auth
                 @if(auth()->id() === $comment->user_id)
                 <div class="gap-2 comment-actions d-flex align-items-center">
-                    <a type="button" wire:click="$dispatch('edit-comment', { commentId: {{ $comment->id }} })" class="text-muted" title="Edit">
+                    <a wire:click="$dispatch('edit-comment', { commentId: {{ $comment->id }} })" class="text-muted" title="Edit">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <a type="button" wire:click="$dispatch('reply-to-comment', { commentId: {{ $comment->id }}, username: '{{ $comment->user->name }}' })" class="text-primary" title="Reply">
+                    <a wire:click="$dispatch('reply-to-comment', { commentId: {{ $comment->id }}, username: '{{ $comment->user->name }}' })" class="text-primary" title="Reply">
                         <i class="fas fa-reply"></i>
                     </a>
-                    <a type="button" wire:click="$dispatch('delete-comment', { commentId: {{ $comment->id }} })" class="text-danger" title="Delete" onclick="return confirm('{{ __('Are you sure you want to delete this comment?') }}')">
+                    <a wire:click="$dispatch('delete-comment', { commentId: {{ $comment->id }} })" class="text-danger" title="Delete" onclick="return confirm('{{ __('Are you sure you want to delete this comment?') }}')">
                         <i class="fas fa-trash"></i>
                     </a>
                 </div>
@@ -40,10 +40,8 @@
         </div>
     </div>
 
-    @if(!$comment->parent_id && $comment->replies && $comment->replies->count())
-    @php
-    $shown = $shownRepliesCount[$comment->id] ?? 0;
-    @endphp
+    @if(!$comment->parent_id && $comment->replies->count())
+    @php $shown = $shownRepliesCount[$comment->id] ?? 0; @endphp
 
     @if($shown > 0)
     <ul class="mt-2 children ps-4">
@@ -65,13 +63,13 @@
                         @auth
                         @if(auth()->id() === $reply->user_id)
                         <div class="gap-2 comment-actions d-flex align-items-center">
-                            <a type="button" wire:click="$dispatch('edit-comment', { commentId: {{ $reply->id }} })" class="text-muted" title="Edit">
+                            <a wire:click="$dispatch('edit-comment', { commentId: {{ $reply->id }} })" class="text-muted" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a type="button" wire:click="$dispatch('reply-to-comment', { commentId: {{ $reply->id }}, username: '{{ $reply->user->name }}' })" class="text-primary" title="Reply">
+                            <a wire:click="$dispatch('reply-to-comment', { commentId: {{ $reply->id }}, username: '{{ $reply->user->name }}' })" class="text-primary" title="Reply">
                                 <i class="fas fa-reply"></i>
                             </a>
-                            <a type="button" wire:click="$dispatch('delete-comment', { commentId: {{ $reply->id }} })" class="text-danger" title="Delete" onclick="return confirm('{{ __('Are you sure you want to delete this comment?') }}')">
+                            <a wire:click="$dispatch('delete-comment', { commentId: {{ $reply->id }} })" class="text-danger" title="Delete" onclick="return confirm('{{ __('Are you sure you want to delete this comment?') }}')">
                                 <i class="fas fa-trash"></i>
                             </a>
                         </div>
@@ -93,15 +91,16 @@
             <div class="reply_and_edit">
                 <a type="button" wire:click="loadMoreReplies({{ $comment->id }})" class="reply-btn">
                     <i class="fas fa-reply"></i>
-                    {{ __("Load More Replies") }}
+                    {{ Str::plural('Load More Reply', $comment->replies->count()) }}
                 </a>
             </div>
             @endif
     </ul>
+
     <div class="reply_and_edit">
         <a type="button" wire:click="collapseReplies({{ $comment->id }})" class="reply-btn">
             <i class="fas fa-reply"></i>
-            {{ __('Hide Replies') }}
+            {{ Str::plural('Hide Reply', $comment->replies->count()) }}
         </a>
     </div>
     @else
