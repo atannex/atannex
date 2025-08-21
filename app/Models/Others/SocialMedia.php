@@ -3,7 +3,7 @@
 namespace App\Models\Others;
 
 use App\Enums\Flag;
-use Morfaw\Supports\EnableScope;
+use Atannex\Enables\EnableScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\MorphTo;

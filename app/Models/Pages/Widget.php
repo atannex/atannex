@@ -2,10 +2,10 @@
 
 namespace App\Models\Pages;
 
-use Morfaw\Supports\EnableSlug;
+use Atannex\Enables\EnableSlug;
+use Atannex\Relations\WidgetRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Ngangagah\Relations\WidgetRelation;
 class Widget extends Model
 {
     use EnableSlug;

@@ -2,11 +2,11 @@
 
 namespace App\Models\Regions;
 
+use Atannex\Enables\EnableSlug;
+use Atannex\Enables\EnableScope;
+use Atannex\Relations\RegionRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Morfaw\Supports\EnableScope;
-use Morfaw\Supports\EnableSlug;
-use Ngangagah\Relations\RegionRelation;
 
 class Region extends Model
 {

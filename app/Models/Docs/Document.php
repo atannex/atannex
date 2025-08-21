@@ -2,14 +2,14 @@
 
 namespace App\Models\Docs;
 
+use Atannex\Enables\EnableSlug;
 use App\Models\Regions\Employee;
+use Atannex\Enables\EnableScope;
 use App\Models\Modules\DocumentModule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Morfaw\Supports\EnableScope;
-use Morfaw\Supports\EnableSlug;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Document extends Model
 {

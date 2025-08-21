@@ -3,7 +3,7 @@
 namespace App\Models\Modules;
 
 use App\Models\Posts\Post;
-use App\Models\Modules\Traits\HasReading;
+use Atannex\Traits\HasReading;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

@@ -5,7 +5,7 @@ namespace App\Models\Pivots;
 use App\Contracts\Sluggable;
 use App\Models\Posts\Post;
 use App\Models\Tags\Tag;
-use App\Models\Traits\Bootable;
+use Atannex\Traits\Bootable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 

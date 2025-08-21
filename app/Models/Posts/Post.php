@@ -2,21 +2,21 @@
 
 namespace App\Models\Posts;
 
-use App\Contracts\Commentable;
-use App\Contracts\Sluggable;
 use App\Enums\Flag;
-use App\Livewire\Interactions\HasLikes;
-use App\Livewire\Interactions\HasRatings;
-use App\Livewire\Interactions\HasShares;
-use App\Livewire\Interactions\HasViews;
 use App\Models\Tags\Tag;
-use App\Models\Traits\Bootable;
+use App\Contracts\Sluggable;
+use App\Contracts\Commentable;
+use Atannex\Traits\Bootable;
+use Atannex\Enables\EnableSlug;
+use Atannex\Enables\EnableScope;
+use Atannex\Traits\ImageCleanup;
+use Atannex\Relations\PostRelation;
+use App\Livewire\Interactions\HasLikes;
+use App\Livewire\Interactions\HasViews;
 use Illuminate\Database\Eloquent\Model;
+use App\Livewire\Interactions\HasShares;
+use App\Livewire\Interactions\HasRatings;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Morfaw\Orchestrators\ImageCleanup;
-use Morfaw\Supports\EnableScope;
-use Morfaw\Supports\EnableSlug;
-use Ngangagah\Relations\PostRelation;
 
 /**
  * Class Post

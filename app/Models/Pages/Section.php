@@ -2,10 +2,10 @@
 
 namespace App\Models\Pages;
 
-use Morfaw\Supports\EnableSlug;
-use Morfaw\Supports\EnableScope;
+use Atannex\Enables\EnableSlug;
+use Atannex\Enables\EnableScope;
+use Atannex\Relations\SectionRelation;
 use Illuminate\Database\Eloquent\Model;
-use Ngangagah\Relations\SectionRelation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Section extends Model

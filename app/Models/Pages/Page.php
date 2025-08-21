@@ -2,11 +2,11 @@
 
 namespace App\Models\Pages;
 
+use Atannex\Enables\EnableSlug;
+use Atannex\Enables\EnableScope;
+use Atannex\Relations\PageRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Morfaw\Supports\EnableScope;
-use Morfaw\Supports\EnableSlug;
-use Ngangagah\Relations\PageRelation;
 
 class Page extends Model
 {

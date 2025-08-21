@@ -1,0 +1,88 @@
+<?php
+
+namespace Atannex\Binders;
+
+use Atannex\Components\GetPostByTag;
+use Atannex\Components\GetEditorPick;
+use Atannex\Components\GetPostByWeek;
+use Atannex\Components\GetRecentPost;
+use Atannex\Components\GetPopularPost;
+use Atannex\Components\GetPostByMonth;
+use Atannex\Components\GetPostByToday;
+use Atannex\Components\GetBreakingPost;
+use Atannex\Components\GetFeaturedPost;
+use Atannex\Components\GetHotPicksPost;
+use Atannex\Components\GetMostReadPost;
+use Atannex\Components\GetPostByAuthor;
+use Atannex\Components\GetPostByFondom;
+use Atannex\Components\GetTodayStories;
+use Atannex\Components\GetTopPostInTag;
+use Atannex\Components\GetTopRatedPost;
+use Atannex\Components\GetTrendingPost;
+use Atannex\Components\GetMostLikedPost;
+use Atannex\Components\GetPostByVillage;
+use Atannex\Components\GetComingSoonPost;
+use Atannex\Components\GetMostSharedPost;
+use Atannex\Components\GetMostViewedPost;
+use Atannex\Components\GetPostByCategory;
+use Atannex\Components\GetPostByTwoWeeks;
+use Atannex\Components\GetMostEngagedPost;
+use Atannex\Components\GetThisWeekTopPost;
+use Atannex\Components\GetEditorWeeklyPick;
+use Atannex\Components\GetHeadlineOfTheDay;
+use Atannex\Components\GetJustPublishedPost;
+use Atannex\Components\GetMostCommentedPost;
+use Atannex\Components\GetPostBySubdivision;
+use Atannex\Components\GetTrendingPostInTag;
+use Atannex\Components\GetMostViewedPostToday;
+use Atannex\Components\GetLatestPostInCategory;
+use Atannex\Components\GetPopularPostInCategory;
+use Atannex\Components\GetMostViewedAndLikedPost;
+use Atannex\Components\GetMostViewedPostThisWeek;
+use Atannex\Components\GetMostViewedAndSharedPost;
+use Atannex\Components\GetMostViewedAndCommentedPost;
+use Atannex\Components\GetMostViewedSharedLikedAndCommentedPost;
+
+class Foundation
+{
+    use GetBreakingPost;
+    use GetComingSoonPost;
+    use GetEditorPick;
+    use GetFeaturedPost;
+    use GetHeadlineOfTheDay;
+    use GetHotPicksPost;
+    use GetJustPublishedPost;
+    use GetLatestPostInCategory;
+    use GetMostCommentedPost;
+    use GetMostEngagedPost;
+    use GetMostLikedPost;
+    use GetMostReadPost;
+    use GetMostSharedPost;
+    use GetMostViewedAndCommentedPost;
+    use GetMostViewedAndLikedPost;
+    use GetMostViewedAndSharedPost;
+    use GetMostViewedPost;
+    use GetMostViewedPostThisWeek;
+    use GetMostViewedPostToday;
+    use GetMostViewedSharedLikedAndCommentedPost;
+    use GetPopularPost;
+    use GetPopularPostInCategory;
+    use GetPostByAuthor;
+    use GetPostByCategory;
+    use GetPostByFondom;
+    use GetPostByMonth;
+    use GetPostBySubdivision;
+    use GetPostByTag;
+    use GetPostByToday;
+    use GetPostByTwoWeeks;
+    use GetPostByVillage;
+    use GetPostByWeek;
+    use GetRecentPost;
+    use GetTodayStories;
+    use GetTopPostInTag;
+    use GetTopRatedPost;
+    use GetTrendingPost;
+    use GetTrendingPostInTag;
+    use GetThisWeekTopPost;
+    use GetEditorWeeklyPick;
+}

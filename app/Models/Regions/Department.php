@@ -3,11 +3,11 @@
 namespace App\Models\Regions;
 
 use App\Enums\Status;
-use Morfaw\Supports\EnableSlug;
-use Morfaw\Supports\EnableScope;
+use Atannex\Enables\EnableSlug;
+use Atannex\Enables\EnableScope;
 use Illuminate\Database\Eloquent\Model;
+use Atannex\Relations\DepartmentRelation;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Ngangagah\Relations\DepartmentRelation;
 
 class Department extends Model
 {

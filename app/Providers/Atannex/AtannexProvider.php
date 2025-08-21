@@ -3,10 +3,10 @@
 namespace App\Providers\Atannex;
 
 use App\Models\User;
+use Atannex\Navigation;
 use App\Policies\UserPolicy;
 use App\Policies\CommentPolicy;
 use App\Models\Comments\Comment;
-use Ngangagah\Handlers\Navigation;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;

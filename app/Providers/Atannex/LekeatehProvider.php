@@ -2,15 +2,15 @@
 
 namespace App\Providers\Atannex;
 
-use Atangageih\Contracts\TagInterface;
-use Atangageih\Contracts\PageInterface;
+use Atannex\Contracts\TagInterface;
+use Atannex\Contracts\PageInterface;
+use Atannex\Repositories\TagRepository;
 use Illuminate\Support\ServiceProvider;
-use Atangageih\Repositories\TagRepository;
-use Atangageih\Contracts\CategoryInterface;
-use Atangageih\Contracts\DocumentInterface;
-use Atangageih\Repositories\PageRepository;
-use Atangageih\Repositories\CategoryRepository;
-use Atangageih\Repositories\DocumentRepository;
+use Atannex\Contracts\CategoryInterface;
+use Atannex\Contracts\DocumentInterface;
+use Atannex\Repositories\PageRepository;
+use Atannex\Repositories\CategoryRepository;
+use Atannex\Repositories\DocumentRepository;
 
 /**
  * Lekeateh service provider for binding repository implementations to interfaces.

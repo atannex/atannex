@@ -5,21 +5,20 @@ namespace App\Models;
 use Filament\Panel;
 use App\Enums\Gender;
 use App\Enums\Status;
-use Morfaw\Supports\EnableSlug;
+use Atannex\Enables\EnableSlug;
+use Atannex\Relations\UserRelation;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Ngangagah\Relations\UserRelation as RelationsUser;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
     use Notifiable;
     use EnableSlug;
-    use EnableSlug;
-    use RelationsUser;
+    use UserRelation;
     use HasRoles;
     use SoftDeletes;
 

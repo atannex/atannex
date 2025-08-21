@@ -4,12 +4,12 @@ namespace App\Models\Tags;
 
 use App\Models\Posts\Post;
 use App\Models\Pivots\PostTag;
+use Atannex\Enables\EnableSlug;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Morfaw\Supports\EnableSlug;
 
 class Tag extends Model
 {

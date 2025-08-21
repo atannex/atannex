@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Pages\Widget;
-use Lebialem\Adapters\WidgetAdapter;
+use Atannex\Adapters\WidgetAdapter;
 
 class WidgetObserver
 {

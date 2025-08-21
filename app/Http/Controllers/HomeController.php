@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Ngangagah\Handlers\GetPosts;
+use Atannex\Binders\GetPosts;
 
 class HomeController extends Controller
 {

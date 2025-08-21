@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Atannex\Extension;
+use Atannex\Atannex;
 use Illuminate\View\View;
-use Morfaw\Supports\Resolver;
-use Ngangagah\Handlers\GetPosts;
-use Atangageih\Services\TagService;
-use Atangageih\Services\PageService;
-use Ngangagah\Parameters\RendersViews;
-use Atangageih\Services\CategoryService;
+use Atannex\Traits\Resolver;
+use Atannex\Binders\GetPosts;
+use Atannex\Services\TagService;
+use Atannex\Services\PageService;
+use Atannex\Services\CategoryService;
+use Atannex\Views\ViewFacade;
 
 class PageController extends Controller
 {
-    use RendersViews;
+    use ViewFacade;
     use Resolver;
 
     public function __construct(
         protected readonly PageService $pageService,
         protected readonly CategoryService $categoryService,
-        protected readonly Extension $extension,
+        protected readonly Atannex $atannex,
         protected readonly TagService $tagService,
         protected readonly GetPosts $postService
     ) {

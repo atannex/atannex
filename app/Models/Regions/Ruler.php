@@ -3,10 +3,10 @@
 namespace App\Models\Regions;
 
 use App\Enums\Flag;
+use Atannex\Enables\EnableSlug;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Morfaw\Supports\EnableSlug;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Ruler extends Model
 {

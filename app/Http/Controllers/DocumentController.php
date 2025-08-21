@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Atangageih\Services\DocumentService;
+use Illuminate\Http\Request;
+use Atannex\Services\DocumentService;
 
 class DocumentController extends Controller
 {

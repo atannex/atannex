@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Pages\Section;
-use Lebialem\Adapters\SectionAdapter;
+use Atannex\Adapters\SectionAdapter;
 
 class SectionObserver
 {

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Enums;
 
 use BenSampo\Enum\Enum;
-use Atangageih\Filters\GetEnum;
+use Atannex\Filters\GetEnum;
 
 /**
  * UserStatus Enum (Filament Optimized with Bootstrap colors)

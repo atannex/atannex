@@ -2,16 +2,16 @@
 
 namespace App\Models\Pages;
 
-use App\Contracts\Sluggable;
 use App\Models\Posts\Post;
-use Atangageih\Filters\GetHierarchy;
+use App\Contracts\Sluggable;
+use Atannex\Traits\Bootable;
+use Atannex\Traits\Resolver;
+use Atannex\Enables\EnableSlug;
+use Atannex\Enables\EnableScope;
+use Atannex\Filters\GetHierarchy;
+use Atannex\Relations\CategoryRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Morfaw\Supports\EnableScope;
-use Morfaw\Supports\EnableSlug;
-use Morfaw\Supports\Resolver;
-use Ngangagah\Relations\CategoryRelation;
-use App\Models\Traits\Bootable;
 
 /**
  * Class Category

@@ -2,19 +2,19 @@
 
 namespace App\Providers;
 
-use App\Enums\Binding;
 use App\Enums\Flag;
 use App\Enums\Icons;
 use App\Enums\Image;
+use App\Enums\Binding;
 use App\Enums\PostType;
 use App\Models\Pages\Widget;
 use App\Models\Pages\Section;
 use App\Observers\WidgetObserver;
 use App\Observers\SectionObserver;
-use Illuminate\Support\ServiceProvider;
-use Lebialem\Adapters\SectionAdapter;
-use Lebialem\Adapters\WidgetAdapter;
 use Ngangagah\Handlers\Navigation;
+use Atannex\Adapters\WidgetAdapter;
+use Atannex\Adapters\SectionAdapter;
+use Illuminate\Support\ServiceProvider;
 
 /**
  * Class AppServiceProvider
