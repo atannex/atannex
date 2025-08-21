@@ -10,19 +10,19 @@
         {{ __('By - ') . $module->post->author->user->name }}
     </a>
 
-    <a href="{{ route('page.index', ['slug' => $module->post->category->slug_path]) }}">
+    <a href="javascript:void(0)">
         <i class="fal fa-calendar-days"></i>
         {{ $module->post->created_at->format('d F, Y') }}
     </a>
 
-    <a href="blog-details.html">
+    <a href="javascript:void(0)">
         <i class="far fa-comments"></i>
-        Comments ({{ $module->post->comments->count() ?? 0 }})
+        ({{ __("Comments ") . $module->post->comments->count() ?? 0 }})
     </a>
 
     <span>
         <i class="far fa-book-open"></i>
-        {{ $module->readingTime() }} {{ Str::plural('Min', $module->readingTime()) }} Read
+        {{ $module->readingTime() }} {{ Str::plural('Min', $module->readingTime()) . __(" Read") }}
     </span>
 </div>
 
