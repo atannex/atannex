@@ -2,11 +2,11 @@
 
 namespace Lebialem\Adapters;
 
-use Atangageih\Filters\HandleCreation;
+use Atangageih\Filters\GetCreation;
 
 final class WidgetAdapter
 {
-    use HandleCreation;
+    use GetCreation;
 
     /**
      * Constructor to optionally set custom view path and file extension.

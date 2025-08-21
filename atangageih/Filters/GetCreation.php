@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
 
 /**
- * Trait HandleCreation
+ * Trait GetCreation
  *
  * Provides reusable methods for managing view files associated with models.
  * Supports creation, updating, and deletion of view files with configurable paths and extensions.
  */
-trait HandleCreation
+trait GetCreation
 {
     /**
      * The base path for storing view files (e.g., 'views/widgets').
