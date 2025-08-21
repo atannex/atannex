@@ -35,7 +35,7 @@
                             </a>
                             <div>
                                 <h6 class="mb-1" style="font-size: 0.95rem;">
-                                    <a href="#" class="text-white text-decoration-none fw-semibold">
+                                    <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }} class="text-white text-decoration-none fw-semibold">
                                         {{ \Illuminate\Support\Str::limit($post->title, 90) }}
                                     </a>
                                 </h6>
