@@ -2,21 +2,23 @@
 
 namespace App\Models\Posts;
 
-use App\Contracts\Commentable;
 use App\Enums\Flag;
-use App\Livewire\Interactions\HasLikes;
-use App\Livewire\Interactions\HasRatings;
-use App\Livewire\Interactions\HasShares;
-use App\Livewire\Interactions\HasViews;
+use App\Contracts\Sluggable;
+use App\Contracts\Commentable;
+use App\Models\Pivots\PostTag;
 use App\Models\Traits\Bootable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Morfaw\Orchestrators\ImageCleanup;
-use Morfaw\Supports\EnableScope;
 use Morfaw\Supports\EnableSlug;
+use Morfaw\Supports\EnableScope;
 use Ngangagah\Relations\PostRelation;
+use Morfaw\Orchestrators\ImageCleanup;
+use App\Livewire\Interactions\HasLikes;
+use App\Livewire\Interactions\HasViews;
+use Illuminate\Database\Eloquent\Model;
+use App\Livewire\Interactions\HasShares;
+use App\Livewire\Interactions\HasRatings;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Post extends Model implements Commentable
+class Post extends Model implements Commentable, Sluggable
 {
     use SoftDeletes;
     use EnableSlug;
@@ -71,4 +73,33 @@ class Post extends Model implements Commentable
     protected $attributes = [
         'flag' => Flag::DRAFT,
     ];
+
+    public function getSlugBase(): string
+    {
+        return $this->category->slug_path;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function cascadeSlugPathUpdates(): void
+    {
+        $categorySlug = $this->category?->slug_path;
+
+        if ($categorySlug) {
+            $this->tags()->with('tag')->get()->each(function (PostTag $postTag) use ($categorySlug) {
+                if ($postTag->tag) {
+                    $postTag->slug_path = $this->buildSlugPath($categorySlug, $postTag->tag->slug);
+                    $postTag->saveQuietly();
+                }
+            });
+        }
+    }
+
+    public function clearRelatedSlugPaths(): void
+    {
+        $this->tags()->update(['slug_path' => null]);
+    }
 }

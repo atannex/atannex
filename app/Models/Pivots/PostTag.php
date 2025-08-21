@@ -2,13 +2,14 @@
 
 namespace App\Models\Pivots;
 
+use App\Contracts\Sluggable;
 use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
 use App\Models\Traits\Bootable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class PostTag extends Pivot
+class PostTag extends Pivot implements Sluggable
 {
     use Bootable;
 
@@ -30,4 +31,23 @@ class PostTag extends Pivot
         return $this->belongsTo(Tag::class);
     }
 
+    public function getSlugBase(): string
+    {
+        return $this->post->category->slug_path;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->tag->slug;
+    }
+
+    public function cascadeSlugPathUpdates(): void
+    {
+        // Likely no cascade needed for tags
+    }
+
+    public function clearRelatedSlugPaths(): void
+    {
+        // Likewise, probably nothing to clear
+    }
 }
