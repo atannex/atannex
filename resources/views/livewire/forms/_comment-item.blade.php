@@ -90,21 +90,27 @@
         @endforeach
 
         @if($shown < $comment->replies->count())
-            <li class="mt-2 text-center">
-                <button wire:click="loadMoreReplies({{ $comment->id }})" class="btn btn-sm btn-outline-primary">
+            <div class="reply_and_edit">
+                <a type="button" wire:click="loadMoreReplies({{ $comment->id }})" class="reply-btn">
+                    <i class="fas fa-reply"></i>
                     {{ __("Load More Replies") }}
-                </button>
-            </li>
-        @endif
+                </a>
+            </div>
+            @endif
     </ul>
-
-    <button wire:click="collapseReplies({{ $comment->id }})" class="mt-2 btn btn-sm btn-link text-decoration-none">
-        {{ __('Hide Replies') }}
-    </button>
+    <div class="reply_and_edit">
+        <a type="button" wire:click="collapseReplies({{ $comment->id }})" class="reply-btn">
+            <i class="fas fa-reply"></i>
+            {{ __('Hide Replies') }}
+        </a>
+    </div>
     @else
-    <button wire:click="loadMoreReplies({{ $comment->id }})" class="mt-2 btn btn-sm btn-link text-decoration-none">
-        {{ __('Show Replies') }} ({{ $comment->replies->count() }})
-    </button>
+    <div class="reply_and_edit">
+        <a type="button" wire:click="loadMoreReplies({{ $comment->id }})" class="reply-btn">
+            <i class="fas fa-reply"></i>
+            {{ $comment->replies->count() }} {{ Str::plural('Reply', $comment->replies->count()) }}
+        </a>
+    </div>
     @endif
     @endif
 </li>
