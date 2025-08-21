@@ -2,35 +2,30 @@
 
 namespace App\Models\Posts;
 
-use App\Enums\Flag;
-use App\Models\Tags\Tag;
-use App\Contracts\Sluggable;
 use App\Contracts\Commentable;
-use App\Models\Pivots\PostTag;
-use App\Models\Traits\Bootable;
-use Morfaw\Supports\EnableSlug;
-use Morfaw\Supports\EnableScope;
-use Ngangagah\Relations\PostRelation;
-use Morfaw\Orchestrators\ImageCleanup;
+use App\Contracts\Sluggable;
+use App\Enums\Flag;
 use App\Livewire\Interactions\HasLikes;
-use App\Livewire\Interactions\HasViews;
-use Illuminate\Database\Eloquent\Model;
-use App\Livewire\Interactions\HasShares;
 use App\Livewire\Interactions\HasRatings;
+use App\Livewire\Interactions\HasShares;
+use App\Livewire\Interactions\HasViews;
+use App\Models\Tags\Tag;
+use App\Models\Traits\Bootable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Morfaw\Orchestrators\ImageCleanup;
+use Morfaw\Supports\EnableScope;
+use Morfaw\Supports\EnableSlug;
+use Ngangagah\Relations\PostRelation;
 
+/**
+ * Class Post
+ *
+ * Represents a post model with slug management, commenting, and interaction features.
+ */
 class Post extends Model implements Commentable, Sluggable
 {
-    use SoftDeletes;
-    use EnableSlug;
-    use EnableScope;
-    use PostRelation;
-    use ImageCleanup;
-    use Bootable;
-    use HasLikes;
-    use HasRatings;
-    use HasShares;
-    use HasViews;
+    use SoftDeletes, EnableSlug, EnableScope, PostRelation, ImageCleanup, Bootable, HasLikes, HasRatings, HasShares, HasViews;
 
     /**
      * The source attribute for slug generation.
@@ -42,7 +37,7 @@ class Post extends Model implements Commentable, Sluggable
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int,string>
+     * @var array<string>
      */
     protected $fillable = [
         'title',
@@ -58,50 +53,63 @@ class Post extends Model implements Commentable, Sluggable
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * The attributes that should be cast.
      *
-     * @var array<string,string>
+     * @var array<string, string>
      */
     protected $casts = [
         'published_at' => 'datetime',
+        'flag' => Flag::class,
     ];
 
     /**
      * The model's default attribute values.
      *
-     * @var array<string,mixed>
+     * @var array<string, mixed>
      */
     protected $attributes = [
         'flag' => Flag::DRAFT,
     ];
 
-    public function getSlugBase(): string
+    /**
+     * Get the base string for slug generation.
+     *
+     * @return string|null The category's slug path or null if no category exists.
+     */
+    public function getSlugBase(): ?string
     {
-        return $this->category->slug_path;
+        return $this->category?->slug_path;
     }
 
-    public function getSlug(): string
+    /**
+     * Get the generated slug for the model.
+     *
+     * @return string|null The post's slug.
+     */
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
+    /**
+     * Update slug paths for related tags.
+     */
     public function cascadeSlugPathUpdates(): void
     {
-        $categorySlug = $this->category?->slug_path;
-
-        if ($categorySlug) {
+        if ($categorySlug = $this->category?->slug_path) {
             $this->tags()->get()->each(function (Tag $tag) use ($categorySlug) {
-                $pivot = $tag->pivot;
-                if ($pivot) {
-                    $pivot->slug_path = $this->buildSlugPath($categorySlug, $tag->slug);
-                    $pivot->saveQuietly();
-                }
+                $tag->pivot?->forceFill([
+                    'slug_path' => $this->buildSlugPath($categorySlug, $tag->slug),
+                ])->saveQuietly();
             });
         }
     }
 
+    /**
+     * Clear slug paths for related tags.
+     */
     public function clearRelatedSlugPaths(): void
     {
-        $this->tags()->update(['slug_path' => null]);
+        $this->tags()->newPivotQuery()->update(['slug_path' => null]);
     }
 }

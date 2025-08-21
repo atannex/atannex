@@ -8,50 +8,35 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Trait Bootable
  *
- * Provides bootable functionality for models implementing the Sluggable interface,
- * handling slug path updates during model lifecycle events.
+ * Manages slug path updates for models implementing the Sluggable interface during lifecycle events.
  */
 trait Bootable
 {
     /**
      * Boot the trait, registering model event listeners for slug path management.
-     *
-     * @return void
      */
-    protected static function boot(): void
+    protected static function bootBootable(): void
     {
-        parent::boot();
-
-        static::saving(function (Model $model): void {
+        static::saving(function (Model $model) {
             if ($model instanceof Sluggable) {
-                $model->updateSlugPath();
+                $model->slug_path = $model->buildSlugPath(
+                    $model->getSlugBase(),
+                    $model->getSlug()
+                );
             }
         });
 
-        static::saved(function (Model $model): void {
+        static::saved(function (Model $model) {
             if ($model instanceof Sluggable) {
                 $model->cascadeSlugPathUpdates();
             }
         });
 
-        static::deleting(function (Model $model): void {
+        static::deleting(function (Model $model) {
             if ($model instanceof Sluggable) {
                 $model->clearRelatedSlugPaths();
             }
         });
-    }
-
-    /**
-     * Updates the slug path for the model based on its slug base and slug.
-     *
-     * @return void
-     */
-    public function updateSlugPath(): void
-    {
-        $this->slug_path = $this->buildSlugPath(
-            $this->getSlugBase(),
-            $this->getSlug()
-        );
     }
 
     /**

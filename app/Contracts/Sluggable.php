@@ -3,35 +3,31 @@
 namespace App\Contracts;
 
 /**
- * Interface for models that support slug generation and management.
+ * Interface for models supporting slug generation and management.
  */
 interface Sluggable
 {
     /**
-     * Retrieves the base string used for generating the slug.
+     * Get the base string for slug generation.
      *
-     * @return string The base string for slug creation.
+     * @return string|null The base string for the slug path.
      */
-    public function getSlugBase(): string;
+    public function getSlugBase(): ?string;
 
     /**
-     * Retrieves the generated slug for the model.
+     * Get the generated slug for the model.
      *
-     * @return string The generated slug.
+     * @return string|null The model's slug.
      */
-    public function getSlug(): string;
+    public function getSlug(): ?string;
 
     /**
-     * Updates the slug paths for related models or entities.
-     *
-     * @return void
+     * Update slug paths for related models or entities.
      */
     public function cascadeSlugPathUpdates(): void;
 
     /**
-     * Clears the slug paths for related models or entities.
-     *
-     * @return void
+     * Clear slug paths for related models or entities.
      */
     public function clearRelatedSlugPaths(): void;
 }

@@ -2,29 +2,31 @@
 
 namespace App\Models\Pages;
 
-use App\Models\Posts\Post;
 use App\Contracts\Sluggable;
-use Morfaw\Supports\Resolver;
-use App\Models\Traits\Bootable;
-use Morfaw\Supports\EnableSlug;
-use Morfaw\Supports\EnableScope;
+use App\Models\Posts\Post;
 use Atangageih\Filters\GetHierarchy;
 use Illuminate\Database\Eloquent\Model;
-use Ngangagah\Relations\CategoryRelation;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Morfaw\Supports\EnableScope;
+use Morfaw\Supports\EnableSlug;
+use Morfaw\Supports\Resolver;
+use Ngangagah\Relations\CategoryRelation;
+use App\Models\Traits\Bootable;
 
+/**
+ * Class Category
+ *
+ * Represents a category model with slug management and hierarchical relationships.
+ */
 class Category extends Model implements Sluggable
 {
-    use SoftDeletes;
-    use EnableSlug;
-    use CategoryRelation;
-    use EnableScope;
-    use GetHierarchy;
-    use Resolver;
-    use Bootable;
+    use SoftDeletes, EnableSlug, CategoryRelation, EnableScope, GetHierarchy, Resolver, Bootable;
 
-    protected string $slugSource = 'name';
-
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<string>
+     */
     protected $fillable = [
         'name',
         'slug',
@@ -36,35 +38,60 @@ class Category extends Model implements Sluggable
         'slug_path',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'published_at' => 'datetime',
     ];
 
-    public function getSlugBase(): string
+    /**
+     * The source attribute for slug generation.
+     *
+     * @var string
+     */
+    protected string $slugSource = 'name';
+
+    /**
+     * Get the base string for slug generation.
+     *
+     * @return string|null The parent category's slug path or null if no parent exists.
+     */
+    public function getSlugBase(): ?string
     {
-        return $this->parent->slug_path;
+        return $this->parent?->slug_path;
     }
 
-    public function getSlug(): string
+    /**
+     * Get the generated slug for the model.
+     *
+     * @return string|null The category's slug.
+     */
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
+    /**
+     * Update slug paths for related posts.
+     */
     public function cascadeSlugPathUpdates(): void
     {
         $this->posts()->with('tags.tag')->get()->each(function (Post $post) {
-            $post->updateSlugPath();
-            $post->saveQuietly();
-            $post->cascadeSlugPathUpdates();
+            $post->updateSlugPath()->saveQuietly();
         });
     }
 
+    /**
+     * Clear slug paths for related posts.
+     */
     public function clearRelatedSlugPaths(): void
     {
         $this->posts()->get()->each(function (Post $post) {
             $post->slug_path = null;
             $post->saveQuietly();
-            $post->cascadeSlugPathUpdates();
         });
     }
 }
