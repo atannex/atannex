@@ -29,13 +29,21 @@ trait HasLikes
     }
 
     /**
+     * Fetch the authenticated user's like (including trashed).
+     *
+     * @return Like|null
+     */
+    protected function userLike(): ?Like
+    {
+        return Auth::check()
+            ? $this->likes()->where('user_id', Auth::id())->first()
+            : null;
+    }
+
+    /**
      * Add or restore a like for the authenticated user.
      *
-     * If a soft-deleted like exists, it is restored. Otherwise, a new like is created.
-     * The unique constraint ensures no duplicate active likes.
-     *
-     * @return bool Returns true if the like was created/restored, false otherwise.
-     * @throws QueryException If there's a database error during the operation.
+     * @return bool
      */
     public function like(): bool
     {
@@ -44,10 +52,7 @@ trait HasLikes
         }
 
         try {
-            $like = $this->likes()
-                ->withTrashed()
-                ->where('user_id', Auth::id())
-                ->first();
+            $like = $this->userLike();
 
             if ($like && $like->trashed()) {
                 $like->restore();
@@ -55,13 +60,14 @@ trait HasLikes
                 return true;
             }
 
-            $this->likes()->firstOrCreate([
-                'user_id' => Auth::id(),
-                'likeable_id' => $this->id,
-                'likeable_type' => get_class($this),
-            ], [
-                'liked_at' => now(),
-            ]);
+            $this->likes()->firstOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'likeable_id' => $this->id,
+                    'likeable_type' => static::class,
+                ],
+                ['liked_at' => now()]
+            );
 
             return true;
         } catch (QueryException $e) {
@@ -72,17 +78,11 @@ trait HasLikes
     /**
      * Remove a like (soft delete) for the authenticated user.
      *
-     * @return bool Returns true if the like was soft-deleted, false if it doesn't exist or user is not authenticated.
+     * @return bool
      */
     public function unlike(): bool
     {
-        if (!Auth::check()) {
-            return false;
-        }
-
-        $like = $this->likes()
-            ->where('user_id', Auth::id())
-            ->first();
+        $like = $this->userLike();
 
         if ($like && !$like->trashed()) {
             $like->delete();
@@ -95,7 +95,7 @@ trait HasLikes
     /**
      * Get the total number of active (non-deleted) likes for the model.
      *
-     * @return int The total count of active likes.
+     * @return int
      */
     public function likesCount(): int
     {
@@ -105,7 +105,7 @@ trait HasLikes
     /**
      * Check if the authenticated user has an active like on the model.
      *
-     * @return bool True if the authenticated user has an active like, false otherwise.
+     * @return bool
      */
     public function isLikedByUser(): bool
     {
@@ -118,17 +118,15 @@ trait HasLikes
     /**
      * Get the timestamp when the authenticated user liked the model.
      *
-     * @return Carbon|null The liked_at timestamp or null if not liked, deleted, or user is not authenticated.
+     * @return Carbon|null
      */
     public function likedAt(): ?Carbon
     {
-        if (!Auth::check()) {
-            return null;
-        }
-
-        return $this->likes()
-            ->where('user_id', Auth::id())
-            ->whereNull('deleted_at')
-            ->value('liked_at') ?? null;
+        return Auth::check()
+            ? $this->likes()
+                ->where('user_id', Auth::id())
+                ->whereNull('deleted_at')
+                ->value('liked_at')
+            : null;
     }
 }
