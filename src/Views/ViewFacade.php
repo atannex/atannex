@@ -8,4 +8,5 @@ trait ViewFacade
     use CategoryView;
     use PageView;
     use TagView;
+    use PostShowView;
 }
