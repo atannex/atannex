@@ -13,7 +13,6 @@ use Atannex\Binders\GetView;
 
 class PageController extends Controller
 {
-    use ViewFacade;
     use Resolver;
 
     public function __construct(
@@ -21,7 +20,8 @@ class PageController extends Controller
         protected readonly CategoryService $categoryService,
         protected readonly Atannex $atannex,
         protected readonly TagService $tagService,
-        protected readonly GetPosts $postService
+        protected readonly GetPost $getPost,
+        protected readonly GetView $getView,
     ) {
         $this->middleware(['auth', 'verified', 'password.confirm']);
     }
@@ -29,23 +29,23 @@ class PageController extends Controller
     public function resolve(string $slug): View
     {
         if ($this->pageService->getHomePage($slug)) {
-            return $this->renderPageView($slug);
+            return $this->getView->renderPageView($slug);
         }
 
         if ($category = $this->resolveCategory($slug)) {
-            return $this->renderCategoryView($category);
+            return $this->getView->renderCategoryView($category);
         }
 
         if ($postTag = $this->resolveTag($slug)) {
-            return $this->renderTagView($postTag);
+            return $this->getView->renderTagView($postTag);
         }
 
         if ($author = $this->resolveAuthor($slug)) {
-            return $this->renderAuthorView($author);
+            return $this->getView->renderAuthorView($author);
         }
 
         if ($post = $this->resolvePost($slug)) {
-            return $this->renderPostShow($post->category, $slug);
+            return $this->getView->renderPostShow($post->category, $slug);
         }
 
         abort(404);
