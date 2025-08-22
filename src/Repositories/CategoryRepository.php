@@ -30,7 +30,7 @@ class CategoryRepository implements CategoryInterface
     public function getPublishedEmployeeSocialMedia(Employee $employee): Collection
     {
         return $employee->socialMedia()
-            ->published(false)
+            ->published('non-global')
             ->ordered()
             ->get();
     }

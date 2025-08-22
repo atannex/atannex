@@ -19,19 +19,21 @@ trait EnableScope
     public function scopePublished(Builder $query, string $type): Builder
     {
         if ($type === 'global') {
-            // Only global posts
+
             $query->where('is_global', true)
                 ->where('flag', Flag::PUBLISHED);
         } elseif ($type === 'non-global') {
-            // Only non-global posts
+
             $query->where('is_global', false)
-                ->whereNotNull('published_at')
+                ->where('flag', Flag::PUBLISHED);
+        } else {
+
+            $query->whereNotNull('published_at')
                 ->where('published_at', '<=', now());
         }
 
         return $query;
     }
-
 
     /**
      * Scope to order by the `order` column.
