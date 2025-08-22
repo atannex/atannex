@@ -8,16 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 
 trait Metrics
 {
-    private const DEFAULT_WEIGHTS = [
-        'views' => 0.2,
-        'likes' => 0.2,
-        'comments' => 0.3,
-        'ratings' => 0.2,
-        'shares' => 0.1,
-    ];
-
     private const METRICS = ['views', 'likes', 'comments', 'ratings', 'shares'];
 
+    /**
+     * Get default date range (last week)
+     */
     private function getDefaultDateRange(): array
     {
         $now = Carbon::now();
@@ -27,20 +22,37 @@ trait Metrics
         ];
     }
 
+    /**
+     * Get predefined period date range
+     */
     private function getPeriodRange(string $period): array
     {
         $now = Carbon::now();
         return match ($period) {
-            'day' => [Carbon::today(), Carbon::today()->endOfDay()],
-            'week' => [$now->startOfWeek(), $now->endOfWeek()],
+            'day'   => [Carbon::today(), Carbon::today()->endOfDay()],
+            'week'  => [$now->startOfWeek(), $now->endOfWeek()],
             'month' => [$now->startOfMonth(), $now->endOfMonth()],
-            'year' => [$now->startOfYear(), $now->endOfYear()],
+            'year'  => [$now->startOfYear(), $now->endOfYear()],
             default => $this->getDefaultDateRange(),
         };
     }
 
     /**
-     * Calculate weighted engagement score for a collection of models.
+     * Get default weights from config or fallback
+     */
+    private function getDefaultWeights(): array
+    {
+        return config('editor_picks.weights', [
+            'views'    => 0.2,
+            'likes'    => 0.2,
+            'comments' => 0.3,
+            'ratings'  => 0.2,
+            'shares'   => 0.1,
+        ]);
+    }
+
+    /**
+     * Calculate weighted engagement score for a collection of models
      */
     public function calculateWeightedScore(
         Collection $items,
@@ -48,10 +60,10 @@ trait Metrics
         ?Carbon $start = null,
         ?Carbon $end = null
     ): Collection {
-        $weights = array_merge(self::DEFAULT_WEIGHTS, $weights);
+        $weights = array_merge($this->getDefaultWeights(), $weights);
         $range = [
             'start' => $start ?? $this->getDefaultDateRange()['start'],
-            'end' => $end ?? $this->getDefaultDateRange()['end'],
+            'end'   => $end ?? $this->getDefaultDateRange()['end'],
         ];
 
         return $items->map(function (Model $item) use ($weights, $range) {
@@ -69,7 +81,7 @@ trait Metrics
     }
 
     /**
-     * Calculate engagement score for a predefined time period.
+     * Calculate engagement score for a predefined period
      */
     public function calculatePeriodScore(Collection $items, string $period, array $weights = []): Collection
     {
@@ -78,7 +90,7 @@ trait Metrics
     }
 
     /**
-     * Get top posts by a single metric.
+     * Get top posts by a single metric
      */
     public function calculateTopByMetric(
         Collection $items,
@@ -93,7 +105,7 @@ trait Metrics
 
         $range = [
             'start' => $start ?? $this->getDefaultDateRange()['start'],
-            'end' => $end ?? $this->getDefaultDateRange()['end'],
+            'end'   => $end ?? $this->getDefaultDateRange()['end'],
         ];
 
         return $items
@@ -109,7 +121,7 @@ trait Metrics
     }
 
     /**
-     * Dynamic top metric methods.
+     * Dynamic top metric methods
      */
     public function __call(string $name, array $arguments): Collection
     {
