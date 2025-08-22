@@ -8,31 +8,22 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait EnableScope
 {
-
     /**
      * Scope to only published posts.
      *
      * @param Builder $query
-     * @param string $type 'global' for global posts, 'non-global' for non-global posts
+     * @param string|null $type 'global'|'non-global'|null
      * @return Builder
      */
-    public function scopePublished(Builder $query, string $type): Builder
+    public function scopePublished(Builder $query, ?string $type = null): Builder
     {
-        if ($type === 'global') {
-
-            $query->where('is_global', true)
+        if ($type === 'global' || $type === 'non-global') {
+            return $query->where('is_global', $type === 'global')
                 ->where('flag', Flag::PUBLISHED);
-        } elseif ($type === 'non-global') {
-
-            $query->where('is_global', false)
-                ->where('flag', Flag::PUBLISHED);
-        } else {
-
-            $query->whereNotNull('published_at')
-                ->where('published_at', '<=', now());
         }
 
-        return $query;
+        return $query->whereNotNull('published_at')
+            ->where('published_at', '<=', now());
     }
 
     /**
@@ -52,15 +43,9 @@ trait EnableScope
             return $query->whereBetween('published_at', [$start, $end]);
         }
 
-        if ($start) {
-            return $query->where('published_at', '>=', $start);
-        }
-
-        if ($end) {
-            return $query->where('published_at', '<=', $end);
-        }
-
-        return $query;
+        return $start
+            ? $query->where('published_at', '>=', $start)
+            : ($end ? $query->where('published_at', '<=', $end) : $query);
     }
 
     /**
@@ -84,7 +69,7 @@ trait EnableScope
      */
     public function scopeIsFuture(Builder $query, string $column = 'scheduled_at'): Builder
     {
-        return $query->where($column, '>', Carbon::now());
+        return $this->applyDateComparison($query, $column, '>');
     }
 
     /**
@@ -92,7 +77,7 @@ trait EnableScope
      */
     public function scopeIsPast(Builder $query, string $column = 'scheduled_at'): Builder
     {
-        return $query->where($column, '<=', Carbon::now());
+        return $this->applyDateComparison($query, $column, '<=');
     }
 
     /**
@@ -105,5 +90,13 @@ trait EnableScope
         }
 
         return $query->where($column, $value);
+    }
+
+    /**
+     * Protected helper for date comparisons to reduce repeated code.
+     */
+    protected function applyDateComparison(Builder $query, string $column, string $operator): Builder
+    {
+        return $query->where($column, $operator, Carbon::now());
     }
 }
