@@ -8,42 +8,30 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait EnableScope
 {
+
     /**
      * Scope to only published posts.
      *
      * @param Builder $query
-     * @param bool|null $includeGlobal Pass true to include only global, false to exclude global, null to include both
+     * @param string $type 'global' for global posts, 'non-global' for non-global posts
      * @return Builder
      */
-    public function scopePublished(Builder $query, ?bool $includeGlobal = null): Builder
+    public function scopePublished(Builder $query, string $type): Builder
     {
-        if ($includeGlobal === true) {
-            // Only global posts (may not use published_at)
+        if ($type === 'global') {
+            // Only global posts
             $query->where('is_global', true)
                 ->where('flag', Flag::PUBLISHED);
-        } elseif ($includeGlobal === false) {
-            // Only non-global posts (must be published)
-            $query->whereNotNull('published_at')
+        } elseif ($type === 'non-global') {
+            // Only non-global posts
+            $query->where('is_global', false)
+                ->whereNotNull('published_at')
                 ->where('published_at', '<=', now());
-        } else {
-            // Both global and non-global posts
-            $query->where(function ($q) {
-                $q->where(function ($q1) {
-                    // Non-global posts must be published
-                    $q1->where('is_global', false)
-                        ->whereNotNull('published_at')
-                        ->where('published_at', '<=', now());
-                })
-                    ->orWhere(function ($q2) {
-                        // Global posts use flag
-                        $q2->where('is_global', true)
-                            ->where('flag', Flag::PUBLISHED);
-                    });
-            });
         }
 
         return $query;
     }
+
 
     /**
      * Scope to order by the `order` column.
