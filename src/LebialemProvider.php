@@ -7,7 +7,7 @@ use Atannex\Binders\GetPost;
 use Atannex\Services\PageService;
 use Atannex\Helpers\MediaHelper;
 
-final class GlobalData extends GetPost
+final class LebialemProvider extends GetPost
 {
     use MediaHelper;
 

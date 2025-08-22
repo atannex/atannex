@@ -6,7 +6,7 @@ use App\Enums\PostType;
 use Atannex\Binders\GetComponent;
 use Illuminate\Support\Collection;
 
-final class Atannex extends GetComponent
+final class AtannexProvider extends GetComponent
 {
     /**
      * Map post types to callables.

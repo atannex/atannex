@@ -2,7 +2,7 @@
 
 namespace Atannex\Binders;
 
-use Atannex\Atannex;
+use Atannex\AtannexProvider;
 use Atannex\Views\TagView;
 use Atannex\Views\PageView;
 use Atannex\Views\AuthorView;
@@ -16,7 +16,7 @@ class GetView
 {
     public function __construct(
         protected readonly PageService $pageService,
-        protected readonly Atannex $atannex,
+        protected readonly AtannexProvider $atannex,
         protected readonly TagService $tagService,
         protected readonly CategoryService $categoryService,
         protected readonly GetPost $getPost,
