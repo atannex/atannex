@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Posts\Post;
 use Atannex\Helpers\Query;
 use App\Models\Pages\Category;
+use Atannex\Traits\Resolver;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -17,6 +18,7 @@ trait PostQuery
 {
 
     use Query;
+    use Resolver;
 
     protected const DEFAULT_PAGINATION_LIMIT   = 50;
     protected const DEFAULT_RECENT_POSTS_LIMIT = 5;
@@ -61,9 +63,7 @@ trait PostQuery
             return $this->emptyPaginator($limit);
         }
 
-        $author = User::where('slug', $slugPath)->first();
-
-        if (!$author) {
+        if (!$author = $this->resolveAuthor($slugPath)) {
             return $this->emptyPaginator($limit);
         }
 
