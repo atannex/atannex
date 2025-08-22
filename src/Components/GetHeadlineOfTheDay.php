@@ -4,12 +4,12 @@ namespace Atannex\Components;
 
 use Carbon\Carbon;
 use App\Models\Posts\Post;
-use Atannex\Traits\EngagementMetrics;
+use Atannex\Traits\Metrics;
 use Illuminate\Database\Eloquent\Collection;
 
 trait GetHeadlineOfTheDay
 {
-    use EngagementMetrics;
+    use Metrics;
 
     /**
      * Retrieve headlines of the day based on engagement metrics, recency, and publication status.

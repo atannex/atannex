@@ -9,7 +9,7 @@ use App\Contracts\Commentable;
 use Atannex\Traits\Bootable;
 use Atannex\Enables\EnableSlug;
 use Atannex\Enables\EnableScope;
-use Atannex\Traits\ImageCleanup;
+use Atannex\Traits\Cleaning;
 use Atannex\Relations\PostRelation;
 use App\Livewire\Interactions\HasLikes;
 use App\Livewire\Interactions\HasViews;
@@ -29,7 +29,7 @@ class Post extends Model implements Commentable, Sluggable
     use EnableSlug;
     use EnableScope;
     use PostRelation;
-    use ImageCleanup;
+    use Cleaning;
     use Bootable;
     use HasLikes;
     use HasRatings;

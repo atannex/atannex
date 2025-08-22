@@ -4,12 +4,12 @@ namespace Atannex\Components;
 
 use Carbon\Carbon;
 use App\Models\Posts\Post;
-use Atannex\Traits\EngagementMetrics;
+use Atannex\Traits\Metrics;
 use Illuminate\Database\Eloquent\Collection;
 
 trait GetTrendingPost
 {
-    use EngagementMetrics;
+    use Metrics;
 
     /**
      * Retrieve trending posts with time-decay weighted engagement scores.

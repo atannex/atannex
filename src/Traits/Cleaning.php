@@ -4,7 +4,7 @@ namespace Atannex\Traits;
 
 use Illuminate\Support\Facades\Storage;
 
-trait ImageCleanup
+trait Cleaning
 {
     /**
      * Boot the trait and hook into model lifecycle events.
