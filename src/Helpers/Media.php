@@ -9,7 +9,7 @@ use App\Models\Others\Gallery;
 use App\Models\Others\SocialMedia;
 use Illuminate\Support\Collection;
 
-trait MediaHelper
+trait Media
 {
     /**
      * Map a SocialMedia model instance to a simplified array representation.

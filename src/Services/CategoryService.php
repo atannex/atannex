@@ -10,7 +10,7 @@ use App\Models\Pages\Category;
 use App\Models\Regions\Employee;
 use Illuminate\Support\Collection;
 use Atannex\Contracts\CategoryInterface;
-use Atannex\Helpers\MediaHelper;
+use Atannex\Helpers\Media;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -22,7 +22,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 final class CategoryService
 {
-    use MediaHelper;
+    use Media;
 
     protected const DEFAULT_PAGINATION_LIMIT      = 50;
 

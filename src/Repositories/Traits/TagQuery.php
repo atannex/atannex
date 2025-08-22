@@ -6,7 +6,7 @@ use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
 use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
-use Atannex\Helpers\MediaHelper;
+use Atannex\Helpers\Media;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 

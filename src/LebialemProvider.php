@@ -5,11 +5,11 @@ namespace Atannex;
 use App\Enums\Image;
 use Atannex\Binders\GetPost;
 use Atannex\Services\PageService;
-use Atannex\Helpers\MediaHelper;
+use Atannex\Helpers\Media;
 
 final class LebialemProvider extends GetPost
 {
-    use MediaHelper;
+    use Media;
 
     public function __construct(protected readonly PageService $pageService) {}
 

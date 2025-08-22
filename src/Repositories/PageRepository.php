@@ -6,10 +6,12 @@ use App\Models\Pages\Page;
 use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
 use Atannex\Contracts\PageInterface;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Atannex\Helpers\Query;
 
 class PageRepository implements PageInterface
 {
+    use Query;
+
     /**
      * Retrieve all top-level published page categories with their children recursively loaded.
      *
@@ -20,9 +22,7 @@ class PageRepository implements PageInterface
         return Category::query()
             ->published()
             ->whereNull('parent_id')
-            ->with([
-                'children' => fn(HasMany $query) => $query->published(),
-            ])
+            ->with(['children' => $this->publishedChildren()])
             ->get();
     }
 
@@ -33,9 +33,7 @@ class PageRepository implements PageInterface
      */
     public function getAllHomePages(): Collection
     {
-        return Page::query()
-            ->active()
-            ->get();
+        return $this->activePageQuery()->get();
     }
 
     /**
@@ -46,17 +44,9 @@ class PageRepository implements PageInterface
      */
     public function getHomePage(string $slug): ?Page
     {
-        return Page::query()
+        return $this->activePageQuery()
             ->where('slug', $slug)
-            ->active()
-            ->with([
-                'sections' => function ($query) {
-                    $query->wherePivot('is_active', true)
-                        ->with([
-                            'widgets' => fn($widgetQuery) => $widgetQuery->wherePivot('is_active', true),
-                        ]);
-                },
-            ])
+            ->with(['sections' => $this->activeSections()])
             ->first();
     }
 }
