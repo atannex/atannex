@@ -20,20 +20,27 @@ trait Metrics
 
     private function getDefaultDateRange(): array
     {
+        $now = Carbon::now();
         return [
-            'start' => Carbon::now()->subWeek(),
-            'end' => Carbon::now(),
+            'start' => $now->subWeek(),
+            'end' => $now,
         ];
+    }
+
+    private function getPeriodRange(string $period): array
+    {
+        $now = Carbon::now();
+        return match ($period) {
+            'day' => [Carbon::today(), Carbon::today()->endOfDay()],
+            'week' => [$now->startOfWeek(), $now->endOfWeek()],
+            'month' => [$now->startOfMonth(), $now->endOfMonth()],
+            'year' => [$now->startOfYear(), $now->endOfYear()],
+            default => $this->getDefaultDateRange(),
+        };
     }
 
     /**
      * Calculate weighted engagement score for a collection of models.
-     *
-     * @param Collection $items
-     * @param array $weights Associative weights for metrics
-     * @param Carbon|null $start
-     * @param Carbon|null $end
-     * @return Collection
      */
     public function calculateWeightedScore(
         Collection $items,
@@ -41,52 +48,37 @@ trait Metrics
         ?Carbon $start = null,
         ?Carbon $end = null
     ): Collection {
-        $dateRange = $this->getDefaultDateRange();
-        $start = $start ?? $dateRange['start'];
-        $end = $end ?? $dateRange['end'];
         $weights = array_merge(self::DEFAULT_WEIGHTS, $weights);
+        $range = [
+            'start' => $start ?? $this->getDefaultDateRange()['start'],
+            'end' => $end ?? $this->getDefaultDateRange()['end'],
+        ];
 
-        return $items->each(function (Model $item) use ($weights, $start, $end) {
+        return $items->map(function (Model $item) use ($weights, $range) {
             $score = 0;
             foreach (self::METRICS as $metric) {
-                $count = method_exists($item, $metric)
-                    ? $item->{$metric}()->whereBetween('created_at', [$start, $end])->count()
-                    : 0;
-                $score += $count * $weights[$metric];
+                if (method_exists($item, $metric)) {
+                    $score += $item->{$metric}()
+                        ->whereBetween('created_at', [$range['start'], $range['end']])
+                        ->count() * $weights[$metric];
+                }
             }
             $item->engagement_score = $score;
+            return $item;
         });
     }
 
     /**
-     * Calculate engagement score for predefined time periods
-     *
-     * @param Collection $items
-     * @param string $period day|week|month|year
-     * @param array $weights
-     * @return Collection
+     * Calculate engagement score for a predefined time period.
      */
     public function calculatePeriodScore(Collection $items, string $period, array $weights = []): Collection
     {
-        $ranges = [
-            'day' => [Carbon::today(), Carbon::today()->endOfDay()],
-            'week' => [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()],
-            'month' => [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()],
-            'year' => [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()],
-        ];
-
-        return $this->calculateWeightedScore($items, $weights, ...$ranges[$period]);
+        [$start, $end] = $this->getPeriodRange($period);
+        return $this->calculateWeightedScore($items, $weights, $start, $end);
     }
 
     /**
-     * Get top posts by a single metric
-     *
-     * @param Collection $items
-     * @param string $metric
-     * @param Carbon|null $start
-     * @param Carbon|null $end
-     * @param int $limit
-     * @return Collection
+     * Get top posts by a single metric.
      */
     public function calculateTopByMetric(
         Collection $items,
@@ -95,38 +87,41 @@ trait Metrics
         ?Carbon $end = null,
         int $limit = 5
     ): Collection {
-        $dateRange = $this->getDefaultDateRange();
-        $start = $start ?? $dateRange['start'];
-        $end = $end ?? $dateRange['end'];
+        if (!in_array($metric, self::METRICS)) {
+            return new Collection();
+        }
 
-        return $items->sortByDesc(function (Model $item) use ($metric, $start, $end) {
-            return method_exists($item, $metric)
-                ? $item->{$metric}()->whereBetween('created_at', [$start, $end])->count()
-                : 0;
-        })->take($limit)->values();
+        $range = [
+            'start' => $start ?? $this->getDefaultDateRange()['start'],
+            'end' => $end ?? $this->getDefaultDateRange()['end'],
+        ];
+
+        return $items
+            ->map(function (Model $item) use ($metric, $range) {
+                $item->metric_count = method_exists($item, $metric)
+                    ? $item->{$metric}()->whereBetween('created_at', [$range['start'], $range['end']])->count()
+                    : 0;
+                return $item;
+            })
+            ->sortByDesc('metric_count')
+            ->take($limit)
+            ->values();
     }
 
     /**
-     * Generate top metric methods dynamically
-     *
-     * @param string $name
-     * @param array $arguments
-     * @return Collection
-     * @throws \BadMethodCallException
+     * Dynamic top metric methods.
      */
     public function __call(string $name, array $arguments): Collection
     {
         if (preg_match('/^calculateTop(\w+)$/', $name, $matches)) {
             $metric = strtolower($matches[1]);
-            if (in_array($metric, self::METRICS)) {
-                return $this->calculateTopByMetric(
-                    $arguments[0] ?? new Collection(),
-                    $metric,
-                    $arguments[1] ?? null,
-                    $arguments[2] ?? null,
-                    $arguments[3] ?? 5
-                );
-            }
+            return $this->calculateTopByMetric(
+                $arguments[0] ?? new Collection(),
+                $metric,
+                $arguments[1] ?? null,
+                $arguments[2] ?? null,
+                $arguments[3] ?? 5
+            );
         }
 
         throw new \BadMethodCallException("Method {$name} does not exist.");
