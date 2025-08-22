@@ -14,37 +14,26 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 trait PostQuery
 {
-    protected const DEFAULT_PAGINATION_LIMIT      = 50;
-
-    protected const DEFAULT_RECENT_POSTS_LIMIT    = 5;
-
-    protected const DEFAULT_POPULAR_TAGS_LIMIT    = 12;
+    protected const DEFAULT_PAGINATION_LIMIT   = 50;
+    protected const DEFAULT_RECENT_POSTS_LIMIT = 5;
+    protected const DEFAULT_POPULAR_TAGS_LIMIT = 12;
 
     /**
      * Retrieve paginated posts for a given category.
-     *
-     * @param Category|null $category The category to filter posts by.
-     * @param int $limit Number of posts per page (default: 15).
-     * @return LengthAwarePaginator Paginated posts collection.
-     * @throws \InvalidArgumentException If category is null.
      */
     public function getPostsByCategory(?Category $category, int $limit = self::DEFAULT_PAGINATION_LIMIT): LengthAwarePaginator
     {
         return $this->buildPostQuery($category)
             ->latest()
-            ->paginate(max(1, $limit));
+            ->paginate($this->sanitizeLimit($limit));
     }
 
     /**
      * Retrieve recent posts for a given post's category, excluding the post itself.
-     *
-     * @param Post|null $post The post to base the category query on.
-     * @param int $limit Number of recent posts to retrieve (default: 5).
-     * @return Collection Collection of recent posts.
      */
     public function getRecentPosts(?Post $post, int $limit = self::DEFAULT_RECENT_POSTS_LIMIT): Collection
     {
-        if (is_null($post) || is_null($post->category)) {
+        if (!$post?->category) {
             return collect();
         }
 
@@ -55,63 +44,102 @@ trait PostQuery
 
         return $this->buildPostQuery($category, $post->id)
             ->latest()
-            ->take(max(1, $limit))
+            ->take($this->sanitizeLimit($limit))
             ->get();
     }
 
     /**
      * Retrieve paginated posts by an author identified by their slug.
-     *
-     * @param string|null $slugPath The author's unique slug.
-     * @param int $limit Number of posts per page (default: 15).
-     * @return LengthAwarePaginator Paginated posts collection.
      */
     public function getPostsByAuthor(?string $slugPath, int $limit = self::DEFAULT_PAGINATION_LIMIT): LengthAwarePaginator
     {
         if (empty($slugPath)) {
-            return new LengthAwarePaginator(collect(), 0, max(1, $limit));
+            return $this->emptyPaginator($limit);
         }
 
         $author = User::where('slug', $slugPath)->first();
 
-        if (is_null($author)) {
-            return new LengthAwarePaginator(collect(), 0, max(1, $limit));
+        if (!$author) {
+            return $this->emptyPaginator($limit);
         }
 
-        return Post::with([
-            'author' => fn($query) => $query->withCount('posts'),
-            'category'
-        ])
+        return Post::published()
             ->where('author_id', $author->id)
-            ->published()
+            ->with([
+                'author'   => $this->authorWithPostCount(),
+                'category'
+            ])
             ->orderByDesc('created_at')
-            ->paginate(max(1, $limit))
+            ->paginate($this->sanitizeLimit($limit))
             ->appends(['slug' => $slugPath]);
     }
 
     /**
      * Build a query for published posts within a category tree.
-     *
-     * @param Category|null $category The root category for the query.
-     * @param int|null $excludeId Optional post ID to exclude from results.
-     * @return Builder The constructed query builder instance.
-     * @throws \InvalidArgumentException If category is null.
      */
     protected function buildPostQuery(?Category $category, ?int $excludeId = null): Builder
     {
-        $categoryIds = $this->getCategoryTreeIds($category);
-        if (empty($categoryIds)) {
-            return Post::whereRaw('1 = 0')->published()->with(['category', 'tags', 'author']);
+        $categoryIds = $category ? $this->getCategoryTreeIds($category) : collect();
+
+        if ($categoryIds->isEmpty()) {
+            return $this->emptyPostQuery();
         }
 
         $query = Post::published()
             ->whereIn('category_id', $categoryIds)
-            ->with(['category', 'tags', 'author']);
+            ->with($this->defaultRelations());
 
-        if (!is_null($excludeId)) {
+        if ($excludeId) {
             $query->where('id', '!=', $excludeId);
         }
 
         return $query;
+    }
+
+    /* -----------------------------------------------------------------
+     |  Private helpers
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Default eager-load relations for posts.
+     */
+    private function defaultRelations(): array
+    {
+        return ['category', 'tags', 'author'];
+    }
+
+    /**
+     * Closure for eager-loading authors with post counts.
+     */
+    private function authorWithPostCount(): \Closure
+    {
+        return fn($query) => $query->withCount('posts');
+    }
+
+    /**
+     * Empty post query builder (always returns no results).
+     */
+    private function emptyPostQuery(): Builder
+    {
+        return Post::whereRaw('1 = 0')
+            ->published()
+            ->with($this->defaultRelations());
+    }
+
+    /**
+     * Empty paginator for safe return when no results.
+     */
+    private function emptyPaginator(int $limit): LengthAwarePaginator
+    {
+        return new LengthAwarePaginator(collect(), 0, $this->sanitizeLimit($limit));
+    }
+
+    /**
+     * Ensure pagination/take limits are always positive integers.
+     */
+    private function sanitizeLimit(int $limit): int
+    {
+        return max(1, $limit);
     }
 }
