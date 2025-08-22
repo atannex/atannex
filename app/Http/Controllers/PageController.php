@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Atannex\Atannex;
 use Illuminate\View\View;
 use Atannex\Traits\Resolver;
-use Atannex\Binders\GetPost;
-use Atannex\Services\TagService;
 use Atannex\Services\PageService;
-use Atannex\Services\CategoryService;
 use Atannex\Binders\GetView;
 
 class PageController extends Controller
@@ -17,10 +13,6 @@ class PageController extends Controller
 
     public function __construct(
         protected readonly PageService $pageService,
-        protected readonly CategoryService $categoryService,
-        protected readonly Atannex $atannex,
-        protected readonly TagService $tagService,
-        protected readonly GetPost $getPost,
         protected readonly GetView $getView,
     ) {
         $this->middleware(['auth', 'verified', 'password.confirm']);

@@ -26,10 +26,10 @@ trait Render
         return [
             'popularTags'       => $this->tagService->getPopularTags(),
             'relatedTags'       => $post ? $this->tagService->getTagsForPost($post->id) : collect(),
-            'navigation'        => $post ? $this->postService->getPostNavigation($post) : collect(),
+            'navigation'        => $post ? $this->getPost->getPostNavigation($post) : collect(),
             'relatedCategories' => $category ? $this->categoryService->getRelatedCategoriesForCategory($category) : collect(),
             'recentPosts'       => $post ? $this->categoryService->getRecentPosts($post) : collect(),
-            'relatedPosts'      => $post ? $this->postService->getRelatedPosts($post) : collect(),
+            'relatedPosts'      => $post ? $this->getPost->getRelatedPosts($post) : collect(),
         ];
     }
 }
