@@ -134,12 +134,4 @@ trait PostQuery
     {
         return new LengthAwarePaginator(collect(), 0, $this->sanitizeLimit($limit));
     }
-
-    /**
-     * Ensure pagination/take limits are always positive integers.
-     */
-    private function sanitizeLimit(int $limit): int
-    {
-        return max(1, $limit);
-    }
 }

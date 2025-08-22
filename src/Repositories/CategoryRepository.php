@@ -36,4 +36,12 @@ class CategoryRepository implements CategoryInterface
             ->orderBy('order')
             ->get();
     }
+
+    /**
+     * Ensure pagination/take limits are always positive integers.
+     */
+    private function sanitizeLimit(int $limit): int
+    {
+        return max(1, $limit);
+    }
 }
