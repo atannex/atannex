@@ -14,54 +14,67 @@ trait GetHeadlineOfTheDay
     /**
      * Retrieve headlines of the day based on engagement metrics, recency, and publication status.
      *
-     * @param array $config Configuration array with optional parameters:
-     *                      - start: Carbon instance for start date (default: start of current day)
-     *                      - end: Carbon instance for end date (default: end of current day)
-     *                      - limit: Number of posts to return (default: 5)
-     *                      - weights: Engagement metric weights (default: from EngagementMetrics, optimized for headlines)
-     *                      - min_score: Minimum engagement score threshold (default: 0)
-     *                      - prioritize_recency: Weight engagement score by recency within the day (default: true)
+     * @param array $config Optional configuration:
+     *                      - start: Carbon instance or date string (default: today start)
+     *                      - end: Carbon instance or date string (default: today end)
+     *                      - limit: Number of posts to return
+     *                      - weights: Engagement metric weights
+     *                      - min_score: Minimum engagement score threshold
+     *                      - prioritize_recency: Whether to boost recent posts
      * @return Collection
      */
     public function getHeadlinesOfTheDay(array $config = []): Collection
     {
-        $defaultConfig = [
-            'start' => Carbon::today(),
-            'end' => Carbon::today()->endOfDay(),
-            'limit' => 5,
-            'weights' => ['views' => 0.2, 'likes' => 0.2, 'comments' => 0.4, 'ratings' => 0.1, 'shares' => 0.1],
-            'min_score' => 0,
-            'prioritize_recency' => true,
-        ];
+        // Load default config from file
+        $defaultConfig = config('editor_picks');
 
-        $config = array_merge($defaultConfig, $config);
+        // Determine dynamic start and end dates
+        $start = $config['start'] ?? Carbon::today();
+        $end   = $config['end'] ?? Carbon::today()->endOfDay();
 
+        $start = $start instanceof Carbon ? $start : Carbon::parse($start);
+        $end   = $end instanceof Carbon ? $end : Carbon::parse($end);
+
+        // Merge defaults with user config, giving priority to user values
+        $config = array_merge($defaultConfig, $config, [
+            'start' => $start,
+            'end'   => $end,
+        ]);
+
+        // Ensure default weights exist if not provided
+        $weights = $config['weights'] ?? $this->getDefaultWeights();
+
+        // Fetch published posts within the date range
         $posts = Post::published()
             ->whereBetween('published_at', [$config['start'], $config['end']])
             ->get();
 
+        // Calculate engagement scores using the Metrics trait
         $scoredPosts = $this->calculateWeightedScore(
             $posts,
-            $config['weights'],
+            $weights,
             $config['start'],
             $config['end']
         );
 
-        if ($config['prioritize_recency']) {
-            $scoredPosts = $scoredPosts->each(function ($post) use ($config) {
+        // Boost score by recency if enabled
+        if ($config['prioritize_recency'] ?? true) {
+            $scoredPosts = $scoredPosts->map(function ($post) use ($config) {
                 $hoursSincePublished = $post->published_at->diffInHours($config['end']);
                 $recencyFactor = max(0.5, 1 - ($hoursSincePublished / 24));
                 $post->headline_score = $post->engagement_score * $recencyFactor;
+                return $post;
             });
             $sortKey = 'headline_score';
         } else {
             $sortKey = 'engagement_score';
         }
 
+        // Filter by min_score, sort, limit
         return $scoredPosts
-            ->filter(fn($post) => ($post->{$sortKey} ?? $post->engagement_score) >= $config['min_score'])
+            ->filter(fn($post) => ($post->{$sortKey} ?? $post->engagement_score) >= ($config['min_score'] ?? 0))
             ->sortByDesc($sortKey)
-            ->take($config['limit'])
+            ->take($config['limit'] ?? 5)
             ->values();
     }
 }
