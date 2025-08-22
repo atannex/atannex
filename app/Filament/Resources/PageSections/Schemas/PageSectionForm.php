@@ -8,6 +8,7 @@ use Filament\Schemas\Schema;
 use App\Models\Pages\Category;
 use App\Models\Regions\Region;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Slider;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
@@ -15,13 +16,15 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Schemas\Components\Grid as SchemaGrid;
 
 class PageSectionForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-            Grid::make(2)
+            SchemaGrid::make(2)
                 ->schema([
                     Group::make()
                         ->schema([
@@ -97,7 +100,8 @@ class PageSectionForm
                                                                         ->label('Tab Title')
                                                                         ->placeholder('e.g., Breaking News, Latest Updates')
                                                                         ->helperText('Display name for this tab')
-                                                                        ->maxLength(50),
+                                                                        ->maxLength(50)
+                                                                        ->required(),
 
                                                                     TextInput::make('limit')
                                                                         ->label('Content Limit')
@@ -106,64 +110,160 @@ class PageSectionForm
                                                                         ->minValue(1)
                                                                         ->maxValue(50)
                                                                         ->suffix('posts')
-                                                                        ->helperText('Maximum number of posts to display'),
+                                                                        ->helperText('Maximum number of posts to display')
+                                                                        ->required(),
                                                                 ]),
                                                         ])
                                                         ->compact(),
 
-                                                     Section::make('Content Filtering')
-                                                    ->schema([
-                                                        Grid::make(1)
-                                                            ->schema([
-                                                                Select::make('type')
-                                                                    ->label('Content Type')
-                                                                    ->options(PostType::labels())
-                                                                    ->live()
-                                                                    ->placeholder('Choose content type')
-                                                                    ->helperText('Determines how posts are fetched'),
+                                                    Section::make('Content Filtering')
+                                                        ->schema([
+                                                            Grid::make(1)
+                                                                ->schema([
+                                                                    Select::make('type')
+                                                                        ->label('Content Type')
+                                                                        ->options(PostType::labels())
+                                                                        ->live()
+                                                                        ->placeholder('Choose content type')
+                                                                        ->helperText('Determines how posts are fetched')
+                                                                        ->required(),
 
-                                                                Select::make('fondom_region_id')
-                                                                    ->label('Filter by Fondom')
-                                                                    ->options(fn() => Region::where('type', 'Fondom')->pluck('name', 'id')->toArray())
-                                                                    ->searchable()
-                                                                    ->multiple()
-                                                                    ->placeholder('Select a specific region')
-                                                                    ->helperText('Show only posts with this Fondom')
-                                                                    ->preload()
-                                                                    ->visible(fn($get) => $get('type') === PostType::POST_BY_FONDOM),
+                                                                    Select::make('fondom_region_id')
+                                                                        ->label('Filter by Fondom')
+                                                                        ->options(fn() => Region::where('type', 'Fondom')->pluck('name', 'id')->toArray())
+                                                                        ->searchable()
+                                                                        ->multiple()
+                                                                        ->placeholder('Select a specific region')
+                                                                        ->helperText('Show only posts with this Fondom')
+                                                                        ->preload()
+                                                                        ->visible(fn($get) => $get('type') === PostType::POST_BY_FONDOM),
 
-                                                                Select::make('subdivision_region_id')
-                                                                    ->label('Filter by Sub-Division')
-                                                                    ->options(fn() => Region::where('type', 'Sub-Division')->pluck('name', 'id')->toArray())
-                                                                    ->searchable()
-                                                                    ->multiple()
-                                                                    ->placeholder('Select a specific region')
-                                                                    ->helperText('Show only posts with this Sub-Division')
-                                                                    ->preload()
-                                                                    ->visible(fn($get) => $get('type') === PostType::POST_BY_SUBDIVISION),
+                                                                    Select::make('subdivision_region_id')
+                                                                        ->label('Filter by Sub-Division')
+                                                                        ->options(fn() => Region::where('type', 'Sub-Division')->pluck('name', 'id')->toArray())
+                                                                        ->searchable()
+                                                                        ->multiple()
+                                                                        ->placeholder('Select a specific region')
+                                                                        ->helperText('Show only posts with this Sub-Division')
+                                                                        ->preload()
+                                                                        ->visible(fn($get) => $get('type') === PostType::POST_BY_SUBDIVISION),
 
-                                                                Select::make('tag_id')
-                                                                    ->label('Filter by Tag')
-                                                                    ->options(fn() => Tag::pluck('name', 'id')->toArray())
-                                                                    ->searchable()
-                                                                    ->placeholder('Select a specific tag')
-                                                                    ->helperText('Show only posts with this tag')
-                                                                    ->preload()
-                                                                    ->visible(fn($get) => $get('type') === PostType::POST_BY_TAG),
+                                                                    Select::make('tag_id')
+                                                                        ->label('Filter by Tag')
+                                                                        ->options(fn() => Tag::pluck('name', 'id')->toArray())
+                                                                        ->searchable()
+                                                                        ->placeholder('Select a specific tag')
+                                                                        ->helperText('Show only posts with this tag')
+                                                                        ->preload()
+                                                                        ->visible(fn($get) => $get('type') === PostType::POST_BY_TAG),
 
-                                                                Select::make('category_id')
-                                                                    ->label('Filter by Category')
-                                                                    ->options(fn() => Category::doesntHave('children')->pluck('name', 'id')->toArray())
-                                                                    ->searchable()
-                                                                    ->multiple()
-                                                                    ->placeholder('Select a category')
-                                                                    ->helperText('Show only posts from this category')
-                                                                    ->preload()
-                                                                    ->visible(fn($get) => $get('type') === PostType::POST_BY_CATEGORY),
-                                                            ]),
-                                                    ])
-                                                    ->compact(),
+                                                                    Select::make('category_id')
+                                                                        ->label('Filter by Category')
+                                                                        ->options(fn() => Category::doesntHave('children')->pluck('name', 'id')->toArray())
+                                                                        ->searchable()
+                                                                        ->multiple()
+                                                                        ->placeholder('Select a category')
+                                                                        ->helperText('Show only posts from this category')
+                                                                        ->preload()
+                                                                        ->visible(fn($get) => $get('type') === PostType::POST_BY_CATEGORY),
+                                                                ]),
+                                                        ])
+                                                        ->compact(),
 
+                                                    Section::make('Date Range')
+                                                        ->schema([
+                                                            Grid::make(2)
+                                                                ->schema([
+                                                                    DateTimePicker::make('start')
+                                                                        ->label('Start Date')
+                                                                        ->default(now()->startOfDay())
+                                                                        ->helperText('Start of the date range for posts')
+                                                                        ->required(),
+
+                                                                    DateTimePicker::make('end')
+                                                                        ->label('End Date')
+                                                                        ->default(now()->endOfDay())
+                                                                        ->afterOrEqual('start')
+                                                                        ->helperText('End of the date range for posts')
+                                                                        ->required(),
+                                                                ]),
+                                                        ])
+                                                        ->compact(),
+
+                                                    Section::make('Engagement Weights')
+                                                        ->schema([
+                                                            Grid::make(2)
+                                                                ->schema([
+                                                                    Slider::make('weights.views')
+                                                                        ->label('Views Weight')
+                                                                        ->minValue(0)
+                                                                        ->maxValue(1)
+                                                                        ->step(0.1)
+                                                                        ->default(0.2)
+                                                                        ->helperText(fn($get) => 'Weight for post views in scoring (Current: ' . ($get('weights.views') ?? 0.2) . ')')
+                                                                        ->reactive(),
+
+                                                                    Slider::make('weights.likes')
+                                                                        ->label('Likes Weight')
+                                                                        ->minValue(0)
+                                                                        ->maxValue(1)
+                                                                        ->step(0.1)
+                                                                        ->default(0.2)
+                                                                        ->helperText(fn($get) => 'Weight for post likes in scoring (Current: ' . ($get('weights.likes') ?? 0.2) . ')')
+                                                                        ->reactive(),
+
+                                                                    Slider::make('weights.comments')
+                                                                        ->label('Comments Weight')
+                                                                        ->minValue(0)
+                                                                        ->maxValue(1)
+                                                                        ->step(0.1)
+                                                                        ->default(0.4)
+                                                                        ->helperText(fn($get) => 'Weight for post comments in scoring (Current: ' . ($get('weights.comments') ?? 0.4) . ')')
+                                                                        ->reactive(),
+
+                                                                    Slider::make('weights.ratings')
+                                                                        ->label('Ratings Weight')
+                                                                        ->minValue(0)
+                                                                        ->maxValue(1)
+                                                                        ->step(0.1)
+                                                                        ->default(0.1)
+                                                                        ->helperText(fn($get) => 'Weight for post ratings in scoring (Current: ' . ($get('weights.ratings') ?? 0.1) . ')')
+                                                                        ->reactive(),
+
+                                                                    Slider::make('weights.shares')
+                                                                        ->label('Shares Weight')
+                                                                        ->minValue(0)
+                                                                        ->maxValue(1)
+                                                                        ->step(0.1)
+                                                                        ->default(0.1)
+                                                                        ->helperText(fn($get) => 'Weight for post shares in scoring (Current: ' . ($get('weights.shares') ?? 0.1) . ')')
+                                                                        ->reactive(),
+                                                                ]),
+                                                        ])
+                                                        ->compact()
+                                                        ->collapsible()
+                                                        ->collapsed(),
+
+                                                    Section::make('Scoring Options')
+                                                        ->schema([
+                                                            Grid::make(2)
+                                                                ->schema([
+                                                                    TextInput::make('min_score')
+                                                                        ->label('Minimum Score')
+                                                                        ->numeric()
+                                                                        ->minValue(0)
+                                                                        ->default(0)
+                                                                        ->helperText('Minimum engagement score for posts')
+                                                                        ->required(),
+
+                                                                    Toggle::make('prioritize_recency')
+                                                                        ->label('Prioritize Recency')
+                                                                        ->default(true)
+                                                                        ->helperText('Boost scores for newer posts within the date range')
+                                                                        ->inline(false),
+                                                                ]),
+                                                        ])
+                                                        ->compact(),
 
                                                     Section::make('Additional Settings')
                                                         ->schema([
@@ -201,6 +301,17 @@ class PageSectionForm
                                                         'title' => 'Default Tab',
                                                         'limit' => '5',
                                                         'type' => PostType::BREAKING_POST,
+                                                        'start' => now()->startOfDay()->toDateTimeString(),
+                                                        'end' => now()->endOfDay()->toDateTimeString(),
+                                                        'weights' => [
+                                                            'views' => 0.2,
+                                                            'likes' => 0.2,
+                                                            'comments' => 0.4,
+                                                            'ratings' => 0.1,
+                                                            'shares' => 0.1,
+                                                        ],
+                                                        'min_score' => 0,
+                                                        'prioritize_recency' => true,
                                                     ]
                                                 ];
                                             }

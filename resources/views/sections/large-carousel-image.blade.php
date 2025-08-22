@@ -40,7 +40,7 @@
 
                         @include('partials.author')
 
-                        <a href="#">
+                        <a href="javascript:void(0)">
                             <i class="fal fa-calendar-days"></i>{{ $post->published_at->format('d M, Y') }}
                         </a>
                     </div>

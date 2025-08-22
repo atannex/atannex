@@ -8,6 +8,31 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait EnableScope
 {
+    /**
+     * Scope a query to filter posts between two dates.
+     *
+     * @param Builder $query
+     * @param Carbon $start
+     * @param Carbon $end
+     * @return Builder
+     */
+    public function scopeBetweenDates(Builder $query, ?Carbon $start, ?Carbon $end): Builder
+    {
+        if ($start && $end) {
+            return $query->whereBetween('published_at', [$start, $end]);
+        }
+
+        if ($start) {
+            return $query->where('published_at', '>=', $start);
+        }
+
+        if ($end) {
+            return $query->where('published_at', '<=', $end);
+        }
+
+        return $query;
+    }
+
 
     /**
      * Scope to only published pages.

@@ -2,33 +2,66 @@
 
 namespace Atannex\Components;
 
-use App\Models\Posts\Post;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
-use DateTimeInterface;
+use App\Models\Posts\Post;
+use Atannex\Traits\EngagementMetrics;
+use Illuminate\Database\Eloquent\Collection;
 
 trait GetHeadlineOfTheDay
 {
+    use EngagementMetrics;
+
     /**
-     * Retrieve posts marked as headline of the day within an optional date range.
+     * Retrieve headlines of the day based on engagement metrics, recency, and publication status.
      *
-     * @param int $limit Maximum number of posts to retrieve.
-     * @param DateTimeInterface|null $start Optional start date filter.
-     * @param DateTimeInterface|null $end Optional end date filter.
+     * @param array $config Configuration array with optional parameters:
+     *                      - start: Carbon instance for start date (default: start of current day)
+     *                      - end: Carbon instance for end date (default: end of current day)
+     *                      - limit: Number of posts to return (default: 5)
+     *                      - weights: Engagement metric weights (default: from EngagementMetrics, optimized for headlines)
+     *                      - min_score: Minimum engagement score threshold (default: 0)
+     *                      - prioritize_recency: Weight engagement score by recency within the day (default: true)
      * @return Collection
      */
-    public function getHeadlinesOfTheDay(int $limit = 1, ?DateTimeInterface $start = null, ?DateTimeInterface $end = null): Collection
+    public function getHeadlinesOfTheDay(array $config = []): Collection
     {
-        $start = $start ?? Carbon::today(); // Default to start of current day
-        $end = $end ?? Carbon::today()->endOfDay(); // Default to end of current day
+        $defaultConfig = [
+            'start' => Carbon::today(),
+            'end' => Carbon::today()->endOfDay(),
+            'limit' => 5,
+            'weights' => ['views' => 0.2, 'likes' => 0.2, 'comments' => 0.4, 'ratings' => 0.1, 'shares' => 0.1],
+            'min_score' => 0,
+            'prioritize_recency' => true,
+        ];
 
-        return Post::query()
-            ->published()
-            ->where('is_headline', true)
-            ->when($start, fn($query) => $query->where('published_at', '>=', $start))
-            ->when($end, fn($query) => $query->where('published_at', '<=', $end))
-            ->orderByDesc('published_at')
-            ->limit($limit)
+        $config = array_merge($defaultConfig, $config);
+
+        $posts = Post::published()
+            ->whereBetween('published_at', [$config['start'], $config['end']])
             ->get();
+
+        $scoredPosts = $this->calculateWeightedScore(
+            $posts,
+            $config['weights'],
+            $config['start'],
+            $config['end']
+        );
+
+        if ($config['prioritize_recency']) {
+            $scoredPosts = $scoredPosts->each(function ($post) use ($config) {
+                $hoursSincePublished = $post->published_at->diffInHours($config['end']);
+                $recencyFactor = max(0.5, 1 - ($hoursSincePublished / 24));
+                $post->headline_score = $post->engagement_score * $recencyFactor;
+            });
+            $sortKey = 'headline_score';
+        } else {
+            $sortKey = 'engagement_score';
+        }
+
+        return $scoredPosts
+            ->filter(fn($post) => ($post->{$sortKey} ?? $post->engagement_score) >= $config['min_score'])
+            ->sortByDesc($sortKey)
+            ->take($config['limit'])
+            ->values();
     }
 }

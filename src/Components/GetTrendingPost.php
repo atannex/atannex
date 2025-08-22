@@ -2,34 +2,60 @@
 
 namespace Atannex\Components;
 
-use App\Models\Posts\Post;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
-use DateTimeInterface;
+use App\Models\Posts\Post;
+use Atannex\Traits\EngagementMetrics;
+use Illuminate\Database\Eloquent\Collection;
 
 trait GetTrendingPost
 {
+    use EngagementMetrics;
+
     /**
-     * Retrieve trending posts based on weighted interactions within a date range.
+     * Retrieve trending posts with time-decay weighted engagement scores.
      *
-     * @param int $limit
-     * @param DateTimeInterface|null $start
-     * @param DateTimeInterface|null $end
-     * @return Collection<Post>
+     * @param array $config Configuration array with optional parameters:
+     *                      - start: Carbon instance for start date (default: 7 days ago)
+     *                      - end: Carbon instance for end date (default: now)
+     *                      - limit: Number of posts to return (default: 10)
+     *                      - weights: Engagement metric weights (default: from EngagementMetrics)
+     *                      - min_score: Minimum engagement score threshold (default: 0)
+     *                      - decay_factor: Multiplier for time decay (default: 0.1)
+     * @return Collection
+     * @throws \InvalidArgumentException
      */
-    public function getTrendingPosts(int $limit = 5, ?DateTimeInterface $start = null, ?DateTimeInterface $end = null): Collection
+    public function getTrendingPosts(array $config = []): Collection
     {
-        $start ??= Carbon::now()->subDays(7);
-        $end ??= Carbon::now();
+        $defaultConfig = [
+            'start' => Carbon::now()->subDays(7),
+            'end' => Carbon::now(),
+            'limit' => 10,
+            'weights' => [],
+            'min_score' => 0,
+            'decay_factor' => 0.1,
+        ];
 
-        $trendingScoreExpr = '(views_count * 1) + (likes_count * 5) + (comments_count * 10) + (shares_count * 20)';
+        $config = array_merge($defaultConfig, $config);
 
-        return Post::query()
-            ->selectRaw("posts.*, {$trendingScoreExpr} as trending_score")
-            ->published()
-            ->whereBetween('published_at', [$start, $end])
-            ->orderByDesc('trending_score')
-            ->limit($limit)
+        $posts = Post::published()
+            ->whereBetween('published_at', [$config['start'], $config['end']])
             ->get();
+
+        $scoredPosts = $this->calculateWeightedScore(
+            $posts,
+            $config['weights'],
+            $config['start'],
+            $config['end']
+        )->each(function ($post) use ($config) {
+            $daysOld = $post->published_at->diffInDays($config['end']);
+            $decay = exp(-$config['decay_factor'] * $daysOld);
+            $post->trending_score = $post->engagement_score * $decay;
+        });
+
+        return $scoredPosts
+            ->filter(fn($post) => $post->trending_score >= $config['min_score'])
+            ->sortByDesc('trending_score')
+            ->take($config['limit'])
+            ->values();
     }
 }

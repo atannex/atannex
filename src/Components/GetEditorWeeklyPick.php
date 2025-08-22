@@ -2,33 +2,62 @@
 
 namespace Atannex\Components;
 
-use App\Models\Posts\Post;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
-use DateTimeInterface;
+use App\Models\Posts\Post;
+use Atannex\Traits\EngagementMetrics;
+use Illuminate\Database\Eloquent\Collection;
 
 trait GetEditorWeeklyPick
 {
+    use EngagementMetrics;
+
     /**
-     * Retrieve posts marked as editor's weekly picks within an optional date range.
+     * Retrieve editor's weekly picks based on engagement metrics and publication status.
      *
-     * @param int $limit Maximum number of posts to retrieve.
-     * @param DateTimeInterface|null $start Optional start date filter.
-     * @param DateTimeInterface|null $end Optional end date filter.
+     * @param array $config Configuration array with optional parameters:
+     *                      - start: Carbon instance for start date (default: start of week)
+     *                      - end: Carbon instance for end date (default: end of week)
+     *                      - limit: Number of posts to return (default: 10)
+     *                      - weights: Engagement metric weights (default: from EngagementMetrics)
+     *                      - min_score: Minimum engagement score threshold (default: 0)
      * @return Collection
      */
-    public function getEditorWeeklyPicks(int $limit = 5, ?DateTimeInterface $start = null, ?DateTimeInterface $end = null): Collection
+    public function getEditorWeeklyPicks(array $config = []): Collection
     {
-        $start = $start ?? Carbon::now()->startOfWeek();
-        $end = $end ?? Carbon::now()->endOfWeek();
+        $defaultConfig = [
+            'start' => Carbon::now()->startOfWeek(),
+            'end'   => Carbon::now()->endOfWeek(),
+            'limit' => 10,
+            'weights' => [
+                'views'    => 0.2,
+                'likes'    => 0.2,
+                'comments' => 0.4,
+                'ratings'  => 0.1,
+                'shares'   => 0.1,
+            ],
+            'min_score' => 0,
+        ];
 
-        return Post::query()
-            ->published()
-            ->where('is_weekly_pick', true)
-            ->when($start, fn($query) => $query->where('published_at', '>=', $start))
-            ->when($end, fn($query) => $query->where('published_at', '<=', $end))
-            ->orderByDesc('published_at')
-            ->limit($limit)
+        $config = array_merge($defaultConfig, $config);
+
+        $config['start'] = Carbon::parse($config['start']);
+        $config['end']   = Carbon::parse($config['end']);
+
+        $posts = Post::published()
+            ->betweenDates($config['start'], $config['end'])
             ->get();
+
+        $scoredPosts = $this->calculateWeightedScore(
+            $posts,
+            $config['weights'],
+            $config['start'],
+            $config['end']
+        );
+
+        return $scoredPosts
+            ->filter(fn($post) => $post->engagement_score >= $config['min_score'])
+            ->sortByDesc('engagement_score')
+            ->take($config['limit'])
+            ->values();
     }
 }
