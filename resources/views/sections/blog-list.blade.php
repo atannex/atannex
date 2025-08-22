@@ -29,7 +29,7 @@
 
                                     @include('partials.date')
                                 </div>
-                                <a href="#" class="th-btn style2">
+                                <a href="javascript:void(0)" class="th-btn style2">
                                     {{ __("Read More") }}
                                     <i class="fas fa-arrow-up-right ms-2"></i>
                                 </a>

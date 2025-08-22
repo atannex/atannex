@@ -35,13 +35,17 @@
                             </a>
                         </div>
 
-                        @include('partials.title')
+                        <h3 class="box-title-24">
+
+                            @include('partials.title')
+
+                        </h3>
 
                         <p class="blog-text">
                             {!! Str::limit($post->description, 200) !!}
                         </p>
 
-                        <a href="#" class="th-btn style2">
+                        <a href="javascript:void(0)" class="th-btn style2">
                             {{ __("Read More") }}
                             <i class="fas fa-arrow-up-right ms-2"></i>
                         </a>
