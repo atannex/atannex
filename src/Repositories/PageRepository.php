@@ -20,7 +20,7 @@ class PageRepository implements PageInterface
     public function getAllCategoryPages(): Collection
     {
         return Category::query()
-            ->published()
+            ->published(false)
             ->whereNull('parent_id')
             ->with(['children' => $this->publishedChildren()])
             ->get();

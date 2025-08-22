@@ -77,7 +77,7 @@ class DocumentRepository implements DocumentInterface
      */
     private function addPublishedDocumentConstraints(Builder $query): void
     {
-        $query->published()
+        $query->published(false)
             ->where(function (Builder $q): void {
                 $q->where('published_at', '<=', now())
                     ->orWhereNull('published_at');

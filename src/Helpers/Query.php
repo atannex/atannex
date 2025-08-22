@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait Query
 {
+    /**
+     * Ensure pagination/take limits are always positive integers.
+     */
+    private function sanitizeLimit(int $limit): int
+    {
+        return max(1, $limit);
+    }
     /* -----------------------------------------------------------------
      |  Private query helpers
      | -----------------------------------------------------------------
@@ -26,7 +33,7 @@ trait Query
      */
     private function publishedChildren(): \Closure
     {
-        return fn(HasMany $query) => $query->published();
+        return fn(HasMany $query) => $query->published(false);
     }
 
     /**

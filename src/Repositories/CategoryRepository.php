@@ -2,7 +2,6 @@
 
 namespace Atannex\Repositories;
 
-use App\Enums\Flag;
 use App\Models\Regions\Employee;
 use Illuminate\Support\Collection;
 use Atannex\Contracts\CategoryInterface;
@@ -23,25 +22,16 @@ class CategoryRepository implements CategoryInterface
     use TagQuery;
 
     /**
-     * Retrieve published social media profiles for a given user.
+     * Retrieve published social media profiles for a given employee.
      *
-     * @param Employee $employee The user to fetch social media profiles for.
-     * @return Collection Collection of published social media profiles, ordered by display order.
+     * @param Employee $employee The employee to fetch social media profiles for.
+     * @return Collection<int, \App\Models\Regions\EmployeeSocialMedia>
      */
     public function getPublishedEmployeeSocialMedia(Employee $employee): Collection
     {
         return $employee->socialMedia()
-            ->where('flag', Flag::PUBLISHED)
-            ->where('is_global', false)
-            ->orderBy('order')
+            ->published(true)
+            ->ordered()
             ->get();
-    }
-
-    /**
-     * Ensure pagination/take limits are always positive integers.
-     */
-    private function sanitizeLimit(int $limit): int
-    {
-        return max(1, $limit);
     }
 }

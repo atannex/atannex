@@ -10,12 +10,12 @@ trait GetPostByFondom
 {
     public function getPostByFondom(array $config): Collection
     {
-        return Post::published()
+        return Post::published(false)
             ->whereHas(
                 'regions',
                 fn(Builder $query) => $query
                     ->where('type', 'Fondom')
-                    ->published()
+                    ->published(false)
             )
             ->limit($config['limit'] ?? 5)
             ->get();

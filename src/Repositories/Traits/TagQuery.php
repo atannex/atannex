@@ -4,6 +4,7 @@ namespace Atannex\Repositories\Traits;
 
 use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
+use Atannex\Helpers\Query;
 use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,6 +15,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 trait TagQuery
 {
+    use Query;
+
     protected const DEFAULT_PAGINATION_LIMIT   = 50;
     protected const DEFAULT_POPULAR_TAGS_LIMIT = 12;
 
@@ -22,7 +25,7 @@ trait TagQuery
      */
     public function getPostsByTag(Tag $tag, int $limit = self::DEFAULT_PAGINATION_LIMIT): LengthAwarePaginator
     {
-        return Post::published()
+        return Post::published(false)
             ->whereHas('tags', fn(Builder $query) => $query->whereKey($tag->id))
             ->with($this->defaultPostRelations())
             ->latest()

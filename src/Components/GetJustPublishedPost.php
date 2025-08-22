@@ -15,7 +15,7 @@ trait GetJustPublishedPost
         $end = Carbon::now();
 
         return Post::query()
-            ->published()
+            ->published(false)
             ->when($start, fn($query) => $query->where('published_at', '>=', $start))
             ->when($end, fn($query) => $query->where('published_at', '<=', $end))
             ->orderByDesc('published_at')

@@ -9,12 +9,52 @@ use Illuminate\Database\Eloquent\Builder;
 trait EnableScope
 {
     /**
-     * Scope a query to filter posts between two dates.
+     * Scope to only published posts.
      *
      * @param Builder $query
-     * @param Carbon $start
-     * @param Carbon $end
+     * @param bool|null $includeGlobal Pass true to include only global, false to exclude global, null to include both
      * @return Builder
+     */
+    public function scopePublished(Builder $query, ?bool $includeGlobal = null): Builder
+    {
+        if ($includeGlobal === true) {
+            // Only global posts (may not use published_at)
+            $query->where('is_global', true)
+                ->where('flag', Flag::PUBLISHED);
+        } elseif ($includeGlobal === false) {
+            // Only non-global posts (must be published)
+            $query->whereNotNull('published_at')
+                ->where('published_at', '<=', now());
+        } else {
+            // Both global and non-global posts
+            $query->where(function ($q) {
+                $q->where(function ($q1) {
+                    // Non-global posts must be published
+                    $q1->where('is_global', false)
+                        ->whereNotNull('published_at')
+                        ->where('published_at', '<=', now());
+                })
+                    ->orWhere(function ($q2) {
+                        // Global posts use flag
+                        $q2->where('is_global', true)
+                            ->where('flag', Flag::PUBLISHED);
+                    });
+            });
+        }
+
+        return $query;
+    }
+
+    /**
+     * Scope to order by the `order` column.
+     */
+    public function scopeOrdered(Builder $query): Builder
+    {
+        return $query->orderBy('order');
+    }
+
+    /**
+     * Scope a query to filter posts between two dates.
      */
     public function scopeBetweenDates(Builder $query, ?Carbon $start, ?Carbon $end): Builder
     {
@@ -33,22 +73,8 @@ trait EnableScope
         return $query;
     }
 
-
     /**
-     * Scope to only published pages.
-     */
-    public function scopePublished($query)
-    {
-        return $query->whereNotNull('published_at')
-            ->where('published_at', '<=', now());
-    }
-
-    /**
-     * Scope to filter by given flag.
-     *
-     * @param Builder $query
-     * @param Flag $flag
-     * @return Builder
+     * Scope to filter by a specific flag.
      */
     public function scopeFlagged(Builder $query, Flag $flag): Builder
     {
@@ -56,41 +82,15 @@ trait EnableScope
     }
 
     /**
-     * Scope to only active pages.
+     * Scope for active posts.
      */
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
     }
 
     /**
-     * Scope a query to only include breaking posts.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeIsBreaking(Builder $query): Builder
-    {
-        return $query->where('flag', Flag::BREAKING);
-    }
-
-    /**
-     * Scope a query to only include breaking posts.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeIsEditorPick(Builder $query): Builder
-    {
-        return $query->where('flag', Flag::EDITORIAL_PICK);
-    }
-
-    /**
-     * Scope a query to only include posts where a given datetime column is in the future.
-     *
-     * @param  Builder  $query
-     * @param  string  $column
-     * @return Builder
+     * Scope for posts scheduled in the future.
      */
     public function scopeIsFuture(Builder $query, string $column = 'scheduled_at'): Builder
     {
@@ -98,11 +98,7 @@ trait EnableScope
     }
 
     /**
-     * Scope a query to only include posts where a given datetime column is in the past or now.
-     *
-     * @param  Builder  $query
-     * @param  string  $column
-     * @return Builder
+     * Scope for posts in the past or now.
      */
     public function scopeIsPast(Builder $query, string $column = 'scheduled_at'): Builder
     {
@@ -111,11 +107,6 @@ trait EnableScope
 
     /**
      * Protected helper to apply a where clause for enum-based columns.
-     *
-     * @param Builder $query
-     * @param string $column
-     * @param object|string|int $value
-     * @return Builder
      */
     protected function applyWhere(Builder $query, string $column, $value): Builder
     {

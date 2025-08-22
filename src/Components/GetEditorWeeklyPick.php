@@ -43,7 +43,7 @@ trait GetEditorWeeklyPick
         $config['start'] = Carbon::parse($config['start']);
         $config['end']   = Carbon::parse($config['end']);
 
-        $posts = Post::published()
+        $posts = Post::published(false)
             ->betweenDates($config['start'], $config['end'])
             ->get();
 

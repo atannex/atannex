@@ -17,8 +17,6 @@ class UserForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                TextInput::make('slug')
-                    ->required(),
                 TextInput::make('email')
                     ->label('Email address')
                     ->email()

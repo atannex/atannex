@@ -20,7 +20,7 @@ trait GetRecentPost
      */
     public function getRecentPublishedPosts(int $limit = 5): Collection
     {
-        return Post::published()
+        return Post::published(false)
             ->latest('created_at')
             ->limit($limit)
             ->get();

@@ -49,7 +49,7 @@
                 </div>
 
                 @php
-                $user = $post->author->user;
+                $user = $author->user;
                 @endphp
 
                 <div class="col-xl-4 sidebar-wrap">

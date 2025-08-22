@@ -10,7 +10,7 @@ trait GetPostByCategory
     public function getPostByCategory(array $config): Collection
     {
         return Post::query()
-            ->published()
+            ->published(false)
             ->whereIn('category_id', (array) $config['category_id'])
             ->latest()
             ->limit($config['limit'])

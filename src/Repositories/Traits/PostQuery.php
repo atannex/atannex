@@ -4,6 +4,7 @@ namespace Atannex\Repositories\Traits;
 
 use App\Models\User;
 use App\Models\Posts\Post;
+use Atannex\Helpers\Query;
 use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,6 +15,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 trait PostQuery
 {
+
+    use Query;
+
     protected const DEFAULT_PAGINATION_LIMIT   = 50;
     protected const DEFAULT_RECENT_POSTS_LIMIT = 5;
     protected const DEFAULT_POPULAR_TAGS_LIMIT = 12;
@@ -63,7 +67,7 @@ trait PostQuery
             return $this->emptyPaginator($limit);
         }
 
-        return Post::published()
+        return Post::published(false)
             ->where('author_id', $author->id)
             ->with([
                 'author'   => $this->authorWithPostCount(),
@@ -85,7 +89,7 @@ trait PostQuery
             return $this->emptyPostQuery();
         }
 
-        $query = Post::published()
+        $query = Post::published(false)
             ->whereIn('category_id', $categoryIds)
             ->with($this->defaultRelations());
 
@@ -123,7 +127,7 @@ trait PostQuery
     private function emptyPostQuery(): Builder
     {
         return Post::whereRaw('1 = 0')
-            ->published()
+            ->published(false)
             ->with($this->defaultRelations());
     }
 

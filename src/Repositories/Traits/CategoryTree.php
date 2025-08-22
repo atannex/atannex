@@ -75,6 +75,6 @@ trait CategoryTree
      */
     private function publishedPostsScope(): \Closure
     {
-        return fn(Builder $query) => $query->published();
+        return fn(Builder $query) => $query->published(false);
     }
 }
