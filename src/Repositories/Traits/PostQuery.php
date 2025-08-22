@@ -67,7 +67,7 @@ trait PostQuery
             return $this->emptyPaginator($limit);
         }
 
-        return Post::published(false)
+        return Post::published()
             ->where('author_id', $author->id)
             ->with([
                 'author'   => $this->authorWithPostCount(),
@@ -89,7 +89,7 @@ trait PostQuery
             return $this->emptyPostQuery();
         }
 
-        $query = Post::published(false)
+        $query = Post::published()
             ->whereIn('category_id', $categoryIds)
             ->with($this->defaultRelations());
 
@@ -127,7 +127,7 @@ trait PostQuery
     private function emptyPostQuery(): Builder
     {
         return Post::whereRaw('1 = 0')
-            ->published(false)
+            ->published()
             ->with($this->defaultRelations());
     }
 

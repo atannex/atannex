@@ -14,14 +14,6 @@ use Illuminate\Database\Eloquent\Builder;
 class DocumentRepository implements DocumentInterface
 {
     /**
-     * DocumentRepository constructor.
-     */
-    public function __construct()
-    {
-        // Constructor intentionally left empty for future extensibility
-    }
-
-    /**
      * Retrieve published documents of a specific type.
      *
      * @param string $type The document type to filter by
@@ -77,7 +69,7 @@ class DocumentRepository implements DocumentInterface
      */
     private function addPublishedDocumentConstraints(Builder $query): void
     {
-        $query->published(false)
+        $query->published()
             ->where(function (Builder $q): void {
                 $q->where('published_at', '<=', now())
                     ->orWhereNull('published_at');

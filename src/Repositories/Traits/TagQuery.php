@@ -25,7 +25,7 @@ trait TagQuery
      */
     public function getPostsByTag(Tag $tag, int $limit = self::DEFAULT_PAGINATION_LIMIT): LengthAwarePaginator
     {
-        return Post::published(false)
+        return Post::published()
             ->whereHas('tags', fn(Builder $query) => $query->whereKey($tag->id))
             ->with($this->defaultPostRelations())
             ->latest()
