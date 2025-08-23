@@ -76,4 +76,9 @@ trait Resolver
     {
         return Region::where('slug_path', $slug)->first();
     }
+
+    protected function resolveDate(string $slug):?Post
+    {
+        return Post::where('date_path', $slug)->first();
+    }
 }

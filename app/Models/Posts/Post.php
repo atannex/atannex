@@ -52,6 +52,7 @@ class Post extends Model implements Commentable, Sluggable
         'title',
         'slug',
         'slug_path',
+        'date_path',
         'flag',
         'category_id',
         'author_id',
@@ -79,6 +80,15 @@ class Post extends Model implements Commentable, Sluggable
     protected $attributes = [
         'flag' => Flag::DRAFT,
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (Post $post) {
+            if ($post->published_at) {
+                $post->date_path = $post->published_at->format('m/Y');
+            }
+        });
+    }
 
     /**
      * Get the base string for slug generation.

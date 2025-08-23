@@ -44,6 +44,10 @@ class PageController extends Controller
             return $this->getView->renderRegionView($region);
         }
 
+        if ($date = $this->resolveDate($slug)) {
+            return $this->getView->renderDateView($date);
+        }
+
         abort(404);
     }
 }
