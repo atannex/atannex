@@ -2,13 +2,14 @@
 
 namespace Atannex\Relations;
 
-use App\Models\Pivots\PostRegion;
 use App\Models\Posts\Post;
-use App\Models\Regions\Region as RegionsRegion;
 use App\Models\Regions\Ruler;
+use App\Models\Regions\Region;
+use App\Models\Pivots\PostRegion;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 trait RegionRelation
 {
@@ -17,15 +18,15 @@ trait RegionRelation
      */
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(RegionsRegion::class, 'parent_id');
+        return $this->belongsTo(Region::class, 'parent_id');
     }
 
     /**
      * Child regions.
      */
-    public function children(): BelongsTo
+    public function children(): HasMany
     {
-        return $this->hasMany(RegionsRegion::class, 'parent_id');
+        return $this->hasMany(Region::class, 'parent_id');
     }
 
     public function ruler(): HasOne

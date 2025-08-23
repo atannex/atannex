@@ -40,6 +40,10 @@ class PageController extends Controller
             return $this->getView->renderPostShow($post->category, $slug);
         }
 
+        if ($region = $this->resolveRegion($slug)) {
+            return $this->getView->renderRegionView($region);
+        }
+
         abort(404);
     }
 }

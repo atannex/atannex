@@ -5,8 +5,9 @@ namespace Atannex\Repositories\Traits;
 use App\Models\User;
 use App\Models\Posts\Post;
 use Atannex\Helpers\Query;
-use App\Models\Pages\Category;
 use Atannex\Traits\Resolver;
+use App\Models\Pages\Category;
+use App\Models\Regions\Region;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -33,6 +34,35 @@ trait PostQuery
             ->latest()
             ->paginate($this->sanitizeLimit($limit));
     }
+
+    /**
+     * Retrieve posts associated with a specific region, limited by a specified number.
+     *
+     * This method fetches posts that belong to leaf categories (categories without children)
+     * and are linked to the provided region. The posts are returned with their related
+     * categories and regions, ordered by latest creation date.
+     *
+     * @param Region $region The region entity to filter posts by.
+     * @param int $limit Optional. The maximum number of posts to return. Default is 15.
+     * @return LengthAwarePaginator
+     */
+    public function getPostsByRegion(?Region $region, int $limit = 15): LengthAwarePaginator
+    {
+
+
+        $regionIds = $region->getDescendantsAndSelf()->pluck('id');
+
+        return Post::whereHas('category', function ($query) {
+            $query->doesntHave('children');
+        })
+            ->whereHas('regions', function ($query) use ($regionIds) {
+                $query->whereIn('region_id', $regionIds);
+            })
+            ->with(['category', 'regions'])
+            ->latest()
+            ->paginate($this->sanitizeLimit($limit));
+    }
+
 
     /**
      * Retrieve recent posts for a given post's category, excluding the post itself.

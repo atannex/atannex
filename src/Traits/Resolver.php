@@ -6,6 +6,7 @@ use App\Models\Pages\Category;
 use App\Models\Pivots\PostTag;
 use App\Models\Posts\Post;
 use App\Models\Regions\Employee;
+use App\Models\Regions\Region;
 
 /**
  * Trait Resolver
@@ -60,5 +61,19 @@ trait Resolver
     protected function resolvePost(string $slug): ?Post
     {
         return Post::where('slug_path', $slug)->first();
+    }
+
+    /**
+     * Resolve a region by its slug.
+     *
+     * This method queries the database for a Region record matching the provided slug.
+     * It returns the first matching record or null if no match is found.
+     *
+     * @param string $slug The slug identifier of the region.
+     * @return Region|null The matching Region instance, or null if not found.
+     */
+    protected function resolveRegion(string $slug):?Region
+    {
+        return Region::where('slug_path', $slug)->first();
     }
 }

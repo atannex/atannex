@@ -26,28 +26,31 @@
                     @foreach ($region['posts'] as $post)
                     <div class="border-blog2 filter-item cat-region-{{ $region['id'] }}">
                         <div class="blog-style4">
-                            <div class="blog-img">
 
-                                @include('partials.image')
+                            <div class="blog-img">
+                                @include('partials.image', ['post' => $post])
+
+                                <a href="{{ route('page.index', ['slug' => $region['slug_path']]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
+                                    {{ $region['name'] }}
+                                </a>
 
                             </div>
-                            <div class="blog-content">
 
-                                @include('partials.category')
+                            <div class="blog-content">
+                                @include('partials.category', ['post' => $post])
 
                                 <h3 class="box-title-24">
-
-                                    @include('partials.title')
-
+                                    @include('partials.title', ['post' => $post])
                                 </h3>
+
                                 <p class="blog-text">
                                     {{ Str::limit($post->description, 200) }}
                                 </p>
+
                                 <div class="blog-meta">
+                                    @include('partials.author', ['post' => $post])
 
-                                    @include('partials.author')
-
-                                    <a href="">
+                                    <a href="#">
                                         <i class="fal fa-calendar-days"></i>
                                         {{ $post->published_at->format('d M, Y') }}
                                     </a>
@@ -58,6 +61,7 @@
                     @endforeach
                     @endforeach
                 </div>
+
             </div>
 
             <div class="mb-10 col-xl-3 mt-35 mt-xl-0 sidebar-wrap">

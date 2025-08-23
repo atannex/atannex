@@ -11,6 +11,7 @@ use Atannex\Views\PostShowView;
 use Atannex\Services\TagService;
 use Atannex\Services\PageService;
 use Atannex\Services\CategoryService;
+use Atannex\Views\RegionView;
 
 class GetView
 {
@@ -27,4 +28,5 @@ class GetView
     use PageView;
     use TagView;
     use PostShowView;
+    use RegionView;
 }

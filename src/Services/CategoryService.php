@@ -6,11 +6,12 @@ namespace Atannex\Services;
 
 use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
+use Atannex\Helpers\Media;
 use App\Models\Pages\Category;
+use App\Models\Regions\Region;
 use App\Models\Regions\Employee;
 use Illuminate\Support\Collection;
 use Atannex\Contracts\CategoryInterface;
-use Atannex\Helpers\Media;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -49,6 +50,23 @@ final class CategoryService
     public function getPostsByCategory(Category $category, int $limit = self::DEFAULT_PAGINATION_LIMIT): LengthAwarePaginator
     {
         return $this->interface->getPostsByCategory($category, $limit);
+    }
+
+    /**
+     * Retrieve a paginated list of posts filtered by a specific region.
+     *
+     * This method fetches posts associated with the given Region entity,
+     * returning a paginated result to simplify frontend display and
+     * limit memory usage. The number of posts per page can be customized.
+     *
+     * @param Region $region The region entity used to filter posts.
+     * @param int $limit Optional. The number of posts per page. Default is 15.
+     *
+     * @return LengthAwarePaginator A paginator instance containing the posts.
+     */
+    public function getPostsByRegion(Region $region, int $limit = 15): LengthAwarePaginator
+    {
+        return $this->interface->getPostsByRegion($region, $limit);
     }
 
     /**
