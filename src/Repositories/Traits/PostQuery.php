@@ -48,8 +48,6 @@ trait PostQuery
      */
     public function getPostsByRegion(?Region $region, int $limit = 15): LengthAwarePaginator
     {
-
-
         $regionIds = $region->getDescendantsAndSelf()->pluck('id');
 
         return Post::whereHas('category', function ($query) {
@@ -62,7 +60,6 @@ trait PostQuery
             ->latest()
             ->paginate($this->sanitizeLimit($limit));
     }
-
 
     /**
      * Retrieve recent posts for a given post's category, excluding the post itself.
