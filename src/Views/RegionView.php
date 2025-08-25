@@ -14,7 +14,6 @@ trait RegionView
      * Render the Region page.
      *
      * @param Region $region The region model to display
-     * @return View
      */
     public function renderRegionView(Region $region): View
     {

@@ -15,8 +15,6 @@ class TagService
 {
     /**
      * The repository implementation.
-     *
-     * @var TagInterface
      */
     protected TagInterface $repository;
 

@@ -14,9 +14,6 @@ interface PageInterface
 {
     /**
      * Retrieve a homepage by its slug path.
-     *
-     * @param string $slugPath
-     * @return Page|null
      */
     public function getHomePage(string $slugPath): ?Page;
 

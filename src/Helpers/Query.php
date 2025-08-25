@@ -91,6 +91,6 @@ trait Query
     {
         [$year, $month] = array_pad(explode('/', $slug, 2), 2, null);
 
-        return compact('year', 'month');
+        return ['year' => $year, 'month' => $month];
     }
 }

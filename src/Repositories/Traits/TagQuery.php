@@ -56,7 +56,7 @@ trait TagQuery
      */
     protected function getRootCategoryFromTag(?Tag $tag): ?Category
     {
-        if (!$tag) {
+        if (!$tag instanceof \App\Models\Tags\Tag) {
             return null;
         }
 

@@ -24,8 +24,6 @@ trait PostRelation
 {
     /**
      * Many-to-Many relationship with Tags.
-     *
-     * @return BelongsToMany
      */
     public function tags(): BelongsToMany
     {
@@ -37,8 +35,6 @@ trait PostRelation
 
     /**
      * Post belongs to a Category.
-     *
-     * @return BelongsTo
      */
     public function category(): BelongsTo
     {
@@ -47,8 +43,6 @@ trait PostRelation
 
     /**
      * Post belongs to an Author (Employee).
-     *
-     * @return BelongsTo
      */
     public function author(): BelongsTo
     {
@@ -57,8 +51,6 @@ trait PostRelation
 
     /**
      * Post belongs to an Editor (Employee) who last updated it.
-     *
-     * @return BelongsTo
      */
     public function editor(): BelongsTo
     {
@@ -67,8 +59,6 @@ trait PostRelation
 
     /**
      * Many-to-Many relationship with Regions.
-     *
-     * @return BelongsToMany
      */
     public function regions(): BelongsToMany
     {
@@ -80,8 +70,6 @@ trait PostRelation
 
     /**
      * One-to-One relationship with PostModule.
-     *
-     * @return HasOne
      */
     public function module(): HasOne
     {
@@ -90,8 +78,6 @@ trait PostRelation
 
     /**
      * Polymorphic relationship with Comments (only top-level comments).
-     *
-     * @return MorphMany
      */
     public function comments(): MorphMany
     {

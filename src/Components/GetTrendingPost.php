@@ -21,7 +21,6 @@ trait GetTrendingPost
      *                      - weights: Engagement metric weights (default: from EngagementMetrics)
      *                      - min_score: Minimum engagement score threshold (default: 0)
      *                      - decay_factor: Multiplier for time decay (default: 0.1)
-     * @return Collection
      * @throws \InvalidArgumentException
      */
     public function getTrendingPosts(array $config = []): Collection

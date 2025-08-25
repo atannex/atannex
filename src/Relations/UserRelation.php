@@ -23,8 +23,6 @@ trait UserRelation
 {
     /**
      * Get the sessions associated with the user.
-     *
-     * @return HasMany
      */
     public function sessions(): HasMany
     {
@@ -33,8 +31,6 @@ trait UserRelation
 
     /**
      * Get the employee profile associated with the user.
-     *
-     * @return HasOne
      */
     public function employee(): HasOne
     {
@@ -43,8 +39,6 @@ trait UserRelation
 
     /**
      * Determine if the user has an associated employee profile.
-     *
-     * @return bool
      */
     public function isEmployee(): bool
     {
@@ -53,8 +47,6 @@ trait UserRelation
 
     /**
      * Get the comments made by the user.
-     *
-     * @return HasMany
      */
     public function comments(): HasMany
     {
@@ -63,8 +55,6 @@ trait UserRelation
 
     /**
      * Get the likes made by the user.
-     *
-     * @return HasMany
      */
     public function likes(): HasMany
     {
@@ -73,8 +63,6 @@ trait UserRelation
 
     /**
      * Get the views recorded for the user.
-     *
-     * @return HasMany
      */
     public function views(): HasMany
     {
@@ -83,8 +71,6 @@ trait UserRelation
 
     /**
      * Get the shares made by the user.
-     *
-     * @return HasMany
      */
     public function shares(): HasMany
     {
@@ -93,8 +79,6 @@ trait UserRelation
 
     /**
      * Get the ratings given by the user.
-     *
-     * @return HasMany
      */
     public function ratings(): HasMany
     {

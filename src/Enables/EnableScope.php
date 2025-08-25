@@ -11,9 +11,7 @@ trait EnableScope
     /**
      * Scope to only published posts.
      *
-     * @param Builder $query
      * @param string|null $type 'global'|'non-global'|null
-     * @return Builder
      */
     public function scopePublished(Builder $query, ?string $type = null): Builder
     {
@@ -43,9 +41,9 @@ trait EnableScope
             return $query->whereBetween('published_at', [$start, $end]);
         }
 
-        return $start
+        return $start instanceof \Carbon\Carbon
             ? $query->where('published_at', '>=', $start)
-            : ($end ? $query->where('published_at', '<=', $end) : $query);
+            : ($end instanceof \Carbon\Carbon ? $query->where('published_at', '<=', $end) : $query);
     }
 
     /**

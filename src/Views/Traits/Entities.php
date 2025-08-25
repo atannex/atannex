@@ -26,7 +26,6 @@ trait Entities
     /**
      * Get entity mapping for a given PostType.
      *
-     * @param PostType $type
      * @return array{entity: string, idKey: string}|null
      */
     private function getEntityMapping(PostType $type): ?array
@@ -56,7 +55,7 @@ trait Entities
      */
     private function resolveEntities(?string $type, array $ids = [], int $limit = 0)
     {
-        if (!$type || empty($ids)) {
+        if (!$type || $ids === []) {
             return null;
         }
 

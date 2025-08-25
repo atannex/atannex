@@ -43,7 +43,6 @@ trait PostQuery
      *
      * @param Region $region The region entity to filter posts by.
      * @param int $limit Optional. The maximum number of posts to return. Default is 15.
-     * @return LengthAwarePaginator
      */
     public function getPostsByRegion(?Region $region, int $limit = 15): LengthAwarePaginator
     {
@@ -85,7 +84,7 @@ trait PostQuery
      */
     public function getPostsByAuthor(?string $slugPath, int $limit = self::DEFAULT_PAGINATION_LIMIT): LengthAwarePaginator
     {
-        if (empty($slugPath)) {
+        if ($slugPath === null || $slugPath === '' || $slugPath === '0') {
             return $this->emptyPaginator($limit);
         }
 
@@ -109,7 +108,7 @@ trait PostQuery
      */
     protected function buildPostQuery(?Category $category, ?int $excludeId = null): Builder
     {
-        $categoryIds = $category ? $this->getCategoryTreeIds($category) : collect();
+        $categoryIds = $category instanceof \App\Models\Pages\Category ? $this->getCategoryTreeIds($category) : collect();
 
         if ($categoryIds->isEmpty()) {
             return $this->emptyPostQuery();

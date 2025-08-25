@@ -16,15 +16,11 @@ trait GetCreation
 {
     /**
      * The base path for storing view files (e.g., 'views/widgets').
-     *
-     * @var string
      */
     protected string $viewPath = 'views/widgets';
 
     /**
      * The file extension for view files (e.g., '.blade.php').
-     *
-     * @var string
      */
     protected string $fileExtension = '.blade.php';
 
@@ -33,7 +29,6 @@ trait GetCreation
      *
      * @param Model $model The model instance
      * @param bool $force Overwrite existing file if true
-     * @return void
      */
     public function createView(Model $model, bool $force = false): void
     {
@@ -50,7 +45,6 @@ trait GetCreation
      *
      * @param Model $model The model instance
      * @param string $oldSlug The previous slug
-     * @return void
      */
     public function updateView(Model $model, string $oldSlug): void
     {
@@ -68,7 +62,6 @@ trait GetCreation
      * Delete the view file associated with the given slug.
      *
      * @param string $slug The slug of the view file
-     * @return void
      */
     public function deleteView(string $slug): void
     {
@@ -80,8 +73,6 @@ trait GetCreation
 
     /**
      * Ensure the directory for view files exists.
-     *
-     * @return void
      */
     protected function ensureDirectoryExists(): void
     {
@@ -117,7 +108,6 @@ trait GetCreation
      * Set a custom view path for the trait.
      *
      * @param string $viewPath The custom view path
-     * @return void
      */
     public function setViewPath(string $viewPath): void
     {
@@ -128,7 +118,6 @@ trait GetCreation
      * Set a custom file extension for the view files.
      *
      * @param string $extension The file extension (e.g., '.php', '.blade.php')
-     * @return void
      */
     public function setFileExtension(string $extension): void
     {

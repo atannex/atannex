@@ -38,9 +38,6 @@ class PageRepository implements PageInterface
 
     /**
      * Retrieve a single active home page by slug, including only active sections and widgets.
-     *
-     * @param string $slug
-     * @return Page|null
      */
     public function getHomePage(string $slug): ?Page
     {

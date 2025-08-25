@@ -16,7 +16,6 @@ trait GetLatestPostInCategory
      * @param int $limit Maximum number of posts to retrieve.
      * @param DateTimeInterface|null $start Optional start date filter.
      * @param DateTimeInterface|null $end Optional end date filter.
-     * @return Collection
      */
     public function getLatestPostsInCategory(int $categoryId, int $limit = 5, ?DateTimeInterface $start = null, ?DateTimeInterface $end = null): Collection
     {

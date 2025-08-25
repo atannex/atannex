@@ -65,7 +65,6 @@ class DocumentRepository implements DocumentInterface
      * Apply published document constraints to the query.
      *
      * @param Builder<Document> $query The query builder instance
-     * @return void
      */
     private function addPublishedDocumentConstraints(Builder $query): void
     {

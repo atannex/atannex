@@ -25,11 +25,11 @@ trait Render
     {
         return [
             'popularTags'       => $this->tagService->getPopularTags(),
-            'relatedTags'       => $post ? $this->tagService->getTagsForPost($post->id) : collect(),
-            'navigation'        => $post ? $this->getPost->getPostNavigation($post) : collect(),
-            'relatedCategories' => $category ? $this->categoryService->getRelatedCategoriesForCategory($category) : collect(),
-            'recentPosts'       => $post ? $this->categoryService->getRecentPosts($post) : collect(),
-            'relatedPosts'      => $post ? $this->getPost->getRelatedPosts($post) : collect(),
+            'relatedTags'       => $post instanceof \App\Models\Posts\Post ? $this->tagService->getTagsForPost($post->id) : collect(),
+            'navigation'        => $post instanceof \App\Models\Posts\Post ? $this->getPost->getPostNavigation($post) : collect(),
+            'relatedCategories' => $category instanceof \App\Models\Pages\Category ? $this->categoryService->getRelatedCategoriesForCategory($category) : collect(),
+            'recentPosts'       => $post instanceof \App\Models\Posts\Post ? $this->categoryService->getRecentPosts($post) : collect(),
+            'relatedPosts'      => $post instanceof \App\Models\Posts\Post ? $this->getPost->getRelatedPosts($post) : collect(),
         ];
     }
 }

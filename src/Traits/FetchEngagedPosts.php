@@ -21,7 +21,6 @@ trait FetchEngagedPosts
      *                      - weights: array
      *                      - min_score: float
      *                      - recency_boost: bool
-     * @return Collection
      */
     public function fetchEngagedPosts(array $config = []): Collection
     {
@@ -58,7 +57,7 @@ trait FetchEngagedPosts
             $scoredPosts = $scoredPosts->map(function ($post) use ($end) {
                 $hoursSincePublished = $post->published_at->diffInHours($end);
                 $recencyFactor = max(0.5, 1 - ($hoursSincePublished / 24));
-                $post->engagement_score = $post->engagement_score * $recencyFactor;
+                $post->engagement_score *= $recencyFactor;
                 return $post;
             });
         }

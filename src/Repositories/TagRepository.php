@@ -12,9 +12,6 @@ class TagRepository implements TagInterface
 {
     /**
      * Retrieves a tag by its slug.
-     *
-     * @param string $slug
-     * @return Tag|null
      */
     public function getTagBySlug(string $slug): ?Tag
     {
@@ -24,7 +21,6 @@ class TagRepository implements TagInterface
     /**
      * Retrieves all tags associated with a specified blog post, ordered alphabetically by name.
      *
-     * @param int $postId
      * @return Collection<Tag>
      */
     public function getTagsForPost(int $postId): Collection
@@ -36,7 +32,6 @@ class TagRepository implements TagInterface
     /**
      * Retrieves all blog posts associated with a tag, ordered by published date descending.
      *
-     * @param string $tagId
      * @return Collection<Post>
      */
     public function getPostsForTag(string $tagId): Collection
@@ -48,7 +43,6 @@ class TagRepository implements TagInterface
     /**
      * Searches tags by partial name match, ordered alphabetically by name.
      *
-     * @param string $searchTerm
      * @return Collection<Tag>
      */
     public function searchTags(string $searchTerm): Collection
@@ -62,7 +56,6 @@ class TagRepository implements TagInterface
      * Retrieves the most popular tags based on the number of associated published posts,
      * including pivot data such as 'slug_path' from the post_tag pivot table.
      *
-     * @param int $limit
      * @return \Illuminate\Database\Eloquent\Collection<Tag>
      */
     public function getPopularTags(int $limit = 10): Collection

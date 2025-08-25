@@ -21,9 +21,6 @@ final class PageService
 
     /**
      * Retrieve a specific active home page by slug.
-     *
-     * @param string $slug
-     * @return Page|null
      */
     public function getHomePage(string $slug): ?Page
     {

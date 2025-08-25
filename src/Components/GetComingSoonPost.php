@@ -15,7 +15,6 @@ trait GetComingSoonPost
      * @param int $limit Maximum number of posts to retrieve.
      * @param DateTimeInterface|null $start Optional start date filter (future date).
      * @param DateTimeInterface|null $end Optional end date filter (future date).
-     * @return Collection
      */
     public function getComingSoonPosts(int $limit = 5, ?DateTimeInterface $start = null, ?DateTimeInterface $end = null): Collection
     {

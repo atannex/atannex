@@ -15,8 +15,6 @@ trait GetBreakingPost
      * @param array $config
      *      - 'limit': int, number of posts to return
      *      - 'hours': int, number of past hours to fetch posts from (optional)
-     *
-     * @return Collection
      */
     public function getBreakingPosts(array $config): Collection
     {

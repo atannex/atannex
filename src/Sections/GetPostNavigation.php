@@ -10,7 +10,6 @@ trait GetPostNavigation
     /**
      * Get previous and next posts relative to the given post.
      *
-     * @param Post $post
      * @return array{previous: ?Post, next: ?Post}
      */
     public function getPostNavigation(Post $post): array
@@ -24,9 +23,7 @@ trait GetPostNavigation
     /**
      * Get adjacent post (previous or next) without caching.
      *
-     * @param Post $post
      * @param string $direction Either 'previous' or 'next'
-     * @return Post|null
      */
     public function getAdjacentPost(Post $post, string $direction): ?Post
     {

@@ -16,7 +16,6 @@ trait GetRecentPost
      * Retrieve the most recent published posts.
      *
      * @param int $limit The number of posts to retrieve.
-     * @return \Illuminate\Support\Collection
      */
     public function getRecentPublishedPosts(int $limit = 5): Collection
     {

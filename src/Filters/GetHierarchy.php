@@ -36,7 +36,7 @@ trait GetHierarchy
             $queue = [...$getNext($this)];
         }
 
-        while (!empty($queue)) {
+        while ($queue !== []) {
             /** @var Model $current */
             $current = ($strategy === 'bfs')
                 ? array_shift($queue)  // queue-like for BFS

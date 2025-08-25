@@ -37,7 +37,6 @@ trait GetEnum
      *
      * @param string $field The metadata field to retrieve
      * @param mixed $default Default value if field is not found
-     * @return mixed
      */
     public function getMetaField(string $field, mixed $default = null): mixed
     {
@@ -47,8 +46,6 @@ trait GetEnum
 
     /**
      * Get the label for the current enum case.
-     *
-     * @return string
      */
     public function getLabel(): string
     {
@@ -62,8 +59,6 @@ trait GetEnum
 
     /**
      * Get the color for the current enum case.
-     *
-     * @return string
      */
     public function getColor(): string
     {
@@ -72,8 +67,6 @@ trait GetEnum
 
     /**
      * Get the icon for the current enum case.
-     *
-     * @return string
      */
     public function getIcon(): string
     {
@@ -128,7 +121,6 @@ trait GetEnum
      * Set custom default metadata for the enum.
      *
      * @param array<string, mixed> $metadata
-     * @return void
      */
     public static function setDefaultMetadata(array $metadata): void
     {
@@ -139,7 +131,6 @@ trait GetEnum
      * Set metadata for all enum cases.
      *
      * @param array<string, array<string, mixed>> $metadata
-     * @return void
      */
     public static function setMetadata(array $metadata): void
     {
@@ -151,7 +142,6 @@ trait GetEnum
      *
      * @param string $value The enum value
      * @param array<string, mixed> $metadata
-     * @return void
      */
     public static function addMetadata(string $value, array $metadata): void
     {

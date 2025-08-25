@@ -13,15 +13,12 @@ trait Media
 {
     /**
      * Map a SocialMedia model instance to a simplified array representation.
-     *
-     * @param  SocialMedia  $media
-     * @return array|null
      */
     protected function mapSocialMedia(SocialMedia $media): ?array
     {
         $platform = Icons::coerce($media->platform);
 
-        if (! $platform) {
+        if (!$platform instanceof \App\Enums\Icons) {
             return null;
         }
 
@@ -35,8 +32,6 @@ trait Media
 
     /**
      * Retrieve all published global social media entries mapped with icons and metadata.
-     *
-     * @return Collection
      */
     protected function getSocialMediaIcons(): Collection
     {
@@ -54,8 +49,6 @@ trait Media
     /**
      * Retrieve a single published gallery image of the given type.
      *
-     * @param  Image  $type
-     * @return Gallery|null
      *
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */

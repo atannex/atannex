@@ -28,9 +28,6 @@ final class AtannexProvider extends GetComponent
 
     /**
      * Get posts based on type.
-     *
-     * @param array $config
-     * @return Collection
      */
     public function getPostsByType(array $config): Collection
     {

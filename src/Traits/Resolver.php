@@ -97,15 +97,23 @@ trait Resolver
     {
         ['year' => $year, 'month' => $month] = $this->parseDateSlug($slug);
 
-        if (!$year && $part === 'year') return null;
-        if (!$month && $part === 'month') return null;
+        if (!$year && $part === 'year') {
+            return null;
+        }
+        if (!$month && $part === 'month') {
+            return null;
+        }
 
         $query = Post::query()->whereNotNull('published_at');
 
-        if ($part === 'year') $query->whereYear('published_at', $year);
+        if ($part === 'year') {
+            $query->whereYear('published_at', $year);
+        }
         if ($part === 'month') {
             $query->whereMonth('published_at', $month);
-            if ($year) $query->whereYear('published_at', $year);
+            if ($year) {
+                $query->whereYear('published_at', $year);
+            }
         }
 
         $post = $query->first();
