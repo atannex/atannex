@@ -40,10 +40,8 @@
 
                     @include('partials.author')
 
-                    <a href="{{ route('page.index', ['slug' => $post->slug_path]) }}">
-                        <i class="fal fa-calendar-days"></i>
-                        {{ $post->created_at->format('d M, Y') }}
-                    </a>
+                    @include('partials.date')
+
                 </div>
             </div>
         </div>
