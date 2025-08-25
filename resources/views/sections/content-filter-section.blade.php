@@ -48,7 +48,7 @@
                                 <i class="far fa-user" aria-hidden="true"></i>
                                 {{ __("By - ") . $featuredPost->author->user->name }}
                             </a>
-                            <time datetime="{{ $featuredPost->published_at->format('Y-m-d') }}">
+                            <time datetime="{{ $featuredPost->published_at->format('Y/m') }}">
                                 <i class="fal fa-calendar-days" aria-hidden="true"></i>
                                 {{ $featuredPost->published_at->format('d M, Y') }}
                             </time>
@@ -79,7 +79,7 @@
 
                                     @include('partials.author')
 
-                                    <time datetime="{{ $post->published_at->format('Y-m-d') }}">
+                                    <time datetime="{{ $post->published_at->format('Y/m') }}">
                                         <i class="fal fa-calendar-days" aria-hidden="true"></i>
                                         {{ $post->published_at->format('d M, Y') }}
                                     </time>

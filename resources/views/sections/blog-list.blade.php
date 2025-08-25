@@ -29,7 +29,7 @@
 
                                     @include('partials.date')
                                 </div>
-                                <a href="javascript:void(0)" class="th-btn style2">
+                                <a href="{{ route('page.index', $post->published_at->format('Y/m'))}}" class="th-btn style2">
                                     {{ __("Read More") }}
                                     <i class="fas fa-arrow-up-right ms-2"></i>
                                 </a>

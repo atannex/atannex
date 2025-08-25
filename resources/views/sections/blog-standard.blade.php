@@ -29,7 +29,7 @@
                                 <i class="far fa-thumbs-up"></i>
                                 {{ trans_choice(':count Like|:count Likes', $post->like_count ?? 0, ['count' => $post->like_count ?? 0]) }}
                             </a>
-                            <a href="#">
+                            <a href="{{ route('page.index', $post->published_at->format('Y/m'))}}">
                                 <i class="far fa-star"></i>
                                 {{ number_format($post->average_rating ?? 0, 1) }} / 5
                             </a>
@@ -45,7 +45,7 @@
                             {!! Str::limit($post->description, 200) !!}
                         </p>
 
-                        <a href="javascript:void(0)" class="th-btn style2">
+                        <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="th-btn style2">
                             {{ __("Read More") }}
                             <i class="fas fa-arrow-up-right ms-2"></i>
                         </a>

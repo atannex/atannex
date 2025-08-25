@@ -40,8 +40,9 @@
 
                         @include('partials.author')
 
-                        <a href="#">
-                            <i class="fal fa-calendar-days"></i>{{ $post->published_at->format('d M, Y') }}
+                        <a href="{{ route('page.index', $post->published_at->format('Y/m'))}}">
+                            <i class="fal fa-calendar-days"></i>
+                            {{ $post->published_at->format('d M, Y') }}
                         </a>
                     </div>
                 </div>
