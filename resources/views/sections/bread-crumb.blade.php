@@ -14,7 +14,7 @@
                     @foreach($tab['content'] as $post)
 
                     <div class="col-auto">
-                        <a href="#" class="breaking-news">
+                        <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="breaking-news">
 
                             {{ $post->title }}
 
