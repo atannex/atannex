@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
+use InvalidArgumentException;
 use BenSampo\Enum\Enum;
 
 /**
@@ -19,10 +20,15 @@ use BenSampo\Enum\Enum;
 final class LeetspeakVariants extends Enum
 {
     public const A = 'a';
+
     public const E = 'e';
+
     public const I = 'i';
+
     public const O = 'o';
+
     public const S = 's';
+
     public const T = 't';
 
     /**
@@ -60,8 +66,9 @@ final class LeetspeakVariants extends Enum
         $escaped = [];
         foreach (self::VARIANT_MAP as $key => $variants) {
             if (!self::hasValue($key)) {
-                throw new \InvalidArgumentException("Invalid enum value: {$key}");
+                throw new InvalidArgumentException('Invalid enum value: ' . $key);
             }
+
             $escaped[$key] = self::escapeForRegex($variants);
         }
 
@@ -72,13 +79,13 @@ final class LeetspeakVariants extends Enum
     /**
      * Build a regex pattern for a given letter's variants.
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function getRegexPattern(string $letter): string
     {
         $variants = self::getLeetspeakValues();
         if (!isset($variants[$letter])) {
-            throw new \InvalidArgumentException("No variants found for letter: {$letter}");
+            throw new InvalidArgumentException('No variants found for letter: ' . $letter);
         }
 
         return '[' . implode('', $variants[$letter]) . ']';

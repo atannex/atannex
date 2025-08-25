@@ -12,16 +12,25 @@ final class Flag extends Enum
     use GetEnum;
 
     public const DRAFT = 'draft';
+
     public const PENDING = 'pending';
+
     public const REVIEWED = 'reviewed';
+
     public const SCHEDULED = 'scheduled';
+
     public const PUBLISHED = 'published';
+
     public const ARCHIVED = 'archived';
+
     public const DELETED = 'deleted';
 
     public const FEATURED = 'featured';
+
     public const BREAKING = 'breaking';
+
     public const FACT_CHECKED = 'fact_checked';
+
     public const EDITORIAL_PICK = 'editorial_pick';
 
     public static function boot(): void

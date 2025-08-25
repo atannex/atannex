@@ -2,6 +2,7 @@
 
 namespace Atannex\Filters;
 
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -87,16 +88,15 @@ trait GetHierarchy
     }
 
     /* -----------------------------------------------------------------
-     |  Private relation resolvers
-     | -----------------------------------------------------------------
-     */
-
+       |  Private relation resolvers
+       | -----------------------------------------------------------------
+       */
     /**
      * Resolver for children traversal.
      *
-     * @return \Closure(Model): iterable<Model>
+     * @return Closure(Model):iterable<Model>
      */
-    private function childrenResolver(): \Closure
+    private function childrenResolver(): Closure
     {
         return fn(Model $model): array =>
         $model->relationLoaded('children')
@@ -107,9 +107,9 @@ trait GetHierarchy
     /**
      * Resolver for parent traversal.
      *
-     * @return \Closure(Model): iterable<Model>
+     * @return Closure(Model):iterable<Model>
      */
-    private function parentResolver(): \Closure
+    private function parentResolver(): Closure
     {
         return fn(Model $model): array =>
         $model->relationLoaded('parent') && $model->parent

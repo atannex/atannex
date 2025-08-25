@@ -24,7 +24,9 @@ class Comment extends Component
     public ?string $comment = null;
 
     public Commentable $commentable;
+
     public ?int $parentId = null;
+
     public array $shownRepliesCount = [];
 
     public function mount(Commentable $commentable): void

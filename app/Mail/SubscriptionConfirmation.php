@@ -9,8 +9,8 @@ use Illuminate\Queue\SerializesModels;
 
 class SubscriptionConfirmation extends Mailable
 {
-    use Queueable, SerializesModels;
-
+    use Queueable;
+    use SerializesModels;
     public $subscription;
 
     public function __construct(Subscriber $subscription)

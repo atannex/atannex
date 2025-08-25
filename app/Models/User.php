@@ -63,6 +63,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         if (! $this->hasVerifiedEmail()) {
             return false;
         }
+
         if (! str_ends_with($this->email, '@gmail.com')) {
             return false;
         }

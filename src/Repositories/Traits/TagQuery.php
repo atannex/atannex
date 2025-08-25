@@ -18,6 +18,7 @@ trait TagQuery
     use Query;
 
     protected const DEFAULT_PAGINATION_LIMIT   = 50;
+
     protected const DEFAULT_POPULAR_TAGS_LIMIT = 12;
 
     /**
@@ -56,7 +57,7 @@ trait TagQuery
      */
     protected function getRootCategoryFromTag(?Tag $tag): ?Category
     {
-        if (!$tag instanceof \App\Models\Tags\Tag) {
+        if (!$tag instanceof Tag) {
             return null;
         }
 

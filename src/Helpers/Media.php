@@ -2,6 +2,7 @@
 
 namespace Atannex\Helpers;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Enums\Flag;
 use App\Enums\Icons;
 use App\Enums\Image;
@@ -18,7 +19,7 @@ trait Media
     {
         $platform = Icons::coerce($media->platform);
 
-        if (!$platform instanceof \App\Enums\Icons) {
+        if (!$platform instanceof Icons) {
             return null;
         }
 
@@ -50,7 +51,7 @@ trait Media
      * Retrieve a single published gallery image of the given type.
      *
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     protected function getGalleryImage(Image $type): ?Gallery
     {

@@ -47,7 +47,7 @@ class PageSectionForm
                                                 ->required()
                                                 ->searchable()
                                                 ->preload()
-                                                ->getOptionLabelFromRecordUsing(fn($record) => "#-{$record->slug}: {$record->name}")
+                                                ->getOptionLabelFromRecordUsing(fn($record) => sprintf('#-%s: %s', $record->slug, $record->name))
                                                 ->helperText('Select the specific section within the page'),
                                         ]),
                                 ])

@@ -100,6 +100,7 @@ trait Resolver
         if (!$year && $part === 'year') {
             return null;
         }
+
         if (!$month && $part === 'month') {
             return null;
         }
@@ -109,6 +110,7 @@ trait Resolver
         if ($part === 'year') {
             $query->whereYear('published_at', $year);
         }
+
         if ($part === 'month') {
             $query->whereMonth('published_at', $month);
             if ($year) {

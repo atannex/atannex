@@ -39,8 +39,8 @@ class UpdateCategoryPaths extends Command
         try {
             $this->initializeCommand();
             return $this->processCategories();
-        } catch (Throwable $e) {
-            $this->handleException($e);
+        } catch (Throwable $throwable) {
+            $this->handleException($throwable);
             return self::FAILURE;
         }
     }
@@ -93,9 +93,9 @@ class UpdateCategoryPaths extends Command
             $this->displayResults($updatedCount);
 
             return self::SUCCESS;
-        } catch (Throwable $e) {
+        } catch (Throwable $throwable) {
             DB::rollBack();
-            throw $e;
+            throw $throwable;
         }
     }
 
@@ -114,7 +114,7 @@ class UpdateCategoryPaths extends Command
      */
     private function displayResults(int $updatedCount): void
     {
-        $message = "✅ Successfully updated {$updatedCount} category paths.";
+        $message = sprintf('✅ Successfully updated %d category paths.', $updatedCount);
         $this->info($message);
         Log::info($message);
     }

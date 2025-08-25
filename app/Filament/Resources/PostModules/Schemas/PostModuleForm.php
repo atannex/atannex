@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PostModules\Schemas;
 
+use Filament\Forms\Components\Builder\Block;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Grid;
@@ -50,7 +51,7 @@ class PostModuleForm
                                         ->columnSpanFull()
                                         ->blocks([
 
-                                            Builder\Block::make('paragraphs')
+                                            Block::make('paragraphs')
                                                 ->label('Paragraphs')
                                                 ->icon('heroicon-o-document-text')
                                                 ->schema([
@@ -80,7 +81,7 @@ class PostModuleForm
                                                         ])
                                                 ]),
 
-                                            Builder\Block::make('heading')
+                                            Block::make('heading')
                                                 ->label('Heading')
                                                 ->icon('heroicon-o-h1')
                                                 ->schema([
@@ -101,7 +102,7 @@ class PostModuleForm
                                                         ])
                                                 ]),
 
-                                            Builder\Block::make('image')
+                                            Block::make('image')
                                                 ->label('Image')
                                                 ->icon('heroicon-o-photo')
                                                 ->schema([
@@ -130,7 +131,7 @@ class PostModuleForm
                                                         ])
                                                 ]),
 
-                                            Builder\Block::make('ad-banner')
+                                            Block::make('ad-banner')
                                                 ->label('Advertisement Banner')
                                                 ->icon('heroicon-o-megaphone')
                                                 ->schema([
@@ -187,7 +188,7 @@ class PostModuleForm
                                                         ])
                                                 ]),
 
-                                            Builder\Block::make('blockquote')
+                                            Block::make('blockquote')
                                                 ->label('Quote Block')
                                                 ->icon('heroicon-o-chat-bubble-left-right')
                                                 ->schema([
@@ -214,7 +215,7 @@ class PostModuleForm
                                                         ])
                                                 ]),
 
-                                            Builder\Block::make('side-by-side')
+                                            Block::make('side-by-side')
                                                 ->label('Side-by-Side Content')
                                                 ->icon('heroicon-o-rectangle-group')
                                                 ->schema([

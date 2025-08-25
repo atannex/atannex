@@ -33,20 +33,35 @@ final class Icons extends Enum
     use GetEnum;
 
     public const TWITTER    = 'twitter';
+
     public const FACEBOOK   = 'facebook';
+
     public const INSTAGRAM  = 'instagram';
+
     public const LINKEDIN   = 'linkedin';
+
     public const YOUTUBE    = 'youtube';
+
     public const PINTEREST  = 'pinterest';
+
     public const REDDIT     = 'reddit';
+
     public const WHATSAPP   = 'whatsapp';
+
     public const TELEGRAM   = 'telegram';
+
     public const TUMBLR     = 'tumblr';
+
     public const SNAPCHAT   = 'snapchat';
+
     public const TIKTOK     = 'tiktok';
+
     public const DISCORD    = 'discord';
+
     public const MEDIUM     = 'medium';
+
     public const GITHUB     = 'github';
+
     public const SLACK      = 'slack';
 
     /**

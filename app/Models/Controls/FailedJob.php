@@ -2,6 +2,7 @@
 
 namespace App\Models\Controls;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $queue Queue name
  * @property string $payload Job payload JSON
  * @property string $exception Exception details
- * @property \Illuminate\Support\Carbon $failed_at Timestamp of failure
+ * @property Carbon $failed_at Timestamp of failure
  */
 class FailedJob extends Model
 {

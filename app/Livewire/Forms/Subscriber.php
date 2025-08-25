@@ -11,6 +11,7 @@ use App\Models\Posts\Subscriber as PostsSubscriber;
 class Subscriber extends Component
 {
     public string $email = '';
+
     public bool $agree = false;
 
     protected array $rules = [

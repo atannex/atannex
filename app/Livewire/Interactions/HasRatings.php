@@ -66,8 +66,8 @@ trait HasRatings
             );
 
             return true;
-        } catch (QueryException $e) {
-            Log::error('Rating error: ' . $e->getMessage());
+        } catch (QueryException $queryException) {
+            Log::error('Rating error: ' . $queryException->getMessage());
             return false;
         }
     }

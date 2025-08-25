@@ -32,7 +32,7 @@ class Section extends Model
         'is_active' => 'boolean',
     ];
 
-    public function getDomIdAttribute(): string
+    protected function getDomIdAttribute(): string
     {
         return 'section-' . $this->pivot->id;
     }

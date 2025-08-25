@@ -2,6 +2,8 @@
 
 namespace App\Models\Comments;
 
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -69,9 +71,9 @@ class Comment extends Model
      * Accessor to retrieve all replies for this comment.
      * Returns an empty collection if no replies exist.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
-    public function getAllRepliesAttribute()
+    protected function getAllRepliesAttribute()
     {
         return $this->replies ?? collect();
     }
@@ -79,10 +81,10 @@ class Comment extends Model
     /**
      * Scope to retrieve top-level comments (comments without a parent).
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
-    public function scopeTopLevel($query)
+    protected function scopeTopLevel($query)
     {
         return $query->whereNull('parent_id');
     }

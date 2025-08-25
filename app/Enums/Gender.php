@@ -17,6 +17,7 @@ final class Gender extends Enum
     use GetEnum;
 
     public const MALE = 'male';
+
     public const FEMALE = 'female';
 
     /**

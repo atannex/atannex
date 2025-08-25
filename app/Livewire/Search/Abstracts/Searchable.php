@@ -12,11 +12,15 @@ abstract class Searchable extends Component
     use WithPagination;
 
     public string $query = '';
+
     public int $perPage = 10;
+
     public string $sortBy = 'latest';
 
     protected const VALID_SORT_OPTIONS = ['latest', 'oldest'];
+
     protected const DEFAULT_SORT = 'latest';
+
     protected const DEFAULT_PER_PAGE = 10;
 
     /**
@@ -82,7 +86,7 @@ abstract class Searchable extends Component
     {
         $searchQuery = trim($this->query);
 
-        if (empty($searchQuery)) {
+        if ($searchQuery === '' || $searchQuery === '0') {
             return $queryBuilder;
         }
 

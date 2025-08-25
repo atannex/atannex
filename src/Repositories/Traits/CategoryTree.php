@@ -2,6 +2,7 @@
 
 namespace Atannex\Repositories\Traits;
 
+use Closure;
 use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
@@ -73,7 +74,7 @@ trait CategoryTree
     /**
      * Scope for counting only published posts.
      */
-    private function publishedPostsScope(): \Closure
+    private function publishedPostsScope(): Closure
     {
         return fn(Builder $query) => $query->published();
     }

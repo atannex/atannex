@@ -86,7 +86,7 @@ class SocialMediaTable
                     ->color('warning')
                     ->icon('heroicon-m-bars-3')
                     ->iconPosition('before')
-                    ->formatStateUsing(fn($state) => "#$state"),
+                    ->formatStateUsing(fn($state) => '#' . $state),
 
                 ToggleColumn::make('is_global')->label('Global'),
 
@@ -161,9 +161,11 @@ class SocialMediaTable
                         if ($data['created_from'] ?? null) {
                             $indicators['created_from'] = 'Created from ' . Carbon::parse($data['created_from'])->toFormattedDateString();
                         }
+
                         if ($data['created_until'] ?? null) {
                             $indicators['created_until'] = 'Created until ' . Carbon::parse($data['created_until'])->toFormattedDateString();
                         }
+
                         return $indicators;
                     }),
 

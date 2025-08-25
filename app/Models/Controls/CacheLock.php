@@ -18,7 +18,9 @@ class CacheLock extends Model
     protected $table = 'cache_locks';
 
     protected $primaryKey = 'key';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     public $timestamps = false;
@@ -40,7 +42,7 @@ class CacheLock extends Model
     /**
      * Scope to get active (non-expired) locks
      */
-    public function scopeActive($query)
+    protected function scopeActive($query)
     {
         return $query->where('expiration', '>', time());
     }

@@ -39,8 +39,8 @@ class UpdatePostTagSlugPath extends Command
         try {
             $this->initializeCommand();
             return $this->processPostTags();
-        } catch (Throwable $e) {
-            $this->handleException($e);
+        } catch (Throwable $throwable) {
+            $this->handleException($throwable);
             return self::FAILURE;
         }
     }
@@ -75,6 +75,7 @@ class UpdatePostTagSlugPath extends Command
                     if ($this->updatePostTagPath($postTag)) {
                         $updatedCount++;
                     }
+
                     $this->output->progressAdvance();
                 }
             }
@@ -84,9 +85,9 @@ class UpdatePostTagSlugPath extends Command
             $this->displayResults($updatedCount);
 
             return self::SUCCESS;
-        } catch (Throwable $e) {
+        } catch (Throwable $throwable) {
             DB::rollBack();
-            throw $e;
+            throw $throwable;
         }
     }
 
@@ -108,6 +109,7 @@ class UpdatePostTagSlugPath extends Command
                 $postTag->saveQuietly();
                 return true;
             }
+
             return false;
         }
 
@@ -135,7 +137,7 @@ class UpdatePostTagSlugPath extends Command
      */
     private function displayResults(int $updatedCount): void
     {
-        $message = "✅ Successfully updated {$updatedCount} post_tag slug paths.";
+        $message = sprintf('✅ Successfully updated %d post_tag slug paths.', $updatedCount);
         $this->info($message);
         Log::info($message);
     }

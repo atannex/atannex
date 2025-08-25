@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pages\Page;
+use App\Models\Pages\Category;
+use App\Models\Pivots\PostTag;
+use App\Models\Regions\Employee;
+use App\Models\Posts\Post;
+use App\Models\Regions\Region;
 use Illuminate\View\View;
 use Atannex\Traits\Resolver;
 use Atannex\Services\PageService;
@@ -20,27 +26,27 @@ class PageController extends Controller
 
     public function resolve(string $slug): View
     {
-        if ($this->pageService->getHomePage($slug)) {
+        if ($this->pageService->getHomePage($slug) instanceof Page) {
             return $this->getView->renderPageView($slug);
         }
 
-        if ($category = $this->resolveCategory($slug)) {
+        if (($category = $this->resolveCategory($slug)) instanceof Category) {
             return $this->getView->renderCategoryView($category);
         }
 
-        if ($postTag = $this->resolveTag($slug)) {
+        if (($postTag = $this->resolveTag($slug)) instanceof PostTag) {
             return $this->getView->renderTagView($postTag);
         }
 
-        if ($author = $this->resolveAuthor($slug)) {
+        if (($author = $this->resolveAuthor($slug)) instanceof Employee) {
             return $this->getView->renderAuthorView($author);
         }
 
-        if ($post = $this->resolvePost($slug)) {
+        if (($post = $this->resolvePost($slug)) instanceof Post) {
             return $this->getView->renderPostShow($post->category, $slug);
         }
 
-        if ($region = $this->resolveRegion($slug)) {
+        if (($region = $this->resolveRegion($slug)) instanceof Region) {
             return $this->getView->renderRegionView($region);
         }
 

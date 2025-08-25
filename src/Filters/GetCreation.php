@@ -90,7 +90,7 @@ trait GetCreation
      */
     protected function getViewPath(string $slug): string
     {
-        return resource_path("{$this->viewPath}/" . Str::slug($slug) . $this->fileExtension);
+        return resource_path($this->viewPath . '/' . Str::slug($slug) . $this->fileExtension);
     }
 
     /**

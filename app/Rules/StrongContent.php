@@ -69,6 +69,7 @@ class StrongContent implements ValidationRule
                 return true;
             }
         }
+
         return false;
     }
 
@@ -83,9 +84,10 @@ class StrongContent implements ValidationRule
             $leetVariants = LeetspeakVariants::hasValue($char)
                 ? implode('', LeetspeakVariants::getLeetspeakValues()[$char])
                 : $escapedChar;
-            $pattern .= "[$leetVariants]";
+            $pattern .= sprintf('[%s]', $leetVariants);
         }
-        return preg_match("/$pattern/i", $value) > 0;
+
+        return preg_match(sprintf('/%s/i', $pattern), $value) > 0;
     }
 
 
@@ -136,7 +138,7 @@ class StrongContent implements ValidationRule
      */
     protected function logViolation(string $attribute, string $value, string $reason): void
     {
-        Log::warning("Content violation detected on '{$attribute}' with reason: {$reason}", [
+        Log::warning(sprintf("Content violation detected on '%s' with reason: %s", $attribute, $reason), [
             'content' => $value,
             'reason' => $reason,
             'timestamp' => now(),

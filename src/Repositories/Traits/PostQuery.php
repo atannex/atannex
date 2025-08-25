@@ -21,7 +21,9 @@ trait PostQuery
     use Resolver;
 
     protected const DEFAULT_PAGINATION_LIMIT   = 50;
+
     protected const DEFAULT_RECENT_POSTS_LIMIT = 5;
+
     protected const DEFAULT_POPULAR_TAGS_LIMIT = 12;
 
     /**
@@ -108,7 +110,7 @@ trait PostQuery
      */
     protected function buildPostQuery(?Category $category, ?int $excludeId = null): Builder
     {
-        $categoryIds = $category instanceof \App\Models\Pages\Category ? $this->getCategoryTreeIds($category) : collect();
+        $categoryIds = $category instanceof Category ? $this->getCategoryTreeIds($category) : collect();
 
         if ($categoryIds->isEmpty()) {
             return $this->emptyPostQuery();

@@ -64,7 +64,7 @@ trait HasLikes
             );
 
             return true;
-        } catch (QueryException $e) {
+        } catch (QueryException $queryException) {
             return false;
         }
     }

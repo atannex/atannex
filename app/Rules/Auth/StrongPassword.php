@@ -2,6 +2,7 @@
 
 namespace App\Rules\Auth;
 
+use Illuminate\Translation\PotentiallyTranslatedString;
 use Closure;
 use App\Enums\Auth\CommonPassword;
 use App\Enums\Auth\DictionaryWord;
@@ -12,7 +13,7 @@ class StrongPassword implements ValidationRule
     /**
      * Run the validation rule.
      *
-     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     * @param Closure(string):PotentiallyTranslatedString $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -35,7 +36,7 @@ class StrongPassword implements ValidationRule
         }
 
         // Check if the password contains at least one digit
-        if (!preg_match('/[0-9]/', $value)) {
+        if (!preg_match('/\d/', $value)) {
             $fail('The :attribute must include at least one number.');
             return;
         }

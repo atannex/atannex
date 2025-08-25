@@ -2,6 +2,7 @@
 
 namespace App\Models\Others;
 
+use Illuminate\Support\Carbon;
 use App\Models\User;
 use App\Enums\Status;
 use Illuminate\Database\Eloquent\Model;
@@ -23,15 +24,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $ip_address
  * @property string|null $user_agent
  * @property string|null $source
- * @property \App\Enums\Status $flag
- * @property \Illuminate\Support\Carbon|null $read_at
- * @property \Illuminate\Support\Carbon|null $responded_at
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property Status $flag
+ * @property Carbon|null $read_at
+ * @property Carbon|null $responded_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon|null $deleted_at
  * @property int|null $user_id
  *
- * @property-read \App\Models\User|null $user
+ * @property-read User|null $user
  */
 class Contact extends Model
 {
@@ -69,7 +70,7 @@ class Contact extends Model
     /**
      * Scope to retrieve unread contacts.
      */
-    public function scopeUnread(Builder $query): Builder
+    protected function scopeUnread(Builder $query): Builder
     {
         return $query->whereNull('read_at');
     }
@@ -77,7 +78,7 @@ class Contact extends Model
     /**
      * Scope to retrieve contacts that are pending response.
      */
-    public function scopePending(Builder $query): Builder
+    protected function scopePending(Builder $query): Builder
     {
         return $query->where('flag', Status::PENDING);
     }

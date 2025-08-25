@@ -46,7 +46,7 @@ trait HasShares
 
         $query = $this->shares()->where('user_id', Auth::id());
 
-        if ($platform !== null && !empty(trim($platform))) {
+        if ($platform !== null && !in_array(trim($platform), ['', '0'], true)) {
             $query->where('platform', $platform);
         }
 

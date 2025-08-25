@@ -42,7 +42,7 @@ class Job extends Model
     /**
      * Scope to get jobs that are available to be processed now.
      */
-    public function scopeAvailable($query)
+    protected function scopeAvailable($query)
     {
         return $query->where('available_at', '<=', time());
     }
@@ -50,7 +50,7 @@ class Job extends Model
     /**
      * Scope to get reserved jobs (currently processing).
      */
-    public function scopeReserved($query)
+    protected function scopeReserved($query)
     {
         return $query->whereNotNull('reserved_at');
     }

@@ -36,7 +36,7 @@ class WidgetSectionForm
                                             ->required()
                                             ->searchable()
                                             ->preload()
-                                            ->getOptionLabelFromRecordUsing(fn($record) => "#{$record->slug}: {$record->name}")
+                                            ->getOptionLabelFromRecordUsing(fn($record) => sprintf('#%s: %s', $record->slug, $record->name))
                                             ->placeholder('Select a section')
                                             ->helperText('Choose the section where this widget will be displayed'),
 
@@ -46,7 +46,7 @@ class WidgetSectionForm
                                             ->required()
                                             ->searchable()
                                             ->preload()
-                                            ->getOptionLabelFromRecordUsing(fn($record) => "#{$record->slug}: {$record->name}")
+                                            ->getOptionLabelFromRecordUsing(fn($record) => sprintf('#%s: %s', $record->slug, $record->name))
                                             ->placeholder('Select a widget')
                                             ->helperText('Choose the widget to display in this section'),
                                     ]),

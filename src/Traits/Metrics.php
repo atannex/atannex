@@ -2,6 +2,7 @@
 
 namespace Atannex\Traits;
 
+use BadMethodCallException;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -75,6 +76,7 @@ trait Metrics
                         ->count() * $weights[$metric];
                 }
             }
+
             $item->engagement_score = $score;
             return $item;
         });
@@ -136,6 +138,6 @@ trait Metrics
             );
         }
 
-        throw new \BadMethodCallException("Method {$name} does not exist.");
+        throw new BadMethodCallException(sprintf('Method %s does not exist.', $name));
     }
 }

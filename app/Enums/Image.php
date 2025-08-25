@@ -17,14 +17,23 @@ final class Image extends Enum
     use GetEnum;
 
     public const LOGO = 'logo';
+
     public const BANNER = 'banner';
+
     public const THUMBNAIL = 'thumbnail';
+
     public const AVATAR = 'avatar';
+
     public const FAVICON = 'favicon';
+
     public const GALLERY = 'gallery';
+
     public const ADVERT = 'advert';
+
     public const SPONSOR_LOGO = 'sponsor_logo';
+
     public const COVER = 'cover';
+
     public const WATERMARK = 'watermark';
 
     /**

@@ -33,8 +33,8 @@ trait DateView
 
         $displayValue = $isMonth ? ($months[(int)$value] ?? '') : $value;
         $seoTitle = $isMonth
-            ? "Posts for the month of {$displayValue}"
-            : "Posts for the year - {$value}";
+            ? 'Posts for the month of ' . $displayValue
+            : 'Posts for the year - ' . $value;
 
         $yearMonth = $isMonth ? ($year ?? date('Y')) . '/' . $value : $value;
 

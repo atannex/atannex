@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Comments;
 
+use Throwable;
 use App\Models\Comments\Comment as CommentModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -43,8 +44,8 @@ trait CommentSubmission
             $this->dispatch(self::EVENT_COMMENT_POSTED);
             $this->resetPage();
             $this->resetCommentState();
-        } catch (\Throwable $e) {
-            Log::error('Comment submission failed: ' . $e->getMessage());
+        } catch (Throwable $throwable) {
+            Log::error('Comment submission failed: ' . $throwable->getMessage());
             session()->flash('error', __('Failed to post comment. Please try again.'));
         }
     }

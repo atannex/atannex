@@ -2,25 +2,40 @@
 
 namespace App\Livewire\Show;
 
+use Illuminate\View\View;
 use Livewire\Component;
 use App\Models\Posts\Post;
 
 class Info extends Component
 {
     public $post;
+
     public $isLiked;
+
     public $likesCount;
+
     public $likedAt;
+
     public $viewsCount;
+
     public $viewedAt;
+
     public $isRated;
+
     public $ratingCount;
+
     public $averageRating;
+
     public $userRating;
+
     public $ratedAt;
+
     public $isShared;
+
     public $sharesCount;
+
     public $sharedAt;
+
     public $ratingClicks = 0;
 
     /**
@@ -118,7 +133,7 @@ class Info extends Component
     /**
      * Render the component.
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function render()
     {

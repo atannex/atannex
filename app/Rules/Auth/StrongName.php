@@ -2,6 +2,7 @@
 
 namespace App\Rules\Auth;
 
+use Illuminate\Translation\PotentiallyTranslatedString;
 use Closure;
 use App\Enums\Auth\SimpleNames;
 use App\Enums\Auth\RestrictedNames;
@@ -12,7 +13,7 @@ class StrongName implements ValidationRule
     /**
      * Run the validation rule.
      *
-     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     * @param Closure(string):PotentiallyTranslatedString $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -25,31 +26,31 @@ class StrongName implements ValidationRule
         // Validate length
         $length = mb_strlen($value);
         if ($length < $minLength) {
-            $fail("The {$attribute} must be at least {$minLength} characters long.");
+            $fail(sprintf('The %s must be at least %d characters long.', $attribute, $minLength));
             return;
         }
 
         if ($length > $maxLength) {
-            $fail("The {$attribute} must not exceed {$maxLength} characters.");
+            $fail(sprintf('The %s must not exceed %d characters.', $attribute, $maxLength));
             return;
         }
 
         // Validate allowed characters: only letters and spaces (Unicode-aware)
         if (!preg_match('/^[\p{L}\s]+$/u', $value)) {
-            $fail("The {$attribute} may only contain letters and spaces.");
+            $fail(sprintf('The %s may only contain letters and spaces.', $attribute));
             return;
         }
 
         // Prevent 3 or more consecutive identical characters (case-insensitive)
         if (preg_match('/(.)\1{2,}/iu', $value)) {
-            $fail("The {$attribute} should not contain three or more consecutive identical characters.");
+            $fail(sprintf('The %s should not contain three or more consecutive identical characters.', $attribute));
             return;
         }
 
         // Check against restricted words (case-insensitive match)
         foreach (RestrictedNames::getValues() as $restrictedWord) {
             if (stripos($value, $restrictedWord) !== false) {
-                $fail("The {$attribute} contains restricted content and is not allowed.");
+                $fail(sprintf('The %s contains restricted content and is not allowed.', $attribute));
                 return;
             }
         }
@@ -57,7 +58,7 @@ class StrongName implements ValidationRule
         // Check for overly simple names (exact match, case-insensitive)
         foreach (SimpleNames::getValues() as $simpleName) {
             if (strcasecmp($value, $simpleName) === 0) {
-                $fail("The {$attribute} is too simple and cannot be used.");
+                $fail(sprintf('The %s is too simple and cannot be used.', $attribute));
                 return;
             }
         }

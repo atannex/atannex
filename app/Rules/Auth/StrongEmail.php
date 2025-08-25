@@ -11,6 +11,7 @@ class StrongEmail implements ValidationRule
 {
     // Arrays to hold the allowed and restricted domains for validation.
     protected array $allowedDomains;
+
     protected array $restrictedDomains;
 
     // Custom error message for invalid emails.
@@ -33,7 +34,7 @@ class StrongEmail implements ValidationRule
     protected function generateDefaultMessage(): string
     {
         $allowedDomainsString = implode(', ', $this->allowedDomains);
-        return "The :attribute must be an email address that ends with one of the following domains: $allowedDomainsString. Administrative emails are restricted to specific domains.";
+        return sprintf('The :attribute must be an email address that ends with one of the following domains: %s. Administrative emails are restricted to specific domains.', $allowedDomainsString);
     }
 
     /**
@@ -62,7 +63,7 @@ class StrongEmail implements ValidationRule
 
         // Ensure email has exactly one '@' symbol.
         if (count($emailParts) !== 2) {
-            $fail("The $attribute must be a valid email address.");
+            $fail(sprintf('The %s must be a valid email address.', $attribute));
             return;
         }
 
@@ -75,7 +76,7 @@ class StrongEmail implements ValidationRule
 
         // Ensure the local part of the email is of a minimum length.
         if (strlen($localPart) < 3) {
-            $fail("The local part of the $attribute must be at least 3 characters long.");
+            $fail(sprintf('The local part of the %s must be at least 3 characters long.', $attribute));
         }
     }
 
@@ -86,7 +87,7 @@ class StrongEmail implements ValidationRule
     private function isDomainInvalid(string $domain, Closure $fail): bool
     {
         if ($this->isRestrictedDomain($domain)) {
-            $fail("Emails from $domain are not allowed.");
+            $fail(sprintf('Emails from %s are not allowed.', $domain));
             return true;
         }
 
@@ -96,7 +97,7 @@ class StrongEmail implements ValidationRule
         }
 
         if ($this->isAdminDomain($domain)) {
-            $fail("Emails ending with $domain are for administrative use only.");
+            $fail(sprintf('Emails ending with %s are for administrative use only.', $domain));
             return true;
         }
 
@@ -124,6 +125,6 @@ class StrongEmail implements ValidationRule
      */
     private function isAdminDomain(string $domain): bool
     {
-        return in_array($domain, ['atannex.com']);
+        return $domain === 'atannex.com';
     }
 }

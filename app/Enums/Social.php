@@ -21,11 +21,17 @@ use BenSampo\Enum\Enum;
 final class Social extends Enum
 {
     public const FACEBOOK = 'facebook';
+
     public const TWITTER = 'twitter';
+
     public const LINKEDIN = 'linkedin';
+
     public const WHATSAPP = 'whatsapp';
+
     public const REDDIT = 'reddit';
+
     public const PINTEREST = 'pinterest';
+
     public const TELEGRAM = 'telegram';
 
     private const PLATFORM_DATA = [

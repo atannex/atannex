@@ -25,7 +25,9 @@ class JobBatch extends Model
     protected $table = 'job_batches';
 
     protected $primaryKey = 'id';
-    public $incrementing = false; // non-incrementing string primary key
+
+    public $incrementing = false;
+     // non-incrementing string primary key
     protected $keyType = 'string';
 
     public $timestamps = false;

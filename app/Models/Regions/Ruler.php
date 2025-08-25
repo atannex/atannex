@@ -60,7 +60,7 @@ class Ruler extends Model
     /**
      * Scope for filtering by region.
      */
-    public function scopeOfRegion($query, int $regionId)
+    protected function scopeOfRegion($query, int $regionId)
     {
         return $query->where('region_id', $regionId);
     }
@@ -68,7 +68,7 @@ class Ruler extends Model
     /**
      * Scope to filter active reigns (no end date).
      */
-    public function scopeCurrentlyReigning($query)
+    protected function scopeCurrentlyReigning($query)
     {
         return $query->whereNull('reign_end');
     }
@@ -76,15 +76,15 @@ class Ruler extends Model
     /**
      * Get full title including traditional title and name.
      */
-    public function getFullTitleAttribute(): string
+    protected function getFullTitleAttribute(): string
     {
-        return trim("{$this->traditional_title} {$this->name}");
+        return trim(sprintf('%s %s', $this->traditional_title, $this->name));
     }
 
     /**
      * Get status flag label (optional if you use enums with labels).
      */
-    public function getFlagLabelAttribute(): string
+    protected function getFlagLabelAttribute(): string
     {
         return $this->flag->label();
     }

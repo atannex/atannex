@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\Support\Renderable;
 use Atannex\Binders\GetPost;
 
 class HomeController extends Controller
 {
 
     public function __construct(protected readonly GetPost $postService) {}
+
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable
      */
     public function index()
     {
@@ -21,6 +23,6 @@ class HomeController extends Controller
         $featuredPost = $editorPicks->first();
         $smallPosts = $editorPicks->take(5)->skip(1);
 
-        return view('home', compact('recentPosts', 'editorPicks', 'featuredPost', 'smallPosts'));
+        return view('home', ['recentPosts' => $recentPosts, 'editorPicks' => $editorPicks, 'featuredPost' => $featuredPost, 'smallPosts' => $smallPosts]);
     }
 }

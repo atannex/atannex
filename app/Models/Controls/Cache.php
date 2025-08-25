@@ -20,7 +20,9 @@ class Cache extends Model
 
     // Primary key is not auto-incrementing and is a string
     protected $primaryKey = 'key';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     // Disable timestamps since the migration doesn't have created_at or updated_at
@@ -44,7 +46,7 @@ class Cache extends Model
     /**
      * Scope to get only non-expired cache items
      */
-    public function scopeValid($query)
+    protected function scopeValid($query)
     {
         return $query->where('expiration', '>', time());
     }

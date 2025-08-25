@@ -23,7 +23,7 @@ class WidgetSectionsTable
                     ->sortable(),
                 TextColumn::make('section.name')
                     ->numeric()
-                    ->tooltip(fn($record) => "Section# {$record->section->id}: {$record->section->name}")
+                    ->tooltip(fn($record) => sprintf('Section# %s: %s', $record->section->id, $record->section->name))
                     ->sortable(),
                 TextColumn::make('widget.name')
                     ->numeric()

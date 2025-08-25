@@ -2,7 +2,6 @@
 
 namespace App\Models\Others;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Color extends Model
@@ -27,6 +26,6 @@ class Color extends Model
     {
         $colors = static::pluck('hex')->toArray();
 
-        return !empty($colors) ? $colors[array_rand($colors)] : $fallback;
+        return empty($colors) ? $fallback : $colors[array_rand($colors)];
     }
 }

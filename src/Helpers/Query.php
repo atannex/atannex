@@ -2,6 +2,7 @@
 
 namespace Atannex\Helpers;
 
+use Closure;
 use App\Models\Pages\Page;
 use App\Models\Posts\Post;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,7 +23,7 @@ trait Query
     /**
      * Closure for eager-loading authors with post counts.
      */
-    private function authorWithPostCount(): \Closure
+    private function authorWithPostCount(): Closure
     {
         return fn($query) => $query->withCount('posts');
     }
@@ -64,7 +65,7 @@ trait Query
     /**
      * Scope callback for published children categories.
      */
-    private function publishedChildren(): \Closure
+    private function publishedChildren(): Closure
     {
         return fn(HasMany $query) => $query->published(false);
     }
@@ -72,7 +73,7 @@ trait Query
     /**
      * Scope callback for active sections + widgets.
      */
-    private function activeSections(): \Closure
+    private function activeSections(): Closure
     {
         return fn($query) => $query
             ->wherePivot('is_active', true)
@@ -82,7 +83,7 @@ trait Query
     /**
      * Scope callback for active widgets.
      */
-    private function activeWidgets(): \Closure
+    private function activeWidgets(): Closure
     {
         return fn($query) => $query->wherePivot('is_active', true);
     }

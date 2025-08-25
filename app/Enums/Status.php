@@ -18,14 +18,23 @@ final class Status extends Enum
     use GetEnum;
 
     public const PENDING = 'pending';
+
     public const VERIFY = 'verify';
+
     public const ACTIVE = 'active';
+
     public const SUSPENDED = 'suspended';
+
     public const BANNED = 'banned';
+
     public const DELETED = 'deleted';
+
     public const RESTRICTED = 'restricted';
+
     public const REVIEWED = 'reviewed';
+
     public const RESPONDED = 'responded';
+
     public const CLOSED = 'closed';
 
     /**

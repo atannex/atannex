@@ -13,7 +13,7 @@ trait EnableScope
      *
      * @param string|null $type 'global'|'non-global'|null
      */
-    public function scopePublished(Builder $query, ?string $type = null): Builder
+    protected function scopePublished(Builder $query, ?string $type = null): Builder
     {
         if ($type === 'global' || $type === 'non-global') {
             return $query->where('is_global', $type === 'global')
@@ -27,7 +27,7 @@ trait EnableScope
     /**
      * Scope to order by the `order` column.
      */
-    public function scopeOrdered(Builder $query): Builder
+    protected function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('order');
     }
@@ -35,21 +35,21 @@ trait EnableScope
     /**
      * Scope a query to filter posts between two dates.
      */
-    public function scopeBetweenDates(Builder $query, ?Carbon $start, ?Carbon $end): Builder
+    protected function scopeBetweenDates(Builder $query, ?Carbon $start, ?Carbon $end): Builder
     {
         if ($start && $end) {
             return $query->whereBetween('published_at', [$start, $end]);
         }
 
-        return $start instanceof \Carbon\Carbon
+        return $start instanceof Carbon
             ? $query->where('published_at', '>=', $start)
-            : ($end instanceof \Carbon\Carbon ? $query->where('published_at', '<=', $end) : $query);
+            : ($end instanceof Carbon ? $query->where('published_at', '<=', $end) : $query);
     }
 
     /**
      * Scope to filter by a specific flag.
      */
-    public function scopeFlagged(Builder $query, Flag $flag): Builder
+    protected function scopeFlagged(Builder $query, Flag $flag): Builder
     {
         return $this->applyWhere($query, 'flag', $flag);
     }
@@ -57,7 +57,7 @@ trait EnableScope
     /**
      * Scope for active posts.
      */
-    public function scopeActive(Builder $query): Builder
+    protected function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
     }
@@ -65,7 +65,7 @@ trait EnableScope
     /**
      * Scope for posts scheduled in the future.
      */
-    public function scopeIsFuture(Builder $query, string $column = 'scheduled_at'): Builder
+    protected function scopeIsFuture(Builder $query, string $column = 'scheduled_at'): Builder
     {
         return $this->applyDateComparison($query, $column, '>');
     }
@@ -73,7 +73,7 @@ trait EnableScope
     /**
      * Scope for posts in the past or now.
      */
-    public function scopeIsPast(Builder $query, string $column = 'scheduled_at'): Builder
+    protected function scopeIsPast(Builder $query, string $column = 'scheduled_at'): Builder
     {
         return $this->applyDateComparison($query, $column, '<=');
     }

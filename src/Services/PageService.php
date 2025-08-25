@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atannex\Services;
 
+use App\Models\Pages\Category;
 use App\Models\Pages\Page;
 use Illuminate\Support\Collection;
 use Atannex\Contracts\PageInterface;
@@ -30,7 +31,7 @@ final class PageService
     /**
      * Retrieve all top-level published page categories.
      *
-     * @return Collection<int, \App\Models\Pages\Category>
+     * @return Collection<int, Category>
      */
     public function getAllCategoryPages(): Collection
     {

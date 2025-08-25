@@ -89,7 +89,7 @@ class Tag extends Model
     /**
      * Scope to fetch only top-level tags.
      */
-    public function scopeTopLevel($query)
+    protected function scopeTopLevel($query)
     {
         return $query->whereNull('parent_id');
     }

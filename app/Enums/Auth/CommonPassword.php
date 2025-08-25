@@ -9,97 +9,190 @@ use BenSampo\Enum\Enum;
 final class CommonPassword extends Enum
 {
     const PASSWORD = 'password';
+
     const _123456 = '123456';
+
     const _123456789 = '123456789';
+
     const QWERTY = 'qwerty';
+
     const ABC123 = 'abc123';
+
     const _111111 = '111111';
+
     const _12345678 = '12345678';
+
     const _12345 = '12345';
+
     const _123123 = '123123';
+
     const ADMIN = 'admin';
+
     const WELCOME = 'welcome';
+
     const MONKEY = 'monkey';
+
     const DRAGON = 'dragon';
+
     const LETMEIN = 'letmein';
+
     const BASEBALL = 'baseball';
+
     const FOOTBALL = 'football';
+
     const MUSTANG = 'mustang';
+
     const SHADOW = 'shadow';
+
     const MASTER = 'master';
+
     const MICHAEL = 'michael';
+
     const JENNIFER = 'jennifer';
+
     const JORDAN = 'jordan';
+
     const HARLEY = 'harley';
+
     const BATMAN = 'batman';
+
     const SUPERMAN = 'superman';
+
     const _1234 = '1234';
+
     const GINGER = 'ginger';
+
     const MICKEY = 'mickey';
+
     const CHARLIE = 'charlie';
+
     const DONALD = 'donald';
+
     const LOVER = 'lover';
+
     const PRINCESS = 'princess';
+
     const RANGER = 'ranger';
+
     const RAINBOW = 'rainbow';
+
     const BUSTER = 'buster';
+
     const FISHING = 'fishing';
+
     const HOCKEY = 'hockey';
+
     const _123321 = '123321';
+
     const _666666 = '666666';
+
     const _654321 = '654321';
+
     const SUPERMAN1 = 'superman1';
+
     const _1Q2W3E4R = '1q2w3e4r';
+
     const ZAQ12WSX = 'zaq12wsx';
+
     const PASSW0RD = 'passw0rd';
+
     const _121212 = '121212';
+
     const FREEDOM = 'freedom';
+
     const PASSWORD1 = 'password1';
+
     const QWERTY123 = 'qwerty123';
+
     const SOCCER = 'soccer';
+
     const MONEYMONEY = 'moneymoney';
+
     const CHARLIE123 = 'charlie123';
+
     const MICKEYMOUSE = 'mickeymouse';
+
     const _987654321 = '987654321';
+
     const BASEBALL1 = 'baseball1';
+
     const BUBBLES = 'bubbles';
+
     const SUNSHINE = 'sunshine';
+
     const LOVEME = 'loveme';
+
     const STARWARS = 'starwars';
+
     const RONALDO = 'ronaldo';
+
     const LIVERPOOL = 'liverpool';
+
     const FOOTBALL1 = 'football1';
+
     const _7777777 = '7777777';
+
     const _88888888 = '88888888';
+
     const _999999 = '999999';
+
     const TRUSTNO1 = 'trustno1';
+
     const _1QAZ2WSX = '1qaz2wsx';
+
     const ASDFGHJKL = 'asdfghjkl';
+
     const WELCOME123 = 'welcome123';
+
     const WELCOME1 = 'welcome1';
+
     const HUNTER = 'hunter';
+
     const TRUSTME = 'trustme';
+
     const ZXC123 = 'zxc123';
+
     const ZXC123456 = 'zxc123456';
+
     const _123QWE = '123qwe';
+
     const PASSWORD123 = 'password123';
+
     const MASTER123 = 'master123';
+
     const GOD = 'god';
+
     const LOVE = 'love';
+
     const WELCOME2 = 'welcome2';
+
     const ILOVEYOU = 'iloveyou';
+
     const PUMPKIN = 'pumpkin';
+
     const PASSWORD2 = 'password2';
+
     const LETMEIN123 = 'letmein123';
+
     const MONKEY123 = 'monkey123';
+
     const ABCDEF = 'abcdef';
+
     const PASSWORD3 = 'password3';
+
     const HELLO = 'hello';
+
     const QWERTY1 = 'qwerty1';
+
     const _1QAZXSW2 = '1qazxsw2';
+
     const SUNSHINE1 = 'sunshine1';
+
     const LOVEME123 = 'loveme123';
+
     const MASTER1 = 'master1';
+
     const TRUSTNO123 = 'trustno123';
+
     const _987654 = '987654';
 }
