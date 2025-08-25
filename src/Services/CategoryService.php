@@ -69,7 +69,7 @@ final class CategoryService
         return $this->interface->getPostsByRegion($region, $limit);
     }
 
-     public function getPostsByDate(?string $yearMonth = null, int $perPage = 15): LengthAwarePaginator
+    public function getPostsByDate(?string $yearMonth = null, int $perPage = 15): LengthAwarePaginator
     {
         return $this->interface->getPostsByDate($yearMonth, $perPage);
     }

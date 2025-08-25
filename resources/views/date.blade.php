@@ -2,6 +2,6 @@
 
     <x-partials.breadcrumb />
 
-    @include('sections.blog-list', ['posts' => $posts])
+    @include('sections.category-3-column', ['posts' => $posts])
 
 </x-layouts.page>
