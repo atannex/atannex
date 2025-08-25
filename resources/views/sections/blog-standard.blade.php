@@ -18,9 +18,8 @@
 
                             @include('partials.author')
 
-                            <a href="#">
-                                <i class="fal fa-calendar-days"></i> {{ $post->published_at->format('d F, Y') }}
-                            </a>
+                            @include('partials.date')
+
                             <a href="#">
                                 <i class="far fa-comments"></i>
                                 {{ trans_choice(':count Comment|:count Comments', $post->comment_count ?? 0, ['count' => $post->comment_count ?? 0]) }}
