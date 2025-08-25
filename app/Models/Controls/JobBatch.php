@@ -27,6 +27,7 @@ class JobBatch extends Model
     protected $primaryKey = 'id';
 
     public $incrementing = false;
+
      // non-incrementing string primary key
     protected $keyType = 'string';
 
