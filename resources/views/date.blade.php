@@ -2,6 +2,6 @@
 
     <x-partials.breadcrumb />
 
-    {{-- @include('sections.blog-list', ['posts' => $posts]) --}}
+    @include('sections.blog-list', ['posts' => $posts])
 
 </x-layouts.page>

@@ -44,6 +44,8 @@ interface CategoryInterface
      */
     public function getPostsByRegion(Region $region, int $limit = 15): LengthAwarePaginator;
 
+         public function getPostsByDate(?string $yearMonth = null, int $perPage = 15): LengthAwarePaginator;
+
     /**
      * Retrieve categories related to the specified category.
      *

@@ -3,11 +3,48 @@
 namespace Atannex\Helpers;
 
 use App\Models\Pages\Page;
+use App\Models\Posts\Post;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 trait Query
 {
+    /**
+     * Default eager-load relations for posts.
+     */
+    private function defaultRelations(): array
+    {
+        return ['category', 'tags', 'author'];
+    }
+
+    /**
+     * Closure for eager-loading authors with post counts.
+     */
+    private function authorWithPostCount(): \Closure
+    {
+        return fn($query) => $query->withCount('posts');
+    }
+
+    /**
+     * Empty post query builder (always returns no results).
+     */
+    private function emptyPostQuery(): Builder
+    {
+        return Post::whereRaw('1 = 0')
+            ->published()
+            ->with($this->defaultRelations());
+    }
+
+    /**
+     * Empty paginator for safe return when no results.
+     */
+    private function emptyPaginator(int $limit): LengthAwarePaginator
+    {
+        return new LengthAwarePaginator(collect(), 0, $this->sanitizeLimit($limit));
+    }
+
     /**
      * Ensure pagination/take limits are always positive integers.
      */
@@ -15,10 +52,6 @@ trait Query
     {
         return max(1, $limit);
     }
-    /* -----------------------------------------------------------------
-     |  Private query helpers
-     | -----------------------------------------------------------------
-     */
 
     /**
      * Common active page query builder.
@@ -52,5 +85,12 @@ trait Query
     private function activeWidgets(): \Closure
     {
         return fn($query) => $query->wherePivot('is_active', true);
+    }
+
+    protected function parseDateSlug(string $slug): array
+    {
+        [$year, $month] = array_pad(explode('/', $slug, 2), 2, null);
+
+        return compact('year', 'month');
     }
 }

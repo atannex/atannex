@@ -3,30 +3,48 @@
 namespace Atannex\Views;
 
 use Illuminate\View\View;
-use App\Models\Posts\Post;
 use Atannex\Views\Traits\Render;
 
 trait DateView
 {
     use Render;
 
-    /**
-     * Render the date page.
-     *
-     * @param Post $post display all post based on the date
-     * @return View
-     */
-    public function renderDateView(Post $post): View
+    /** ------------------------------
+     * Render date view with SEO and posts
+     * ----------------------------- */
+    public function renderDateView(string $value, string $type, ?string $year = null): View
     {
-        $year  = $post->published_at->format('Y');
-        $month = $post->published_at->format('m');
+        $isMonth = $type === 'month';
 
-        return $this->render('date', [
-            'seoTitle' => $year
-                ? seo_title("Posts for the year - {$year}")
-                : seo_title("Posts for the month of {$month}"),
-            'post'     => $post,
-            // 'posts'    => $this->categoryService->getPostsByDate($month, $year),
-        ], $this->buildCommonViewData());
+        static $months = [
+            1 => 'January',
+            2 => 'February',
+            3 => 'March',
+            4 => 'April',
+            5 => 'May',
+            6 => 'June',
+            7 => 'July',
+            8 => 'August',
+            9 => 'September',
+            10 => 'October',
+            11 => 'November',
+            12 => 'December'
+        ];
+
+        $displayValue = $isMonth ? ($months[(int)$value] ?? '') : $value;
+        $seoTitle = $isMonth
+            ? "Posts for the month of {$displayValue}"
+            : "Posts for the year - {$value}";
+
+        $yearMonth = $isMonth ? ($year ?? date('Y')) . '/' . $value : $value;
+
+        return $this->render(
+            'date',
+            [
+                'seoTitle' => seo_title($seoTitle),
+                'posts'    => $this->categoryService->getPostsByDate($yearMonth)
+            ],
+            $this->buildCommonViewData()
+        );
     }
 }

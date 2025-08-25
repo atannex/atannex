@@ -2,7 +2,6 @@
 
 namespace Atannex\Repositories\Traits;
 
-use App\Models\User;
 use App\Models\Posts\Post;
 use Atannex\Helpers\Query;
 use Atannex\Traits\Resolver;
@@ -127,42 +126,29 @@ trait PostQuery
         return $query;
     }
 
-    /* -----------------------------------------------------------------
-     |  Private helpers
-     | -----------------------------------------------------------------
-     */
-
     /**
-     * Default eager-load relations for posts.
+     * Retrieves paginated posts filtered by an optional year and month slug.
+     *
+     * This method queries published posts, optionally filtering by a date slug containing
+     * year and/or month components. If a date slug is provided, it is parsed to extract
+     * year and month, and the query is filtered accordingly. Posts are ordered by publication
+     * date in descending order and returned as a paginated result.
+     *
+     * @param string|null $yearMonth The date slug (e.g., '2023' or '2023-10') to filter posts by year and/or month, or null for no date filter.
+     * @param int $perPage The number of posts per page for pagination (default: 15).
+     * @return LengthAwarePaginator A paginated collection of posts matching the specified criteria.
      */
-    private function defaultRelations(): array
+    public function getPostsByDate(?string $yearMonth = null, int $perPage = 15): LengthAwarePaginator
     {
-        return ['category', 'tags', 'author'];
-    }
+        $query = Post::query()->whereNotNull('published_at');
 
-    /**
-     * Closure for eager-loading authors with post counts.
-     */
-    private function authorWithPostCount(): \Closure
-    {
-        return fn($query) => $query->withCount('posts');
-    }
+        if ($yearMonth) {
+            ['year' => $year, 'month' => $month] = $this->parseDateSlug($yearMonth);
 
-    /**
-     * Empty post query builder (always returns no results).
-     */
-    private function emptyPostQuery(): Builder
-    {
-        return Post::whereRaw('1 = 0')
-            ->published()
-            ->with($this->defaultRelations());
-    }
+            $query->when($year, fn($q) => $q->whereYear('published_at', $year))
+                ->when($month, fn($q) => $q->whereMonth('published_at', $month));
+        }
 
-    /**
-     * Empty paginator for safe return when no results.
-     */
-    private function emptyPaginator(int $limit): LengthAwarePaginator
-    {
-        return new LengthAwarePaginator(collect(), 0, $this->sanitizeLimit($limit));
+        return $query->orderByDesc('published_at')->paginate($perPage);
     }
 }

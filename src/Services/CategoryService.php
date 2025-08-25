@@ -69,6 +69,11 @@ final class CategoryService
         return $this->interface->getPostsByRegion($region, $limit);
     }
 
+     public function getPostsByDate(?string $yearMonth = null, int $perPage = 15): LengthAwarePaginator
+    {
+        return $this->interface->getPostsByDate($yearMonth, $perPage);
+    }
+
     /**
      * Retrieve and transform the published social media profiles of a given employee.
      *

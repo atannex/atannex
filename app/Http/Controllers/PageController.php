@@ -44,9 +44,12 @@ class PageController extends Controller
             return $this->getView->renderRegionView($region);
         }
 
-        if ($date = $this->resolveDate($slug)) {
-            return $this->getView->renderDateView($date);
+        foreach (['month', 'year'] as $part) {
+            if ($date = $this->resolvePostByDatePart($slug, $part)) {
+                return $this->getView->renderDateView($date['value'], $date['type']);
+            }
         }
+
 
         abort(404);
     }
