@@ -18,7 +18,6 @@ class WidgetObserver
      * Handle the Widget "created" event.
      *
      * @param Widget $widget The widget model instance
-     * @return void
      */
     public function created(WidgetAdapter $widget): void
     {
@@ -29,7 +28,6 @@ class WidgetObserver
      * Handle the Widget "updated" event.
      *
      * @param Widget $widget The widget model instance
-     * @return void
      */
     public function updated(WidgetAdapter $widget): void
     {
@@ -45,7 +43,6 @@ class WidgetObserver
      * Handle the Widget "deleted" event.
      *
      * @param Widget $widget The widget model instance
-     * @return void
      */
     public function deleted(WidgetAdapter $widget): void
     {
@@ -56,7 +53,6 @@ class WidgetObserver
      * Handle the Widget "force deleted" event.
      *
      * @param Widget $widget The widget model instance
-     * @return void
      */
     public function forceDeleted(WidgetAdapter $widget): void
     {

@@ -26,7 +26,7 @@ trait CommentReply
         $totalReplies = CommentModel::where('parent_id', $commentId)->count();
         $current = $this->shownRepliesCount[$commentId] ?? 0;
         if ($current < $totalReplies) {
-            $this->shownRepliesCount[$commentId] = min($current + 4, $totalReplies);
+            $this->shownRepliesCount[$commentId] = min(4, $totalReplies);
         }
     }
 

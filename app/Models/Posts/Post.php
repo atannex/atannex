@@ -38,8 +38,6 @@ class Post extends Model implements Commentable, Sluggable
 
     /**
      * The source attribute for slug generation.
-     *
-     * @var string
      */
     protected string $slugSource = 'title';
 

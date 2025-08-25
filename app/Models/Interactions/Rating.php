@@ -47,8 +47,6 @@ class Rating extends Model
 
     /**
      * Get the parent rateable model (e.g., Post, Product).
-     *
-     * @return MorphTo
      */
     public function rateable(): MorphTo
     {
@@ -57,8 +55,6 @@ class Rating extends Model
 
     /**
      * Get the user who created the rating.
-     *
-     * @return BelongsTo
      */
     public function user(): BelongsTo
     {

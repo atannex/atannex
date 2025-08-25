@@ -18,8 +18,6 @@ class Tag extends Model
 
     /**
      * Source field for slug generation.
-     *
-     * @var string
      */
     protected string $slugSource = 'name';
 

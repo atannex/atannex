@@ -46,8 +46,6 @@ class View extends Model
 
     /**
      * Get the parent viewable model (e.g., Post, Page).
-     *
-     * @return MorphTo
      */
     public function viewable(): MorphTo
     {
@@ -56,8 +54,6 @@ class View extends Model
 
     /**
      * Get the user who viewed the entity.
-     *
-     * @return BelongsTo
      */
     public function user(): BelongsTo
     {

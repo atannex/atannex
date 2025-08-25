@@ -12,10 +12,6 @@ class StrongContent implements ValidationRule
 {
     /**
      * Validate the content based on various criteria.
-     *
-     * @param string $attribute
-     * @param mixed $value
-     * @param Closure $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -65,10 +61,6 @@ class StrongContent implements ValidationRule
 
     /**
      * Check if the content contains restricted words or their leetspeak variants.
-     *
-     * @param string $normalizedValue
-     * @param string $originalValue
-     * @return bool
      */
     protected function containsRestrictedContent(string $normalizedValue, string $originalValue): bool
     {
@@ -82,10 +74,6 @@ class StrongContent implements ValidationRule
 
     /**
      * Check if the content contains leetspeak obfuscation of a bad word.
-     *
-     * @param string $value
-     * @param string $badWord
-     * @return bool
      */
     protected function containsLeetspeak(string $value, string $badWord): bool
     {
@@ -104,9 +92,6 @@ class StrongContent implements ValidationRule
 
     /**
      * Check if the content has excessive uppercase characters.
-     *
-     * @param string $value
-     * @return bool
      */
     protected function hasExcessiveUppercase(string $value): bool
     {
@@ -116,9 +101,6 @@ class StrongContent implements ValidationRule
 
     /**
      * Check if the content contains repeated characters.
-     *
-     * @param string $value
-     * @return bool
      */
     protected function containsRepeatedCharacters(string $value): bool
     {
@@ -127,9 +109,6 @@ class StrongContent implements ValidationRule
 
     /**
      * Check if the content contains excessive punctuation.
-     *
-     * @param string $value
-     * @return bool
      */
     protected function containsExcessivePunctuation(string $value): bool
     {
@@ -138,9 +117,6 @@ class StrongContent implements ValidationRule
 
     /**
      * Check if the content contains HTML tags or scripts.
-     *
-     * @param string $value
-     * @return bool
      */
     protected function containsHtmlOrScripts(string $value): bool
     {
@@ -149,9 +125,6 @@ class StrongContent implements ValidationRule
 
     /**
      * Check if the content contains unintelligible content.
-     *
-     * @param string $value
-     * @return bool
      */
     protected function containsUnintelligibleContent(string $value): bool
     {
@@ -160,11 +133,6 @@ class StrongContent implements ValidationRule
 
     /**
      * Log the detected content violation.
-     *
-     * @param string $attribute
-     * @param string $value
-     * @param string $reason
-     * @return void
      */
     protected function logViolation(string $attribute, string $value, string $reason): void
     {

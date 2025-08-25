@@ -19,8 +19,6 @@ trait HasViews
 {
     /**
      * Get the views associated with the model.
-     *
-     * @return MorphMany
      */
     public function views(): MorphMany
     {
@@ -51,8 +49,6 @@ trait HasViews
 
     /**
      * Get the total number of views for the model.
-     *
-     * @return int
      */
     public function viewsCount(): int
     {

@@ -29,8 +29,6 @@ class StrongEmail implements ValidationRule
 
     /**
      * Generates a default error message when validation fails.
-     *
-     * @return string
      */
     protected function generateDefaultMessage(): string
     {
@@ -40,8 +38,6 @@ class StrongEmail implements ValidationRule
 
     /**
      * Retrieves the allowed domains from the AllowedDomain enum.
-     *
-     * @return array
      */
     protected function getAllowedDomains(): array
     {
@@ -50,8 +46,6 @@ class StrongEmail implements ValidationRule
 
     /**
      * Retrieves the restricted domains from the RestrictedDomain enum.
-     *
-     * @return array
      */
     protected function getRestrictedDomains(): array
     {
@@ -60,11 +54,6 @@ class StrongEmail implements ValidationRule
 
     /**
      * Validates the email based on various domain rules.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @param  Closure  $fail
-     * @return void
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -93,10 +82,6 @@ class StrongEmail implements ValidationRule
     /**
      * Check if a domain is restricted, not allowed, or admin-only,
      * and fail validation if any condition is met.
-     *
-     * @param  string  $domain
-     * @param  Closure  $fail
-     * @return bool
      */
     private function isDomainInvalid(string $domain, Closure $fail): bool
     {
@@ -120,9 +105,6 @@ class StrongEmail implements ValidationRule
 
     /**
      * Checks if the domain is in the restricted domains list.
-     *
-     * @param  string  $domain
-     * @return bool
      */
     private function isRestrictedDomain(string $domain): bool
     {
@@ -131,9 +113,6 @@ class StrongEmail implements ValidationRule
 
     /**
      * Checks if the domain is in the allowed domains list.
-     *
-     * @param  string  $domain
-     * @return bool
      */
     private function isAllowedDomain(string $domain): bool
     {
@@ -142,9 +121,6 @@ class StrongEmail implements ValidationRule
 
     /**
      * Checks if the domain is intended for administrative use only.
-     *
-     * @param  string  $domain
-     * @return bool
      */
     private function isAdminDomain(string $domain): bool
     {

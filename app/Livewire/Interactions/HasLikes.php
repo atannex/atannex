@@ -20,8 +20,6 @@ trait HasLikes
 {
     /**
      * Get the likes associated with the model, including soft-deleted ones.
-     *
-     * @return MorphMany
      */
     public function likes(): MorphMany
     {
@@ -30,8 +28,6 @@ trait HasLikes
 
     /**
      * Fetch the authenticated user's like (including trashed).
-     *
-     * @return Like|null
      */
     protected function userLike(): ?Like
     {
@@ -42,8 +38,6 @@ trait HasLikes
 
     /**
      * Add or restore a like for the authenticated user.
-     *
-     * @return bool
      */
     public function like(): bool
     {
@@ -77,8 +71,6 @@ trait HasLikes
 
     /**
      * Remove a like (soft delete) for the authenticated user.
-     *
-     * @return bool
      */
     public function unlike(): bool
     {
@@ -94,8 +86,6 @@ trait HasLikes
 
     /**
      * Get the total number of active (non-deleted) likes for the model.
-     *
-     * @return int
      */
     public function likesCount(): int
     {
@@ -104,8 +94,6 @@ trait HasLikes
 
     /**
      * Check if the authenticated user has an active like on the model.
-     *
-     * @return bool
      */
     public function isLikedByUser(): bool
     {
@@ -117,8 +105,6 @@ trait HasLikes
 
     /**
      * Get the timestamp when the authenticated user liked the model.
-     *
-     * @return Carbon|null
      */
     public function likedAt(): ?Carbon
     {

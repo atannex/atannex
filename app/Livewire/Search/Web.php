@@ -13,8 +13,6 @@ final class Web extends Searchable
 {
     /**
      * Defines the base Eloquent query for retrieving Post models with related data.
-     *
-     * @return Builder
      */
     protected function baseQuery(): Builder
     {
@@ -33,8 +31,6 @@ final class Web extends Searchable
 
     /**
      * Defines the view to be rendered for this component.
-     *
-     * @return string
      */
     protected function view(): string
     {

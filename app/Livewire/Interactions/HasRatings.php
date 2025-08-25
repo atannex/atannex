@@ -20,8 +20,6 @@ trait HasRatings
 {
     /**
      * Get the ratings associated with the model, including soft-deleted ones.
-     *
-     * @return MorphMany
      */
     public function ratings(): MorphMany
     {
@@ -99,8 +97,6 @@ trait HasRatings
 
     /**
      * Get the average rating for the model (active ratings only).
-     *
-     * @return float|null
      */
     public function averageRating(): ?float
     {
@@ -109,8 +105,6 @@ trait HasRatings
 
     /**
      * Get the total number of active ratings for the model.
-     *
-     * @return int
      */
     public function ratingCount(): int
     {
@@ -119,8 +113,6 @@ trait HasRatings
 
     /**
      * Get the rating given by the authenticated user (active rating only).
-     *
-     * @return int|null
      */
     public function userRating(): ?int
     {
@@ -136,8 +128,6 @@ trait HasRatings
 
     /**
      * Check if the authenticated user has rated the model (active rating only).
-     *
-     * @return bool
      */
     public function isRatedByUser(): bool
     {
@@ -149,8 +139,6 @@ trait HasRatings
 
     /**
      * Get the timestamp when the authenticated user rated the model.
-     *
-     * @return Carbon|null
      */
     public function ratedAt(): ?Carbon
     {

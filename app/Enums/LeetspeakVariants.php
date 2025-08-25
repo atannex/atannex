@@ -72,8 +72,6 @@ final class LeetspeakVariants extends Enum
     /**
      * Build a regex pattern for a given letter's variants.
      *
-     * @param string $letter
-     * @return string
      * @throws \InvalidArgumentException
      */
     public static function getRegexPattern(string $letter): string

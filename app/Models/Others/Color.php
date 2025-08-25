@@ -14,10 +14,6 @@ class Color extends Model
 
     /**
      * Get hex code by color name without caching.
-     *
-     * @param string $name
-     * @param string $default
-     * @return string
      */
     public static function hex(string $name, string $default = '#CCCCCC'): string
     {
@@ -26,9 +22,6 @@ class Color extends Model
 
     /**
      * Get a random hex code from all colors without caching.
-     *
-     * @param string $fallback
-     * @return string
      */
     public static function randomHex(string $fallback = '#CCCCCC'): string
     {

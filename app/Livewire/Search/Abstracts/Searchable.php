@@ -21,15 +21,11 @@ abstract class Searchable extends Component
 
     /**
      * Define the base query for the search.
-     *
-     * @return Builder
      */
     abstract protected function baseQuery(): Builder;
 
     /**
      * Specify the view to render.
-     *
-     * @return string
      */
     abstract protected function view(): string;
 
@@ -50,8 +46,6 @@ abstract class Searchable extends Component
 
     /**
      * Set the sorting option and reset pagination.
-     *
-     * @param string $sortBy
      */
     public function setSortBy(string $sortBy): void
     {
@@ -61,8 +55,6 @@ abstract class Searchable extends Component
 
     /**
      * Render the component view with paginated results.
-     *
-     * @return View
      */
     public function render(): View
     {
@@ -75,9 +67,6 @@ abstract class Searchable extends Component
 
     /**
      * Apply search and sorting filters to the query.
-     *
-     * @param Builder $queryBuilder
-     * @return Builder
      */
     protected function applyFilters(Builder $queryBuilder): Builder
     {
@@ -88,9 +77,6 @@ abstract class Searchable extends Component
 
     /**
      * Apply search conditions to the query.
-     *
-     * @param Builder $queryBuilder
-     * @return Builder
      */
     protected function applySearch(Builder $queryBuilder): Builder
     {
@@ -111,10 +97,6 @@ abstract class Searchable extends Component
 
     /**
      * Add a search condition for a specific field.
-     *
-     * @param Builder $query
-     * @param string $field
-     * @param string $search
      */
     protected function addSearchCondition(Builder $query, string $field, string $search): void
     {
@@ -128,9 +110,6 @@ abstract class Searchable extends Component
 
     /**
      * Apply sorting to the query.
-     *
-     * @param Builder $queryBuilder
-     * @return Builder
      */
     protected function applySorting(Builder $queryBuilder): Builder
     {
@@ -142,9 +121,6 @@ abstract class Searchable extends Component
 
     /**
      * Validate the sort option.
-     *
-     * @param string $option
-     * @return bool
      */
     protected function isValidSortOption(string $option): bool
     {
@@ -153,9 +129,6 @@ abstract class Searchable extends Component
 
     /**
      * Sanitize the search query to prevent SQL injection.
-     *
-     * @param string $query
-     * @return string
      */
     protected function sanitizeSearch(string $query): string
     {
@@ -164,9 +137,6 @@ abstract class Searchable extends Component
 
     /**
      * Sanitize the perPage value to ensure it's a positive integer.
-     *
-     * @param mixed $perPage
-     * @return int
      */
     protected function sanitizePerPage(mixed $perPage): int
     {

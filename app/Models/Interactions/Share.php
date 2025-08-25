@@ -48,8 +48,6 @@ class Share extends Model
 
     /**
      * Get the parent shareable model (e.g., Post, Article).
-     *
-     * @return MorphTo
      */
     public function shareable(): MorphTo
     {
@@ -58,8 +56,6 @@ class Share extends Model
 
     /**
      * Get the user who performed the share.
-     *
-     * @return BelongsTo
      */
     public function user(): BelongsTo
     {

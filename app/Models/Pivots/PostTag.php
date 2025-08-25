@@ -48,8 +48,6 @@ class PostTag extends Pivot implements Sluggable
 
     /**
      * Get the post that belongs to this pivot.
-     *
-     * @return BelongsTo
      */
     public function post(): BelongsTo
     {
@@ -58,8 +56,6 @@ class PostTag extends Pivot implements Sluggable
 
     /**
      * Get the tag that belongs to this pivot.
-     *
-     * @return BelongsTo
      */
     public function tag(): BelongsTo
     {

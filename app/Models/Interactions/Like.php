@@ -45,8 +45,6 @@ class Like extends Model
 
     /**
      * Get the parent likeable model (e.g., Post, Comment).
-     *
-     * @return MorphTo
      */
     public function likeable(): MorphTo
     {
@@ -55,8 +53,6 @@ class Like extends Model
 
     /**
      * Get the user who created the like.
-     *
-     * @return BelongsTo
      */
     public function user(): BelongsTo
     {

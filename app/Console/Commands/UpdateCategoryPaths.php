@@ -33,8 +33,6 @@ class UpdateCategoryPaths extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {
@@ -61,8 +59,6 @@ class UpdateCategoryPaths extends Command
 
     /**
      * Process categories and update their paths.
-     *
-     * @return int
      */
     private function processCategories(): int
     {
@@ -105,9 +101,6 @@ class UpdateCategoryPaths extends Command
 
     /**
      * Build the slug path for a category based on its hierarchy.
-     *
-     * @param Category $category
-     * @return string
      */
     private function buildSlugPath(Category $category): string
     {
@@ -118,8 +111,6 @@ class UpdateCategoryPaths extends Command
 
     /**
      * Display the results of the update process.
-     *
-     * @param int $updatedCount
      */
     private function displayResults(int $updatedCount): void
     {
@@ -130,8 +121,6 @@ class UpdateCategoryPaths extends Command
 
     /**
      * Handle any exceptions that occur during command execution.
-     *
-     * @param Throwable $e
      */
     private function handleException(Throwable $e): void
     {

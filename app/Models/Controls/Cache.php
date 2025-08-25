@@ -35,8 +35,6 @@ class Cache extends Model
 
     /**
      * Check if the cached item has expired
-     *
-     * @return bool
      */
     public function isExpired(): bool
     {

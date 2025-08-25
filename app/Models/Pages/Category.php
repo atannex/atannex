@@ -55,8 +55,6 @@ class Category extends Model implements Sluggable
 
     /**
      * The source attribute for slug generation.
-     *
-     * @var string
      */
     protected string $slugSource = 'name';
 

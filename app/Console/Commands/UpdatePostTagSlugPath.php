@@ -33,8 +33,6 @@ class UpdatePostTagSlugPath extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {
@@ -61,8 +59,6 @@ class UpdatePostTagSlugPath extends Command
 
     /**
      * Process post_tag records and update their slug paths.
-     *
-     * @return int
      */
     private function processPostTags(): int
     {
@@ -96,9 +92,6 @@ class UpdatePostTagSlugPath extends Command
 
     /**
      * Update the slug path for a single post_tag record.
-     *
-     * @param PostTag $postTag
-     * @return bool
      */
     private function updatePostTagPath(PostTag $postTag): bool
     {
@@ -139,8 +132,6 @@ class UpdatePostTagSlugPath extends Command
 
     /**
      * Display the results of the update process.
-     *
-     * @param int $updatedCount
      */
     private function displayResults(int $updatedCount): void
     {
@@ -151,8 +142,6 @@ class UpdatePostTagSlugPath extends Command
 
     /**
      * Handle any exceptions that occur during command execution.
-     *
-     * @param Throwable $e
      */
     private function handleException(Throwable $e): void
     {

@@ -31,8 +31,6 @@ class CacheLock extends Model
 
     /**
      * Check if the lock is expired
-     *
-     * @return bool
      */
     public function isExpired(): bool
     {

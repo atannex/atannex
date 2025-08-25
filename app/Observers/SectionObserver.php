@@ -18,7 +18,6 @@ class SectionObserver
      * Handle the Section "created" event.
      *
      * @param Section $section The section model instance
-     * @return void
      */
     public function created(SectionAdapter $section): void
     {
@@ -29,7 +28,6 @@ class SectionObserver
      * Handle the Section "updated" event.
      *
      * @param Section $section The section model instance
-     * @return void
      */
     public function updated(SectionAdapter $section): void
     {
@@ -45,7 +43,6 @@ class SectionObserver
      * Handle the Section "deleted" event.
      *
      * @param Section $section The section model instance
-     * @return void
      */
     public function deleted(SectionAdapter $section): void
     {
@@ -56,7 +53,6 @@ class SectionObserver
      * Handle the Section "force deleted" event.
      *
      * @param Section $section The section model instance
-     * @return void
      */
     public function forceDeleted(SectionAdapter $section): void
     {

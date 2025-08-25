@@ -57,9 +57,6 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 
     /**
      * Determine if the user can access a specific Filament panel.
-     *
-     * @param Panel $panel
-     * @return bool
      */
     public function canAccessPanel(Panel $panel): bool
     {

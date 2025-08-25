@@ -18,8 +18,6 @@ trait HasShares
 {
     /**
      * Get the shares associated with the model.
-     *
-     * @return MorphMany
      */
     public function shares(): MorphMany
     {
@@ -28,8 +26,6 @@ trait HasShares
 
     /**
      * Get the total number of shares for the model.
-     *
-     * @return int
      */
     public function sharesCount(): int
     {

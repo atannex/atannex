@@ -56,8 +56,6 @@ class JobBatch extends Model
 
     /**
      * Check if the batch is cancelled
-     *
-     * @return bool
      */
     public function isCancelled(): bool
     {
@@ -66,8 +64,6 @@ class JobBatch extends Model
 
     /**
      * Check if the batch is finished
-     *
-     * @return bool
      */
     public function isFinished(): bool
     {

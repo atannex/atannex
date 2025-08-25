@@ -27,8 +27,6 @@ class Role extends SpatieRole
      *
      * This relationship indicates that a role can have multiple permissions, and a permission can be assigned to multiple roles.
      * It utilizes the intermediate table and foreign key configurations specified in the `permission` configuration file.
-     *
-     * @return BelongsToMany
      */
     public function permissions(): BelongsToMany
     {
@@ -46,8 +44,6 @@ class Role extends SpatieRole
      * This relationship enables direct assignment of roles to user models (or other models).
      * It employs a polymorphic intermediate table to accommodate relationships with various model types.
      * The table and column names are retrieved from the `permission` configuration file.
-     *
-     * @return MorphToMany
      */
     public function employee(): MorphToMany
     {

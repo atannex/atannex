@@ -32,7 +32,6 @@ class AppServiceProvider extends ServiceProvider
      * Registers model observers, boots enums, and shares navigation data with all views.
      *
      * @param Navigation $navigation Navigation handler for shared navigation data
-     * @return void
      */
     public function boot(): void
     {
@@ -42,8 +41,6 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Register model observers.
-     *
-     * @return void
      */
     protected function registerObservers(): void
     {
@@ -53,8 +50,6 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Boot enum classes.
-     *
-     * @return void
      */
     protected function bootEnums(): void
     {

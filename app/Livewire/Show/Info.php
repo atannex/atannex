@@ -25,8 +25,6 @@ class Info extends Component
 
     /**
      * Mount the component with the given Post instance.
-     *
-     * @param Post $post
      */
     public function mount(Post $post)
     {

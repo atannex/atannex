@@ -34,8 +34,6 @@ class Comment extends Model
 
     /**
      * Get the parent entity that this comment belongs to (polymorphic relationship).
-     *
-     * @return MorphTo
      */
     public function commentable(): MorphTo
     {
@@ -44,8 +42,6 @@ class Comment extends Model
 
     /**
      * Get the parent comment for this comment (if it is a reply).
-     *
-     * @return BelongsTo
      */
     public function parent(): BelongsTo
     {
@@ -55,8 +51,6 @@ class Comment extends Model
     /**
      * Get all replies to this comment.
      * Replies are ordered by the latest first.
-     *
-     * @return HasMany
      */
     public function replies(): HasMany
     {
@@ -65,8 +59,6 @@ class Comment extends Model
 
     /**
      * Get the user who created this comment.
-     *
-     * @return BelongsTo
      */
     public function user(): BelongsTo
     {

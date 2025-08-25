@@ -26,8 +26,6 @@ class Permission extends SpatiePermission
      *
      * This relationship indicates that a permission can belong to multiple roles, and a role can have multiple permissions.
      * It uses the intermediate table and foreign keys configured in the `permission` configuration file.
-     *
-     * @return BelongsToMany
      */
     public function roles(): BelongsToMany
     {
@@ -45,8 +43,6 @@ class Permission extends SpatiePermission
      * This relationship allows permissions to be directly assigned to user models (or other models).
      * It uses a polymorphic intermediate table to handle relationships with different model types.
      * The table and column names are sourced from the `permission` configuration file.
-     *
-     * @return MorphToMany
      */
     public function employee(): MorphToMany
     {

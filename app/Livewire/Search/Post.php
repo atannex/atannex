@@ -14,8 +14,6 @@ final class Post extends Searchable
 
     /**
      * Define the base query for the post search.
-     *
-     * @return Builder
      */
     protected function baseQuery(): Builder
     {
@@ -38,8 +36,6 @@ final class Post extends Searchable
 
     /**
      * Specify the view to render.
-     *
-     * @return string
      */
     protected function view(): string
     {
