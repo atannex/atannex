@@ -60,7 +60,7 @@ trait TracksUserActivity
     {
         $this->queueActivity([
             'user_id'       => $this->id,
-            'last_logout_at'=> now()->toDateTimeString(),
+            'last_logout_at' => now()->toDateTimeString(),
             'last_seen_at'  => now()->toDateTimeString(),
         ], 'logout');
     }
@@ -68,19 +68,33 @@ trait TracksUserActivity
     /**
      * Update the last seen timestamp for a user.
      *
-     * Typically called:
-     * - On each request made by the authenticated user.
-     * - To track active sessions and user engagement.
+     * Throttled to prevent excessive DB writes:
+     * - Only queues an update if the previous 'last_seen_at' is older than $threshold seconds.
      *
+     * @param int $threshold Minimum seconds between updates (default: 60)
      * @return void
      */
-    public function updateLastSeenTimestamp(): void
+    public function updateLastSeenTimestamp(int $threshold = 60): void
     {
-        $this->queueActivity([
-            'user_id'      => $this->id,
-            'last_seen_at' => now()->toDateTimeString(),
-        ], 'last_seen');
+        try {
+            // Ensure there is an activity record
+            $activity = $this->activity()->firstOrCreate(['user_id' => $this->id]);
+
+            // Skip update if last_seen_at is too recent
+            if ($activity->last_seen_at && now()->diffInSeconds($activity->last_seen_at) < $threshold) {
+                return;
+            }
+
+            // Queue the update asynchronously
+            $this->queueActivity([
+                'user_id'      => $this->id,
+                'last_seen_at' => now()->toDateTimeString(),
+            ], 'last_seen');
+        } catch (\Throwable $e) {
+            Log::error("Failed to update last seen for user {$this->id}: {$e->getMessage()}");
+        }
     }
+
 
     /**
      * Dispatch activity logging job to the queue.
