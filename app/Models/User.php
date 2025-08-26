@@ -27,9 +27,15 @@ use Illuminate\Support\Facades\Log;
 /**
  * Class User
  *
- * Optimized User model with efficient relationships and activity tracking.
+ * Represents the system's core authenticated entity.
  *
- * @package App\Models
+ * Features:
+ * - Implements Laravel authentication & email verification.
+ * - Integrates role/permission management via Spatie.
+ * - Supports soft deletes for recoverability.
+ * - Auto-generates slugs for SEO-friendly URLs.
+ * - Tracks user activity (login/logout/last seen) via reusable trait.
+ * - Integrates with Filament for admin panel access.
  */
 class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
@@ -39,10 +45,20 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     use SoftDeletes;
     use TracksUserActivity;
 
+    /**
+     * The attribute used as the slug source.
+     *
+     * Used by EnableSlug trait to generate human-readable slugs.
+     *
+     * @var string
+     */
     protected string $slugSource = 'name';
 
     /**
-     * The attributes that are mass assignable.
+     * Mass assignable attributes.
+     *
+     * Restricts which fields can be set via `create()` or `update()`.
+     * Helps prevent mass assignment vulnerabilities.
      *
      * @var array<int, string>
      */
@@ -59,7 +75,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Attributes hidden from serialization.
+     *
+     * Ensures sensitive data (e.g., password, tokens) is never exposed in API responses.
      *
      * @var array<int, string>
      */
@@ -69,7 +87,12 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Cast attributes to native or custom types.
+     *
+     * - email_verified_at → Carbon datetime
+     * - password → Laravel's auto-hash
+     * - date_of_birth → Carbon date
+     * - gender/status → Backed Enums (App\Enums)
      *
      * @return array<string, string>
      */
@@ -85,7 +108,12 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     }
 
     /**
-     * Determine if the user can access a specific Filament panel.
+     * Check if user can access the given Filament admin panel.
+     *
+     * Business logic:
+     * - Requires verified email.
+     * - Restricts access to Gmail addresses (example business rule).
+     * - Must be associated with an Employee record.
      *
      * @param Panel $panel
      * @return bool
@@ -105,7 +133,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     }
 
     /**
-     * Get the sessions associated with the user.
+     * Relationship: User → Sessions
+     *
+     * A user can have many active/expired sessions.
      *
      * @return HasMany
      */
@@ -115,7 +145,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     }
 
     /**
-     * Get the employee record associated with the user.
+     * Relationship: User → Employee
+     *
+     * A user may be linked to an employee profile.
      *
      * @return HasOne
      */
@@ -125,7 +157,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     }
 
     /**
-     * Get the activity record associated with the user.
+     * Relationship: User → UserActivity
+     *
+     * Stores the user's last login/logout/seen metadata.
      *
      * @return HasOne
      */
@@ -135,7 +169,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     }
 
     /**
-     * Check if the user is an employee.
+     * Check if user has an associated employee profile.
+     *
+     * Used for role-based access checks and admin restrictions.
      *
      * @return bool
      */
@@ -150,7 +186,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     }
 
     /**
-     * Get the comments associated with the user.
+     * Relationship: User → Comments
+     *
+     * A user can post multiple comments.
      *
      * @return HasMany
      */
@@ -160,7 +198,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     }
 
     /**
-     * Get the likes associated with the user.
+     * Relationship: User → Likes
+     *
+     * Tracks likes a user has given.
      *
      * @return HasMany
      */
@@ -170,7 +210,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     }
 
     /**
-     * Get the views associated with the user.
+     * Relationship: User → Views
+     *
+     * Tracks content viewed by the user.
      *
      * @return HasMany
      */
@@ -180,7 +222,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     }
 
     /**
-     * Get the shares associated with the user.
+     * Relationship: User → Shares
+     *
+     * Tracks shares initiated by the user.
      *
      * @return HasMany
      */
@@ -190,7 +234,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     }
 
     /**
-     * Get the ratings associated with the user.
+     * Relationship: User → Ratings
+     *
+     * Tracks ratings given by the user.
      *
      * @return HasMany
      */
