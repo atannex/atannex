@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\EmployeeDepartments\Tables;
+namespace App\Filament\Resources\PostTags\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -8,18 +8,18 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class EmployeeDepartmentsTable
+class PostTagsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('employee.user.name')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('department.name')
-                    ->numeric()
-                    ->sortable(),
+                TextColumn::make('post.title')
+                    ->searchable(),
+                TextColumn::make('tag.name')
+                    ->searchable(),
+                TextColumn::make('slug_path')
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

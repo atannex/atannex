@@ -9,7 +9,6 @@ use App\Filament\Resources\WidgetSections\Schemas\WidgetSectionForm;
 use App\Filament\Resources\WidgetSections\Tables\WidgetSectionsTable;
 use App\Models\Pivots\WidgetSection;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -22,8 +21,6 @@ class WidgetSectionResource extends Resource
     protected static ?string $model = WidgetSection::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
-    protected static string | UnitEnum | null $navigationGroup = 'Settings';
 
     public static function form(Schema $schema): Schema
     {

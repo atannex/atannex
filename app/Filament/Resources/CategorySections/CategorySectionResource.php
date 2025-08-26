@@ -21,7 +21,7 @@ class CategorySectionResource extends Resource
 {
     protected static ?string $model = CategorySection::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Settings';
+    protected static string | UnitEnum | null $navigationGroup = 'Pivots';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

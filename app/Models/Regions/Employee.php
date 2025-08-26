@@ -21,6 +21,7 @@ class Employee extends Model
         'job_title',
         'hire_date',
         'employment_type',
+        'manager_id',
         'status',
     ];
 
@@ -28,6 +29,14 @@ class Employee extends Model
         'hire_date' => 'date',
         'status' => Status::class,
     ];
+
+    /**
+     * Get the manager of the employee.
+     */
+    public function manager(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'manager_id');
+    }
 
     public function user(): BelongsTo
     {

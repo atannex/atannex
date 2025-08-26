@@ -2,22 +2,64 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\AuthenticateSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
+use App\Filament\Resources\Abouts\AboutResource;
+use App\Filament\Resources\Achievements\AchievementResource;
+use App\Filament\Resources\CacheLocks\CacheLockResource;
+use App\Filament\Resources\Caches\CacheResource;
+use App\Filament\Resources\Categories\CategoryResource;
+use App\Filament\Resources\CategorySections\CategorySectionResource;
+use App\Filament\Resources\Colors\ColorResource;
+use App\Filament\Resources\Comments\CommentResource;
+use App\Filament\Resources\Contacts\ContactResource;
+use App\Filament\Resources\Departments\DepartmentResource;
+use App\Filament\Resources\DocumentModules\DocumentModuleResource;
+use App\Filament\Resources\Documents\DocumentResource;
+use App\Filament\Resources\EmployeeDepartments\EmployeeDepartmentResource;
+use App\Filament\Resources\Employees\EmployeeResource;
+use App\Filament\Resources\FailedJobs\FailedJobResource;
+use App\Filament\Resources\Galleries\GalleryResource;
+use App\Filament\Resources\JobBatches\JobBatchResource;
+use App\Filament\Resources\Jobs\JobResource;
+use App\Filament\Resources\Likes\LikeResource;
+use App\Filament\Resources\Pages\PageResource;
+use App\Filament\Resources\PageSections\PageSectionResource;
+use App\Filament\Resources\PasswordResetTokens\PasswordResetTokenResource;
+use App\Filament\Resources\Permissions\PermissionResource;
+use App\Filament\Resources\PostModules\PostModuleResource;
+use App\Filament\Resources\PostRegions\PostRegionResource;
+use App\Filament\Resources\Posts\PostResource;
+use App\Filament\Resources\PostTags\PostTagResource;
+use App\Filament\Resources\Ratings\RatingResource;
+use App\Filament\Resources\Regions\RegionResource;
+use App\Filament\Resources\Roles\RoleResource;
+use App\Filament\Resources\Rulers\RulerResource;
+use App\Filament\Resources\Sections\SectionResource;
+use App\Filament\Resources\Sessions\SessionResource;
+use App\Filament\Resources\Shares\ShareResource;
+use App\Filament\Resources\SocialMedia\SocialMediaResource;
+use App\Filament\Resources\Tags\TagResource;
+use App\Filament\Resources\Users\UserResource;
+use App\Filament\Resources\Views\ViewResource;
+use App\Filament\Resources\Widgets\WidgetResource;
+use App\Filament\Resources\WidgetSections\WidgetSectionResource;
+
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
+use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Filament\Http\Middleware\AuthenticateSession;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -29,13 +71,12 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Violet,
             ])
+            ->topNavigation()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
-            ->pages([
-                Dashboard::class,
-            ])
+
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
@@ -54,6 +95,86 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                return $builder->groups([
+
+                    NavigationGroup::make('Pages & Sections')
+                        ->items([
+                            ...PageResource::getNavigationItems(),
+                            ...SectionResource::getNavigationItems(),
+                            ...PageSectionResource::getNavigationItems(),
+                            ...WidgetResource::getNavigationItems(),
+                            ...WidgetSectionResource::getNavigationItems(),
+                        ]),
+
+                    NavigationGroup::make('Categories & Modules')
+                        ->items([
+                            ...CategoryResource::getNavigationItems(),
+                            ...CategorySectionResource::getNavigationItems(),
+                            ...DocumentModuleResource::getNavigationItems(),
+                            ...PostModuleResource::getNavigationItems(),
+                        ]),
+
+                    NavigationGroup::make('Posts')
+                        ->items([
+                            ...PostResource::getNavigationItems(),
+                            ...PostRegionResource::getNavigationItems(),
+                            ...PostTagResource::getNavigationItems(),
+                            ...TagResource::getNavigationItems(),
+                        ]),
+
+                    NavigationGroup::make('User Management')
+                        ->items([
+                            ...UserResource::getNavigationItems(),
+                            ...RoleResource::getNavigationItems(),
+                            ...PermissionResource::getNavigationItems(),
+                        ]),
+
+                    NavigationGroup::make('Organization')
+                        ->items([
+                            ...DepartmentResource::getNavigationItems(),
+                            ...EmployeeResource::getNavigationItems(),
+                            ...EmployeeDepartmentResource::getNavigationItems(),
+                            ...RegionResource::getNavigationItems(),
+                            ...RulerResource::getNavigationItems(),
+                        ]),
+
+                    NavigationGroup::make('Engagement')
+                        ->items([
+                            ...CommentResource::getNavigationItems(),
+                            ...LikeResource::getNavigationItems(),
+                            ...RatingResource::getNavigationItems(),
+                            ...ShareResource::getNavigationItems(),
+                            ...ViewResource::getNavigationItems(),
+                        ]),
+
+                    NavigationGroup::make('System')
+                        ->items([
+                            ...CacheResource::getNavigationItems(),
+                            ...CacheLockResource::getNavigationItems(),
+                            ...FailedJobResource::getNavigationItems(),
+                            ...JobResource::getNavigationItems(),
+                            ...JobBatchResource::getNavigationItems(),
+                            ...PasswordResetTokenResource::getNavigationItems(),
+                            ...SessionResource::getNavigationItems(),
+                        ]),
+
+                    NavigationGroup::make('Documentation')
+                        ->items([
+                            ...DocumentResource::getNavigationItems(),
+                        ]),
+
+                    NavigationGroup::make('Miscellaneous')
+                        ->items([
+                            ...AboutResource::getNavigationItems(),
+                            ...AchievementResource::getNavigationItems(),
+                            ...ColorResource::getNavigationItems(),
+                            ...ContactResource::getNavigationItems(),
+                            ...GalleryResource::getNavigationItems(),
+                            ...SocialMediaResource::getNavigationItems(),
+                        ]),
+                ]);
+            });
     }
 }

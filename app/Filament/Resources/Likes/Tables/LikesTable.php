@@ -1,25 +1,36 @@
 <?php
 
-namespace App\Filament\Resources\EmployeeDepartments\Tables;
+namespace App\Filament\Resources\Likes\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
-class EmployeeDepartmentsTable
+class LikesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('employee.user.name')
+                TextColumn::make('likeable_type')
+                    ->searchable(),
+                TextColumn::make('likeable_id')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('department.name')
-                    ->numeric()
+                TextColumn::make('user.name')
+                    ->searchable(),
+                TextColumn::make('liked_at')
+                    ->dateTime()
                     ->sortable(),
+                TextColumn::make('deleted_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -30,7 +41,7 @@ class EmployeeDepartmentsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                TrashedFilter::make(),
             ])
             ->recordActions([
                 EditAction::make(),
@@ -38,6 +49,8 @@ class EmployeeDepartmentsTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }

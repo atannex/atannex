@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
-use App\Models\Posts\Subscriber;
+use App\Models\Others\Subscriber;
 
 class SubscriptionController extends Controller
 {

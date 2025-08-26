@@ -12,7 +12,7 @@ class EmployeeDepartmentForm
         return $schema
             ->components([
                 Select::make('employee_id')
-                    ->relationship('employee', 'id')
+                    ->relationship('employee.user', 'name')
                     ->required(),
                 Select::make('department_id')
                     ->relationship('department', 'name')

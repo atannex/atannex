@@ -6,7 +6,7 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Mail\SubscriptionConfirmation;
-use App\Models\Posts\Subscriber as PostsSubscriber;
+use App\Models\Others\Subscriber as PostsSubscriber;
 
 class Subscriber extends Component
 {

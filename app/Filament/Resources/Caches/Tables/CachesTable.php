@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\EmployeeDepartments\Tables;
+namespace App\Filament\Resources\Caches\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -8,26 +8,17 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class EmployeeDepartmentsTable
+class CachesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('employee.user.name')
+                TextColumn::make('key')
+                    ->searchable(),
+                TextColumn::make('expiration')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('department.name')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
