@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Jobs\LogUserActivityJob;
 use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Log;
+use GeoIp2\Database\Reader;
 
 /**
  * Trait TracksUserActivity
@@ -14,8 +15,10 @@ use Illuminate\Support\Facades\Log;
  *
  * Features:
  * - Uses queued jobs (LogUserActivityJob) for non-blocking writes.
- * - Captures essential activity metadata (timestamps, IP, device).
+ * - Captures comprehensive activity metadata (timestamps, IP, device, geolocation).
  * - Includes robust error handling with logging for observability.
+ * - Throttles updates to prevent excessive database writes.
+ * - Configurable queue for job dispatching.
  *
  * Intended usage:
  * - Applied to User model or any authenticatable entity that requires activity tracking.
@@ -28,11 +31,12 @@ trait TracksUserActivity
      * Captures:
      * - User ID
      * - Login timestamp
-     * - Login IP address
-     * - Device type (detected via user agent)
+     * - Login IP address (validated)
+     * - Device details (type, browser, platform)
+     * - Geolocation data (country, city)
      * - Last seen timestamp
      *
-     * @param Request $request  The current HTTP request (used for IP and device detection).
+     * @param Request $request The current HTTP request (used for IP and device detection).
      * @return void
      */
     public function logLogin(Request $request): void
@@ -42,11 +46,27 @@ trait TracksUserActivity
             Log::warning("Invalid IP address: {$ip}");
             $ip = null;
         }
+
+        $geo = null;
+        if ($ip) {
+            try {
+                $reader = new Reader(storage_path('app/GeoLite2-City.mmdb'));
+                $record = $reader->city($ip);
+                $geo = [
+                    'country' => $record->country->name,
+                    'city' => $record->city->name,
+                ];
+            } catch (\Exception $e) {
+                Log::warning("Failed to detect GeoIP for IP {$ip}: {$e->getMessage()}");
+            }
+        }
+
         $this->queueActivity([
             'user_id'        => $this->id,
             'last_login_at'  => now()->toDateTimeString(),
             'last_login_ip'  => $ip,
             'device'         => $this->getDeviceFromRequest($request),
+            'geo'            => $geo ? json_encode($geo) : null,
             'last_seen_at'   => now()->toDateTimeString(),
         ], 'login');
     }
@@ -59,15 +79,27 @@ trait TracksUserActivity
      * - Logout timestamp
      * - Last seen timestamp
      *
+     * Throttles to avoid duplicate logout entries within a short time frame.
+     *
+     * @param int $threshold Minimum seconds between logout updates (default: 60)
      * @return void
      */
-    public function logLogout(): void
+    public function logLogout(int $threshold = 60): void
     {
-        $this->queueActivity([
-            'user_id'       => $this->id,
-            'last_logout_at' => now()->toDateTimeString(),
-            'last_seen_at'  => now()->toDateTimeString(),
-        ], 'logout');
+        try {
+            $activity = $this->activity()->first();
+            if ($activity && $activity->last_logout_at && now()->diffInSeconds($activity->last_logout_at) < $threshold) {
+                return;
+            }
+
+            $this->queueActivity([
+                'user_id'        => $this->id,
+                'last_logout_at' => now()->toDateTimeString(),
+                'last_seen_at'   => now()->toDateTimeString(),
+            ], 'logout');
+        } catch (\Throwable $e) {
+            Log::error("Failed to log logout for user {$this->id}: {$e->getMessage()}");
+        }
     }
 
     /**
@@ -82,15 +114,12 @@ trait TracksUserActivity
     public function updateLastSeenTimestamp(int $threshold = 60): void
     {
         try {
-            // Ensure there is an activity record
             $activity = $this->activity()->firstOrCreate(['user_id' => $this->id]);
 
-            // Skip update if last_seen_at is too recent
             if ($activity->last_seen_at && now()->diffInSeconds($activity->last_seen_at) < $threshold) {
                 return;
             }
 
-            // Queue the update asynchronously
             $this->queueActivity([
                 'user_id'      => $this->id,
                 'last_seen_at' => now()->toDateTimeString(),
@@ -100,24 +129,24 @@ trait TracksUserActivity
         }
     }
 
-
     /**
      * Dispatch activity logging job to the queue.
      *
      * Benefits of queueing:
      * - Keeps request/response cycle fast and non-blocking.
      * - Prevents failures in logging from impacting user experience.
+     * - Uses configurable queue from config/activity.php.
      *
-     * @param array<string, mixed> $attributes  Attributes to persist in UserActivity.
-     * @param string $type  Type of activity (e.g., login, logout, last_seen).
+     * @param array<string, mixed> $attributes Attributes to persist in UserActivity.
+     * @param string $type Type of activity (e.g., login, logout, last_seen).
      * @return void
      */
     protected function queueActivity(array $attributes, string $type): void
     {
         try {
-            LogUserActivityJob::dispatch($attributes, $type);
+            LogUserActivityJob::dispatch($attributes, $type)
+                ->onQueue(config('activity.queue', 'default'));
         } catch (\Exception $e) {
-            // Fail gracefully: log the exception without impacting user flow
             Log::error("Failed to dispatch {$type} activity for user {$attributes['user_id']}: {$e->getMessage()}");
         }
     }
@@ -125,14 +154,13 @@ trait TracksUserActivity
     /**
      * Detect the device type from the request's User-Agent.
      *
-     * Uses Jenssegers\Agent to classify devices:
-     * - Mobile
-     * - Tablet
-     * - Desktop
-     * - Unknown (fallback if detection fails or User-Agent is empty)
+     * Uses Jenssegers\Agent to classify devices and capture additional metadata:
+     * - Type: Mobile, Tablet, Desktop, or Unknown
+     * - Browser
+     * - Platform
      *
      * @param Request $request
-     * @return string|null  Device type or null if User-Agent is missing.
+     * @return string|null JSON-encoded device info or null if User-Agent is missing.
      */
     protected function getDeviceFromRequest(Request $request): ?string
     {
@@ -140,18 +168,19 @@ trait TracksUserActivity
         if (empty($userAgent)) {
             return null;
         }
+
         try {
             $agent = new Agent();
             $agent->setUserAgent($userAgent);
             $deviceInfo = [
                 'type' => $agent->isMobile() ? 'Mobile' : ($agent->isTablet() ? 'Tablet' : ($agent->isDesktop() ? 'Desktop' : 'Unknown')),
-                'browser' => $agent->browser(),
-                'platform' => $agent->platform(),
+                'browser' => $agent->browser() ?: 'Unknown',
+                'platform' => $agent->platform() ?: 'Unknown',
             ];
             return json_encode($deviceInfo);
         } catch (\Exception $e) {
             Log::warning("Failed to detect device: {$e->getMessage()}");
-            return 'Unknown';
+            return json_encode(['type' => 'Unknown', 'browser' => 'Unknown', 'platform' => 'Unknown']);
         }
     }
 }
