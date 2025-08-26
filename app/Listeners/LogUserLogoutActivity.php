@@ -20,19 +20,17 @@ class LogUserLogoutActivity
     /**
      * Handle the UserLoggedOut event.
      *
-     * Delegates logout activity recording to the User model
-     * (via TracksUserActivity trait). Captures timestamp + last seen update.
+     * Delegates logout activity recording to the User model (via TracksUserActivity trait).
      *
-     * @param UserLoggedOut $event  The dispatched event containing the user instance.
+     * @param UserLoggedOut $event The dispatched event containing the user instance.
      * @return void
      */
     public function handle(UserLoggedOut $event): void
     {
         try {
-            // Update user activity record with logout time & last seen timestamp
             $event->user->logLogout();
+            Log::info("Logout activity logged for user {$event->user->id}");
         } catch (\Exception $e) {
-            // Fail gracefully: log error for debugging/monitoring
             Log::error("Failed to log logout activity for user {$event->user->id}: {$e->getMessage()}");
         }
     }
