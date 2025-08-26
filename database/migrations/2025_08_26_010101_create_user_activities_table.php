@@ -19,6 +19,7 @@ return new class extends Migration
             $table->timestamp('last_seen_at')->nullable();
             $table->string('last_login_ip')->nullable();
             $table->string('device')->nullable();
+            $table->string('geo')->nullable();
             $table->timestamps();
         });
     }
