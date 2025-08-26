@@ -48,7 +48,7 @@ trait TracksUserActivity
         }
 
         $geo = null;
-        if ($ip) {
+        if (!in_array($ip, ['127.0.0.1', '::1'])) {
             try {
                 $reader = new Reader(storage_path('app/GeoLite2-City.mmdb'));
                 $record = $reader->city($ip);
@@ -59,7 +59,10 @@ trait TracksUserActivity
             } catch (\Exception $e) {
                 Log::warning("Failed to detect GeoIP for IP {$ip}: {$e->getMessage()}");
             }
+        } else {
+            $geo = ['ip' => $ip, 'note' => 'Localhost, GeoIP skipped'];
         }
+
 
         $this->queueActivity([
             'user_id'        => $this->id,
