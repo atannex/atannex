@@ -24,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         UserLoggedOut::class => [
             LogUserLogoutActivity::class,
         ],
+        Authenticated::class => [
+            UpdateUserLastSeen::class
+        ]
     ];
 
     /**
