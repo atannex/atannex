@@ -4,7 +4,7 @@ namespace App\Events;
 
 use App\Models\User;
 use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\SerializesAndRestoresModelIdentifiers;
 
 /**
  * Class UserLoggedOut
@@ -18,7 +18,7 @@ use Illuminate\Queue\SerializesModels;
  */
 class UserLoggedOut
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable, SerializesAndRestoresModelIdentifiers;
 
     /**
      * The authenticated user instance.
@@ -30,7 +30,7 @@ class UserLoggedOut
     /**
      * Create a new event instance.
      *
-     * @param User $user  The logged-out user instance.
+     * @param User $user The logged-out user instance.
      */
     public function __construct(User $user)
     {
