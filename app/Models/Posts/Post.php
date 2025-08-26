@@ -79,15 +79,6 @@ class Post extends Model implements Commentable, Sluggable
         'flag' => Flag::DRAFT,
     ];
 
-    protected static function booted(): void
-    {
-        static::saving(function (Post $post) {
-            if ($post->published_at) {
-                $post->date_path = $post->published_at->format('m/Y');
-            }
-        });
-    }
-
     /**
      * Get the base string for slug generation.
      *

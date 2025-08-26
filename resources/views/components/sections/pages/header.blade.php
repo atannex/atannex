@@ -38,6 +38,17 @@
                                         {{ __('Terms & Conditions') }}
                                     </a>
                                 </li>
+                                @auth
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="btn-link">
+                                            {{ __('Logout') }}
+                                        </button>
+                                    </form>
+                                </li>
+                                @endauth
+
                             </ul>
                         </div>
                     </div>
