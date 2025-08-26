@@ -10,23 +10,27 @@ use Illuminate\Queue\SerializesModels;
 /**
  * Class UserLoggedIn
  *
- * Event triggered when a user logs in.
+ * Event triggered whenever a user successfully logs in.
  *
- * @package App\Events
+ * Benefits:
+ * - Decouples login activity handling from the authentication controller.
+ * - Allows multiple listeners (e.g., log activity, send notification, track analytics).
  */
 class UserLoggedIn
 {
     use Dispatchable, SerializesModels;
 
     /**
-     * The user instance.
+     * The authenticated user instance.
      *
      * @var User
      */
     public $user;
 
     /**
-     * The HTTP request instance.
+     * The current HTTP request instance.
+     *
+     * Used to extract IP, device, or other metadata.
      *
      * @var Request
      */
@@ -35,8 +39,8 @@ class UserLoggedIn
     /**
      * Create a new event instance.
      *
-     * @param User $user
-     * @param Request $request
+     * @param User $user  The logged-in user.
+     * @param Request $request  The current HTTP request context.
      */
     public function __construct(User $user, Request $request)
     {
