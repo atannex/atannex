@@ -2,6 +2,8 @@
 
 namespace Atannex\Traits;
 
+use Exception;
+use Throwable;
 use Illuminate\Http\Request;
 use App\Jobs\LogUserActivityJob;
 use Jenssegers\Agent\Agent;
@@ -43,7 +45,7 @@ trait TracksUserActivity
     {
         $ip = $request->ip();
         if ($ip && !filter_var($ip, FILTER_VALIDATE_IP)) {
-            Log::warning("Invalid IP address: {$ip}");
+            Log::warning('Invalid IP address: ' . $ip);
             $ip = null;
         }
 
@@ -56,8 +58,8 @@ trait TracksUserActivity
                     'country' => $record->country->name,
                     'city' => $record->city->name,
                 ];
-            } catch (\Exception $e) {
-                Log::warning("Failed to detect GeoIP for IP {$ip}: {$e->getMessage()}");
+            } catch (Exception $e) {
+                Log::warning(sprintf('Failed to detect GeoIP for IP %s: %s', $ip, $e->getMessage()));
             }
         } else {
             $geo = ['ip' => $ip, 'note' => 'Localhost, GeoIP skipped'];
@@ -100,8 +102,8 @@ trait TracksUserActivity
                 'last_logout_at' => now()->toDateTimeString(),
                 'last_seen_at'   => now()->toDateTimeString(),
             ], 'logout');
-        } catch (\Throwable $e) {
-            Log::error("Failed to log logout for user {$this->id}: {$e->getMessage()}");
+        } catch (Throwable $throwable) {
+            Log::error(sprintf('Failed to log logout for user %s: %s', $this->id, $throwable->getMessage()));
         }
     }
 
@@ -127,8 +129,8 @@ trait TracksUserActivity
                 'user_id'      => $this->id,
                 'last_seen_at' => now()->toDateTimeString(),
             ], 'last_seen');
-        } catch (\Throwable $e) {
-            Log::error("Failed to update last seen for user {$this->id}: {$e->getMessage()}");
+        } catch (Throwable $throwable) {
+            Log::error(sprintf('Failed to update last seen for user %s: %s', $this->id, $throwable->getMessage()));
         }
     }
 
@@ -149,8 +151,8 @@ trait TracksUserActivity
         try {
             LogUserActivityJob::dispatch($attributes, $type)
                 ->onQueue(config('activity.queue', 'default'));
-        } catch (\Exception $e) {
-            Log::error("Failed to dispatch {$type} activity for user {$attributes['user_id']}: {$e->getMessage()}");
+        } catch (Exception $exception) {
+            Log::error(sprintf('Failed to dispatch %s activity for user %s: %s', $type, $attributes['user_id'], $exception->getMessage()));
         }
     }
 
@@ -181,8 +183,8 @@ trait TracksUserActivity
                 'platform' => $agent->platform() ?: 'Unknown',
             ];
             return json_encode($deviceInfo);
-        } catch (\Exception $e) {
-            Log::warning("Failed to detect device: {$e->getMessage()}");
+        } catch (Exception $exception) {
+            Log::warning('Failed to detect device: ' . $exception->getMessage());
             return json_encode(['type' => 'Unknown', 'browser' => 'Unknown', 'platform' => 'Unknown']);
         }
     }

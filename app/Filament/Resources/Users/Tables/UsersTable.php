@@ -51,6 +51,7 @@ class UsersTable
                         if ($record->email_verified_at) {
                             return '✅ Verified ' . $record->email_verified_at->format('M j, Y');
                         }
+
                         return '⚠️ Unverified';
                     }),
 
@@ -89,6 +90,7 @@ class UsersTable
                                 );
                             }
                         }
+
                         return $state;
                     })
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -100,8 +102,9 @@ class UsersTable
                     ->description(function ($record) {
                         if ($record->date_of_birth) {
                             $age = Carbon::parse($record->date_of_birth)->age;
-                            return "{$age} years old";
+                            return $age . ' years old';
                         }
+
                         return null;
                     })
                     ->icon('heroicon-m-calendar-days')
@@ -142,13 +145,14 @@ class UsersTable
                     ->sortable()
                     ->since()
                     ->placeholder('Never logged in')
-                    ->description(fn($record) => $record->last_login_ip ? "IP: {$record->last_login_ip}" : null)
+                    ->description(fn($record) => $record->last_login_ip ? 'IP: ' . $record->last_login_ip : null)
                     ->icon('heroicon-m-computer-desktop')
                     ->iconColor('green')
                     ->tooltip(function ($record) {
                         if ($record->last_login_at) {
-                            return "Last login: {$record->last_login_at->format('F j, Y g:i A')} from {$record->last_login_ip}";
+                            return sprintf('Last login: %s from %s', $record->last_login_at->format('F j, Y g:i A'), $record->last_login_ip);
                         }
+
                         return 'User has never logged in';
                     }),
 

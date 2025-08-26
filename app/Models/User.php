@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Exception;
 use Filament\Panel;
 use App\Enums\Gender;
 use App\Enums\Status;
@@ -126,8 +127,8 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
             }
 
             return $this->isEmployee();
-        } catch (\Exception $e) {
-            Log::error("Error checking panel access for user {$this->id}: {$e->getMessage()}");
+        } catch (Exception $exception) {
+            Log::error(sprintf('Error checking panel access for user %s: %s', $this->id, $exception->getMessage()));
             return false;
         }
     }

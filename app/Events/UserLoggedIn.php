@@ -19,8 +19,8 @@ use Illuminate\Queue\SerializesAndRestoresModelIdentifiers;
  */
 class UserLoggedIn
 {
-    use Dispatchable, SerializesAndRestoresModelIdentifiers;
-
+    use Dispatchable;
+    use SerializesAndRestoresModelIdentifiers;
     /**
      * The authenticated user instance.
      *

@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use Exception;
 use App\Events\UserLoggedIn;
 use Illuminate\Support\Facades\Log;
 
@@ -29,9 +30,9 @@ class LogUserLoginActivity
     {
         try {
             $event->user->logLogin($event->request);
-            Log::info("Login activity logged for user {$event->user->id} from IP {$event->request->ip()}");
-        } catch (\Exception $e) {
-            Log::error("Failed to log login activity for user {$event->user->id} from IP {$event->request->ip()}: {$e->getMessage()}");
+            Log::info(sprintf('Login activity logged for user %s from IP %s', $event->user->id, $event->request->ip()));
+        } catch (Exception $exception) {
+            Log::error(sprintf('Failed to log login activity for user %s from IP %s: %s', $event->user->id, $event->request->ip(), $exception->getMessage()));
         }
     }
 }

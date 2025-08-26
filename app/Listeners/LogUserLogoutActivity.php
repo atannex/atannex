@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use Exception;
 use App\Events\UserLoggedOut;
 use Illuminate\Support\Facades\Log;
 
@@ -29,9 +30,9 @@ class LogUserLogoutActivity
     {
         try {
             $event->user->logLogout();
-            Log::info("Logout activity logged for user {$event->user->id}");
-        } catch (\Exception $e) {
-            Log::error("Failed to log logout activity for user {$event->user->id}: {$e->getMessage()}");
+            Log::info('Logout activity logged for user ' . $event->user->id);
+        } catch (Exception $exception) {
+            Log::error(sprintf('Failed to log logout activity for user %s: %s', $event->user->id, $exception->getMessage()));
         }
     }
 }

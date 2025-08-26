@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use InvalidArgumentException;
+use Throwable;
 use App\Models\UserActivity;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,12 +13,15 @@ use Illuminate\Support\Facades\Log;
 
 class LogUserActivityJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
     public $tries = 3;
+
     public $timeout = 30;
 
     protected $attributes;
+
     protected $type;
 
     public function __construct(array $attributes, string $type)
@@ -30,7 +35,7 @@ class LogUserActivityJob implements ShouldQueue
     {
         try {
             if (!isset($this->attributes['user_id']) || !is_int($this->attributes['user_id'])) {
-                throw new \InvalidArgumentException("Missing or invalid user_id for {$this->type} activity");
+                throw new InvalidArgumentException(sprintf('Missing or invalid user_id for %s activity', $this->type));
             }
 
             $activity = UserActivity::firstOrNew(['user_id' => $this->attributes['user_id']]);
@@ -56,15 +61,15 @@ class LogUserActivityJob implements ShouldQueue
 
             $activity->save();
 
-            Log::debug("Successfully logged {$this->type} activity for user {$this->attributes['user_id']}");
-        } catch (\Throwable $e) {
-            Log::error("Failed to log {$this->type} activity for user " . ($this->attributes['user_id'] ?? 'unknown') . ": {$e->getMessage()}");
-            $this->fail($e);
+            Log::debug(sprintf('Successfully logged %s activity for user %d', $this->type, $this->attributes['user_id']));
+        } catch (Throwable $throwable) {
+            Log::error(sprintf('Failed to log %s activity for user ', $this->type) . ($this->attributes['user_id'] ?? 'unknown') . (': ' . $throwable->getMessage()));
+            $this->fail($throwable);
         }
     }
 
-    public function failed(\Throwable $exception)
+    public function failed(Throwable $exception)
     {
-        Log::critical("LogUserActivityJob ({$this->type}) failed for user " . ($this->attributes['user_id'] ?? 'unknown') . " after {$this->tries} attempts: {$exception->getMessage()}");
+        Log::critical(sprintf('LogUserActivityJob (%s) failed for user ', $this->type) . ($this->attributes['user_id'] ?? 'unknown') . sprintf(' after %s attempts: %s', $this->tries, $exception->getMessage()));
     }
 }

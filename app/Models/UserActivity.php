@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Log;
@@ -98,8 +99,8 @@ class UserActivity extends Model
          */
         static::saving(function (self $model) {
             if (!$model->user_id || !is_int($model->user_id)) {
-                Log::warning("Invalid user_id for UserActivity: {$model->user_id}");
-                throw new \InvalidArgumentException("UserActivity requires a valid user_id");
+                Log::warning('Invalid user_id for UserActivity: ' . $model->user_id);
+                throw new InvalidArgumentException("UserActivity requires a valid user_id");
             }
         });
     }

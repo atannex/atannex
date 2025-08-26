@@ -5,8 +5,6 @@ namespace App\Filament\Resources\Departments\Schemas;
 use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -78,7 +76,7 @@ class DepartmentForm
                             ->label('Description')
                             ->rows(3)
                             ->maxLength(1000)
-                            ->placeholder('Brief description of the department\'s purpose and responsibilities...')
+                            ->placeholder("Brief description of the department's purpose and responsibilities...")
                             ->helperText('Optional description (max 1000 characters)')
                             ->columnSpanFull(),
                     ]),
@@ -104,7 +102,7 @@ class DepartmentForm
                             ->searchable()
                             ->preload()
                             ->nullable()
-                            ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} ({$record->email})")
+                            ->getOptionLabelFromRecordUsing(fn($record) => sprintf('%s (%s)', $record->name, $record->email))
                             ->placeholder('Select department manager (optional)')
                             ->helperText('Assign a manager to oversee this department')
                             ->suffixIcon('heroicon-m-user'),

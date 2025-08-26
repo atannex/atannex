@@ -2,6 +2,7 @@
 
 namespace Atannex\Relations;
 
+use Exception;
 use App\Models\UserActivity;
 use App\Models\Comments\Comment;
 use App\Models\Controls\Session;
@@ -68,8 +69,8 @@ trait UserRelation
     {
         try {
             return $this->employee()->exists();
-        } catch (\Exception $e) {
-            Log::error("Error checking employee status for user {$this->id}: {$e->getMessage()}");
+        } catch (Exception $exception) {
+            Log::error(sprintf('Error checking employee status for user %s: %s', $this->id, $exception->getMessage()));
             return false;
         }
     }
@@ -148,8 +149,8 @@ trait UserRelation
             return $this->sessions()
                 ->where('last_activity', '<', now()->subMinutes($lifetime))
                 ->delete();
-        } catch (\Exception $e) {
-            Log::error("Error cleaning expired sessions for user {$this->id}: {$e->getMessage()}");
+        } catch (Exception $exception) {
+            Log::error(sprintf('Error cleaning expired sessions for user %s: %s', $this->id, $exception->getMessage()));
             return 0;
         }
     }

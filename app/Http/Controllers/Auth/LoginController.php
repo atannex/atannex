@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Exception;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Http\RedirectResponse;
 use App\Events\UserLoggedIn;
 use App\Events\UserLoggedOut;
 use App\Http\Controllers\Controller;
@@ -37,15 +40,15 @@ class LoginController extends Controller
      *
      * @param Request $request
      * @param mixed $user
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     protected function authenticated(Request $request, $user)
     {
         try {
             event(new UserLoggedIn($user, $request));
             $user->cleanExpiredSessions();
-        } catch (\Exception $e) {
-            Log::error("Error handling login for user {$user->id}: {$e->getMessage()}");
+        } catch (Exception $exception) {
+            Log::error(sprintf('Error handling login for user %s: %s', $user->id, $exception->getMessage()));
         }
 
         return redirect()->intended($this->redirectTo);
@@ -57,18 +60,18 @@ class LoginController extends Controller
      * Logs failed login attempt for security tracking.
      *
      * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     protected function sendFailedLoginResponse(Request $request)
     {
         try {
-            Log::warning("Failed login attempt for email {$request->email} from IP {$request->ip()}");
+            Log::warning(sprintf('Failed login attempt for email %s from IP %s', $request->email, $request->ip()));
             // Optionally: Dispatch a UserFailedLogin event (requires new event/listener)
-        } catch (\Exception $e) {
-            Log::error("Error logging failed login attempt: {$e->getMessage()}");
+        } catch (Exception $exception) {
+            Log::error('Error logging failed login attempt: ' . $exception->getMessage());
         }
 
-        throw \Illuminate\Validation\ValidationException::withMessages([
+        throw ValidationException::withMessages([
             $this->username() => [trans('auth.failed')],
         ]);
     }
@@ -79,7 +82,7 @@ class LoginController extends Controller
      * Dispatches UserLoggedOut event before logging out.
      *
      * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function logout(Request $request)
     {
@@ -88,8 +91,8 @@ class LoginController extends Controller
             if ($user) {
                 event(new UserLoggedOut($user));
             }
-        } catch (\Exception $e) {
-            Log::error("Error handling logout for user: {$e->getMessage()}");
+        } catch (Exception $exception) {
+            Log::error('Error handling logout for user: ' . $exception->getMessage());
         }
 
         $this->guard()->logout();

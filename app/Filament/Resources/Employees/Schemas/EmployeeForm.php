@@ -31,7 +31,7 @@ class EmployeeForm
                             ->searchable()
                             ->preload()
                             ->required()
-                            ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} ({$record->email})")
+                            ->getOptionLabelFromRecordUsing(fn($record) => sprintf('%s (%s)', $record->name, $record->email))
                             ->placeholder('Select or search for user')
                             ->helperText('Link this employee to an existing user account')
                             ->suffixIcon('heroicon-m-user'),
@@ -75,9 +75,9 @@ class EmployeeForm
                             ->searchable()
                             ->preload()
                             ->nullable()
-                            ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name}")
+                            ->getOptionLabelFromRecordUsing(fn($record) => $record->name)
                             ->placeholder('Select manager')
-                            ->helperText('Employee\'s direct supervisor')
+                            ->helperText("Employee's direct supervisor")
                             ->suffixIcon('heroicon-m-user-circle'),
 
                         Select::make('employment_type')
@@ -107,7 +107,7 @@ class EmployeeForm
                                     $set('probation_end_date', $probationEnd->format('Y-m-d'));
                                 }
                             })
-                            ->helperText('Employee\'s start date')
+                            ->helperText("Employee's start date")
                             ->suffixIcon('heroicon-m-calendar'),
 
 
@@ -170,7 +170,7 @@ class EmployeeForm
                             ->rows(3)
                             ->maxLength(500)
                             ->placeholder('123 Main Street, City, State, ZIP')
-                            ->helperText('Employee\'s home address')
+                            ->helperText("Employee's home address")
                             ->columnSpanFull(),
                     ]),
 

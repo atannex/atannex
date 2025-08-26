@@ -103,8 +103,9 @@ class EmployeesTable
                         if ($record->hire_date) {
                             $years = Carbon::parse($record->hire_date)->diffInYears(now());
                             $months = Carbon::parse($record->hire_date)->diffInMonths(now()) % 12;
-                            return $years > 0 ? "{$years}y {$months}m tenure" : "{$months}m tenure";
+                            return $years > 0 ? sprintf('%sy %dm tenure', $years, $months) : $months . 'm tenure';
                         }
+
                         return null;
                     })
                     ->icon('heroicon-m-calendar-days')

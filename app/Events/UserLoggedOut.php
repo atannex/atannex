@@ -18,8 +18,8 @@ use Illuminate\Queue\SerializesAndRestoresModelIdentifiers;
  */
 class UserLoggedOut
 {
-    use Dispatchable, SerializesAndRestoresModelIdentifiers;
-
+    use Dispatchable;
+    use SerializesAndRestoresModelIdentifiers;
     /**
      * The authenticated user instance.
      *
