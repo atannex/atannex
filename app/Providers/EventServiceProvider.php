@@ -7,8 +7,6 @@ use App\Events\UserLoggedIn;
 use App\Events\UserLoggedOut;
 use App\Listeners\LogUserLoginActivity;
 use App\Listeners\LogUserLogoutActivity;
-use Illuminate\Auth\Events\Authenticated;
-use App\Listeners\UpdateUserLastSeen;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -24,9 +22,6 @@ class EventServiceProvider extends ServiceProvider
         UserLoggedOut::class => [
             LogUserLogoutActivity::class,
         ],
-        Authenticated::class => [
-            UpdateUserLastSeen::class
-        ]
     ];
 
     /**
