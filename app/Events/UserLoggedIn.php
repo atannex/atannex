@@ -5,7 +5,7 @@ namespace App\Events;
 use App\Models\User;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Http\Request;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\SerializesAndRestoresModelIdentifiers;
 
 /**
  * Class UserLoggedIn
@@ -15,10 +15,11 @@ use Illuminate\Queue\SerializesModels;
  * Benefits:
  * - Decouples login activity handling from the authentication controller.
  * - Allows multiple listeners (e.g., log activity, send notification, track analytics).
+ * - Optimized serialization for queue performance.
  */
 class UserLoggedIn
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable, SerializesAndRestoresModelIdentifiers;
 
     /**
      * The authenticated user instance.
@@ -39,8 +40,8 @@ class UserLoggedIn
     /**
      * Create a new event instance.
      *
-     * @param User $user  The logged-in user.
-     * @param Request $request  The current HTTP request context.
+     * @param User $user The logged-in user.
+     * @param Request $request The current HTTP request context.
      */
     public function __construct(User $user, Request $request)
     {
