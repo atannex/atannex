@@ -37,10 +37,15 @@ trait TracksUserActivity
      */
     public function logLogin(Request $request): void
     {
+        $ip = $request->ip();
+        if ($ip && !filter_var($ip, FILTER_VALIDATE_IP)) {
+            Log::warning("Invalid IP address: {$ip}");
+            $ip = null;
+        }
         $this->queueActivity([
             'user_id'        => $this->id,
             'last_login_at'  => now()->toDateTimeString(),
-            'last_login_ip'  => $request->ip(),
+            'last_login_ip'  => $ip,
             'device'         => $this->getDeviceFromRequest($request),
             'last_seen_at'   => now()->toDateTimeString(),
         ], 'login');
