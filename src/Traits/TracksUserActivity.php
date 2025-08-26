@@ -140,18 +140,16 @@ trait TracksUserActivity
         if (empty($userAgent)) {
             return null;
         }
-
         try {
             $agent = new Agent();
             $agent->setUserAgent($userAgent);
-
-            if ($agent->isMobile()) return 'Mobile';
-            if ($agent->isTablet()) return 'Tablet';
-            if ($agent->isDesktop()) return 'Desktop';
-
-            return 'Unknown';
+            $deviceInfo = [
+                'type' => $agent->isMobile() ? 'Mobile' : ($agent->isTablet() ? 'Tablet' : ($agent->isDesktop() ? 'Desktop' : 'Unknown')),
+                'browser' => $agent->browser(),
+                'platform' => $agent->platform(),
+            ];
+            return json_encode($deviceInfo);
         } catch (\Exception $e) {
-            // Graceful degradation: log warning and fallback to 'Unknown'
             Log::warning("Failed to detect device: {$e->getMessage()}");
             return 'Unknown';
         }
