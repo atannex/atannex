@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\Log;
  * - Auto-generates slugs for SEO-friendly URLs.
  * - Tracks user activity (login/logout/last seen) via reusable trait.
  * - Integrates with Filament for admin panel access.
+ * - Supports relationships for sessions, comments, likes, views, shares, ratings, and employee profiles.
  */
 class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
@@ -112,7 +113,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
      *
      * Business logic:
      * - Requires verified email.
-     * - Restricts access to Gmail addresses (example business rule).
+     * - Restricts access to allowed email domains (configurable via config/filament.php).
      * - Must be associated with an Employee record.
      *
      * @param Panel $panel
@@ -121,7 +122,13 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         try {
-            if (!$this->hasVerifiedEmail() || !str_ends_with($this->email, '@gmail.com')) {
+            if (!$this->hasVerifiedEmail()) {
+                return false;
+            }
+
+            $allowedDomains = config('filament.allowed_email_domains', ['gmail.com']);
+            $emailDomain = explode('@', $this->email)[1] ?? '';
+            if (!in_array($emailDomain, $allowedDomains, true)) {
                 return false;
             }
 
@@ -159,7 +166,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     /**
      * Relationship: User → UserActivity
      *
-     * Stores the user's last login/logout/seen metadata.
+     * Stores the user's last login/logout/seen metadata, including geolocation.
      *
      * @return HasOne
      */
@@ -243,5 +250,25 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     public function ratings(): HasMany
     {
         return $this->hasMany(Rating::class);
+    }
+
+    /**
+     * Clean up expired sessions for the user.
+     *
+     * Deletes sessions that have expired based on the configured session lifetime.
+     *
+     * @return int Number of sessions deleted
+     */
+    public function cleanExpiredSessions(): int
+    {
+        try {
+            $lifetime = config('session.lifetime', 120); // Default: 120 minutes
+            return $this->sessions()
+                ->where('last_activity', '<', now()->subMinutes($lifetime))
+                ->delete();
+        } catch (\Exception $e) {
+            Log::error("Error cleaning expired sessions for user {$this->id}: {$e->getMessage()}");
+            return 0;
+        }
     }
 }
