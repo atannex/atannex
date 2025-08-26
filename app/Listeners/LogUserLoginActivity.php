@@ -20,20 +20,18 @@ class LogUserLoginActivity
     /**
      * Handle the UserLoggedIn event.
      *
-     * This method is automatically triggered when the UserLoggedIn event is dispatched.
-     * It delegates logging responsibility to the User model (via TracksUserActivity trait).
+     * Delegates logging to the User model (via TracksUserActivity trait).
      *
-     * @param UserLoggedIn $event  The dispatched event instance containing the user and request.
+     * @param UserLoggedIn $event The dispatched event instance containing the user and request.
      * @return void
      */
     public function handle(UserLoggedIn $event): void
     {
         try {
-            // Call trait method on the user model to log login details (IP, device, timestamps)
             $event->user->logLogin($event->request);
+            Log::info("Login activity logged for user {$event->user->id} from IP {$event->request->ip()}");
         } catch (\Exception $e) {
-            // Fail gracefully: log error but don't break the login process
-            Log::error("Failed to log login activity for user {$event->user->id}: {$e->getMessage()}");
+            Log::error("Failed to log login activity for user {$event->user->id} from IP {$event->request->ip()}: {$e->getMessage()}");
         }
     }
 }
