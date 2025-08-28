@@ -15,7 +15,7 @@ trait Bootable
         // Before creating: generate slug_path
         static::creating(function (Model $model) {
             if ($model instanceof Sluggable) {
-                $model->slug_path = self::buildDynamicSlugPath($model);
+                $model->slug_path = $model->buildDynamicSlugPath();
             }
         });
 
@@ -26,7 +26,7 @@ trait Bootable
                 $originalParent = $model->getOriginal('parent_id');
 
                 if ($model->slug !== $originalSlug || $model->parent_id !== $originalParent) {
-                    $model->slug_path = self::buildDynamicSlugPath($model);
+                    $model->slug_path = $model->buildDynamicSlugPath();
                 }
             }
         });
@@ -49,18 +49,17 @@ trait Bootable
     /**
      * Build a slug path dynamically, using hierarchy if available.
      */
-    protected static function buildDynamicSlugPath(Sluggable $model): ?string
+    protected function buildDynamicSlugPath(): ?string
     {
         // Use hierarchical base if parent exists
-        if (method_exists($model, 'getSlugBase') && $model->getSlugBase()) {
-            return $model->buildSlugPath(
-                $model->getSlugBase(),
-                $model->getSlug()
-            );
+        $base = method_exists($this, 'getSlugBase') ? $this->getSlugBase() : null;
+        $slug = $this->getSlug();
+
+        if ($slug === null) {
+            return null;
         }
 
-        // Fallback: use slug directly
-        return $model->getSlug();
+        return $this->buildSlugPath($base, $slug);
     }
 
     /**
