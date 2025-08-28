@@ -139,23 +139,6 @@ class UsersTable
                     ->placeholder('No roles assigned')
                     ->toggleable(),
 
-                TextColumn::make('last_login_at')
-                    ->label('Last Login')
-                    ->dateTime('M j, Y g:i A')
-                    ->sortable()
-                    ->since()
-                    ->placeholder('Never logged in')
-                    ->description(fn($record) => $record->last_login_ip ? 'IP: ' . $record->last_login_ip : null)
-                    ->icon('heroicon-m-computer-desktop')
-                    ->iconColor('green')
-                    ->tooltip(function ($record) {
-                        if ($record->last_login_at) {
-                            return sprintf('Last login: %s from %s', $record->last_login_at->format('F j, Y g:i A'), $record->last_login_ip);
-                        }
-
-                        return 'User has never logged in';
-                    }),
-
                 TextColumn::make('created_at')
                     ->label('Registered')
                     ->dateTime('M j, Y')
