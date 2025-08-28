@@ -7,6 +7,7 @@ use Atannex\Enables\EnableSlug;
 use Atannex\Enables\EnableScope;
 use Illuminate\Database\Eloquent\Model;
 use Atannex\Relations\DepartmentRelation;
+use Atannex\Traits\GeneratesDepartmentCode;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Department extends Model
@@ -15,6 +16,7 @@ class Department extends Model
     use EnableSlug;
     use EnableScope;
     use DepartmentRelation;
+    use GeneratesDepartmentCode;
 
     protected string $slugSource = 'name';
 

@@ -38,7 +38,6 @@ class EmployeeForm
 
                         TextInput::make('employee_number')
                             ->label('Employee Number')
-                            ->required()
                             ->disabled()
                             ->unique(ignoreRecord: true)
                             ->maxLength(20)

@@ -8,13 +8,15 @@ use App\Models\Posts\Post;
 use App\Models\Others\SocialMedia;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Pivots\EmployeeDepartment;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Atannex\Traits\GeneratesEmployeeCode;
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, MorphMany, BelongsToMany, HasMany};
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Model
 {
+    use GeneratesEmployeeCode;
+    // use SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'employee_number',
@@ -30,26 +32,29 @@ class Employee extends Model
         'status' => Status::class,
     ];
 
-    /**
-     * Get the manager of the employee.
-     */
+    /** Relationships */
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function manager(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'manager_id');
     }
 
-    public function user(): BelongsTo
+    public function subordinates(): HasMany
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->hasMany(Employee::class, 'manager_id');
     }
 
     public function departments(): BelongsToMany
     {
         return $this->belongsToMany(Department::class, 'employee_departments')
-            ->withTimestamps()
-            ->using(EmployeeDepartment::class);
+            ->using(EmployeeDepartment::class)
+            ->withTimestamps();
     }
-
 
     public function socialMedia(): MorphMany
     {
@@ -59,5 +64,17 @@ class Employee extends Model
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class, 'author_id');
+    }
+
+    /** Scopes */
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', Status::ACTIVE);
+    }
+
+    public function scopeByDepartment($query, $departmentId)
+    {
+        return $query->whereHas('departments', fn($q) => $q->where('departments.id', $departmentId));
     }
 }

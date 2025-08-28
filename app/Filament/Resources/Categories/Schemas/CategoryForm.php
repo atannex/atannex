@@ -18,7 +18,7 @@ class CategoryForm
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('slug')
-                    ->required(),
+                    ->disabled(),
                 TextInput::make('flag')
                     ->required()
                     ->default('pending'),

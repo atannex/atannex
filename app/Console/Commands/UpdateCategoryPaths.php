@@ -15,7 +15,7 @@ class UpdateCategoryPaths extends Command
      *
      * @var string
      */
-    protected $signature = 'update:category-paths {--batch-size=100 : Number of categories to process per batch}';
+    protected $signature = 'atannex:update-category-paths {--batch-size=100 : Number of categories to process per batch}';
 
     /**
      * The console command description.

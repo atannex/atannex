@@ -8,48 +8,53 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
+        // Create users table
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('slug', 255)->unique();
-            $table->string('email')->unique();
+            $table->string('name', 100)->index(); // Added length and index for faster searches
+            $table->string('slug', 100)->unique(); // Reduced length for optimization
+            $table->string('email', 150)->unique()->index(); // Added length and index
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-
-
+            $table->string('password', 255); // Explicit length for clarity
             $table->string('image')->nullable();
             $table->date('date_of_birth')->nullable();
-            $table->string('gender')->default(Gender::MALE)->nullable();
-            $table->string('phone')->nullable();
-
-            $table->string('status')->default(Status::RESTRICTED);
-            $table->timestamp('last_login_at')->nullable();
-            $table->string('last_login_ip')->nullable();
-
+            $table->string('gender')->default(Gender::MALE)->nullable(); // Using enum for better type safety
+            $table->string('phone', 20)->nullable(); // Added length for phone numbers
+            $table->string('status')->default(Status::RESTRICTED); // Using enum for status
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
         });
 
+        // Create password reset tokens table
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
+            $table->string('email', 150)->primary();
+            $table->string('token', 255);
             $table->timestamp('created_at')->nullable();
-            $table->index('created_at');
+            $table->index(['email', 'created_at']); // Composite index for faster lookups
+            $table->foreign('email')->references('email')->on('users')->onDelete('cascade'); // Added foreign key
         });
 
+        // Create sessions table
         Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('ip_address', 45)->nullable();
+            $table->string('id', 255)->primary();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade'); // Improved foreign key
+            $table->string('ip_address', 45)->nullable()->index(); // Added index
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
+            $table->timestamp('created_at')->nullable(); // Added for tracking session creation
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('sessions');

@@ -54,14 +54,26 @@ class PostForm
                                             ->columnSpan(['default' => 12, 'md' => 4, 'lg' => 3])
                                             ->native(false),
                                     ]),
+                                Grid::make(12)
+                                    ->schema([
+                                        TextInput::make('slug')
+                                            ->label('URL Slug')
+                                            ->disabled()
+                                            ->dehydrated()
+                                            ->placeholder('Auto-generated from title')
+                                            ->helperText('This URL-friendly version is automatically created from your title')
+                                            ->columnSpan(['default' => 12, 'md' => 6, 'lg' => 6])
+                                            ->prefixIcon('heroicon-o-link'),
+                                        TextInput::make('slug_path')
+                                            ->label('Post Slug')
+                                            ->disabled()
+                                            ->dehydrated()
+                                            ->placeholder('Auto-generated from title')
+                                            ->helperText('This is the Post Slug Path')
+                                            ->prefixIcon('heroicon-o-link')
+                                            ->columnSpan(['default' => 12, 'md' => 6, 'lg' => 6]),
 
-                                TextInput::make('slug')
-                                    ->label('URL Slug')
-                                    ->disabled()
-                                    ->dehydrated()
-                                    ->placeholder('Auto-generated from title')
-                                    ->helperText('This URL-friendly version is automatically created from your title')
-                                    ->prefixIcon('heroicon-o-link'),
+                                    ]),
 
                                 Textarea::make('description')
                                     ->label('Description')
@@ -90,7 +102,10 @@ class PostForm
                                                     ->label('Category')
                                                     ->options(function () {
                                                         return Category::doesntHave('children')
-                                                            ->pluck('name', 'id');
+                                                            ->get()
+                                                            ->mapWithKeys(function ($category) {
+                                                                return [$category->id => $category->id . '-' . $category->name];
+                                                            });
                                                     })
                                                     ->required()
                                                     ->searchable()

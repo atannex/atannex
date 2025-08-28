@@ -8,6 +8,7 @@ use App\Enums\Gender;
 use App\Enums\Status;
 use Atannex\Enables\EnableSlug;
 use Atannex\Relations\UserRelation;
+use Illuminate\Support\Facades\Log;
 use Atannex\Traits\TracksUserActivity;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -15,7 +16,6 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class User
