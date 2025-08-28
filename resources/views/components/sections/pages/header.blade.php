@@ -38,23 +38,22 @@
                                         {{ __('Terms & Conditions') }}
                                     </a>
                                 </li>
-                                @auth
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="btn-link">
-                                            {{ __('Logout') }}
-                                        </button>
-                                    </form>
-                                </li>
-                                @endauth
-
                             </ul>
                         </div>
                     </div>
                     <div class="col-auto">
                         <div class="header-links">
                             <ul>
+                                <li class="d-none d-sm-inline-block">
+                                    <i class="fa fa-key" aria-hidden="true"></i>
+                                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                    </a>
+
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                    </form>
+                                </li>
                                 <li class="d-none d-sm-inline-block">
                                     <i class="far fa-user"></i>
                                     @if(Auth::check())
