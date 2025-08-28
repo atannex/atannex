@@ -9,63 +9,47 @@ use Illuminate\Support\Collection;
 trait GetPostByCategory
 {
     /**
-     * Retrieve posts by category IDs, fetching all posts for leaf categories
-     * or the first post per leaf category for parent categories.
+     * Retrieve posts by category IDs based on parent/leaf logic.
      *
-     * @param array $config Configuration array containing 'category_id' (single ID or array of IDs)
-     *                      and optional 'limit' for the number of posts to return.
+     * Rules:
+     * - Parent categories inherit posts from their descendant leaf categories
+     *   (return 2 latest posts per leaf).
+     * - Directly chosen leaf categories return up to 15 latest posts each.
+     *
+     * @param array $config Configuration array containing 'category_id' (single ID or array of IDs).
      * @return Collection A collection of Post models.
      */
     public function getPostByCategory(array $config): Collection
     {
-        // Ensure category_id is an array for consistent processing
         $categoryIds = (array) $config['category_id'];
+        $categories = Category::with('children')->whereIn('id', $categoryIds)->get();
 
-        // Fetch categories with their children
-        $categories = Category::with('children')
-            ->whereIn('id', $categoryIds)
-            ->get();
-
-        // Initialize collection to store posts
         $allPosts = collect();
 
         foreach ($categories as $category) {
-            // Check if the category is a leaf (no children)
-            $isLeaf = !$category->children()->exists();
-
-            if ($isLeaf) {
-                // Fetch all published posts for a leaf category
-                $posts = Post::query()
-                    ->published()
+            if ($category->children->isEmpty()) {
+                $posts = Post::published()
                     ->where('category_id', $category->id)
                     ->latest()
+                    ->take($config['limit'] ?? 15)
                     ->get();
+
                 $allPosts = $allPosts->merge($posts);
             } else {
-                // For non-leaf categories, get descendants and filter for leaf categories
                 $descendants = $category->getDescendantsAndSelf('dfs');
-                $leafCategories = $descendants->filter(fn($cat) => !$cat->children()->exists());
+                $leafIds = $descendants->filter(fn($cat) => $cat->children->isEmpty())->pluck('id');
 
-                foreach ($leafCategories as $leaf) {
-                    // Fetch the latest published post for each leaf descendant
-                    $post = Post::query()
-                        ->published()
-                        ->where('category_id', $leaf->id)
+                foreach ($leafIds as $leafId) {
+                    $posts = Post::published()
+                        ->where('category_id', $leafId)
                         ->latest()
-                        ->first();
-                    if ($post) {
-                        $allPosts->push($post);
-                    }
+                        ->take($config['limit_per_leaf_post'] ?? 1)
+                        ->get();
+
+                    $allPosts = $allPosts->merge($posts);
                 }
             }
         }
-
-        // Apply limit if specified in config
-        if (!empty($config['limit'])) {
-            $allPosts = $allPosts->take($config['limit']);
-        }
-
-        // Return the collection with reset keys
-        return $allPosts->values();
+        return $allPosts->sortByDesc('created_at')->values();
     }
 }
