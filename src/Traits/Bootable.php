@@ -17,7 +17,18 @@ trait Bootable
      */
     protected static function bootBootable(): void
     {
-        static::saving(function (Model $model) {
+        // Run before creation
+        static::creating(function (Model $model) {
+            if ($model instanceof Sluggable) {
+                $model->slug_path = $model->buildSlugPath(
+                    $model->getSlugBase(),
+                    $model->getSlug()
+                );
+            }
+        });
+
+        // Run before update
+        static::updating(function (Model $model) {
             if ($model instanceof Sluggable) {
                 $model->slug_path = $model->buildSlugPath(
                     $model->getSlugBase(),
@@ -38,6 +49,7 @@ trait Bootable
             }
         });
     }
+
 
     /**
      * Builds a slug path by combining the base and slug.
