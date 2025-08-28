@@ -59,6 +59,12 @@ class Category extends Model implements Sluggable
     protected string $slugSource = 'name';
 
     /**
+     * ---------------------------
+     * Sluggable Implementation
+     * ---------------------------
+     */
+
+    /**
      * Get the base string for slug generation.
      *
      * @return string|null The parent category's slug path or null if no parent exists.
@@ -79,20 +85,46 @@ class Category extends Model implements Sluggable
     }
 
     /**
-     * Update slug paths for related posts.
+     * Rebuild this category's slug path.
      */
-    public function cascadeSlugPathUpdates(): void
+    public function rebuildSlugPath(): void
     {
-        $this->posts()->with('tags.tag')->get()->each(function (Post $post) {
-            $post->updateSlugPath()->saveQuietly();
-        });
+        $this->slug_path = $this->buildDynamicSlugPath();
     }
 
     /**
-     * Clear slug paths for related posts.
+     * Cascade slug path updates to children and related posts.
+     */
+    public function cascadeSlugPathUpdates(): void
+    {
+        // Update child categories recursively
+        foreach ($this->children as $child) {
+            $child->rebuildSlugPath();
+            $child->saveQuietly();
+            $child->cascadeSlugPathUpdates();
+        }
+
+        // Update related posts
+        $this->posts()->with('tags.tag')->get()->each(function (Post $post) {
+            $post->rebuildSlugPath();
+            $post->saveQuietly();
+        });
+    }
+
+
+    /**
+     * Clear slug paths for children and related posts.
      */
     public function clearRelatedSlugPaths(): void
     {
+        // Clear child categories recursively
+        foreach ($this->children as $child) {
+            $child->slug_path = null;
+            $child->saveQuietly();
+            $child->clearRelatedSlugPaths();
+        }
+
+        // Clear related posts
         $this->posts()->get()->each(function (Post $post) {
             $post->slug_path = null;
             $post->saveQuietly();

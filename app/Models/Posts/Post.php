@@ -80,6 +80,12 @@ class Post extends Model implements Commentable, Sluggable
     ];
 
     /**
+     * ---------------------------
+     * Sluggable Implementation
+     * ---------------------------
+     */
+
+    /**
      * Get the base string for slug generation.
      *
      * @return string|null The category's slug path or null if no category exists.
@@ -100,10 +106,23 @@ class Post extends Model implements Commentable, Sluggable
     }
 
     /**
-     * Update slug paths for related tags.
+     * Rebuild this post's slug path.
+     */
+    public function rebuildSlugPath(): void
+    {
+        $this->slug_path = $this->buildDynamicSlugPath();
+    }
+
+    /**
+     * Update slug paths for related tags and itself.
      */
     public function cascadeSlugPathUpdates(): void
     {
+        // Rebuild post slug path first
+        $this->rebuildSlugPath();
+        $this->saveQuietly();
+
+        // Update related tags pivot slug_path
         if ($categorySlug = $this->category?->slug_path) {
             $this->tags()->get()->each(function (Tag $tag) use ($categorySlug) {
                 $tag->pivot?->forceFill([
