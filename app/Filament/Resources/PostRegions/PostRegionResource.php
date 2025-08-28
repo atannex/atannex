@@ -43,8 +43,7 @@ class PostRegionResource extends Resource
     {
         return [
             'index' => ListPostRegions::route('/'),
-            'create' => CreatePostRegion::route('/create'),
-            'edit' => EditPostRegion::route('/{record}/edit'),
+            'create' => CreatePostRegion::route('/create')
         ];
     }
 

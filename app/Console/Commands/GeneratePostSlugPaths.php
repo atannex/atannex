@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Posts\Post;
+use Illuminate\Support\Str;
 
 class GeneratePostSlugPaths extends Command
 {
@@ -12,14 +13,14 @@ class GeneratePostSlugPaths extends Command
      *
      * @var string
      */
-    protected $signature = 'posts:generate-slug-paths';
+    protected $signature = 'atannex:generate-post-slug-paths';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate slug_path for all posts';
+    protected $description = 'Generate slug_path for all posts, force updating if necessary';
 
     /**
      * Execute the console command.
@@ -30,9 +31,11 @@ class GeneratePostSlugPaths extends Command
 
         Post::with('category', 'tags')->chunk(50, function ($posts) {
             foreach ($posts as $post) {
-                // Build slug_path using category slug_path + post slug
                 $base = $post->getSlugBase() ?? '';
-                $post->slug_path = trim($base . '/' . $post->slug, '/');
+                $newSlugPath = trim($base . '/' . $post->slug, '/');
+
+                // Force update by checking uniqueness and appending counter if needed
+                $post->slug_path = $this->generateUniqueSlugPath($post, $newSlugPath);
 
                 $post->saveQuietly();
 
@@ -41,6 +44,25 @@ class GeneratePostSlugPaths extends Command
             }
         });
 
-        $this->info('slug_path generation completed successfully.');
+        $this->info('Slug path generation completed successfully.');
+    }
+
+    /**
+     * Generate a unique slug path, force updating if necessary.
+     */
+    protected function generateUniqueSlugPath(Post $post, string $slugPath): string
+    {
+        $original = $slugPath;
+        $counter = 1;
+
+        while (Post::where('slug_path', $slugPath)
+            ->where('id', '!=', $post->id)
+            ->exists()
+        ) {
+            $slugPath = $original . '-' . $counter;
+            $counter++;
+        }
+
+        return $slugPath;
     }
 }
