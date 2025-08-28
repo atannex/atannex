@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Filters\Filter;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Support\Enums\FontWeight;
 use Filament\Actions\RestoreBulkAction;
@@ -168,17 +169,12 @@ class PostsTable
                     ->label('Published This Month')
                     ->query(fn(Builder $query): Builder => $query->where('published_at', '>=', now()->startOfMonth()))
                     ->toggle(),
-
-                Filter::make('featured')
-                    ->label('Featured Posts')
-                    ->query(fn(Builder $query): Builder => $query->where('is_featured', true))
-                    ->toggle(),
             ])
             ->filtersFormColumns(3)
             ->toolbarActions([
-                ViewAction::make()
+                DeleteAction::make()
                     ->iconButton()
-                    ->tooltip('Preview'),
+                    ->tooltip('Delete Posts'),
 
                 EditAction::make()
                     ->iconButton()
