@@ -5,44 +5,40 @@ namespace Atannex\Traits;
 use App\Contracts\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Trait Bootable
- *
- * Manages slug path updates for models implementing the Sluggable interface during lifecycle events.
- */
 trait Bootable
 {
     /**
-     * Boot the trait, registering model event listeners for slug path management.
+     * Boot the trait, registering model event listeners.
      */
     protected static function bootBootable(): void
     {
-        // Run before creation
+        // Before creating: generate slug_path
         static::creating(function (Model $model) {
             if ($model instanceof Sluggable) {
-                $model->slug_path = $model->buildSlugPath(
-                    $model->getSlugBase(),
-                    $model->getSlug()
-                );
+                $model->slug_path = self::buildDynamicSlugPath($model);
             }
         });
 
-        // Run before update
+        // Before updating: regenerate slug_path if slug or parent changed
         static::updating(function (Model $model) {
             if ($model instanceof Sluggable) {
-                $model->slug_path = $model->buildSlugPath(
-                    $model->getSlugBase(),
-                    $model->getSlug()
-                );
+                $originalSlug = $model->getOriginal('slug');
+                $originalParent = $model->getOriginal('parent_id');
+
+                if ($model->slug !== $originalSlug || $model->parent_id !== $originalParent) {
+                    $model->slug_path = self::buildDynamicSlugPath($model);
+                }
             }
         });
 
+        // After save: cascade slug_path updates to children
         static::saved(function (Model $model) {
             if ($model instanceof Sluggable) {
                 $model->cascadeSlugPathUpdates();
             }
         });
 
+        // Before delete: clear slug_paths of children
         static::deleting(function (Model $model) {
             if ($model instanceof Sluggable) {
                 $model->clearRelatedSlugPaths();
@@ -50,13 +46,25 @@ trait Bootable
         });
     }
 
+    /**
+     * Build a slug path dynamically, using hierarchy if available.
+     */
+    protected static function buildDynamicSlugPath(Sluggable $model): ?string
+    {
+        // Use hierarchical base if parent exists
+        if (method_exists($model, 'getSlugBase') && $model->getSlugBase()) {
+            return $model->buildSlugPath(
+                $model->getSlugBase(),
+                $model->getSlug()
+            );
+        }
+
+        // Fallback: use slug directly
+        return $model->getSlug();
+    }
 
     /**
-     * Builds a slug path by combining the base and slug.
-     *
-     * @param string|null $base The base string for the slug path.
-     * @param string|null $slug The slug to append to the base.
-     * @return string|null The constructed slug path, or null if the slug is empty.
+     * Build a slug path from base and slug.
      */
     protected function buildSlugPath(?string $base, ?string $slug): ?string
     {
