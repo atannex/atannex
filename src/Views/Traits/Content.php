@@ -2,39 +2,55 @@
 
 namespace Atannex\Views\Traits;
 
+use Illuminate\Database\Eloquent\Model;
+
 trait Content
 {
     use Normalize;
     use Entities;
 
     /**
-     * Resolve content and tabs for all sections and widgets of a page.
+     * Resolve content and tabs for all sections and their widgets of a page.
      */
-    protected function resolveContent(object $page): void
+    protected function resolveContent(Model $page): void
     {
+        if (!$page->relationLoaded('sections')) {
+            $page->load('sections.widgets');
+        }
+
         foreach ($page->sections as $section) {
-            $this->resolveEntityContent($section, $section->pivot->config ?? []);
-            $this->resolveChildEntities($section->widgets);
+            $this->resolveEntityWithPivot($section);
+
+            foreach ($section->widgets as $widget) {
+                $this->resolveEntityWithPivot($widget);
+            }
         }
     }
 
     /**
-     * Resolve content for multiple child entities (widgets, etc.).
+     * Resolve content for a model that has a pivot config.
      */
-    private function resolveChildEntities(iterable $entities): void
+    private function resolveEntityWithPivot(Model $entity): void
     {
-        foreach ($entities as $entity) {
-            $this->resolveEntityContent($entity, $entity->pivot->config ?? []);
+        $config = $entity->pivot->config ?? [];
+
+        if (empty($config)) {
+            return;
         }
+
+        $this->resolveEntityContent($entity, $config);
     }
 
     /**
      * Resolve content and tabs for a single entity.
      */
-    private function resolveEntityContent(object $entity, array $config): void
+    private function resolveEntityContent(Model $entity, array $config): void
     {
         $entity->content = $this->atannex->getPostsByType($config);
-        $entity->tabs = $this->resolveTabs($config['tabs'] ?? []);
+
+        $entity->tabs = !empty($config['tabs'])
+            ? $this->resolveTabs($config['tabs'])
+            : [];
     }
 
     /**
@@ -42,17 +58,13 @@ trait Content
      */
     private function resolveTabs(array $tabsConfig): array
     {
-        if ($tabsConfig === []) {
-            return [];
-        }
-
         return array_map(function (array $tabConfig): array {
             [$entityType, $ids] = $this->extractEntityAndIds($tabConfig);
             $ids = $this->normalizeIds($ids);
 
             return [
                 ...$tabConfig,
-                'entities' => $this->resolveEntities($entityType, $ids, (int) ($tabConfig['limit'] ?? 0)),
+                'entities' => $this->resolveEntities($entityType, $ids, $tabConfig['limit'] ?? null),
                 'content' => $this->atannex->getPostsByType($tabConfig),
             ];
         }, $tabsConfig);
