@@ -1,0 +1,73 @@
+@media (min-width: 768px) {
+    /* Main story image */
+    .top-stories-main-center {
+        width: 600px !important;
+        height: 625px !important;
+        object-fit: cover !important; /* fill container without gaps */
+        object-position: center !important; /* center image */
+        background-color: #f0f0f0 !important;
+    }
+
+    /* Left sidebar image */
+    .top-stories-left-sidebar {
+        width: 288px !important;
+        height: 288px !important;
+        object-fit: cover !important;
+        object-position: center !important;
+        background-color: #f0f0f0 !important;
+    }
+
+    /* Right sidebar image */
+    .top-stories-right-sidebar {
+        width: 100px !important;
+        height: 100px !important;
+        object-fit: cover !important;
+        object-position: center !important;
+        background-color: #f0f0f0 !important;
+    }
+
+    /* Small carousel image */
+    .small-image-carousel {
+        width: 288px !important;
+        height: 187px !important;
+        object-fit: cover !important;
+        object-position: center !important;
+        background-color: #f0f0f0 !important;
+    }
+
+    /* Large carousel image */
+    .large-carousel-image {
+        width: 392px !important;
+        height: 310px !important;
+        object-fit: cover !important;
+        object-position: center !important;
+        background-color: #f0f0f0 !important;
+    }
+
+    /* Large carousel image */
+    .primary-news-section {
+        width: 300px !important;
+        height: 200px !important;
+        object-fit: cover !important;
+        object-position: center !important;
+        background-color: #f0f0f0 !important;
+    }
+
+    .content-filter-section {
+        width: 600px !important;
+        height: 490px !important;
+        object-fit: cover !important;
+        object-position: center !important;
+        background-color: #f0f0f0 !important;
+    }
+
+    /* Page banner */
+    .page-banner {
+        width: 100% !important;
+        max-width: 1224px !important;
+        height: 100px !important;
+        object-fit: cover !important;
+        object-position: center !important;
+        background-color: #f0f0f0 !important;
+    }
+}

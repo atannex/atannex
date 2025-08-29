@@ -17,7 +17,7 @@ trait PageView
     public function renderPageView(string $slug): View
     {
         $page = $this->pageService->getHomePage($slug);
-        $this->resolveContent($page, $slug);
+        $this->resolveContent($page);
 
         return $this->render('pages', ['page' => $page], $this->buildCommonViewData());
     }

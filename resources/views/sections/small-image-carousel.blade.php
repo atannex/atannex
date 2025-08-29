@@ -27,23 +27,24 @@
                 <div class="blog-style1">
                     <div class="blog-img">
 
-                        @include('partials.image')
+                        @include('partials.image',['class'=> 'small-image-carousel'])
 
                         @include('partials.category')
 
                     </div>
 
-                    @include('partials.title')
+                    <h3 class="box-title-22">
 
+                        @include('partials.title')
+
+                    </h3>
 
                     <div class="blog-meta">
 
                         @include('partials.author')
 
-                        <a href="{{ route('page.index', $post->published_at->format('Y/m'))}}">
-                            <i class="fal fa-calendar-days"></i>
-                            {{ $post->published_at->format('d M, Y') }}
-                        </a>
+                        @include('partials.date')
+
                     </div>
                 </div>
             </div>

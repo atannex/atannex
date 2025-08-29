@@ -30,9 +30,11 @@
                             <div class="blog-img">
                                 @include('partials.image', ['post' => $post])
 
-                                <a href="{{ route('page.index', ['slug' => $region['slug_path']]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
-                                    {{ $region['name'] }}
+                                @if($region instanceof \App\Models\Regions\Region)
+                                <a href="{{ route('page.index', ['slug' => $region->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
+                                    {{ $region->name }}
                                 </a>
+                                @endif
 
                             </div>
 

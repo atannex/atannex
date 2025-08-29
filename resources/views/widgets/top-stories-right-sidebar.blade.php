@@ -15,7 +15,7 @@
                     <div class="blog-style2">
                         <div class="blog-img">
 
-                            @include('partials.image')
+                            @include('partials.image',['class'=> 'top-stories-right-sidebar'])
 
                         </div>
                         <div class="blog-content">

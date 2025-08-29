@@ -42,39 +42,3 @@
     left: auto;
 }
 
-/* images */
-@media (min-width: 768px) {
-    .top-stories-main-center {
-        width: 600px !important;
-        height: 625px !important;
-        object-fit: cover;
-    }
-    .top-stories-left-sidebar {
-        width: 288px !important;
-        height: 288px !important;
-        object-fit: cover;
-    }
-    .top-stories-right-sidebar {
-        width: 100px !important;
-        height: 100px !important;
-        object-fit: cover;
-    }
-
-    .small-image-carousel {
-        width: 288px !important;
-        height: 187px !important;
-        object-fit: cover;
-    }
-
-    .large-carousel-image {
-        width: 392px !important;
-        height: 310px !important;
-        object-fit: cover;
-    }
-
-    .page-banner {
-        width: 1224px !important;
-        height: 100px !important;
-        object-fit: cover;
-    }
-}

@@ -5,7 +5,7 @@
         <div class="blog-style3">
             <div class="blog-img">
 
-                @include('partials.image')
+                @include('partials.image',['class'=> 'top-stories-main-center'])
 
             </div>
 

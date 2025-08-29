@@ -12,84 +12,60 @@ final class PostType extends Enum
     use GetEnum;
 
     public const BREAKING_POST = 'breaking-post';
-
     public const EDITOR_PICK = 'editor-pick';
-
     public const EDITOR_WEEKLY_PICK = 'editor-weekly-pick';
-
     public const FEATURED_POST = 'featured-post';
-
     public const HEADLINE_OF_THE_DAY = 'headline-of-the-day';
-
     public const HOT_PICKS_POST = 'hot-picks-post';
-
     public const JUST_PUBLISHED_POST = 'just-published-post';
-
     public const LATEST_POST_IN_CATEGORY = 'latest-post-in-category';
-
     public const MOST_COMMENTED_POST = 'most-commented-post';
-
     public const MOST_ENGAGED_POST = 'most-engaged-post';
-
     public const MOST_LIKED_POST = 'most-liked-post';
-
     public const MOST_READ_POST = 'most-read-post';
-
     public const MOST_SHARED_POST = 'most-shared-post';
-
     public const MOST_VIEWED_AND_COMMENTED_POST = 'most-viewed-and-commented-post';
-
     public const MOST_VIEWED_AND_LIKED_POST = 'most-viewed-and-liked-post';
-
     public const MOST_VIEWED_AND_SHARED_POST = 'most-viewed-and-shared-post';
-
     public const MOST_VIEWED_POST = 'most-viewed-post';
-
     public const MOST_VIEWED_POST_THIS_WEEK = 'most-viewed-post-this-week';
-
     public const MOST_VIEWED_POST_TODAY = 'most-viewed-post-today';
-
     public const MOST_VIEWED_SHARED_LIKED_AND_COMMENTED_POST = 'most-viewed-shared-liked-and-commented-post';
-
     public const POPULAR_POST = 'popular-post';
-
     public const POPULAR_POST_IN_CATEGORY = 'popular-post-in-category';
-
     public const POST_BY_AUTHOR = 'post-by-author';
-
     public const POST_BY_CATEGORY = 'post-by-category';
-
     public const POST_BY_DIVISION = 'post-by-division';
-
     public const POST_BY_FONDOM = 'post-by-fondom';
-
     public const POST_BY_MONTH = 'post-by-month';
-
     public const POST_BY_SUBDIVISION = 'post-by-subdivision';
-
     public const POST_BY_TAG = 'post-by-tag';
-
     public const POST_BY_TODAY = 'post-by-today';
-
     public const POST_BY_TWO_WEEKS = 'post-by-two-weeks';
-
     public const POST_BY_VILLAGE = 'post-by-village';
-
     public const POST_BY_WEEK = 'post-by-week';
-
     public const RECENT_POST = 'recent-post';
-
     public const THIS_WEEK_TOP_POST = 'this-week-top-post';
-
     public const TODAY_STORIES = 'today-stories';
-
     public const TOP_POST_IN_TAG = 'top-post-in-tag';
-
     public const TOP_RATED_POST = 'top-rated-post';
-
     public const TRENDING_POST = 'trending-post';
-
     public const TRENDING_POST_IN_TAG = 'trending-post-in-tag';
+
+    /**
+     * Get entity mapping for the enum value.
+     *
+     * @return array{entity: string, idKey: string}|null
+     */
+    public function getEntityMapping(): ?array
+    {
+        return match ($this) {
+            self::POST_BY_FONDOM => ['entity' => 'region', 'idKey' => 'fondom_region_id'],
+            self::POST_BY_SUBDIVISION => ['entity' => 'region', 'idKey' => 'subdivision_region_id'],
+            self::POST_BY_CATEGORY => ['entity' => 'category', 'idKey' => 'category_id'],
+            default => null,
+        };
+    }
 
     public static function boot(): void
     {

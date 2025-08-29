@@ -1,5 +1,4 @@
 <?php
-
 namespace Atannex\Components;
 
 use App\Models\Posts\Post;
@@ -8,22 +7,14 @@ use Illuminate\Support\Collection;
 
 trait GetPostByCategory
 {
-    /**
-     * Retrieve posts by category IDs based on parent/leaf logic.
-     *
-     * Rules:
-     * - Parent categories inherit posts from their descendant leaf categories
-     *   (return 2 latest posts per leaf).
-     * - Directly chosen leaf categories return up to 15 latest posts each.
-     *
-     * @param array $config Configuration array containing 'category_id' (single ID or array of IDs).
-     * @return Collection A collection of Post models.
-     */
     public function getPostByCategory(array $config): Collection
     {
-        $categoryIds = (array) $config['category_id'];
-        $categories = Category::with('children')->whereIn('id', $categoryIds)->get();
+        $categoryIds = (array) ($config['category_id'] ?? []);
+        if (empty($categoryIds)) {
+            return collect();
+        }
 
+        $categories = Category::with('children')->whereIn('id', $categoryIds)->get();
         $allPosts = collect();
 
         foreach ($categories as $category) {
@@ -33,23 +24,23 @@ trait GetPostByCategory
                     ->latest()
                     ->take($config['limit'] ?? 15)
                     ->get();
-
                 $allPosts = $allPosts->merge($posts);
             } else {
                 $descendants = $category->getDescendantsAndSelf('dfs');
                 $leafIds = $descendants->filter(fn($cat) => $cat->children->isEmpty())->pluck('id');
 
-                foreach ($leafIds as $leafId) {
+                if ($leafIds->isNotEmpty()) {
                     $posts = Post::published()
-                        ->where('category_id', $leafId)
+                        ->whereIn('category_id', $leafIds)
                         ->latest()
-                        ->take($config['limit_per_leaf_post'] ?? 1)
-                        ->get();
-
+                        ->get()
+                        ->groupBy('category_id')
+                        ->flatMap(fn($group) => $group->take($config['limit_per_leaf_post'] ?? 1));
                     $allPosts = $allPosts->merge($posts);
                 }
             }
         }
-        return $allPosts->sortByDesc('created_at')->values();
+
+        return $allPosts->unique('id')->sortByDesc('created_at')->values();
     }
 }

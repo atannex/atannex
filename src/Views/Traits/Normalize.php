@@ -1,29 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Atannex\Views\Traits;
 
 trait Normalize
 {
     /**
-     * Normalize IDs input to always be an array.
-     * Accepts scalar, iterable, or null values.
+     * Normalizes input IDs into an array.
      *
+     * Accepts a single ID (int|string), an iterable of IDs, or null.
+     * Returns an empty array for null or invalid inputs.
+     *
+     * @param int|string|iterable|null $ids
      * @return array<int|string>
      */
-    private function normalizeIds(int|string|iterable|null $ids): array
+    private function normalizeIds($ids): array
     {
         if ($ids === null) {
             return [];
         }
 
+        if (is_array($ids)) {
+            return $ids;
+        }
+
         if (is_iterable($ids)) {
-            return is_array($ids) ? $ids : iterator_to_array($ids);
+            return iterator_to_array($ids);
         }
 
-        if (is_scalar($ids)) {
-            return [$ids];
-        }
-
-        return [];
+        return is_int($ids) || is_string($ids) ? [$ids] : [];
     }
 }

@@ -26,7 +26,7 @@
                 <div class="blog-style1">
                     <div class="blog-img">
 
-                        @include('partials.image')
+                        @include('partials.image',['class'=> 'large-carousel-image'])
 
                         @include('partials.category')
 

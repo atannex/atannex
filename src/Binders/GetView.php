@@ -22,6 +22,7 @@ class GetView
         protected readonly TagService $tagService,
         protected readonly CategoryService $categoryService,
         protected readonly GetPost $getPost,
+        protected GetComponent $getComponent,
     ) {}
 
     use AuthorView;
