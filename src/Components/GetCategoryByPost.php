@@ -1,13 +1,14 @@
 <?php
+
 namespace Atannex\Components;
 
 use App\Models\Posts\Post;
 use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
 
-trait GetPostByCategory
+trait GetCategoryByPost
 {
-    public function getPostByCategory(array $config): Collection
+    public function getCategoryByPost(array $config): Collection
     {
         $categoryIds = (array) ($config['category_id'] ?? []);
         if (empty($categoryIds)) {

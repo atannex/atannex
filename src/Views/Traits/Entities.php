@@ -2,73 +2,50 @@
 
 namespace Atannex\Views\Traits;
 
-use App\Enums\PostType;
-use App\Models\Pages\Category;
-use App\Models\Regions\Region;
+use Illuminate\Support\Collection;
 
 trait Entities
 {
-    private const ENTITY_MAPPING = [
-        PostType::POST_BY_FONDOM => [
-            'entity' => 'region',
-            'idKey' => 'fondom_region_id',
-        ],
-        PostType::POST_BY_SUBDIVISION => [
-            'entity' => 'region',
-            'idKey' => 'subdivision_region_id',
-        ],
-        PostType::POST_BY_CATEGORY => [
-            'entity' => 'category',
-            'idKey' => 'category_id',
-        ],
-    ];
-
     /**
-     * Get entity mapping for a given PostType.
+     * Resolve entities based on type and IDs, retrieving corresponding posts.
      *
-     * @return array{entity: string, idKey: string}|null
+     * @param string|null $type Entity type (tag, region, category)
+     * @param array<int|string> $ids Array of entity IDs
+     * @param int|null $limit Maximum number of results
+     * @return Collection
      */
-    private function getEntityMapping(PostType $type): ?array
+    private function resolveEntities(?string $type, array $ids, ?int $limit): Collection
     {
-        return self::ENTITY_MAPPING[$type] ?? null;
-    }
-
-
-    /**
-     * Extract entity type and IDs from a tab configuration.
-     */
-    private function extractEntityAndIds(array $tabConfig): array
-    {
-        $type = $tabConfig['type'] ?? null;
-        if (!isset(self::ENTITY_MAPPING[$type])) {
-            return [null, []];
+        if (!$type || !$ids) {
+            return collect();
         }
 
-        $mapping = self::ENTITY_MAPPING[$type];
-        $ids = (array) ($tabConfig[$mapping['idKey']] ?? []);
+        $resolverMap = [
+            'tag_and_post' => [
+                'method' => 'getTagAndTheirCorrespondingPosts',
+                'key' => 'tag_id'
+            ],
+            'region_and_post' => [
+                'method' => 'getFondomAndTheirCorrespondingPosts',
+                'key' => 'region_id'
+            ],
+            'category_and_post' => [
+                'method' => 'getCategoryAndTheirCorrespondingPosts',
+                'key' => 'category_id'
+            ],
+        ];
 
-        return [$mapping['entity'], $ids];
-    }
-
-    /**
-     * Resolve entities by type and IDs, optionally applying a limit.
-     */
-    private function resolveEntities(?string $type, array $ids = [], int $limit = 0)
-    {
-        if (!$type || $ids === []) {
-            return null;
+        if (!isset($resolverMap[$type])) {
+            return collect();
         }
 
-        $query = match ($type) {
-            'region' => Region::with('posts')->whereIn('id', $ids)->latest('created_at'),
-            'category' => Category::with('posts')->whereIn('id', $ids)->latest('created_at'),
-            default => null,
-        };
-
-        if (!$query) {
-            return null;
+        $params = [$resolverMap[$type]['key'] => $ids];
+        if ($limit !== null && $limit > 0) {
+            $params['limit'] = $limit;
         }
 
-        return $limit > 0 ? $query->limit($limit)->get() : $query->get();
+        $collection = $this->getComponent->{$resolverMap[$type]['method']}($params);
+
+        return $limit > 0 ? $collection->take($limit) : $collection;
     }
 }

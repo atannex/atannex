@@ -56,7 +56,7 @@ class Tag extends Model
      */
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(Tag::class, 'parent_id')->withDefault();
+        return $this->belongsTo(Tag::class, 'parent_id');
     }
 
     /**
@@ -68,14 +68,6 @@ class Tag extends Model
     }
 
     /**
-     * Get all descendant tags recursively.
-     */
-    public function allChildren(): HasMany
-    {
-        return $this->children()->with('allChildren');
-    }
-
-    /**
      * The posts that belong to the tag.
      */
     public function posts(): BelongsToMany
@@ -84,13 +76,5 @@ class Tag extends Model
             ->using(PostTag::class)
             ->withTimestamps()
             ->withPivot('slug_path');
-    }
-
-    /**
-     * Scope to fetch only top-level tags.
-     */
-    protected function scopeTopLevel($query)
-    {
-        return $query->whereNull('parent_id');
     }
 }

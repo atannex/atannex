@@ -22,15 +22,13 @@ class DateRangeSection
                         DateTimePicker::make('start')
                             ->label('Start Date')
                             ->default(now()->startOfDay())
-                            ->helperText('Start of the date range for posts')
-                            ->required(),
+                            ->helperText('Start of the date range for posts'),
 
                         DateTimePicker::make('end')
                             ->label('End Date')
                             ->default(now()->endOfDay())
                             ->afterOrEqual('start')
-                            ->helperText('End of the date range for posts')
-                            ->required(),
+                            ->helperText('End of the date range for posts'),
                     ]),
             ])
             ->compact();

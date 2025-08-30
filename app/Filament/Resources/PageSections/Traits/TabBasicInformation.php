@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PageSections\Traits;
 
+use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
@@ -35,6 +36,31 @@ class TabBasicInformation
                             ->suffix('posts')
                             ->helperText('Maximum number of posts to display')
                             ->required(),
+
+                        Select::make('sort')
+                            ->label('Sort By')
+                            ->options([
+                                'published_at' => 'Published At',
+                                'created_at' => 'Created At',
+                                'title' => 'Title',
+                                'name' => 'Name',
+                                'views' => 'Views',
+                                'comments_count' => 'Comments Count',
+                                'likes_count' => 'Likes Count',
+                                'shares_count' => 'Shares Count',
+                            ])
+                            ->default('created_at')
+                            ->helperText('Field to sort the content by'),
+
+                        Select::make('order')
+                            ->label('Sort Order')
+                            ->options([
+                                'asc' => 'Ascending',
+                                'desc' => 'Descending',
+                            ])
+                            ->default('desc')
+                            ->helperText('Sorting direction'),
+
                     ]),
             ])
             ->compact();

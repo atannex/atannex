@@ -21,7 +21,7 @@
         <div class="filter-active-cat1">
             @foreach ($tab['entities'] as $index => $region)
             @php
-            $posts = $region['posts'];
+            $posts = $region->posts;
             $featuredPost = $posts->first();
             $remainingPosts = $posts->skip(1)->take(4);
             @endphp

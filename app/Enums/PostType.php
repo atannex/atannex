@@ -11,112 +11,66 @@ final class PostType extends Enum
 {
     use GetEnum;
 
-    public const BREAKING_POST = 'breaking-post';
+    // --- Editorial ---
     public const EDITOR_PICK = 'editor-pick';
-    public const EDITOR_WEEKLY_PICK = 'editor-weekly-pick';
-    public const FEATURED_POST = 'featured-post';
-    public const HEADLINE_OF_THE_DAY = 'headline-of-the-day';
-    public const HOT_PICKS_POST = 'hot-picks-post';
+
+    // --- Time-Based ---
     public const JUST_PUBLISHED_POST = 'just-published-post';
-    public const LATEST_POST_IN_CATEGORY = 'latest-post-in-category';
+    public const RECENT_POST = 'recent-post';
+    public const THIS_WEEK_TOP_POST = 'this-week-top-post';
+    public const TODAY_STORIES = 'today-stories';
+    public const MOST_VIEWED_POST_TODAY = 'most-viewed-post-today';
+    public const MOST_VIEWED_POST_THIS_WEEK = 'most-viewed-post-this-week';
+    public const POST_BY_TODAY = 'post-by-today';
+    public const POST_BY_WEEK = 'post-by-week';
+    public const POST_BY_TWO_WEEKS = 'post-by-two-weeks';
+    public const POST_BY_MONTH = 'post-by-month';
+
+    // --- Popularity / Engagement ---
     public const MOST_COMMENTED_POST = 'most-commented-post';
     public const MOST_ENGAGED_POST = 'most-engaged-post';
     public const MOST_LIKED_POST = 'most-liked-post';
     public const MOST_READ_POST = 'most-read-post';
     public const MOST_SHARED_POST = 'most-shared-post';
+    public const MOST_VIEWED_POST = 'most-viewed-post';
     public const MOST_VIEWED_AND_COMMENTED_POST = 'most-viewed-and-commented-post';
     public const MOST_VIEWED_AND_LIKED_POST = 'most-viewed-and-liked-post';
     public const MOST_VIEWED_AND_SHARED_POST = 'most-viewed-and-shared-post';
-    public const MOST_VIEWED_POST = 'most-viewed-post';
-    public const MOST_VIEWED_POST_THIS_WEEK = 'most-viewed-post-this-week';
-    public const MOST_VIEWED_POST_TODAY = 'most-viewed-post-today';
     public const MOST_VIEWED_SHARED_LIKED_AND_COMMENTED_POST = 'most-viewed-shared-liked-and-commented-post';
     public const POPULAR_POST = 'popular-post';
     public const POPULAR_POST_IN_CATEGORY = 'popular-post-in-category';
-    public const POST_BY_AUTHOR = 'post-by-author';
-    public const POST_BY_CATEGORY = 'post-by-category';
-    public const POST_BY_DIVISION = 'post-by-division';
-    public const POST_BY_FONDOM = 'post-by-fondom';
-    public const POST_BY_MONTH = 'post-by-month';
-    public const POST_BY_SUBDIVISION = 'post-by-subdivision';
-    public const POST_BY_TAG = 'post-by-tag';
-    public const POST_BY_TODAY = 'post-by-today';
-    public const POST_BY_TWO_WEEKS = 'post-by-two-weeks';
-    public const POST_BY_VILLAGE = 'post-by-village';
-    public const POST_BY_WEEK = 'post-by-week';
-    public const RECENT_POST = 'recent-post';
-    public const THIS_WEEK_TOP_POST = 'this-week-top-post';
-    public const TODAY_STORIES = 'today-stories';
-    public const TOP_POST_IN_TAG = 'top-post-in-tag';
     public const TOP_RATED_POST = 'top-rated-post';
     public const TRENDING_POST = 'trending-post';
     public const TRENDING_POST_IN_TAG = 'trending-post-in-tag';
+    public const TOP_POST_IN_TAG = 'top-post-in-tag';
 
-    /**
-     * Get entity mapping for the enum value.
-     *
-     * @return array{entity: string, idKey: string}|null
-     */
-    public function getEntityMapping(): ?array
-    {
-        return match ($this) {
-            self::POST_BY_FONDOM => ['entity' => 'region', 'idKey' => 'fondom_region_id'],
-            self::POST_BY_SUBDIVISION => ['entity' => 'region', 'idKey' => 'subdivision_region_id'],
-            self::POST_BY_CATEGORY => ['entity' => 'category', 'idKey' => 'category_id'],
-            default => null,
-        };
-    }
+    // --- Category / Author / Location ---
+    public const POST_BY_AUTHOR = 'post-by-author';
+    public const POST_BY_CATEGORY = 'post-by-category';
+    public const POST_BY_DIVISION = 'post-by-division';
+    public const POST_BY_SUBDIVISION = 'post-by-subdivision';
+    public const POST_BY_FONDOM = 'post-by-fondom';
+    public const POST_BY_VILLAGE = 'post-by-village';
+    public const POST_BY_TAG = 'post-by-tag';
+
+    public const CATEGORY_AND_CORRESPONDING_POST = 'category-and-corresponding-post';
+    public const TAG_AND_CORRESPONDING_POST = 'tag-and-corresponding-post';
+    public const REGION_AND_CORRESPONDING_POST = 'region-and-corresponding-post';
 
     public static function boot(): void
     {
         static::setMetadata([
-            self::BREAKING_POST => [
-                'label' => 'Breaking News',
-                'description' => 'Urgent and time-sensitive posts.',
-                'color' => 'red',
-                'icon' => 'heroicon-o-bolt',
-            ],
             self::EDITOR_PICK => [
                 'label' => "Editor's Pick",
                 'description' => 'Highlighted by editors as top-quality content.',
                 'color' => 'blue',
                 'icon' => 'heroicon-o-star',
             ],
-            self::EDITOR_WEEKLY_PICK => [
-                'label' => "Weekly Editor's Pick",
-                'description' => 'Best editor-picked post of the week.',
-                'color' => 'blue',
-                'icon' => 'heroicon-o-calendar',
-            ],
-            self::FEATURED_POST => [
-                'label' => 'Featured Post',
-                'description' => 'Highlighted on homepage or section.',
-                'color' => 'purple',
-                'icon' => 'heroicon-o-sparkles',
-            ],
-            self::HEADLINE_OF_THE_DAY => [
-                'label' => 'Headline of the Day',
-                'description' => 'Top story for the current day.',
-                'color' => 'cyan',
-                'icon' => 'heroicon-o-newspaper',
-            ],
-            self::HOT_PICKS_POST => [
-                'label' => 'Hot Picks',
-                'description' => 'Popular and trending content.',
-                'color' => 'orange',
-                'icon' => 'heroicon-o-fire',
-            ],
             self::JUST_PUBLISHED_POST => [
                 'label' => 'Just Published',
                 'description' => 'Recently added to the platform.',
                 'color' => 'emerald',
                 'icon' => 'heroicon-o-clock',
-            ],
-            self::LATEST_POST_IN_CATEGORY => [
-                'label' => 'Latest in Category',
-                'description' => 'Newest post under a specific category.',
-                'color' => 'indigo',
-                'icon' => 'heroicon-o-folder-open',
             ],
             self::MOST_COMMENTED_POST => [
                 'label' => 'Most Commented',
@@ -310,6 +264,48 @@ final class PostType extends Enum
                 'color' => 'rose',
                 'icon' => 'heroicon-o-hashtag',
             ],
+
+            self::CATEGORY_AND_CORRESPONDING_POST => [
+                'label' => 'Get category and its Corresponding Post',
+                'description' => 'Trending post within a tag.',
+                'color' => 'rose',
+                'icon' => 'heroicon-o-hashtag',
+            ],
         ]);
+    }
+
+    private const ENTITY_MAPPING = [
+        self::POST_BY_FONDOM => [
+            'entity' => 'region',
+            'idKey' => 'fondom_region_id'
+        ],
+        self::POST_BY_SUBDIVISION => [
+            'entity' => 'region',
+            'idKey' => 'subdivision_region_id'
+        ],
+        self::POST_BY_CATEGORY => [
+            'entity' => 'category',
+            'idKey' => 'category_id'
+        ],
+        self::POST_BY_TAG => [
+            'entity' => 'tag',
+            'idKey' => 'tag_id'
+        ],
+
+        self::CATEGORY_AND_CORRESPONDING_POST => [
+            'entity' => 'category_and_post',
+            'idKey' => 'category_and_post_id'
+        ]
+    ];
+
+    /**
+     * Retrieve entity mapping for a given post type.
+     *
+     * @param string $type PostType constant
+     * @return array{entity: string, idKey: string}|null
+     */
+    public static function getEntityMapping(string $type): ?array
+    {
+        return self::ENTITY_MAPPING[$type];
     }
 }

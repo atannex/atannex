@@ -55,6 +55,7 @@ class ContentFiltering
                             ->label('Filter by Tag')
                             ->options(fn() => Tag::pluck('name', 'id')->toArray())
                             ->searchable()
+                            ->multiple()
                             ->placeholder('Select a specific tag')
                             ->helperText('Show only posts with this tag')
                             ->preload()
@@ -70,15 +71,15 @@ class ContentFiltering
                             ->preload()
                             ->visible(fn($get) => $get('type') === PostType::POST_BY_CATEGORY),
 
-                        // Select::make('category_id')
-                        //     ->label('Filter by Category')
-                        //     ->options(fn() => Category::doesntHave('children')->pluck('name', 'id')->toArray())
-                        //     ->searchable()
-                        //     ->multiple()
-                        //     ->placeholder('Select a category')
-                        //     ->helperText('Show only posts from this category')
-                        //     ->preload()
-                        //     ->visible(fn($get) => $get('type') === PostType::POST_BY_CATEGORY),
+                            Select::make('category_and_post_id')
+                            ->label('Get A Category and All its Corresponding Post')
+                            ->options(fn() => Category::pluck('name', 'id')->toArray())
+                            ->searchable()
+                            ->multiple()
+                            ->placeholder('Select a category')
+                            ->helperText('Show only posts from this category')
+                            ->preload()
+                            ->visible(fn($get) => $get('type') === PostType::CATEGORY_AND_CORRESPONDING_POST),
                     ]),
             ])
             ->compact();

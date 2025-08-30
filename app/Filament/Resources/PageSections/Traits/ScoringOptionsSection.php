@@ -25,8 +25,7 @@ class ScoringOptionsSection
                             ->numeric()
                             ->minValue(0)
                             ->default(0)
-                            ->helperText('Minimum engagement score for posts')
-                            ->required(),
+                            ->helperText('Minimum engagement score for posts'),
 
                         Toggle::make('prioritize_recency')
                             ->label('Prioritize Recency')

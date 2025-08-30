@@ -15,7 +15,7 @@ class UpdatePostTagSlugPath extends Command
      *
      * @var string
      */
-    protected $signature = 'posttag:update-slug-path {--batch-size=100 : Number of post_tag records to process per batch}';
+    protected $signature = 'atannex:update-tag-slug-path {--batch-size=100 : Number of post_tag records to process per batch}';
 
     /**
      * The console command description.
