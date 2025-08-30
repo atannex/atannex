@@ -23,9 +23,9 @@ trait GetCategoryAndTheirCorrespondingPosts
 
     public function getCategoryAndTheirCorrespondingPosts(array $config): Collection
     {
-        $categoryIds = $this->normalizeCategoryIds(Arr::get($config, 'category_id'));
-        $limit = max(1, (int) Arr::get($config, 'limit', 5));
-        $postLimit = max(1, (int) Arr::get($config, 'post_limit', 5));
+        $categoryIds   = $this->normalizeCategoryIds(Arr::get($config, 'category_id'));
+        $limit         = max(1, (int) Arr::get($config, 'limit', 5));
+        $postLimit     = max(1, (int) Arr::get($config, 'post_limit', 5));
         $leafPostLimit = max(1, (int) Arr::get($config, 'leaf_post_limit', 1));
 
         if (empty($categoryIds)) {
@@ -35,8 +35,8 @@ trait GetCategoryAndTheirCorrespondingPosts
         return Category::query()
             ->with([
                 'children',
-                'posts' => fn($query) => $query->latest('created_at')->take($postLimit),
                 'children.posts' => fn($query) => $query->latest('created_at')->take($leafPostLimit),
+                'posts' => fn($query) => $query->latest('created_at')->take($postLimit),
             ])
             ->whereIn('id', $categoryIds)
             ->latest('created_at')
@@ -63,11 +63,7 @@ trait GetCategoryAndTheirCorrespondingPosts
     {
         return $category->getDescendantsAndSelf('dfs')
             ->filter(fn(Category $cat): bool => $cat->children->isEmpty())
-            ->flatMap(function (Category $leaf) use ($leafPostLimit): Collection {
-                return $leaf->relationLoaded('posts')
-                    ? $leaf->posts->take($leafPostLimit)
-                    : $leaf->posts()->latest('created_at')->take($leafPostLimit)->get();
-            })
+            ->flatMap(fn(Category $leaf): Collection => $leaf->posts->take($leafPostLimit))
             ->take($postLimit);
     }
 }
