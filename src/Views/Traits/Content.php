@@ -5,6 +5,7 @@ namespace Atannex\Views\Traits;
 use App\Enums\PostType;
 use App\Models\Pages\Page;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 trait Content
 {
@@ -13,8 +14,6 @@ trait Content
 
     /**
      * Resolve content and tabs for all sections and widgets of a page.
-     *
-     * @param Page|null $page The page object containing sections to resolve
      */
     protected function resolveSection(?Page $page): void
     {
@@ -29,8 +28,6 @@ trait Content
 
     /**
      * Resolve a single section and its child widgets recursively.
-     *
-     * @param object $section The section object to resolve
      */
     protected function resolveSectionContent(object $section): void
     {
@@ -49,9 +46,6 @@ trait Content
 
     /**
      * Resolve content and tabs for a single entity.
-     *
-     * @param object $entity The entity to resolve
-     * @param array $config Configuration array for the entity
      */
     private function resolveSectionEntities(object $entity, array $config): void
     {
@@ -63,7 +57,6 @@ trait Content
     /**
      * Extract entity type and associated IDs from a tab configuration.
      *
-     * @param array<string, mixed> $tab Tab configuration
      * @return array{entity: string|null, ids: array<int|string>}
      */
     private function extractEntityAndIds(array $tab): array
@@ -73,37 +66,66 @@ trait Content
 
         return [
             'entity' => $mapping['entity'],
-            'ids' => $ids
+            'ids'    => $ids,
         ];
     }
 
     /**
      * Resolves the content for each tab based on the configuration.
      *
-     * @param array<int, array<string, mixed>> $tabs Array of tab configurations
-     * @return array<int, array<string, mixed>> Array of tabs with resolved entities and content
+     * @return array<int, array<string, mixed>>
      */
     private function resolveTabs(array $tabs): array
     {
-        return array_map(function ($tab) {
-            $tab['entities'] = [];
-            $tab['content'] = [];
-
-            if (!isset($tab['type'])) {
-                return $tab;
+        $groupedTabs = [];
+        foreach ($tabs as $index => $tab) {
+            if (empty($tab['type'])) {
+                continue;
             }
 
             try {
                 ['entity' => $type, 'ids' => $ids] = $this->extractEntityAndIds($tab);
+
                 if ($type && $ids) {
                     $normalizedIds = $this->normalizeIds($ids);
-                    $tab['entities'] = $this->resolveEntities($type, $normalizedIds, $tab['limit'] ?? null);
-                    $tab['content'] = $this->atannex->getPostsByType($tab);
-                }
-            } catch (Exception) {
-            }
 
-            return $tab;
-        }, $tabs);
+                    $groupedTabs[$type]['ids'] = array_merge(
+                        $groupedTabs[$type]['ids'] ?? [],
+                        $normalizedIds
+                    );
+
+                    $groupedTabs[$type]['tabs'][$index] = $tab;
+                }
+            } catch (Exception $e) {
+
+                $tabs[$index]['entities'] = [];
+                $tabs[$index]['content']  = [];
+            }
+        }
+
+        $resolvedEntities = [];
+        foreach ($groupedTabs as $type => $data) {
+            $uniqueIds = array_unique($data['ids']);
+
+            $resolvedEntities[$type] = $this->resolveEntities(
+                $type,
+                $uniqueIds,
+                null
+            );
+        }
+
+        foreach ($groupedTabs as $type => $data) {
+            foreach ($data['tabs'] as $index => $tab) {
+                $limit = $tab['limit'] ?? null;
+
+                $tabs[$index]['entities'] = $limit
+                    ? $resolvedEntities[$type]->take($limit)
+                    : $resolvedEntities[$type];
+
+                $tabs[$index]['content'] = $this->atannex->getPostsByType($tab);
+            }
+        }
+
+        return $tabs;
     }
 }
