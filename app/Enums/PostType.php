@@ -53,9 +53,9 @@ final class PostType extends Enum
     public const POST_BY_VILLAGE = 'post-by-village';
     public const POST_BY_TAG = 'post-by-tag';
 
-    public const CATEGORY_AND_CORRESPONDING_POST = 'category-and-corresponding-post';
-    public const TAG_AND_CORRESPONDING_POST = 'tag-and-corresponding-post';
-    public const REGION_AND_CORRESPONDING_POST = 'region-and-corresponding-post';
+    public const GET_CATEGORY_WITH_POSTS = 'category-with-posts';
+    public const GET_TAG_WITH_POSTS = 'tag-with-posts';
+    public const GET_FONDOM_WITH_POSTS = 'fondom-with-posts';
 
     public static function boot(): void
     {
@@ -265,7 +265,7 @@ final class PostType extends Enum
                 'icon' => 'heroicon-o-hashtag',
             ],
 
-            self::CATEGORY_AND_CORRESPONDING_POST => [
+            self::GET_CATEGORY_WITH_POSTS => [
                 'label' => 'Get category and its Corresponding Post',
                 'description' => 'Trending post within a tag.',
                 'color' => 'rose',
@@ -292,7 +292,7 @@ final class PostType extends Enum
             'idKey' => 'tag_id'
         ],
 
-        self::CATEGORY_AND_CORRESPONDING_POST => [
+        self::GET_CATEGORY_WITH_POSTS => [
             'entity' => 'category_and_post',
             'idKey' => 'category_and_post_id'
         ]

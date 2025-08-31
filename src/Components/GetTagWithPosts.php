@@ -5,10 +5,10 @@ namespace Atannex\Components;
 use App\Models\Tags\Tag;
 use Illuminate\Support\Collection;
 
-trait GetTagAndTheirCorrespondingPosts
+trait GetTagWithPosts
 {
 
-    public function getTagAndTheirCorrespondingPosts(array $config): Collection
+    public function getTagWithPosts(array $config): Collection
     {
         $tagIds = $config['tag_id'];
         $limit = $config['limit'] ?? 5;

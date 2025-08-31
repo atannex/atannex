@@ -6,9 +6,9 @@ use App\Models\Posts\Post;
 use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
 
-trait GetCategoryByPost
+trait GetPostsForCategory
 {
-    public function getCategoryByPost(array $config): Collection
+    public function getPostsForCategory(array $config): Collection
     {
         $categoryIds = (array) ($config['category_id'] ?? []);
         if (empty($categoryIds)) {

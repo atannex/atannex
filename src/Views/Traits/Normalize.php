@@ -7,28 +7,27 @@ namespace Atannex\Views\Traits;
 trait Normalize
 {
     /**
-     * Normalizes input IDs into an array.
+     * Normalizes input IDs into an array of integers or strings.
      *
-     * Accepts a single ID (int|string), an iterable of IDs, or null.
-     * Returns an empty array for null or invalid inputs.
-     *
-     * @param int|string|iterable|null $ids
+     * @param int|string|iterable<int|string>|null $ids
      * @return array<int|string>
      */
-    private function normalizeIds($ids): array
+    private function normalizeIds(int|string|iterable|null $ids): array
     {
         if ($ids === null) {
             return [];
         }
 
-        if (is_array($ids)) {
-            return $ids;
-        }
-
         if (is_iterable($ids)) {
-            return iterator_to_array($ids);
+            $result = [];
+            foreach ($ids as $id) {
+                if (is_int($id) || is_string($id)) {
+                    $result[] = $id;
+                }
+            }
+            return $result;
         }
 
-        return is_int($ids) || is_string($ids) ? [$ids] : [];
+        return [$ids];
     }
 }

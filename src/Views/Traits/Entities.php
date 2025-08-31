@@ -22,15 +22,15 @@ trait Entities
 
         $resolverMap = [
             'tag_and_post' => [
-                'method' => 'getTagAndTheirCorrespondingPosts',
+                'method' => 'getTagWithPosts',
                 'key'    => 'tag_id',
             ],
             'region_and_post' => [
-                'method' => 'getFondomAndTheirCorrespondingPosts',
+                'method' => 'getFondomWithPosts',
                 'key'    => 'region_id',
             ],
             'category_and_post' => [
-                'method' => 'getCategoryAndTheirCorrespondingPosts',
+                'method' => 'getCategoryWithPosts',
                 'key'    => 'category_id',
             ],
         ];

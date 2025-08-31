@@ -79,7 +79,7 @@ class ContentFiltering
                             ->placeholder('Select a category')
                             ->helperText('Show only posts from this category')
                             ->preload()
-                            ->visible(fn($get) => $get('type') === PostType::CATEGORY_AND_CORRESPONDING_POST),
+                            ->visible(fn($get) => $get('type') === PostType::GET_CATEGORY_WITH_POSTS),
                     ]),
             ])
             ->compact();

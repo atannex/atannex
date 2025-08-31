@@ -15,7 +15,7 @@ final class AtannexProvider extends GetComponent
      */
     private array $postTypeMethods = [
         PostType::TRENDING_POST        => 'getTrendingPosts',
-        PostType::POST_BY_CATEGORY     => 'getCategoryByPost',
+        PostType::POST_BY_CATEGORY     => 'GetPostsForCategory',
         PostType::POST_BY_TAG          => 'getPostByTag',
         PostType::POST_BY_FONDOM       => 'getPostByFondom',
         PostType::POST_BY_SUBDIVISION  => 'getPostBySubdivision',

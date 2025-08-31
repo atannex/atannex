@@ -2,7 +2,7 @@
 
 namespace Atannex\Binders;
 
-use Atannex\Components\GetTagAndTheirCorrespondingPosts;
+use Atannex\Components\GetTagWithPosts;
 use Atannex\Components\GetEditorPick;
 use Atannex\Components\GetPostByWeek;
 use Atannex\Components\GetRecentPost;
@@ -14,7 +14,7 @@ use Atannex\Components\GetFeaturedPost;
 use Atannex\Components\GetHotPicksPost;
 use Atannex\Components\GetMostReadPost;
 use Atannex\Components\GetPostByAuthor;
-use Atannex\Components\GetFondomAndTheirCorrespondingPosts;
+use Atannex\Components\GetFondomWithPosts;
 use Atannex\Components\GetTodayStories;
 use Atannex\Components\GetTopPostInTag;
 use Atannex\Components\GetTopRatedPost;
@@ -24,8 +24,8 @@ use Atannex\Components\GetPostByVillage;
 use Atannex\Components\GetComingSoonPost;
 use Atannex\Components\GetMostSharedPost;
 use Atannex\Components\GetMostViewedPost;
-use Atannex\Components\GetCategoryAndTheirCorrespondingPosts;
-use Atannex\Components\GetCategoryByPost;
+use Atannex\Components\GetCategoryWithPosts;
+use Atannex\Components\GetPostsForCategory;
 use Atannex\Components\GetPostByTwoWeeks;
 use Atannex\Components\GetMostEngagedPost;
 use Atannex\Components\GetThisWeekTopPost;
@@ -69,11 +69,11 @@ class GetComponent
     use GetPopularPost;
     use GetPopularPostInCategory;
     use GetPostByAuthor;
-    use GetCategoryAndTheirCorrespondingPosts;
-    use GetFondomAndTheirCorrespondingPosts;
+    use GetCategoryWithPosts;
+    use GetFondomWithPosts;
     use GetPostByMonth;
     use GetPostBySubdivision;
-    use GetTagAndTheirCorrespondingPosts;
+    use GetTagWithPosts;
     use GetPostByToday;
     use GetPostByTwoWeeks;
     use GetPostByVillage;
@@ -86,5 +86,5 @@ class GetComponent
     use GetTrendingPostInTag;
     use GetThisWeekTopPost;
     use GetEditorWeeklyPick;
-    use GetCategoryByPost;
+    use GetPostsForCategory;
 }

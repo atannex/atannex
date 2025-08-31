@@ -5,9 +5,9 @@ namespace Atannex\Components;
 use App\Models\Regions\Region;
 use Illuminate\Support\Collection;
 
-trait GetFondomAndTheirCorrespondingPosts
+trait GetFondomWithPosts
 {
-    public function getFondomAndTheirCorrespondingPosts(array $config): Collection
+    public function getFondomWithPosts(array $config): Collection
     {
 
         $regionIds = $config['region_id'];
