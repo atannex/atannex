@@ -37,6 +37,25 @@ class Post extends Model implements Commentable, Sluggable
     use HasViews;
 
     /**
+     * Define attributes that store image paths.
+     *
+     * @return array<string>
+     */
+    protected function imageAttributes(): array
+    {
+        return ['image'];
+    }
+
+    /**
+     * Define the storage disk for image cleanup.
+     *
+     * @return string
+     */
+    protected function imageDisk(): string
+    {
+        return 'public';
+    }
+    /**
      * The source attribute for slug generation.
      */
     protected string $slugSource = 'title';

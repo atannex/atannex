@@ -10,6 +10,7 @@ use Atannex\Enables\EnableSlug;
 use Atannex\Enables\EnableScope;
 use Atannex\Filters\GetHierarchy;
 use Atannex\Relations\CategoryRelation;
+use Atannex\Traits\Cleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -27,6 +28,27 @@ class Category extends Model implements Sluggable
     use GetHierarchy;
     use Resolver;
     use Bootable;
+    use Cleaning;
+
+    /**
+     * Define attributes that store image paths.
+     *
+     * @return array<string>
+     */
+    protected function imageAttributes(): array
+    {
+        return ['image'];
+    }
+
+    /**
+     * Define the storage disk for image cleanup.
+     *
+     * @return string
+     */
+    protected function imageDisk(): string
+    {
+        return 'public';
+    }
 
     /**
      * The attributes that are mass assignable.
