@@ -8,7 +8,7 @@
                         <div class="blog-style4">
                             <div class="blog-img w-386">
 
-                                @include('partials.image')
+                                @include('partials.image',['class'=> 'blog-list'])
 
                             </div>
                             <div class="blog-content">

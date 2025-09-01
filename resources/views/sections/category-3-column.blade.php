@@ -6,7 +6,7 @@
                   <div class="blog-style1">
                       <div class="blog-img">
 
-                          @include('partials.image')
+                          @include('partials.image',['class'=> 'category-3-column'])
 
                           @include('partials.category')
 
@@ -35,4 +35,3 @@
           <x-partials.pagination :paginator="$posts" />
       </div>
   </section>
-

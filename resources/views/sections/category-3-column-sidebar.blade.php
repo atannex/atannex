@@ -6,7 +6,7 @@
                 <div class="blog-style1">
                     <div class="blog-img" data-overlay="black" data-opacity="4">
 
-                        @include('partials.image')
+                        @include('partials.image',['class'=> 'category-3-column-sidebar'])
 
                         @include('partials.category')
 

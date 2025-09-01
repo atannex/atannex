@@ -7,7 +7,7 @@
 
                     <div class="blog-img" data-overlay="black" data-opacity="4">
 
-                        @include('partials.image')
+                        @include('partials.image',['class'=> 'blog-standard'])
 
                         @include('partials.category')
 

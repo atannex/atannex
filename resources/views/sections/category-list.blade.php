@@ -6,7 +6,7 @@
                 <div class="blog-style1">
                     <div class="blog-img" data-overlay="black" data-opacity="4">
 
-                        @include('partials.image')
+                        @include('partials.image',['class'=> 'small-image-carousel'])
 
                         @include('partials.category')
 
