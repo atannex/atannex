@@ -9,23 +9,24 @@ trait Cleaning
     /**
      * Boot the trait and hook into model lifecycle events.
      */
-    public static function bootImageCleanup(): void
+    public static function bootCleaning(): void
     {
         static::updating(function ($model) {
             $model->deleteOldImagesOnUpdate();
         });
 
         static::deleting(function ($model) {
-            if (method_exists($model, 'isForceDeleting') && !$model->isForceDeleting()) {
-                $model->deleteImagesOnSoftDelete();
-            } else {
-                $model->deleteImagesOnForceDelete();
-            }
+            $method = method_exists($model, 'isForceDeleting') && !$model->isForceDeleting()
+                ? 'deleteImagesOnSoftDelete'
+                : 'deleteImagesOnForceDelete';
+            $model->$method();
         });
     }
 
     /**
-     * Attributes that hold image paths. Override in model to customize.
+     * Get attributes that hold image paths. Override in model to customize.
+     *
+     * @return array<string>
      */
     protected function imageAttributes(): array
     {
@@ -33,7 +34,9 @@ trait Cleaning
     }
 
     /**
-     * Storage disk for image cleanup. Override in model to customize.
+     * Get storage disk for image cleanup. Override in model to customize.
+     *
+     * @return string
      */
     protected function imageDisk(): string
     {
@@ -41,20 +44,15 @@ trait Cleaning
     }
 
     /**
-     * Delete removed images on model update.
+     * Delete images removed during model update.
      */
     protected function deleteOldImagesOnUpdate(): void
     {
         foreach ($this->imageAttributes() as $attribute) {
             if ($this->isDirty($attribute)) {
-                $original = $this->getOriginal($attribute);
-                $current = $this->{$attribute};
-
-                $originalPaths = $this->ensureArray($original);
-                $currentPaths = $this->ensureArray($current);
-
-                $removedPaths = array_diff($originalPaths, $currentPaths);
-                $this->deleteImageFile($removedPaths);
+                $original = $this->ensureArray($this->getOriginal($attribute));
+                $current = $this->ensureArray($this->{$attribute});
+                $this->deleteImageFiles(array_diff($original, $current));
             }
         }
     }
@@ -68,7 +66,7 @@ trait Cleaning
             return;
         }
 
-        $this->deleteImages();
+        $this->deleteAllImages();
     }
 
     /**
@@ -76,27 +74,29 @@ trait Cleaning
      */
     protected function deleteImagesOnForceDelete(): void
     {
-        $this->deleteImages();
+        $this->deleteAllImages();
     }
 
     /**
      * Delete all images for the model.
      */
-    protected function deleteImages(): void
+    protected function deleteAllImages(): void
     {
         foreach ($this->imageAttributes() as $attribute) {
-            $this->deleteImageFile($this->{$attribute});
+            $this->deleteImageFiles($this->ensureArray($this->{$attribute}));
         }
     }
 
     /**
-     * Delete image file(s) from disk.
+     * Delete image files from the storage disk.
+     *
+     * @param array<string> $paths
      */
-    protected function deleteImageFile(array|null $paths): void
+    protected function deleteImageFiles(array $paths): void
     {
         $disk = Storage::disk($this->imageDisk());
 
-        foreach ($this->ensureArray($paths) as $path) {
+        foreach ($paths as $path) {
             if ($path && $disk->exists($path)) {
                 $disk->delete($path);
             }
@@ -104,7 +104,10 @@ trait Cleaning
     }
 
     /**
-     * Ensure input is an array of strings (no JSON parsing allowed).
+     * Ensure input is an array of non-empty strings.
+     *
+     * @param mixed $value
+     * @return array<string>
      */
     protected function ensureArray(mixed $value): array
     {
