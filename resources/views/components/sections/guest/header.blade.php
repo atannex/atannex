@@ -1,3 +1,5 @@
+@include('components.partials.mobile-menu')
+
 <header class="th-header header-layout1">
     <div class="sticky-wrapper">
         <div class="menu-area">
