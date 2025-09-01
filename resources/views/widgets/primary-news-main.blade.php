@@ -7,7 +7,7 @@
             <div class="blog-style1">
                 <div class="blog-img">
 
-                    @include('partials.image')
+                    @include('partials.image',['class'=> 'primary-news-section-widget'])
 
                     @include('partials.category')
 

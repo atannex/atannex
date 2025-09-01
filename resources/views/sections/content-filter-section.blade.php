@@ -33,7 +33,7 @@
                 <div class="mb-4 col-xl-6 mb-xl-0">
                     <article class="blog-style1 style-big">
                         <div class="blog-img">
-                            <img src="{{ asset('storage/' . $featuredPost->image) }}" alt="{{ $featuredPost->title }}" class="img-fluid" loading="lazy" />
+                            <img src="{{ asset('storage/' . $featuredPost->image) }}" alt="{{ $featuredPost->title }}" class="img-fluid content-filter-section" loading="lazy" />
                             <a data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" href="{{ route('page.index', $featuredPost->category->slug_path) }}" class="category" aria-label="{{ __('View :category posts', ['category' => $featuredPost->category->name]) }}">
                                 {{ $featuredPost->category->name }}
                             </a>
@@ -65,7 +65,7 @@
                             <article class="blog-style1">
                                 <div class="blog-img">
 
-                                    @include('partials.image')
+                                    @include('partials.image',['class'=> 'small-image-carousel'])
 
                                     @include('partials.category')
 
