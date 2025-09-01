@@ -19,6 +19,7 @@ final class AtannexProvider extends GetComponent
         PostType::POST_BY_TAG          => 'getPostByTag',
         PostType::POST_BY_FONDOM       => 'getPostByFondom',
         PostType::POST_BY_SUBDIVISION  => 'getPostBySubdivision',
+        PostType::GET_CATEGORY_WITH_POSTS => 'getCategoryWithPosts'
     ];
 
     /**

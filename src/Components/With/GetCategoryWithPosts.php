@@ -13,7 +13,7 @@ trait GetCategoryWithPosts
 
     public function getCategoryWithPosts(array $config): Collection
     {
-        $categoryIds   = $this->normalizeIds(Arr::get($config, 'category_id'));
+        $categoryIds   = $this->normalizeIds(Arr::get($config, 'category_and_post_id'));
         $limit         = max(1, (int) Arr::get($config, 'limit', 4));  //category limit
         $postLimit     = max(1, (int) Arr::get($config, 'post_limit', 3)); //category post limit
         $leafPostLimit = max(1, (int) Arr::get($config, 'leaf_post_limit', 1)); // limit for the each post to be displayed by each category leaf

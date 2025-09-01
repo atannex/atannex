@@ -36,6 +36,24 @@ class TabBasicInformation
                             ->suffix('posts')
                             ->helperText('Maximum number of posts to display')
                             ->required(),
+                        TextInput::make('post_limit')
+                            ->label('Category Post Limit')
+                            ->numeric()
+                            ->default(5)
+                            ->minValue(1)
+                            ->maxValue(50)
+                            ->suffix('posts')
+                            ->helperText('Maximum number of posts to display')
+                            ->required(),
+                        TextInput::make('leaf_post_limit')
+                            ->label('leaf_post_limit')
+                            ->numeric()
+                            ->default(5)
+                            ->minValue(1)
+                            ->maxValue(50)
+                            ->suffix('posts')
+                            ->helperText('Maximum number of posts to display')
+                            ->required(),
 
                         Select::make('sort')
                             ->label('Sort By')
