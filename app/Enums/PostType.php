@@ -16,7 +16,6 @@ final class PostType extends Enum
 
     // --- Time-Based ---
     public const JUST_PUBLISHED_POST = 'just-published-post';
-    public const RECENT_POST = 'recent-post';
     public const THIS_WEEK_TOP_POST = 'this-week-top-post';
     public const TODAY_STORIES = 'today-stories';
     public const MOST_VIEWED_POST_TODAY = 'most-viewed-post-today';
@@ -221,12 +220,6 @@ final class PostType extends Enum
                 'description' => 'Posts from a given week.',
                 'color' => 'gray',
                 'icon' => 'heroicon-o-calendar-days',
-            ],
-            self::RECENT_POST => [
-                'label' => 'Recent Post',
-                'description' => 'Freshly published content.',
-                'color' => 'cyan',
-                'icon' => 'heroicon-o-clock',
             ],
             self::THIS_WEEK_TOP_POST => [
                 'label' => 'Top This Week',
