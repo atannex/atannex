@@ -5,6 +5,8 @@
     /* ------------------------------
        Common styles for all images
     ------------------------------- */
+    .home-hero-bg,
+    .home-hero,
     .blog-list,
     .blog-standard,
     .category-3-column,
@@ -22,10 +24,16 @@
         object-position: center !important;
         background-color: #f0f0f0 !important;
     }
+    .home-hero-bg {
+        width: 1920px !important;
+        height: 645px !important;
+    }
 
-    /* ------------------------------
-       Specific dimensions
-    ------------------------------- */
+    .home-hero {
+        width: 184px !important;
+        height: 80px !important;
+    }
+
     .top-stories-main-center {
         width: 600px !important;
         height: 625px !important;

@@ -4,7 +4,7 @@
         <div class="hero-slider-1 th-carousel" data-fade="true" data-slide-show="1" data-md-slide-show="1" data-adaptive-height="true">
             @foreach($recentPosts as $post)
             <div class="th-hero-slide">
-                <div class="th-hero-bg" data-overlay="black" data-opacity="6" data-bg-src="{{ asset('storage/' . $post->image) }}"></div>
+                <div class="th-hero-bg image-fluid home-hero-bg" data-overlay="black" data-opacity="6" data-bg-src="{{ asset('storage/' . $post->image) }}"></div>
                 <div class="container">
                     <div class="blog-bg-style1">
                         <a data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" data-ani="slideinup" data-ani-delay="0.1s" href="{{ route('page.index', $post->category->slug_path) }}" class="category">
@@ -39,7 +39,7 @@
                     @foreach($recentPosts as $index => $post)
                     <div class="tab-btn {{ $index === 0 ? 'active' : '' }}">
 
-                        @include('partials.image')
+                        @include('partials.image', ['class' => 'home-hero'])
 
                     </div>
                     @endforeach
@@ -56,7 +56,7 @@
                     <div class="blog-style3">
                         <div class="blog-img">
 
-                            @include('partials.image')
+                            @include('partials.image', ['class' => 'large-carousel-image'])
 
                         </div>
                         <div class="blog-content">
@@ -158,3 +158,4 @@
     </section>
 
 </x-layouts.guest>
+
