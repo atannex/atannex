@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use App\Enums\Flag;
+use App\Filament\Traits\HasEnumColumnAndField;
 use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
 use App\Models\Pages\Category;
@@ -16,6 +18,8 @@ use Filament\Forms\Components\DateTimePicker;
 
 class PostForm
 {
+    use HasEnumColumnAndField;
+
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -41,16 +45,7 @@ class PostForm
                                                 }
                                             }),
 
-                                        Select::make('flag')
-                                            ->label('Status')
-                                            ->required()
-                                            ->default('draft')
-                                            ->options([
-                                                'draft' => 'Draft',
-                                                'published' => 'Published',
-                                                'scheduled' => 'Scheduled',
-                                                'archived' => 'Archived'
-                                            ])
+                                        self::makeEnumField('flag', Flag::class)
                                             ->columnSpan(['default' => 12, 'md' => 4, 'lg' => 3])
                                             ->native(false),
                                     ]),
@@ -98,6 +93,7 @@ class PostForm
                                     ->schema([
                                         Grid::make(1)
                                             ->schema([
+
                                                 Select::make('category_id')
                                                     ->label('Category')
                                                     ->options(function () {
@@ -124,19 +120,17 @@ class PostForm
                                                     ->native(false)
                                                     ->helperText('Choose the main category for this post'),
 
-                                                Select::make('author_id')
-                                                    ->label('Author')
-                                                    ->relationship(
-                                                        name: 'author',
-                                                        titleAttribute: 'name',
-                                                        modifyQueryUsing: fn($query) => $query->with('user')
-                                                    )
-                                                    ->getOptionLabelFromRecordUsing(fn($record) => $record->user?->name ?? 'Unknown User')
-                                                    ->searchable()
-                                                    ->required()
-                                                    ->preload()
-                                                    ->native(false)
-                                                    ->helperText('Employee who created this post'),
+                                                self::makeRelationshipField(
+                                                    name: 'author_id',
+                                                    relationship: 'author',
+                                                    displayColumn: 'name',
+                                                    nullable: false,
+                                                    queryCallback: fn($query) => $query->with('user'),
+                                                    getLabel: fn($record) => $record->user?->name ?? 'Unknown User',
+                                                    helperText: 'Employee who created this post'
+                                                ),
+
+
                                             ]),
                                     ])
                                     ->compact()

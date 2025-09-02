@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Posts\Tables;
 
+use App\Enums\Flag;
+use App\Filament\Traits\HasEnumColumnAndField;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Actions\EditAction;
@@ -20,6 +22,8 @@ use Filament\Actions\ForceDeleteBulkAction;
 
 class PostsTable
 {
+    use HasEnumColumnAndField;
+
     public static function configure(Table $table): Table
     {
         return $table
@@ -44,28 +48,12 @@ class PostsTable
                     ->description(fn($record) => $record->description ? Str::limit($record->description, 60) : null)
                     ->wrap(),
 
-                TextColumn::make('flag')
-                    ->badge()
-                    ->label('Status')
-                    ->colors([
-                        'danger' => 'draft',
-                        'warning' => 'pending',
-                        'success' => 'published',
-                        'secondary' => 'archived',
-                    ])
-                    ->icons([
-                        'heroicon-o-document-text' => 'draft',
-                        'heroicon-o-clock' => 'pending',
-                        'heroicon-o-check-circle' => 'published',
-                        'heroicon-o-archive-box' => 'archived',
-                    ])
-                    ->searchable()
-                    ->sortable(),
+                self::makeEnumColumn('flag', Flag::class, true),
 
                 TextColumn::make('category.name')
                     ->label('Category')
                     ->badge()
-                    ->color('primary')
+                    ->color('warning')
                     ->sortable()
                     ->searchable(),
 
@@ -74,7 +62,12 @@ class PostsTable
                     ->sortable()
                     ->searchable()
                     ->icon('heroicon-o-user')
-                    ->iconColor('gray'),
+                    ->iconColor('gray')
+                    ->description(function ($record) {
+                        return !empty($record->author?->user?->email)
+                            ? Str::limit($record->author->user->email, 60)
+                            : null;
+                    }),
 
                 TextColumn::make('slug')
                     ->label('Slug')
@@ -89,6 +82,8 @@ class PostsTable
                     ->label('Published')
                     ->dateTime('M j, Y')
                     ->sortable()
+                    ->badge()
+                    ->color('info')
                     ->icon('heroicon-o-calendar')
                     ->iconColor('success')
                     ->since()
