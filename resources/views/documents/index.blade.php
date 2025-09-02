@@ -1,4 +1,4 @@
-<x-layouts.guest :title="isset($type) ? ($type . ' - ' . __('top stories, breaking news & headlines') . ' | ' . config('app.name')) : config('app.name')">
+<x-layouts.guest :title="seo_title($type)">
 
     <x-partials.breadcrumb />
 
