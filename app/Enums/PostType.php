@@ -11,21 +11,16 @@ final class PostType extends Enum
 {
     use GetEnum;
 
-    // --- Editorial ---
     public const EDITOR_PICK = 'editor-pick';
 
-    // --- Time-Based ---
     public const JUST_PUBLISHED_POST = 'just-published-post';
     public const THIS_WEEK_TOP_POST = 'this-week-top-post';
     public const TODAY_STORIES = 'today-stories';
-    public const MOST_VIEWED_POST_TODAY = 'most-viewed-post-today';
-    public const MOST_VIEWED_POST_THIS_WEEK = 'most-viewed-post-this-week';
     public const POST_BY_TODAY = 'post-by-today';
     public const POST_BY_WEEK = 'post-by-week';
     public const POST_BY_TWO_WEEKS = 'post-by-two-weeks';
     public const POST_BY_MONTH = 'post-by-month';
 
-    // --- Popularity / Engagement ---
     public const MOST_COMMENTED_POST = 'most-commented-post';
     public const MOST_ENGAGED_POST = 'most-engaged-post';
     public const MOST_LIKED_POST = 'most-liked-post';
@@ -35,15 +30,12 @@ final class PostType extends Enum
     public const MOST_VIEWED_AND_COMMENTED_POST = 'most-viewed-and-commented-post';
     public const MOST_VIEWED_AND_LIKED_POST = 'most-viewed-and-liked-post';
     public const MOST_VIEWED_AND_SHARED_POST = 'most-viewed-and-shared-post';
-    public const MOST_VIEWED_SHARED_LIKED_AND_COMMENTED_POST = 'most-viewed-shared-liked-and-commented-post';
     public const POPULAR_POST = 'popular-post';
-    public const POPULAR_POST_IN_CATEGORY = 'popular-post-in-category';
     public const TOP_RATED_POST = 'top-rated-post';
     public const TRENDING_POST = 'trending-post';
     public const TRENDING_POST_IN_TAG = 'trending-post-in-tag';
     public const TOP_POST_IN_TAG = 'top-post-in-tag';
 
-    // --- Category / Author / Location ---
     public const POST_BY_AUTHOR = 'post-by-author';
     public const POST_BY_CATEGORY = 'post-by-category';
     public const POST_BY_DIVISION = 'post-by-division';
@@ -125,35 +117,11 @@ final class PostType extends Enum
                 'color' => 'indigo',
                 'icon' => 'heroicon-o-chart-bar',
             ],
-            self::MOST_VIEWED_POST_THIS_WEEK => [
-                'label' => 'Most Viewed This Week',
-                'description' => 'Top views in current week.',
-                'color' => 'blue',
-                'icon' => 'heroicon-o-calendar-days',
-            ],
-            self::MOST_VIEWED_POST_TODAY => [
-                'label' => 'Most Viewed Today',
-                'description' => 'Top views in the last 24 hours.',
-                'color' => 'teal',
-                'icon' => 'heroicon-o-sun',
-            ],
-            self::MOST_VIEWED_SHARED_LIKED_AND_COMMENTED_POST => [
-                'label' => 'All-in-One Post',
-                'description' => 'Top viewed, shared, liked, and commented post.',
-                'color' => 'amber',
-                'icon' => 'heroicon-o-trophy',
-            ],
             self::POPULAR_POST => [
                 'label' => 'Popular Post',
                 'description' => 'Trending across the site.',
                 'color' => 'pink',
                 'icon' => 'heroicon-o-trending-up',
-            ],
-            self::POPULAR_POST_IN_CATEGORY => [
-                'label' => 'Popular in Category',
-                'description' => 'Trending in a specific category.',
-                'color' => 'violet',
-                'icon' => 'heroicon-o-tag',
             ],
             self::POST_BY_AUTHOR => [
                 'label' => 'Post by Author',

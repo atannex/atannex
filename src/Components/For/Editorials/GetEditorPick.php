@@ -2,31 +2,31 @@
 
 namespace Atannex\Components\For\Editorials;
 
+use App\Enums\Flag;
 use App\Models\Posts\Post;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use DateTimeInterface;
 
 trait GetEditorPick
 {
     /**
-     * Retrieve posts marked as editor's picks within an optional date range.
+     * Retrieve editor's picks.
      *
-     * @param int $limit Maximum number of posts to retrieve.
-     * @param DateTimeInterface|null $start Optional start date filter.
-     * @param DateTimeInterface|null $end Optional end date filter.
+     * This method fetches posts flagged as editorial picks, ensuring
+     * only published posts are returned. Results are ordered by
+     * the most recently updated posts.
+     *
+     * @param array $config Optional configuration:
+     *                      - 'limit' => int Number of posts to retrieve (default 5)
+     * @return Collection<int, Post>
      */
-    public function getEditorPicks(int $limit = 5, ?DateTimeInterface $start = null, ?DateTimeInterface $end = null): Collection
+    public function getEditorPicks(array $config = []): Collection
     {
-        $start = $start ?? Carbon::now()->subDays(30);
-        $end = $end ?? Carbon::now();
+        $limit = $config['limit'] ?? 5;
 
         return Post::query()
+            ->where('flag', Flag::EDITORIAL_PICK)
             ->published()
-            ->isEditorPick()
-            ->when($start, fn($query) => $query->where('published_at', '>=', $start))
-            ->when($end, fn($query) => $query->where('published_at', '<=', $end))
-            ->orderByDesc('published_at')
+            ->orderByDesc('updated_at')
             ->limit($limit)
             ->get();
     }

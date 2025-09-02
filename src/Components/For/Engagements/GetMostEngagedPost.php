@@ -3,32 +3,45 @@
 namespace Atannex\Components\For\Engagements;
 
 use App\Models\Posts\Post;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use DateTimeInterface;
 
 trait GetMostEngagedPost
 {
     /**
-     * Retrieve posts with the highest engagement (comments + likes) within an optional date range.
+     * Retrieve posts sorted by a specified engagement metric.
      *
-     * @param int $limit Maximum number of posts to retrieve.
-     * @param DateTimeInterface|null $start Optional start date filter.
-     * @param DateTimeInterface|null $end Optional end date filter.
+     * Supports filtering by category or tag, configurable limit,
+     * and eager loading of relations.
+     *
+     * @param string $metric The engagement metric to sort by
+     *                       e.g., 'rating', 'views', 'shares', 'likes', 'comments_count'
+     * @param array $config Optional configuration:
+     *                      - 'limit' => int Number of posts to retrieve (default 5)
+     *                      - 'category_id' => int Filter by category ID
+     *                      - 'tag_id' => int Filter by tag ID
+     *                      - 'with' => array Eager load relations (default ['category', 'tags'])
+     * @return Collection<int, Post>
      */
-    public function getMostEngagedPosts(int $limit = 5, ?DateTimeInterface $start = null, ?DateTimeInterface $end = null): Collection
+    public function getMostEngagedPosts(string $metric, array $config = []): Collection
     {
-        $start = $start ?? Carbon::now()->subDays(30); // Default to last 30 days
-        $end = $end ?? Carbon::now();
+        $allowedMetrics = ['rating', 'views', 'shares', 'likes', 'comments_count'];
+        if (!in_array($metric, $allowedMetrics)) {
+            throw new \InvalidArgumentException("Invalid engagement metric '{$metric}'. Allowed metrics: " . implode(', ', $allowedMetrics));
+        }
 
-        return Post::query()
+        $limit = $config['limit'] ?? 5;
+        $categoryId = $config['category_id'] ?? null;
+        $tagId = $config['tag_id'] ?? null;
+        $relations = $config['with'] ?? ['category', 'tags'];
+
+        $query = Post::query()
             ->published()
-            ->withCount(['comments', 'likes']) // Assumes 'comments' and 'likes' relationships exist
-            ->when($start, fn($query) => $query->where('published_at', '>=', $start))
-            ->when($end, fn($query) => $query->where('published_at', '<=', $end))
-            ->orderByRaw('comments_count + likes_count DESC') // Order by engagement score
-            ->orderByDesc('published_at') // Secondary sort by publication date
-            ->limit($limit)
-            ->get();
+            ->when($categoryId, fn($q) => $q->where('category_id', $categoryId))
+            ->when($tagId, fn($q) => $q->whereHas('tags', fn($q) => $q->where('id', $tagId)))
+            ->with($relations)
+            ->orderByDesc($metric)
+            ->limit($limit);
+
+        return $query->get();
     }
 }

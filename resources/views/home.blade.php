@@ -1,4 +1,4 @@
-<x-layouts.guest :title="seo_title('Be Our Guest')">
+<x-layouts.guest :title="seo_title()">
 
     <div class="mt-2 mb-4 th-hero-wrapper hero-1" id="hero">
         <div class="hero-slider-1 th-carousel" data-fade="true" data-slide-show="1" data-md-slide-show="1" data-adaptive-height="true">

@@ -3,32 +3,39 @@
 namespace Atannex\Components\For\Engagements;
 
 use App\Models\Posts\Post;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use DateTimeInterface;
 
 trait GetMostLikedPost
 {
     /**
-     * Retrieve posts with the highest number of likes within an optional date range.
+     * Retrieve the most liked posts.
      *
-     * @param int $limit Maximum number of posts to retrieve.
-     * @param DateTimeInterface|null $start Optional start date filter.
-     * @param DateTimeInterface|null $end Optional end date filter.
+     * Fetches posts ordered by like count in descending order.
+     * Supports optional filtering by category or tag, eager loading,
+     * and configurable limit.
+     *
+     * @param array $config Optional configuration:
+     *                      - 'limit' => int Number of posts to retrieve (default 5)
+     *                      - 'category_id' => int Filter by category ID
+     *                      - 'tag_id' => int Filter by tag ID
+     *                      - 'with' => array Eager load relations (default ['category', 'tags'])
+     * @return Collection<int, Post>
      */
-    public function getMostLikedPosts(int $limit = 5, ?DateTimeInterface $start = null, ?DateTimeInterface $end = null): Collection
+    public function getMostLikedPosts(array $config = []): Collection
     {
-        $start = $start ?? Carbon::now()->subDays(30); // Default to last 30 days
-        $end = $end ?? Carbon::now();
+        $limit = $config['limit'] ?? 5;
+        $categoryId = $config['category_id'] ?? null;
+        $tagId = $config['tag_id'] ?? null;
+        $relations = $config['with'] ?? ['category', 'tags'];
 
-        return Post::query()
+        $query = Post::query()
             ->published()
-            ->withCount('likes') // Assumes a 'likes' relationship exists
-            ->when($start, fn($query) => $query->where('published_at', '>=', $start))
-            ->when($end, fn($query) => $query->where('published_at', '<=', $end))
-            ->orderByDesc('likes_count') // Order by like count
-            ->orderByDesc('published_at') // Secondary sort by publication date
-            ->limit($limit)
-            ->get();
+            ->when($categoryId, fn($q) => $q->where('category_id', $categoryId))
+            ->when($tagId, fn($q) => $q->whereHas('tags', fn($q) => $q->where('id', $tagId)))
+            ->with($relations)
+            ->orderByDesc('likes') // Sort by like count
+            ->limit($limit);
+
+        return $query->get();
     }
 }
