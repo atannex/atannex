@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\PostRegions;
 
 use App\Filament\Resources\PostRegions\Pages\CreatePostRegion;
-use App\Filament\Resources\PostRegions\Pages\EditPostRegion;
 use App\Filament\Resources\PostRegions\Pages\ListPostRegions;
 use App\Filament\Resources\PostRegions\Schemas\PostRegionForm;
 use App\Filament\Resources\PostRegions\Tables\PostRegionsTable;

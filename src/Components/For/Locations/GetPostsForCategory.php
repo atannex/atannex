@@ -11,7 +11,7 @@ trait GetPostsForCategory
     public function getPostsForCategory(array $config): Collection
     {
         $categoryIds = (array) ($config['category_id'] ?? []);
-        if (empty($categoryIds)) {
+        if ($categoryIds === []) {
             return collect();
         }
 

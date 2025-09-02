@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\PostRegions\Tables;
 
 use Filament\Tables\Table;
-use Filament\Actions\EditAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;

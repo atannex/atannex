@@ -25,6 +25,7 @@ trait Normalize
                     $result[] = $id;
                 }
             }
+
             return $result;
         }
 

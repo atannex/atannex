@@ -32,7 +32,7 @@ final class AtannexProvider extends GetComponent
      *                      - 'type' (string): The post type to fetch.
      *                      - Additional optional parameters for the specific retrieval method.
      *
-     * @return \Illuminate\Support\Collection Collection of posts.
+     * @return Collection Collection of posts.
      */
     public function getPostsByType(array $config): Collection
     {

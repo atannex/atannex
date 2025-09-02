@@ -2,6 +2,7 @@
 
 namespace Atannex\Components\For\Engagements;
 
+use InvalidArgumentException;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 
@@ -26,7 +27,7 @@ trait GetMostEngagedPost
     {
         $allowedMetrics = ['rating', 'views', 'shares', 'likes', 'comments_count'];
         if (!in_array($metric, $allowedMetrics)) {
-            throw new \InvalidArgumentException("Invalid engagement metric '{$metric}'. Allowed metrics: " . implode(', ', $allowedMetrics));
+            throw new InvalidArgumentException(sprintf("Invalid engagement metric '%s'. Allowed metrics: ", $metric) . implode(', ', $allowedMetrics));
         }
 
         $limit = $config['limit'] ?? 5;

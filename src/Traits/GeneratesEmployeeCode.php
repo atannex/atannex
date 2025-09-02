@@ -25,7 +25,9 @@ trait GeneratesEmployeeCode
     public function generateEmployeeCode()
     {
         $userName = $this->user?->name;
-        if (!$userName) return;
+        if (!$userName) {
+            return;
+        }
 
         $year = now()->format('y');
 

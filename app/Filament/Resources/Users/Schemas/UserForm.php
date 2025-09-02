@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use Spatie\Permission\Models\Permission;
 use Filament\Schemas\Schema;
 
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Tabs;
 use Filament\Forms\Components\TextInput;
@@ -251,7 +251,7 @@ class UserForm
                                                     ->optionsLimit(50)
                                                     ->getSearchResultsUsing(
                                                         fn(string $search) =>
-                                                        \Spatie\Permission\Models\Permission::where('name', 'like', "%{$search}%")
+                                                        Permission::where('name', 'like', sprintf('%%%s%%', $search))
                                                             ->limit(50)
                                                             ->pluck('name', 'id')
                                                     ),

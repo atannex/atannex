@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Posts\Post;
-use Illuminate\Support\Str;
 
 class GeneratePostSlugPaths extends Command
 {

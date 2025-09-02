@@ -8,6 +8,7 @@ use App\Models\Regions\Employee;
 class GenerateEmployeeCodes extends Command
 {
     protected $signature = 'employees:generate-codes';
+
     protected $description = 'Regenerate employee codes for all employees based on user names';
 
     public function handle()

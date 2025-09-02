@@ -11,7 +11,7 @@ trait Entities
      */
     private function resolveEntities(?string $type, array $ids, array $config = []): Collection
     {
-        if (empty($type) || empty($ids)) {
+        if ($type === null || $type === '' || $type === '0' || $ids === []) {
             return collect();
         }
 

@@ -25,16 +25,16 @@ class GenerateDepartmentCodes extends Command
     public function handle()
     {
         $departments = Department::all();
-        $this->info("Found {$departments->count()} departments...");
+        $this->info(sprintf('Found %d departments...', $departments->count()));
 
         foreach ($departments as $department) {
             if ($this->option('force') || empty($department->department_code)) {
                 $department->generateDepartmentCode();
                 $department->save();
 
-                $this->line("✅ Updated: {$department->name} → {$department->department_code}");
+                $this->line(sprintf('✅ Updated: %s → %s', $department->name, $department->department_code));
             } else {
-                $this->line("⏭ Skipped: {$department->name} (already has code: {$department->department_code})");
+                $this->line(sprintf('⏭ Skipped: %s (already has code: %s)', $department->name, $department->department_code));
             }
         }
 

@@ -55,6 +55,7 @@ class Post extends Model implements Commentable, Sluggable
     {
         return 'public';
     }
+
     /**
      * The source attribute for slug generation.
      */

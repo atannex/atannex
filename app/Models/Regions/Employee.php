@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Pivots\EmployeeDepartment;
 use Atannex\Traits\GeneratesEmployeeCode;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, MorphMany, BelongsToMany, HasMany};
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Model
 {
@@ -68,12 +67,12 @@ class Employee extends Model
 
     /** Scopes */
 
-    public function scopeActive($query)
+    protected function scopeActive($query)
     {
         return $query->where('status', Status::ACTIVE);
     }
 
-    public function scopeByDepartment($query, $departmentId)
+    protected function scopeByDepartment($query, $departmentId)
     {
         return $query->whereHas('departments', fn($q) => $q->where('departments.id', $departmentId));
     }
