@@ -56,11 +56,13 @@ trait Content
         ];
     }
 
-    private function resolveTabs(array $tabs): array
+    private function groupAndNormalizeTabs(array $tabs): array
     {
         $groupedTabs = [];
         foreach ($tabs as $index => $tab) {
-            if (empty($tab['type'])) continue;
+            if (empty($tab['type'])) {
+                continue;
+            }
 
             try {
                 ['entity' => $type, 'ids' => $ids] = $this->extractEntityAndIds($tab);
@@ -82,6 +84,11 @@ trait Content
             }
         }
 
+        return [$tabs, $groupedTabs];
+    }
+
+    private function resolveAndUpdateTabs(array $tabs, array $groupedTabs): array
+    {
         $resolvedEntities = [];
         foreach ($groupedTabs as $type => $data) {
             foreach ($data['tabs'] as $index => $tab) {
@@ -107,5 +114,11 @@ trait Content
         }
 
         return $tabs;
+    }
+
+    private function resolveTabs(array $tabs): array
+    {
+        [$tabs, $groupedTabs] = $this->groupAndNormalizeTabs($tabs);
+        return $this->resolveAndUpdateTabs($tabs, $groupedTabs);
     }
 }
