@@ -8,7 +8,7 @@ use App\Models\Pivots\PostTag;
 
 trait TagBuilder
 {
-     /**
+    /**
      * Boot method to handle cascading soft deletes and pivot slug updates.
      */
     protected static function booted(): void
@@ -31,5 +31,4 @@ trait TagBuilder
             }
         });
     }
-
 }
