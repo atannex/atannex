@@ -5,6 +5,7 @@ namespace App\Models\Pivots;
 use App\Contracts\Sluggable;
 use App\Models\Posts\Post;
 use App\Models\Tags\Tag;
+use Atannex\Builders\PostTagBuilder;
 use Atannex\Traits\Bootable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -12,11 +13,12 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 /**
  * Class PostTag
  *
- * Represents a pivot model for post-tag relationships with slug management.
+ * Pivot model representing the post-tag relationship with slug management.
  */
 class PostTag extends Pivot implements Sluggable
 {
     use Bootable;
+    use PostTagBuilder;
 
     /**
      * The table associated with the pivot model.
@@ -26,7 +28,7 @@ class PostTag extends Pivot implements Sluggable
     protected $table = 'post_tag';
 
     /**
-     * The attributes that are mass assignable.
+     * Mass assignable attributes.
      *
      * @var array<string>
      */
@@ -37,7 +39,7 @@ class PostTag extends Pivot implements Sluggable
     ];
 
     /**
-     * The attributes that should be cast.
+     * Attribute casting.
      *
      * @var array<string, string>
      */
@@ -47,7 +49,7 @@ class PostTag extends Pivot implements Sluggable
     ];
 
     /**
-     * Get the post that belongs to this pivot.
+     * Get the post associated with this pivot.
      */
     public function post(): BelongsTo
     {
@@ -55,46 +57,10 @@ class PostTag extends Pivot implements Sluggable
     }
 
     /**
-     * Get the tag that belongs to this pivot.
+     * Get the tag associated with this pivot.
      */
     public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class);
-    }
-
-    /**
-     * Get the base string for slug generation.
-     *
-     * @return string|null The post's category slug path or null if not available.
-     */
-    public function getSlugBase(): ?string
-    {
-        return $this->post?->category?->slug_path;
-    }
-
-    /**
-     * Get the generated slug for the pivot.
-     *
-     * @return string|null The tag's slug or null if not available.
-     */
-    public function getSlug(): ?string
-    {
-        return $this->tag?->slug;
-    }
-
-    /**
-     * Update slug paths for related entities.
-     */
-    public function cascadeSlugPathUpdates(): void
-    {
-        // No cascading updates required for pivot.
-    }
-
-    /**
-     * Clear slug paths for related entities.
-     */
-    public function clearRelatedSlugPaths(): void
-    {
-        // No related slug paths to clear for pivot.
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Posts\Schemas;
 
 use App\Enums\Flag;
-use App\Filament\Traits\HasEnumColumnAndField;
+use App\Models\Tags\Tag;
 use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
 use App\Models\Pages\Category;
@@ -15,6 +15,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\DateTimePicker;
+use App\Filament\Traits\HasEnumColumnAndField;
 
 class PostForm
 {
@@ -165,6 +166,35 @@ class PostForm
                             ->columnSpan(1),
                         Group::make()
                             ->schema([
+
+                                Section::make('Tags')
+                                    ->icon('heroicon-o-tag')
+                                    ->description('Add relevant tags to optimize your post for search engines and improve discoverability.')
+                                    ->schema([
+                                        Select::make('tags')
+                                            ->relationship('tags', 'name')
+                                            ->multiple()
+                                            ->preload()
+                                            ->searchable()
+                                            ->optionsLimit(50)
+                                            ->helperText('Choose one or more tags to categorize your post effectively.')
+                                            ->placeholder('Select tags')
+                                            ->default(null)
+                                            ->required()
+                                            ->createOptionForm([
+                                                TextInput::make('name')
+                                                    ->required()
+                                                    ->maxLength(255)
+                                                    ->unique('tags', 'name'),
+                                            ])
+                                            ->createOptionUsing(function (array $data) {
+                                                return Tag::create($data)->id;
+                                            })
+                                            ->createOptionAction(fn($action) => $action->label('Add New Tag')),
+                                    ])
+                                    ->collapsible()
+                                    ->compact(),
+
                                 Section::make('Featured Media')
                                     ->description('Upload and manage your post images')
                                     ->icon('heroicon-o-photo')

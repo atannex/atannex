@@ -6,12 +6,16 @@ use App\Enums\Image;
 use Atannex\Binders\GetPost;
 use Atannex\Services\PageService;
 use Atannex\Helpers\Media;
+use Atannex\Services\TagService;
 
 final class LebialemProvider extends GetPost
 {
     use Media;
 
-    public function __construct(protected readonly PageService $pageService) {}
+    public function __construct(
+        protected readonly PageService $pageService,
+        protected readonly TagService $tagService,
+    ) {}
 
     /**
      * Prepare shared view data for public pages navigation.
@@ -21,6 +25,7 @@ final class LebialemProvider extends GetPost
     public function getGlobalData(): array
     {
         return [
+            'popularTags' =>$this->tagService->getPopularTags(10),
             'logo' => $this->getGalleryImage(Image::LOGO()),
             'banner' => $this->getGalleryImage(Image::BANNER()),
             'favicon' => $this->getGalleryImage(Image::FAVICON()),

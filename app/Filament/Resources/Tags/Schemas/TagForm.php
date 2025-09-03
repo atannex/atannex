@@ -16,7 +16,7 @@ class TagForm
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('slug')
-                    ->required(),
+                    ->disabled(),
                 Textarea::make('description')
                     ->default(null)
                     ->columnSpanFull(),

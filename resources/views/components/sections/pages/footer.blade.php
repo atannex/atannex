@@ -35,20 +35,11 @@
                  </div>
                  <div class="col-md-6 col-xl-3">
                      <div class="widget widget_tag_cloud footer-widget">
-                         <h3 class="widget_title">Popular Tags</h3>
-                         <div class="tagcloud">
-                             <a href="blog.html">Sports</a>
-                             <a href="blog.html">Politics</a>
-                             <a href="blog.html">Business</a>
-                             <a href="blog.html">Music</a> <a href="blog.html">Food</a>
-                             <a href="blog.html">Technology</a>
-                             <a href="blog.html">Travels</a>
-                             <a href="blog.html">Health</a>
-                             <a href="blog.html">Fashions</a>
-                             <a href="blog.html">Animal</a>
-                             <a href="blog.html">Weather</a> <a href="blog.html">Movies</a>
-                         </div>
+
+                         @include('components.partials.tags')
+
                      </div>
+
                  </div>
              </div>
          </div>
@@ -58,9 +49,9 @@
              <div class="row jusity-content-between align-items-center">
                  <div class="col-lg-5">
                      <p class="copyright-text">
-                         {{ __("Copyright") }} &copy; {{ now()->year }}
-                         <a href="{{ route('home') }}">{{ config('app.name') }}</a> .
-                         {{ __(" All Rights Reserved. ") }}
+                         {{ __(" Copyright ") }}
+                         <a href="{{ route('home') }}">{{ config('app.name') }}</a>
+                         &copy; {{ now()->year }}
                      </p>
                  </div>
                  <div class="col-lg-auto ms-auto d-none d-lg-block">

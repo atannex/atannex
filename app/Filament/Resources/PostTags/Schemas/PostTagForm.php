@@ -14,9 +14,13 @@ class PostTagForm
             ->components([
                 Select::make('post_id')
                     ->relationship('post', 'title')
+                    ->searchable()
+                    ->preload()
                     ->default(null),
                 Select::make('tag_id')
                     ->relationship('tag', 'name')
+                    ->preload()
+                    ->searchable()
                     ->default(null),
                 TextInput::make('slug_path')
                     ->default(null),

@@ -4,6 +4,7 @@ namespace App\Models\Tags;
 
 use App\Models\Posts\Post;
 use App\Models\Pivots\PostTag;
+use Atannex\Builders\TagBuilder;
 use Atannex\Enables\EnableSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,6 +16,7 @@ class Tag extends Model
 {
     use SoftDeletes;
     use EnableSlug;
+    use TagBuilder;
 
     /**
      * Source field for slug generation.
@@ -41,15 +43,6 @@ class Tag extends Model
         'children',
     ];
 
-    /**
-     * Boot method to handle cascading soft deletes.
-     */
-    protected static function booted(): void
-    {
-        static::deleting(function (Tag $tag) {
-            $tag->children()->delete();
-        });
-    }
 
     /**
      * Get the parent tag.

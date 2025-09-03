@@ -13,15 +13,16 @@ use Atannex\Traits\Cleaning;
 use Atannex\Relations\PostRelation;
 use App\Livewire\Interactions\HasLikes;
 use App\Livewire\Interactions\HasViews;
-use Illuminate\Database\Eloquent\Model;
 use App\Livewire\Interactions\HasShares;
 use App\Livewire\Interactions\HasRatings;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Post
  *
- * Represents a post model with slug management, commenting, and interaction features.
+ * Represents a post with hierarchical slug management,
+ * commenting, and interaction features.
  */
 class Post extends Model implements Commentable, Sluggable
 {
@@ -37,7 +38,7 @@ class Post extends Model implements Commentable, Sluggable
     use HasViews;
 
     /**
-     * Define attributes that store image paths.
+     * Attributes that store image paths.
      *
      * @return array<string>
      */
@@ -47,7 +48,7 @@ class Post extends Model implements Commentable, Sluggable
     }
 
     /**
-     * Define the storage disk for image cleanup.
+     * Storage disk for image cleanup.
      *
      * @return string
      */
@@ -57,12 +58,14 @@ class Post extends Model implements Commentable, Sluggable
     }
 
     /**
-     * The source attribute for slug generation.
+     * Source attribute for slug generation.
+     *
+     * @var string
      */
     protected string $slugSource = 'title';
 
     /**
-     * The attributes that are mass assignable.
+     * Mass assignable attributes.
      *
      * @var array<string>
      */
@@ -81,7 +84,7 @@ class Post extends Model implements Commentable, Sluggable
     ];
 
     /**
-     * The attributes that should be cast.
+     * Attribute casting.
      *
      * @var array<string, string>
      */
@@ -91,7 +94,7 @@ class Post extends Model implements Commentable, Sluggable
     ];
 
     /**
-     * The model's default attribute values.
+     * Model default attributes.
      *
      * @var array<string, mixed>
      */
@@ -108,7 +111,7 @@ class Post extends Model implements Commentable, Sluggable
     /**
      * Get the base string for slug generation.
      *
-     * @return string|null The category's slug path or null if no category exists.
+     * @return string|null The category's slug path.
      */
     public function getSlugBase(): ?string
     {
@@ -116,9 +119,9 @@ class Post extends Model implements Commentable, Sluggable
     }
 
     /**
-     * Get the generated slug for the model.
+     * Get the generated slug for this post.
      *
-     * @return string|null The post's slug.
+     * @return string|null
      */
     public function getSlug(): ?string
     {
@@ -134,16 +137,17 @@ class Post extends Model implements Commentable, Sluggable
     }
 
     /**
-     * Update slug paths for related tags and itself.
+     * Cascade slug path updates to related tags pivot and self.
      */
     public function cascadeSlugPathUpdates(): void
     {
-        // Rebuild post slug path first
+        // Update the post's own slug path
         $this->rebuildSlugPath();
         $this->saveQuietly();
 
-        // Update related tags pivot slug_path
-        if ($categorySlug = $this->category?->slug_path) {
+        // Update related tags' pivot slug paths
+        $categorySlug = $this->category?->slug_path;
+        if ($categorySlug) {
             $this->tags()->get()->each(function (Tag $tag) use ($categorySlug) {
                 $tag->pivot?->forceFill([
                     'slug_path' => $this->buildSlugPath($categorySlug, $tag->slug),
@@ -153,7 +157,7 @@ class Post extends Model implements Commentable, Sluggable
     }
 
     /**
-     * Clear slug paths for related tags.
+     * Clear slug paths for related tags pivots.
      */
     public function clearRelatedSlugPaths(): void
     {

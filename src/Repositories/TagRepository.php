@@ -2,7 +2,6 @@
 
 namespace Atannex\Repositories;
 
-use App\Enums\Flag;
 use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
@@ -56,22 +55,24 @@ class TagRepository implements TagInterface
      * Retrieves the most popular tags based on the number of associated published posts,
      * including pivot data such as 'slug_path' from the post_tag pivot table.
      *
-     * @return \Illuminate\Database\Eloquent\Collection<Tag>
+     * @param int $limit
+     * @return Collection
      */
     public function getPopularTags(int $limit = 10): Collection
     {
         return Tag::whereHas('posts', function ($query) {
-            $query->where('flag', Flag::PUBLISHED);
+            $query->published();
         })
             ->withCount(['posts' => function ($query) {
-                $query->where('flag', Flag::PUBLISHED);
+                $query->published();
             }])
             ->orderByDesc('posts_count')
             ->with(['posts' => function ($query) {
-                $query->where('flag', Flag::PUBLISHED)
+                $query->published()
                     ->with('category')
-                    ->select('posts.*');
+                    ->select('posts.*', 'post_tag.slug_path');
             }])
+            ->having('posts_count', '>=', 2)
             ->take($limit)
             ->get();
     }

@@ -2,9 +2,8 @@
 
 namespace App\Models\Pages;
 
-use App\Models\Posts\Post;
 use App\Contracts\Sluggable;
-use Atannex\Traits\Bootable;
+use Atannex\Builders\CategoryBuilder;
 use Atannex\Traits\Resolver;
 use Atannex\Enables\EnableSlug;
 use Atannex\Enables\EnableScope;
@@ -27,11 +26,11 @@ class Category extends Model implements Sluggable
     use EnableScope;
     use GetHierarchy;
     use Resolver;
-    use Bootable;
     use Cleaning;
+    use CategoryBuilder;
 
     /**
-     * Define attributes that store image paths.
+     * Attributes that store image paths.
      *
      * @return array<string>
      */
@@ -41,7 +40,7 @@ class Category extends Model implements Sluggable
     }
 
     /**
-     * Define the storage disk for image cleanup.
+     * Storage disk for image cleanup.
      *
      * @return string
      */
@@ -51,7 +50,7 @@ class Category extends Model implements Sluggable
     }
 
     /**
-     * The attributes that are mass assignable.
+     * Mass assignable attributes.
      *
      * @var array<string>
      */
@@ -67,7 +66,7 @@ class Category extends Model implements Sluggable
     ];
 
     /**
-     * The attributes that should be cast.
+     * Attribute casting.
      *
      * @var array<string, string>
      */
@@ -76,80 +75,9 @@ class Category extends Model implements Sluggable
     ];
 
     /**
-     * The source attribute for slug generation.
+     * Source attribute for slug generation.
+     *
+     * @var string
      */
     protected string $slugSource = 'name';
-
-    /**
-     * ---------------------------
-     * Sluggable Implementation
-     * ---------------------------
-     */
-
-    /**
-     * Get the base string for slug generation.
-     *
-     * @return string|null The parent category's slug path or null if no parent exists.
-     */
-    public function getSlugBase(): ?string
-    {
-        return $this->parent?->slug_path;
-    }
-
-    /**
-     * Get the generated slug for the model.
-     *
-     * @return string|null The category's slug.
-     */
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    /**
-     * Rebuild this category's slug path.
-     */
-    public function rebuildSlugPath(): void
-    {
-        $this->slug_path = $this->buildDynamicSlugPath();
-    }
-
-    /**
-     * Cascade slug path updates to children and related posts.
-     */
-    public function cascadeSlugPathUpdates(): void
-    {
-        // Update child categories recursively
-        foreach ($this->children as $child) {
-            $child->rebuildSlugPath();
-            $child->saveQuietly();
-            $child->cascadeSlugPathUpdates();
-        }
-
-        // Update related posts
-        $this->posts()->with('tags.tag')->get()->each(function (Post $post) {
-            $post->rebuildSlugPath();
-            $post->saveQuietly();
-        });
-    }
-
-
-    /**
-     * Clear slug paths for children and related posts.
-     */
-    public function clearRelatedSlugPaths(): void
-    {
-        // Clear child categories recursively
-        foreach ($this->children as $child) {
-            $child->slug_path = null;
-            $child->saveQuietly();
-            $child->clearRelatedSlugPaths();
-        }
-
-        // Clear related posts
-        $this->posts()->get()->each(function (Post $post) {
-            $post->slug_path = null;
-            $post->saveQuietly();
-        });
-    }
 }

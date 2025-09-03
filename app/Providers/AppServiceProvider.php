@@ -9,10 +9,15 @@ use App\Enums\Binding;
 use App\Enums\PostType;
 use App\Models\Pages\Widget;
 use App\Models\Pages\Section;
+use App\Models\Pages\Category;
+use App\Models\Pivots\PostTag;
+use App\Models\Posts\Post;
+use App\Models\Regions\Region;
 use App\Observers\WidgetObserver;
 use App\Observers\SectionObserver;
 use Ngangagah\Handlers\Navigation;
 use Atannex\Adapters\WidgetAdapter;
+use App\Observers\SluggableObserver;
 use Atannex\Adapters\SectionAdapter;
 use Illuminate\Support\ServiceProvider;
 
@@ -46,6 +51,11 @@ class AppServiceProvider extends ServiceProvider
     {
         Section::observe(new SectionObserver(new SectionAdapter()));
         Widget::observe(new WidgetObserver(new WidgetAdapter()));
+
+        Category::observe(SluggableObserver::class);
+        Region::observe(SluggableObserver::class);
+        PostTag::observe(SluggableObserver::class);
+        Post::observe(SluggableObserver::class);
     }
 
     /**
