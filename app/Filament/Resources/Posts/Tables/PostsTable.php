@@ -64,9 +64,9 @@ class PostsTable
                     ->icon('heroicon-o-user')
                     ->iconColor('gray')
                     ->description(function ($record) {
-                        return !empty($record->author?->user?->email)
-                            ? Str::limit($record->author->user->email, 60)
-                            : null;
+                        return empty($record->author?->user?->email)
+                            ? null
+                            : Str::limit($record->author->user->email, 60);
                     }),
 
                 TextColumn::make('slug')

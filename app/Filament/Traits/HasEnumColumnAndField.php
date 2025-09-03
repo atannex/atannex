@@ -2,6 +2,8 @@
 
 namespace App\Filament\Traits;
 
+use Closure;
+use InvalidArgumentException;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 
@@ -51,8 +53,8 @@ trait HasEnumColumnAndField
         string $relationship,
         string $displayColumn,
         bool $nullable = true,
-        ?\Closure $queryCallback = null,
-        ?\Closure $getLabel = null,
+        ?Closure $queryCallback = null,
+        ?Closure $getLabel = null,
         ?string $helperText = null
     ): Select {
         $field = Select::make($name)
@@ -64,7 +66,7 @@ trait HasEnumColumnAndField
             $field->nullable();
         }
 
-        if ($getLabel) {
+        if ($getLabel instanceof Closure) {
             $field->getOptionLabelFromRecordUsing($getLabel);
         }
 
@@ -122,6 +124,6 @@ trait HasEnumColumnAndField
             return $field;
         }
 
-        throw new \InvalidArgumentException("Invalid enum component type: {$type}");
+        throw new InvalidArgumentException('Invalid enum component type: ' . $type);
     }
 }
