@@ -28,6 +28,9 @@
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/image.css') }}">
+
+    @include('components.partials.googletagmanager')
+
 </head>
 <body>
 
