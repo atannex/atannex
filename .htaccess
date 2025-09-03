@@ -1,16 +1,3 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
-
-    # First, redirect any direct access to public folder
-    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+public/([^\s]+)? [NC]
-    RewriteRule ^ /%1 [R=301,L,NC]
-
-    # If the requested resource doesn't exist, send to public/index.php
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ public/index.php [QSA,L]
-
-    # If accessing the root, route through public/index.php
-    RewriteRule ^$ public/index.php [L]
-</IfModule>
+# Redirect all traffic to the public folder
+RewriteEngine On
+RewriteRule ^(.*)$ public/$1 [L]
