@@ -6,7 +6,7 @@
     @case('paragraphs')
     @foreach ($block['data']['content'] as $item)
     @if (!empty($item['value']))
-    <p>{{ $item['value'] }}</p>
+    <p>{!! $item['value'] !!}</p>
     @endif
     @endforeach
     @break
@@ -14,7 +14,7 @@
     {{-- Heading --}}
     @case('heading')
     @if (!empty($block['data']['title']))
-    <h3 class="h4">{{ $block['data']['title'] }}</h3>
+    <h3 class="h4">{!! $block['data']['title'] !!}</h3>
     @endif
     @break
 

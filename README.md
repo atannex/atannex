@@ -1,6 +1,4 @@
-# Atannex - *(Lebialem Community News)*
-
-![Project Logo](public/logo.jpg)
+# ![Project Logo](public/logo.jpg)
 
 ## *Overview*
 

@@ -13,6 +13,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 
 class PostModuleForm
 {
@@ -64,13 +65,11 @@ class PostModuleForm
                                                                             Repeater::make('content')
                                                                                 ->label('Paragraphs')
                                                                                 ->schema([
-                                                                                    Textarea::make('value')
+                                                                                    RichEditor::make('value')
                                                                                         ->label('Text Content')
-                                                                                        ->rows(4)
                                                                                         ->placeholder('Enter your paragraph text...')
                                                                                         ->columnSpanFull(),
                                                                                 ])
-                                                                                ->itemLabel(fn(array $state): ?string => str($state['value'] ?? '')->limit(50) . '...')
                                                                                 ->addActionLabel('Add Paragraph')
                                                                                 ->collapsible()
                                                                                 ->cloneable()
@@ -91,7 +90,7 @@ class PostModuleForm
                                                                 ->schema([
                                                                     Grid::make(1)
                                                                         ->schema([
-                                                                            TextInput::make('title')
+                                                                            RichEditor::make('title')
                                                                                 ->label('Heading Text')
                                                                                 ->required()
                                                                                 ->placeholder('Enter heading text...')
