@@ -4,89 +4,105 @@ namespace Atannex\Views\Traits;
 
 use App\Enums\PostType;
 use App\Models\Pages\Page;
+use Atannex\Helpers\Cache;
 
 trait Content
 {
     use Normalize;
     use Entities;
+    use Cache;
 
     protected function resolveSection(?Page $page): void
     {
+        if (!$page) {
+            return;
+        }
+
         foreach ($page->sections as $section) {
-            $this->resolveSectionContent($section);
+            foreach ($this->yieldSectionAndWidgets($section) as $entity) {
+                $this->resolveSectionEntities($entity, (array) $entity->pivot->config);
+            }
         }
     }
 
-    protected function resolveSectionContent(object $section): void
+    /**
+     * Lazy generator that yields the section itself and its widgets (if any).
+     */
+    private function yieldSectionAndWidgets(object $section): \Generator
     {
-        $this->resolveSectionEntities($section, (array) $section->pivot->config);
+        yield $section;
 
-        foreach ($section->widgets as $widget) {
-            $this->resolveSectionEntities($widget, (array) $widget->pivot->config);
+        if (!empty($section->widgets)) {
+            foreach ($section->widgets as $widget) {
+                yield $widget;
+            }
         }
     }
 
     private function resolveSectionEntities(object $entity, array $config): void
     {
-        $entity->tabs = $this->resolveTabs($config['tabs'] ?? []);
-    }
+        if (empty($config['tabs'])) {
+            $entity->tabs = [];
+            return;
+        }
 
+        $entity->tabs = $this->resolveTabs($config['tabs']);
+    }
 
     private function extractEntityAndIds(array $tab): array
     {
         $mapping = PostType::getEntityMapping($tab['type']);
-        $ids = (array) $tab[$mapping['idKey']];
 
         return [
             'entity' => $mapping['entity'],
-            'ids'    => $ids,
+            'ids'    => $this->normalizeIds((array) $tab[$mapping['idKey']]),
         ];
     }
 
-    private function groupAndNormalizeTabs(array $tabs): array
+    /**
+     * Groups tabs by entity type and collects normalized IDs.
+     */
+    private function groupTabsByEntity(array $tabs): array
     {
         $groupedTabs = [];
 
         foreach ($tabs as $index => $tab) {
             ['entity' => $type, 'ids' => $ids] = $this->extractEntityAndIds($tab);
 
-            $normalizedIds = $this->normalizeIds($ids);
-
-            $groupedTabs[$type]['ids'] = array_merge(
-                $groupedTabs[$type]['ids'] ?? [],
-                $normalizedIds
-            );
-
+            $groupedTabs[$type]['ids']   = array_merge($groupedTabs[$type]['ids'] ?? [], $ids);
             $groupedTabs[$type]['tabs'][$index] = $tab;
         }
 
-        return [$tabs, $groupedTabs];
+        return $groupedTabs;
     }
 
+    /**
+     * Resolves entities & posts with caching to avoid duplicate DB hits.
+     */
     private function resolveAndUpdateTabs(array $tabs, array $groupedTabs): array
     {
-        $resolvedEntities = [];
-
         foreach ($groupedTabs as $type => $data) {
+            $uniqueIds = array_unique($data['ids']);
+
             foreach ($data['tabs'] as $index => $tab) {
-                $uniqueIds = array_unique($data['ids']);
-                $resolvedEntities[$type][$index] = $this->resolveEntities(
+
+                $resolved = $this->getCachedEntities(
                     $type,
                     $uniqueIds,
-                    $tab
+                    fn($t, $ids) =>
+                    $this->resolveEntities($t, $ids)
                 );
-            }
-        }
 
-        foreach ($groupedTabs as $type => $data) {
-            foreach ($data['tabs'] as $index => $tab) {
                 $limit = $tab['limit'] ?? null;
-
                 $tabs[$index]['entities'] = $limit
-                    ? $resolvedEntities[$type][$index]->take($limit)
-                    : $resolvedEntities[$type][$index];
+                    ? $resolved->take($limit)
+                    : $resolved;
 
-                $tabs[$index]['content'] = $this->atannex->getPostsByType($tab);
+                $tabs[$index]['content'] = $this->getCachedPosts(
+                    $tab,
+                    fn($config) =>
+                    $this->atannex->getPostsByType($config)
+                );
             }
         }
 
@@ -95,7 +111,12 @@ trait Content
 
     private function resolveTabs(array $tabs): array
     {
-        [$tabs, $groupedTabs] = $this->groupAndNormalizeTabs($tabs);
+
+        if (empty($tabs)) {
+            return [];
+        }
+
+        $groupedTabs = $this->groupTabsByEntity($tabs);
         return $this->resolveAndUpdateTabs($tabs, $groupedTabs);
     }
 }
