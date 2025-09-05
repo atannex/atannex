@@ -64,8 +64,7 @@ trait PostRelation
     {
         return $this->belongsToMany(Region::class, 'post_region')
             ->using(PostRegion::class)
-            ->withTimestamps()
-            ->withPivot('deleted_at');
+            ->withTimestamps();
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PostRegions;
 
 use App\Filament\Resources\PostRegions\Pages\CreatePostRegion;
+use App\Filament\Resources\PostRegions\Pages\EditPostRegion;
 use App\Filament\Resources\PostRegions\Pages\ListPostRegions;
 use App\Filament\Resources\PostRegions\Schemas\PostRegionForm;
 use App\Filament\Resources\PostRegions\Tables\PostRegionsTable;
@@ -12,8 +13,6 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PostRegionResource extends Resource
 {
@@ -42,15 +41,8 @@ class PostRegionResource extends Resource
     {
         return [
             'index' => ListPostRegions::route('/'),
-            'create' => CreatePostRegion::route('/create')
+            'create' => CreatePostRegion::route('/create'),
+            'edit' => EditPostRegion::route('/{record}/edit'),
         ];
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
     }
 }

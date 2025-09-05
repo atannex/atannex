@@ -4,21 +4,10 @@ namespace Atannex\Views\Traits;
 
 use Illuminate\Support\Collection;
 
-/**
- * Trait Entities
- *
- * Provides entity resolution logic for different model types with posts.
- */
 trait Entities
 {
     /**
-     * Resolve entities based on type, IDs, and configuration.
-     *
-     * @param string|null $type   The entity type identifier.
-     * @param array<int, int|string> $ids   The entity IDs to resolve.
-     * @param array<string, mixed> $config  Additional configuration options.
-     *
-     * @return Collection<int, mixed>
+     * Resolve entities based on type, IDs, and full config.
      */
     private function resolveEntities(?string $type, array $ids, array $config = []): Collection
     {
@@ -31,21 +20,18 @@ trait Entities
                 'method' => 'getTagWithPosts',
                 'key'    => 'tag_with_post_id',
             ],
-            'fondom_with_posts' => [
-                'method' => 'getFondomWithPosts',
+            'region_with_posts' => [
+                'method' => 'getRegionWithPosts',
                 'key'    => 'region_with_post_id',
             ],
-            'sub_division_with_posts' => [
-                'method' => 'getSubDivisionWithPosts',
-                'key'    => 'region_with_post_id',
-            ],
+
             'category_with_posts' => [
                 'method' => 'getCategoryWithPosts',
                 'key'    => 'category_with_post_id',
             ],
         ];
 
-        if (!array_key_exists($type, $resolverMap)) {
+        if (!isset($resolverMap[$type])) {
             return collect();
         }
 

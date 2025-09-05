@@ -3,6 +3,7 @@
 namespace Atannex\Components\With;
 
 use App\Models\Tags\Tag;
+use Atannex\Views\Traits\Normalize;
 use Illuminate\Support\Collection;
 
 /**
@@ -12,6 +13,8 @@ use Illuminate\Support\Collection;
  */
 trait GetTagWithPosts
 {
+    use Normalize;
+
     /**
      * Retrieve tags with their associated posts.
      *
@@ -25,7 +28,7 @@ trait GetTagWithPosts
      */
     public function getTagWithPosts(array $config): Collection
     {
-        $tagIds     = $config['tag_id'] ?? [];
+        $tagIds     = $this->normalizeIds($config['tag_with_post_id']);
         $limit      = $config['limit'] ?? 5;
         $postLimit  = $config['post_limit'] ?? 5;
 

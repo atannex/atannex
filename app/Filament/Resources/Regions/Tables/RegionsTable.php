@@ -19,13 +19,13 @@ class RegionsTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('type')
+                TextColumn::make('territory')
+                    ->searchable(),
+                TextColumn::make('slug_path')
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
                 TextColumn::make('flag')
-                    ->searchable(),
-                TextColumn::make('logo')
                     ->searchable(),
                 TextColumn::make('parent.name')
                     ->numeric()

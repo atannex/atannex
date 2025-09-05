@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PostRegions\Schemas;
 
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class PostRegionForm
@@ -13,15 +14,10 @@ class PostRegionForm
             ->components([
                 Select::make('post_id')
                     ->relationship('post', 'title')
-                    ->searchable()
-                    ->preload()
                     ->default(null),
                 Select::make('region_id')
                     ->relationship('region', 'name')
-                    ->searchable()
-                    ->preload()
                     ->default(null),
-
             ]);
     }
 }

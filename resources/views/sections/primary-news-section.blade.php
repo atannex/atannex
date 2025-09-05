@@ -28,14 +28,14 @@
                         <div class="blog-style4">
 
                             <div class="blog-img">
-                                
+
                                 @include('partials.image', ['post' => $post, 'class'=> 'primary-news-section'])
 
-                                @if($region instanceof \App\Models\Regions\Region)
-                                <a href="{{ route('page.index', ['slug' => $region->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
-                                    {{ $region->name }}
+                                @foreach ($post->regions as $postRegion)
+                                <a href="{{ route('page.index', ['slug' => $postRegion->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
+                                    {{ $postRegion->name }}
                                 </a>
-                                @endif
+                                @endforeach
 
                             </div>
 

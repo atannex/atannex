@@ -4,24 +4,25 @@ namespace Atannex\Components\For\Locations;
 
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
-trait GetPostByAuthor
+trait GetPostByTag
 {
-
-    public function getPostByAuthor(array $config = []): Collection
+    public function getPostByTag(array $config = []): Collection
     {
-        $authorIds = (array) ($config['author_id'] ?? []);
-        $limit     = $config['limit'] ?? 10;
+        $tagIds   = (array) ($config['tag_id'] ?? []);
+        $limit    = $config['limit'] ?? 10;
         $sortBy  = $config['sort'] ?? 'published_at';
         $sortDir = $config['order'] ?? 'desc';
 
-        if (empty($authorIds)) {
+        if (empty($tagIds)) {
             return collect();
         }
 
         return Post::published()
-            ->whereIn('author_id', $authorIds)
-            ->whereHas('author', fn($query) => $query->whereNotNull('id'))
+            ->whereHas('tags', function (Builder $query) use ($tagIds) {
+                $query->whereIn('tags.id', $tagIds);
+            })
             ->orderBy($sortBy, $sortDir)
             ->limit($limit)
             ->get();

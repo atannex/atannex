@@ -7,11 +7,12 @@ use App\Enums\Icons;
 use App\Enums\Image;
 use App\Enums\Binding;
 use App\Enums\PostType;
+use App\Enums\Territories;
+use App\Models\Posts\Post;
 use App\Models\Pages\Widget;
 use App\Models\Pages\Section;
 use App\Models\Pages\Category;
 use App\Models\Pivots\PostTag;
-use App\Models\Posts\Post;
 use App\Models\Regions\Region;
 use App\Observers\WidgetObserver;
 use App\Observers\SectionObserver;
@@ -68,5 +69,6 @@ class AppServiceProvider extends ServiceProvider
         Binding::boot();
         Icons::boot();
         Image::boot();
+        Territories::boot();
     }
 }

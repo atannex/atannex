@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Regions\Schemas;
 
+use App\Enums\Territories;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -16,21 +17,14 @@ class RegionForm
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('slug')
-                    ->required(),
+                    ->disabled(),
                 TextInput::make('flag')
                     ->required()
                     ->default('pending'),
 
-                Select::make('type')
-                    ->label('Village Type')
-                    ->options([
-                        'Fondom'   => 'Fondom',
-                        'Chiefdom' => 'Chiefdom',
-                        'Village'  => 'Village',
-                        'Quarter'  => 'Quarter',
-                        'Division' => 'Division',
-                        'Sub-Division' => 'Sub-Division',
-                    ])
+                Select::make('territory')
+                    ->label('Territory')
+                    ->options(Territories::labels())
                     ->searchable()
                     ->preload()
                     ->default(null),

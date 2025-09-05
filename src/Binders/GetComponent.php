@@ -8,7 +8,7 @@ use Atannex\Components\For\Time\GetPostByWeek;
 use Atannex\Components\For\Get\GetPopularPost;
 use Atannex\Components\For\Time\GetPostByToday;
 use Atannex\Components\For\Get\GetMostReadPost;
-use Atannex\Components\With\GetFondomWithPosts;
+use Atannex\Components\With\GetRegionWithPosts;
 use Atannex\Components\For\Engagements\GetTopRatedPost;
 use Atannex\Components\For\Engagements\GetMostLikedPost;
 use Atannex\Components\For\Engagements\GetMostSharedPost;
@@ -20,9 +20,10 @@ use Atannex\Components\For\Engagements\GetMostEngagedPost;
 use Atannex\Components\For\Time\GetThisWeekTopPost;
 use Atannex\Components\For\Editorials\GetEditorWeeklyPick;
 use Atannex\Components\For\Get\GetHeadlineOfTheDay;
-use Atannex\Components\For\Get\GetJustPublishedPost;
+use Atannex\Components\For\Get\GetJustPublishedPosts;
 use Atannex\Components\For\Engagements\GetMostCommentedPost;
-use Atannex\Components\For\Locations\GetPostBySubdivision;
+use Atannex\Components\For\Locations\GetPostByRegion;
+use Atannex\Components\For\Locations\GetPostByTag;
 
 /**
  * Class GetComponent
@@ -48,7 +49,7 @@ class GetComponent
      */
     use GetEditorPick;             // Fetch editor's picks
     use GetHeadlineOfTheDay;       // Fetch headline of the day
-    use GetJustPublishedPost;      // Fetch recently published posts
+    use GetJustPublishedPosts;      // Fetch recently published posts
     use GetMostCommentedPost;      // Fetch most commented posts
     use GetMostEngagedPost;        // Fetch posts with highest engagement
     use GetMostLikedPost;          // Fetch posts with most likes
@@ -57,8 +58,7 @@ class GetComponent
     use GetMostViewedPost;         // Fetch posts with most views
     use GetPopularPost;            // Fetch generally popular posts
     use GetCategoryWithPosts;      // Fetch posts for a specific category
-    use GetFondomWithPosts;        // Fetch posts for a specific fondom (fan community)
-    use GetPostBySubdivision;      // Fetch posts by geographic subdivision
+    use GetRegionWithPosts;        // Fetch posts for a specific fondom (fan community)
     use GetTagWithPosts;           // Fetch posts associated with a tag
     use GetPostByToday;            // Fetch posts published today
     use GetPostByTwoWeeks;         // Fetch posts from the past two weeks
@@ -67,4 +67,6 @@ class GetComponent
     use GetThisWeekTopPost;        // Fetch top posts of this week
     use GetEditorWeeklyPick;       // Fetch editor's weekly picks
     use GetPostsForCategory;       // Fetch posts for a given category
+    use GetPostByRegion;
+    use GetPostByTag;
 }

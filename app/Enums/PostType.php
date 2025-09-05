@@ -59,21 +59,16 @@ final class PostType extends Enum
 
     public const POST_BY_CATEGORY = 'post-by-category';
 
-    public const POST_BY_DIVISION = 'post-by-division';
-
-    public const POST_BY_SUBDIVISION = 'post-by-subdivision';
-
-    public const POST_BY_FONDOM = 'post-by-fondom';
-
-    public const POST_BY_VILLAGE = 'post-by-village';
+    public const POST_BY_REGION = 'post-by-fondom';
 
     public const POST_BY_TAG = 'post-by-tag';
+
 
     public const GET_CATEGORY_WITH_POSTS = 'category-with-posts';
 
     public const GET_TAG_WITH_POSTS = 'tag-with-posts';
 
-    public const GET_FONDOM_WITH_POSTS = 'fondom-with-posts';
+    public const GET_REGION_WITH_POSTS = 'region-with-posts';
 
     public static function boot(): void
     {
@@ -162,15 +157,9 @@ final class PostType extends Enum
                 'color' => 'gray',
                 'icon' => 'heroicon-o-folder',
             ],
-            self::POST_BY_DIVISION => [
-                'label' => 'Post by Division',
-                'description' => 'Posts from a specific division.',
-                'color' => 'gray',
-                'icon' => 'heroicon-o-map',
-            ],
-            self::POST_BY_FONDOM => [
-                'label' => 'Post by Fondom',
-                'description' => 'Posts from a traditional fondom.',
+            self::POST_BY_REGION => [
+                'label' => 'Post by Region',
+                'description' => 'Posts from a traditional region.',
                 'color' => 'gray',
                 'icon' => 'heroicon-o-home-modern',
             ],
@@ -179,12 +168,6 @@ final class PostType extends Enum
                 'description' => 'Posts published within a specific month.',
                 'color' => 'gray',
                 'icon' => 'heroicon-o-calendar',
-            ],
-            self::POST_BY_SUBDIVISION => [
-                'label' => 'Post by Subdivision',
-                'description' => 'Posts grouped by subdivision.',
-                'color' => 'gray',
-                'icon' => 'heroicon-o-building-office',
             ],
             self::POST_BY_TAG => [
                 'label' => 'Post by Tag',
@@ -204,12 +187,7 @@ final class PostType extends Enum
                 'color' => 'green',
                 'icon' => 'heroicon-o-clock',
             ],
-            self::POST_BY_VILLAGE => [
-                'label' => 'Post by Village',
-                'description' => 'Posts grouped by village.',
-                'color' => 'gray',
-                'icon' => 'heroicon-o-home',
-            ],
+
             self::POST_BY_WEEK => [
                 'label' => 'Post by Week',
                 'description' => 'Posts from a given week.',
@@ -254,35 +232,61 @@ final class PostType extends Enum
             ],
 
             self::GET_CATEGORY_WITH_POSTS => [
-                'label' => 'Get category and its Corresponding Post',
-                'description' => 'Trending post within a tag.',
+                'label' => 'Get Category and its Corresponding Posts',
+                'description' => 'Retrieve all posts under the selected Category.',
                 'color' => 'rose',
+                'icon' => 'heroicon-o-collection',
+            ],
+
+            self::GET_REGION_WITH_POSTS => [
+                'label' => 'Get Region and its Corresponding Posts',
+                'description' => 'Retrieve all posts under the selected region.',
+                'color' => 'emerald',
+                'icon' => 'heroicon-o-map',
+            ],
+
+            self::GET_TAG_WITH_POSTS => [
+                'label' => 'Get Tag and its Corresponding Posts',
+                'description' => 'Retrieve all posts associated with the selected Tag.',
+                'color' => 'indigo',
                 'icon' => 'heroicon-o-hashtag',
             ],
+
         ]);
     }
 
+    // get entities with their corresponding posts
+
     private const ENTITY_MAPPING = [
-        self::POST_BY_FONDOM => [
+
+        self::POST_BY_REGION => [
             'entity' => 'region',
-            'idKey' => 'fondom_region_id'
+            'idKey' => 'region_id'
         ],
-        self::POST_BY_SUBDIVISION => [
-            'entity' => 'region',
-            'idKey' => 'subdivision_region_id'
-        ],
+
         self::POST_BY_CATEGORY => [
             'entity' => 'category',
             'idKey' => 'category_id'
         ],
+
         self::POST_BY_TAG => [
             'entity' => 'tag',
             'idKey' => 'tag_id'
         ],
 
+        self::GET_TAG_WITH_POSTS => [
+            'entity' => 'tag_with_posts',
+            'idKey' => 'tag_with_post_id'
+        ],
+
+        self::GET_REGION_WITH_POSTS => [
+            'entity' => 'region_with_posts',
+            'idKey' => 'region_with_post_id'
+        ],
+
         self::GET_CATEGORY_WITH_POSTS => [
-            'entity' => 'category_and_post',
-            'idKey' => 'category_and_post_id'
+            'entity' => 'category_with_posts',
+            'idKey' => 'category_with_post_id'
         ]
     ];
 

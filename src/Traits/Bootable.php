@@ -15,8 +15,6 @@ trait Bootable
 {
     /**
      * Build a slug path dynamically, using hierarchy if available.
-     *
-     * @return string|null
      */
     public function buildDynamicSlugPath(): ?string
     {
@@ -26,9 +24,7 @@ trait Bootable
     /**
      * Build a full slug path from base and slug segment.
      *
-     * @param string|null $base
-     * @param string|null $slug
-     * @return string|null
+     * Normalizes the slug: trims, lowercases, replaces spaces with dashes.
      */
     public static function buildSlugPath(?string $base, ?string $slug): ?string
     {
@@ -36,6 +32,14 @@ trait Bootable
             return null;
         }
 
-        return $base ? rtrim($base, '/') . '/' . ltrim($slug, '/') : $slug;
+        $slug = strtolower(trim($slug));
+        $slug = preg_replace('/\s+/', '-', $slug);
+
+        if ($base) {
+            $base = rtrim($base, '/');
+            return "{$base}/{$slug}";
+        }
+
+        return $slug;
     }
 }

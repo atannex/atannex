@@ -13,35 +13,33 @@ interface Sluggable
     /**
      * Get the base string used for slug generation.
      *
-     * For hierarchical models, this usually returns the parent model's slug path.
-     *
-     * @return string|null The base path to prepend to the model's slug, or null if none.
+     * @return string|null
      */
     public function getSlugBase(): ?string;
 
     /**
      * Get the model's own slug segment.
      *
-     * This represents the unique slug for the current model.
-     *
-     * @return string|null The slug segment, or null if not generated yet.
+     * @return string|null
      */
     public function getSlug(): ?string;
 
     /**
-     * Cascade slug path updates to related models or entities.
+     * Build the full slug path for the model.
      *
-     * Should be invoked after saving the model to propagate slug changes to children
-     * or dependent entities.
+     * @return string|null
+     */
+    public function buildDynamicSlugPath(): ?string;
+
+    /**
+     * Cascade slug path updates to related models.
      *
      * @return void
      */
     public function cascadeSlugPathUpdates(): void;
 
     /**
-     * Clear slug paths for related models or entities.
-     *
-     * Typically called before deleting the model to avoid orphaned or invalid paths.
+     * Clear slug paths for related models.
      *
      * @return void
      */

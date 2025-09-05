@@ -6,7 +6,6 @@ use App\Contracts\Sluggable;
 use App\Models\Posts\Post;
 use App\Models\Tags\Tag;
 use Atannex\Builders\PostTagBuilder;
-use Atannex\Traits\Bootable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -17,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class PostTag extends Pivot implements Sluggable
 {
-    use Bootable;
     use PostTagBuilder;
 
     /**

@@ -3,40 +3,42 @@
 namespace Atannex\Components\For\Locations;
 
 use App\Models\Posts\Post;
-use App\Models\Pages\Category;
+use App\Models\Regions\Region;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
-trait GetPostsForCategory
+trait GetPostByRegion
 {
-
-    public function getPostsForCategory(array $config = []): Collection
+    public function getPostsForRegion(array $config = []): Collection
     {
-        $categoryIds      = (array) ($config['category_id']);
-        $limit            = max(1, (int) ($config['limit'] ?? 5));
+        $regionIds        = (array) ($config['region_id'] ?? []);
+        $limit            = max(1, (int) ($config['limit'] ?? 15));
         $limitPerLeafPost = max(1, (int) ($config['limit_per_leaf_post'] ?? 1));
 
-        $sortBy  = $config['sort_by'] ?? 'published_at';
-        $sortDir = $config['sort_dir'] ?? 'desc';
+        $sortBy  = $config['sort'] ?? 'published_at';
+        $sortDir = $config['order'] ?? 'desc';
 
-        if (empty($categoryIds)) {
+        if (empty($regionIds)) {
             return collect();
         }
 
-        $categories = Category::with('children')->whereIn('id', $categoryIds)->get();
+        $regions = Region::with('children')->whereIn('id', $regionIds)->get();
         $allPosts = collect();
 
-        foreach ($categories as $category) {
-            if ($category->children->isEmpty()) {
+        foreach ($regions as $region) {
+            if ($region->children->isEmpty()) {
+
                 $posts = Post::published()
-                    ->where('category_id', $category->id)
+                    ->whereHas('regions', fn(Builder $q) => $q->where('regions.id', $region->id))
                     ->orderBy($sortBy, $sortDir)
                     ->take($limit)
                     ->get();
 
                 $allPosts = $allPosts->merge($posts);
             } else {
-                $leafIds = $category->getDescendantsAndSelf('dfs')
-                    ->filter(fn($c) => $c->children->isEmpty())
+
+                $leafIds = $region->getDescendantsAndSelf('dfs')
+                    ->filter(fn($r) => $r->children->isEmpty())
                     ->pluck('id')
                     ->all();
 
@@ -45,10 +47,10 @@ trait GetPostsForCategory
                 }
 
                 $posts = Post::published()
-                    ->whereIn('category_id', $leafIds)
+                    ->whereHas('regions', fn(Builder $q) => $q->whereIn('regions.id', $leafIds))
                     ->orderBy($sortBy, $sortDir)
                     ->get()
-                    ->groupBy('category_id')
+                    ->groupBy(fn(Post $p) => $p->regions->first()->id)
                     ->flatMap(fn($group) => $group->take($limitPerLeafPost));
 
                 $allPosts = $allPosts->merge($posts);

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use App\Models\Regions\Region;
 use App\Enums\Flag;
 use App\Models\Tags\Tag;
 use Illuminate\Support\Str;
@@ -167,10 +168,31 @@ class PostForm
                         Group::make()
                             ->schema([
 
-                                Section::make('Tags')
+                                Section::make('Tags & Regions')
                                     ->icon('heroicon-o-tag')
-                                    ->description('Add relevant tags to optimize your post for search engines and improve discoverability.')
+                                    ->description('Add relevant tags and regions to optimize your post for search engines and improve discoverability.')
                                     ->schema([
+
+                                        Select::make('regions')
+                                            ->relationship('regions', 'name')
+                                            ->multiple()
+                                            ->preload()
+                                            ->searchable()
+                                            ->optionsLimit(50)
+                                            ->helperText('Choose one or more regions to categorize your post effectively.')
+                                            ->placeholder('Select regions')
+                                            ->required()
+                                            ->createOptionForm([
+                                                TextInput::make('name')
+                                                    ->required()
+                                                    ->maxLength(255)
+                                                    ->unique('regions', 'name'),
+                                            ])
+                                            ->createOptionUsing(function (array $data) {
+                                                return Region::create($data)->id;
+                                            })
+                                            ->createOptionAction(fn($action) => $action->label('Add New Region')),
+
                                         Select::make('tags')
                                             ->relationship('tags', 'name')
                                             ->multiple()
@@ -179,7 +201,6 @@ class PostForm
                                             ->optionsLimit(50)
                                             ->helperText('Choose one or more tags to categorize your post effectively.')
                                             ->placeholder('Select tags')
-                                            ->default(null)
                                             ->required()
                                             ->createOptionForm([
                                                 TextInput::make('name')
@@ -194,7 +215,6 @@ class PostForm
                                     ])
                                     ->collapsible()
                                     ->compact(),
-
                                 Section::make('Featured Media')
                                     ->description('Upload and manage your post images')
                                     ->icon('heroicon-o-photo')

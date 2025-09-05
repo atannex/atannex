@@ -29,19 +29,21 @@ trait RegionRelation
         return $this->hasMany(Region::class, 'parent_id');
     }
 
+    /**
+     * Ruler associated with this region.
+     */
     public function ruler(): HasOne
     {
         return $this->hasOne(Ruler::class);
     }
 
     /**
-     * Posts related to this region (many-to-many).
+     * Posts related to this region (many-to-many pivot).
      */
     public function posts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class, 'post_region')
             ->withTimestamps()
-            ->withPivot('deleted_at')
             ->using(PostRegion::class);
     }
 }

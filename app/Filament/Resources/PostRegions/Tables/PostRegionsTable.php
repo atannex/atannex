@@ -2,13 +2,11 @@
 
 namespace App\Filament\Resources\PostRegions\Tables;
 
-use Filament\Tables\Table;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\TrashedFilter;
-use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Tables\Table;
 
 class PostRegionsTable
 {
@@ -17,35 +15,25 @@ class PostRegionsTable
         return $table
             ->columns([
                 TextColumn::make('post.title')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable(),
                 TextColumn::make('region.name')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('updated_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
-                TrashedFilter::make(),
+                //
             ])
             ->recordActions([
-                // EditAction::make(),
+                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
                 ]),
             ]);
     }
