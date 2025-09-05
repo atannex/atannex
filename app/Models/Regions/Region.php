@@ -51,6 +51,7 @@ class Region extends Model implements Sluggable
         if ($this->parent) {
             return $this->parent->buildDynamicSlugPath();
         }
+
         return null;
     }
 

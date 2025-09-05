@@ -18,7 +18,7 @@ trait GetPostsForCategory
         $sortBy  = $config['sort_by'] ?? 'published_at';
         $sortDir = $config['sort_dir'] ?? 'desc';
 
-        if (empty($categoryIds)) {
+        if ($categoryIds === []) {
             return collect();
         }
 

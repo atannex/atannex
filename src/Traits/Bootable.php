@@ -37,7 +37,7 @@ trait Bootable
 
         if ($base) {
             $base = rtrim($base, '/');
-            return "{$base}/{$slug}";
+            return sprintf('%s/%s', $base, $slug);
         }
 
         return $slug;

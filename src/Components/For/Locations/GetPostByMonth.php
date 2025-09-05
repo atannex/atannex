@@ -17,7 +17,7 @@ trait GetPostByMonth
         $sortDir = $config['order'] ?? 'desc';
 
         if (is_string($month)) {
-            $month = Carbon::parse("1 {$month}")->month;
+            $month = Carbon::parse('1 ' . $month)->month;
         }
 
         return Post::published()

@@ -15,7 +15,7 @@ trait GetPostByAuthor
         $sortBy  = $config['sort'] ?? 'published_at';
         $sortDir = $config['order'] ?? 'desc';
 
-        if (empty($authorIds)) {
+        if ($authorIds === []) {
             return collect();
         }
 

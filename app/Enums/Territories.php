@@ -12,10 +12,15 @@ final class Territories extends Enum
     use GetEnum;
 
     public const FONDOM       = 'fondom';
+
     public const CHIEFDOM     = 'chiefdom';
+
     public const VILLAGE      = 'village';
+
     public const QUARTER      = 'quarter';
+
     public const DIVISION     = 'division';
+
     public const SUB_DIVISION = 'sub_division';
 
     public static function boot(): void

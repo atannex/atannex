@@ -23,7 +23,7 @@ trait GetRegionWithPosts
         $postLimit = max(1, (int) ($config['post_limit'] ?? 5));
         $leafPostLimit = max(1, (int) ($config['leaf_post_limit'] ?? 1));
 
-        if (empty($regionIds)) {
+        if ($regionIds === []) {
             return collect();
         }
 

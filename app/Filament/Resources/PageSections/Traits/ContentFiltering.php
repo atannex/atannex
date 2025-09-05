@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\PageSections\Traits;
 
 use App\Enums\PostType;
-use App\Enums\Territories;
 use App\Models\Tags\Tag;
 use App\Models\Pages\Category;
 use App\Models\Regions\Region;

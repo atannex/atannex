@@ -30,7 +30,7 @@ trait GetCategoryWithPosts
 
         $categoryIds = array_map('intval', array_filter($categoryIds));
 
-        if (empty($categoryIds)) {
+        if ($categoryIds === []) {
             return collect();
         }
 

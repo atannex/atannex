@@ -2,7 +2,6 @@
 
 namespace Atannex\Components\For\Get;
 
-use InvalidArgumentException;
 use Carbon\Carbon;
 use App\Models\Posts\Post;
 use Atannex\Traits\Metrics;

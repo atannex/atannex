@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\PostRegions\Schemas;
 
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class PostRegionForm

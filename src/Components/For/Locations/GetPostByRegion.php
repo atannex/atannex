@@ -18,7 +18,7 @@ trait GetPostByRegion
         $sortBy  = $config['sort'] ?? 'published_at';
         $sortDir = $config['order'] ?? 'desc';
 
-        if (empty($regionIds)) {
+        if ($regionIds === []) {
             return collect();
         }
 

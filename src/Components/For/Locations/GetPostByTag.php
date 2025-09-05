@@ -15,7 +15,7 @@ trait GetPostByTag
         $sortBy  = $config['sort'] ?? 'published_at';
         $sortDir = $config['order'] ?? 'desc';
 
-        if (empty($tagIds)) {
+        if ($tagIds === []) {
             return collect();
         }
 
