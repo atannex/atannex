@@ -3,7 +3,11 @@
 namespace App\Models\Regions;
 
 use App\Enums\Flag;
+<<<<<<< HEAD
 use Atannex\Enables\EnableSlug;
+=======
+use Atannex\Enables\Slug;
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +15,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Ruler extends Model
 {
     use SoftDeletes;
+<<<<<<< HEAD
     use EnableSlug;
+=======
+    use Slug;
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
 
     protected string $slugSource = 'name';
 

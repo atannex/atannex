@@ -2,9 +2,15 @@
 
 namespace App\Models\Docs;
 
+<<<<<<< HEAD
 use Atannex\Enables\EnableSlug;
 use App\Models\Regions\Employee;
 use Atannex\Enables\EnableScope;
+=======
+use Atannex\Enables\Slug;
+use App\Models\Regions\Employee;
+use Atannex\Enables\Scope;
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
 use App\Models\Modules\DocumentModule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,8 +20,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Document extends Model
 {
     use SoftDeletes;
+<<<<<<< HEAD
     use EnableSlug;
     use EnableScope;
+=======
+    use Slug;
+    use Scope;
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
 
     /**
      * The attribute used to generate the slug

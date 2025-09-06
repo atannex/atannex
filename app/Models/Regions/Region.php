@@ -4,8 +4,13 @@ namespace App\Models\Regions;
 
 use App\Contracts\Sluggable;
 use App\Enums\Flag;
+<<<<<<< HEAD
 use Atannex\Enables\EnableSlug;
 use Atannex\Enables\EnableScope;
+=======
+use Atannex\Enables\Slug;
+use Atannex\Enables\Scope;
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
 use Atannex\Filters\GetHierarchy;
 use Atannex\Relations\RegionRelation;
 use Atannex\Traits\Bootable;
@@ -20,8 +25,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Region extends Model implements Sluggable
 {
     use SoftDeletes;
+<<<<<<< HEAD
     use EnableSlug;
     use EnableScope;
+=======
+    use Slug;
+    use Scope;
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
     use GetHierarchy;
     use Bootable;
     use RegionRelation;

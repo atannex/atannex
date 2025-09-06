@@ -2,6 +2,10 @@
 
 namespace Atannex\Views\Traits;
 
+<<<<<<< HEAD
+=======
+use Generator;
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
 use App\Enums\PostType;
 use App\Models\Pages\Page;
 use Atannex\Helpers\Cache;
@@ -14,7 +18,11 @@ trait Content
 
     protected function resolveSection(?Page $page): void
     {
+<<<<<<< HEAD
         if (!$page) {
+=======
+        if (!$page instanceof Page) {
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
             return;
         }
 
@@ -28,7 +36,11 @@ trait Content
     /**
      * Lazy generator that yields the section itself and its widgets (if any).
      */
+<<<<<<< HEAD
     private function yieldSectionAndWidgets(object $section): \Generator
+=======
+    private function yieldSectionAndWidgets(object $section): Generator
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
     {
         yield $section;
 
@@ -112,7 +124,11 @@ trait Content
     private function resolveTabs(array $tabs): array
     {
 
+<<<<<<< HEAD
         if (empty($tabs)) {
+=======
+        if ($tabs === []) {
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
             return [];
         }
 

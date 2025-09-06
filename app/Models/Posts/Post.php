@@ -7,8 +7,13 @@ use App\Models\Tags\Tag;
 use App\Contracts\Sluggable;
 use App\Contracts\Commentable;
 use Atannex\Traits\Bootable;
+<<<<<<< HEAD
 use Atannex\Enables\EnableSlug;
 use Atannex\Enables\EnableScope;
+=======
+use Atannex\Enables\Slug;
+use Atannex\Enables\Scope;
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
 use Atannex\Traits\Cleaning;
 use Atannex\Relations\PostRelation;
 use App\Livewire\Interactions\HasLikes;
@@ -27,8 +32,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Post extends Model implements Commentable, Sluggable
 {
     use SoftDeletes;
+<<<<<<< HEAD
     use EnableSlug;
     use EnableScope;
+=======
+    use Slug;
+    use Scope;
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
     use PostRelation;
     use Cleaning;
     use Bootable;

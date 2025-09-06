@@ -4,7 +4,11 @@ namespace App\Models\Others;
 
 use App\Enums\Flag;
 use App\Enums\Image;
+<<<<<<< HEAD
 use Atannex\Enables\EnableScope;
+=======
+use Atannex\Enables\Scope;
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
 use Atannex\Traits\Cleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +16,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Gallery extends Model
 {
     use SoftDeletes;
+<<<<<<< HEAD
     use EnableScope;
+=======
+    use Scope;
+>>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
     use Cleaning;
 
     protected $fillable = [
