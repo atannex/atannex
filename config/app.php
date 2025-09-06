@@ -13,9 +13,6 @@ return [
     |
     */
 
-<<<<<<< HEAD
-    'name' => env('APP_NAME', 'Laravel'),
-=======
     'name' => env('APP_NAME', 'Atannex'),
 
     'support_url' => env('APP_SUPPORT_URL', 'https://support.enterprise.com'),
@@ -23,8 +20,6 @@ return [
     'locale' => env('APP_LOCALE', 'en'),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
-
->>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
 
     /*
     |--------------------------------------------------------------------------

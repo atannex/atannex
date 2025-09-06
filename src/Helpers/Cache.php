@@ -62,10 +62,6 @@ trait Cache
                 $value = $this->recursiveKeySort($value);
             }
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
         return $array;
     }
 }

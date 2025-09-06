@@ -6,11 +6,7 @@ use Exception;
 use Filament\Panel;
 use App\Enums\Gender;
 use App\Enums\Status;
-<<<<<<< HEAD
 use Atannex\Enables\EnableSlug;
-=======
-use Atannex\Enables\Slug;
->>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
 use Atannex\Relations\UserRelation;
 use Illuminate\Support\Facades\Log;
 use Atannex\Traits\TracksUserActivity;
@@ -38,11 +34,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
     use Notifiable;
-<<<<<<< HEAD
     use EnableSlug;
-=======
-    use Slug;
->>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
     use HasRoles;
     use SoftDeletes;
     use TracksUserActivity;
