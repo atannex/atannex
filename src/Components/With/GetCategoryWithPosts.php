@@ -99,7 +99,7 @@ trait GetCategoryWithPosts
 
     /**
      * Recursively collect leaf categories (categories without children).
-     * More efficient than getDescendantsAndSelf for this specific use case.
+     * More efficient than getDescendants for this specific use case.
      *
      * @param Category $category
      * @param Collection $leafCategories

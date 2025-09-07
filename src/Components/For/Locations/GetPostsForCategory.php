@@ -35,7 +35,7 @@ trait GetPostsForCategory
 
                 $allPosts = $allPosts->merge($posts);
             } else {
-                $leafIds = $category->getDescendantsAndSelf('dfs')
+                $leafIds = $category->getDescendants()
                     ->filter(fn($c) => $c->children->isEmpty())
                     ->pluck('id')
                     ->all();

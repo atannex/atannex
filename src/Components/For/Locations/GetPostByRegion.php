@@ -37,7 +37,7 @@ trait GetPostByRegion
                 $allPosts = $allPosts->merge($posts);
             } else {
 
-                $leafIds = $region->getDescendantsAndSelf('dfs')
+                $leafIds = $region->getDescendants()
                     ->filter(fn($r) => $r->children->isEmpty())
                     ->pluck('id')
                     ->all();
