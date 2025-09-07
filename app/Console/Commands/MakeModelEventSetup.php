@@ -2,50 +2,70 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Artisan;
 
 class MakeModelEventSetup extends Command
 {
-    protected $signature = 'make:model-event {model : The name of the model}';
-    protected $description = 'Generate Event, Listener, Job for a given model and register them in EventServiceProvider';
+    protected $signature = 'atannex:model-event-setup';
+    protected $description = 'Interactively generate an Event, Listener, and Job, optionally tied to a model';
 
     public function handle()
     {
-        $model = Str::studly($this->argument('model'));
-        $eventName = "{$model}Created";
-        $listenerName = "Send{$model}Notification";
-        $jobName = "Process{$model}Job";
+        // --- Optional: select a model ---
+        // --- Recursive scan of Models folder ---
+        $allModelFiles = File::allFiles(app_path('Models'));
 
-        $this->info("Creating scaffolding for model: $model");
+        $models = collect($allModelFiles)
+            ->map(function ($file) {
+                $relative = $file->getRelativePathname();  // e.g., "Admin/User.php"
+                return str_replace(['/', '.php'], ['\\', ''], $relative); // "Admin\User"
+            })
+            ->toArray();
 
-        // 1. Create Event
+        $modelName = null;
+        if (!empty($models)) {
+            $modelName = $this->choice(
+                'Select a model to associate with this event (or skip)',
+                array_merge(['None'], $models),
+                0
+            );
+            if ($modelName === 'None') {
+                $modelName = null;
+            }
+        }
+
+        // --- Prompt for event, listener, job names ---
+        $eventName = $this->ask('Enter Event class name', $modelName ? "{$modelName}Created" : null);
+        $listenerName = $this->ask('Enter Listener class name', $modelName ? "Send{$modelName}Notification" : null);
+        $jobName = $this->ask('Enter Job class name', $modelName ? "Process{$modelName}Job" : null);
+
+        $this->info("Creating scaffolding for event: $eventName");
+
+        // --- 1. Create Event ---
         Artisan::call('make:event', ['name' => $eventName]);
         $this->info("Event created: $eventName");
 
-        // 2. Create Listener
+        // --- 2. Create Listener ---
         Artisan::call('make:listener', [
             'name' => $listenerName,
             '--event' => $eventName
         ]);
         $this->info("Listener created: $listenerName");
 
-        // 3. Create Job
+        // --- 3. Create Job ---
         Artisan::call('make:job', ['name' => $jobName]);
         $this->info("Job created: $jobName");
 
-        // 4. Ensure use statements exist
+        // --- 4. Add use statements and register listener ---
         $this->addUseStatements($eventName, $listenerName);
-
-        // 5. Register Event and Listener
         $this->registerEventListener($eventName, $listenerName);
 
-        // 6. Update listener to dispatch the job
+        // --- 5. Update listener to dispatch job ---
         $this->updateListenerToDispatchJob($listenerName, $jobName);
 
-        $this->info("All scaffolding done successfully.");
+        $this->info("Scaffolding done successfully.");
     }
 
     protected function addUseStatements(string $event, string $listener)
@@ -66,14 +86,11 @@ class MakeModelEventSetup extends Command
             $useStatements[] = "use App\\Listeners\\$listener;";
         }
 
-        if (empty($useStatements)) {
-            return; // Nothing to add
-        }
+        if (empty($useStatements)) return;
 
-        // Find last use statement position
         preg_match_all('/^use [^;]+;$/m', $contents, $matches, PREG_OFFSET_CAPTURE);
         $insertPos = $matches[0] ? end($matches[0])[1] + strlen(end($matches[0])[0])
-                                 : strpos($contents, ';') + 1;
+            : strpos($contents, ';') + 1;
 
         $contents = substr_replace($contents, "\n" . implode("\n", $useStatements), $insertPos, 0);
         File::put($providerPath, $contents);
@@ -98,7 +115,6 @@ class MakeModelEventSetup extends Command
         $eventPattern = '/(' . preg_quote($event, '/') . '::class\s*=>\s*\[)([^\]]*?)(\],?)/s';
         if (preg_match($eventPattern, $contents, $matches)) {
             $existingListeners = trim($matches[2]);
-
             if (strpos($existingListeners, $listenerClass) !== false) {
                 $this->info("Listener '$listener' already registered for event '$event'.");
                 return;
@@ -150,13 +166,12 @@ class MakeModelEventSetup extends Command
             $contents = substr_replace($contents, "\n$jobUse", $insertPos, 0);
         }
 
-        // Safely insert dispatch into handle method
         $handlePattern = '/public function handle\([^)]*\)\s*\{([\s\S]*?)\}/';
         if (preg_match($handlePattern, $contents, $matches)) {
             $body = trim($matches[1]);
             if (!str_contains($body, "$job::dispatch")) {
                 $newBody = $body ? $body . "\n        $job::dispatch(\$event);"
-                                 : "\n        $job::dispatch(\$event);";
+                    : "\n        $job::dispatch(\$event);";
                 $contents = str_replace($matches[0], "public function handle(\$event) {\n        $newBody\n    }", $contents);
             }
         }
