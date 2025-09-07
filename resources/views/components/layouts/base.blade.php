@@ -5,7 +5,7 @@
 
     @include('components.layouts.files.header')
 
-    @include('components.partials.googletagmanager')
+    @include('components.layouts.files.googletagmanager')
 
 </head>
 <body>
