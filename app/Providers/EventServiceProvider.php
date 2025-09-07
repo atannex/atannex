@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\UserWelcomeEmailSent;
+use App\Listeners\LogWelcomeEmailSent;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use App\Events\UserLoggedIn;
 use App\Events\UserLoggedOut;
@@ -22,8 +24,8 @@ class EventServiceProvider extends ServiceProvider
         UserLoggedOut::class => [
             LogUserLogoutActivity::class,
         ],
-        \App\Events\UserWelcomeEmailSent::class => [
-            \App\Listeners\LogWelcomeEmailSent::class,
+        UserWelcomeEmailSent::class => [
+            LogWelcomeEmailSent::class,
         ],
     ];
 

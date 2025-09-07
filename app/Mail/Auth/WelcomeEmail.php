@@ -2,6 +2,7 @@
 
 namespace App\Mail\Auth;
 
+use Exception;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -13,8 +14,8 @@ use App\Events\UserWelcomeEmailSent;
 
 class WelcomeEmail extends Mailable
 {
-    use Queueable, SerializesModels;
-
+    use Queueable;
+    use SerializesModels;
     public $user;
 
     /**
@@ -64,14 +65,14 @@ class WelcomeEmail extends Mailable
             Event::dispatch(new UserWelcomeEmailSent($this->user));
 
             return $email;
-        } catch (\Exception $e) {
+        } catch (Exception $exception) {
             // Log error for debugging and monitoring
             Log::error('Failed to build WelcomeEmail for user: ' . $this->user->id, [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'error' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
             ]);
 
-            throw $e; // Rethrow for Laravel's queue to handle retries
+            throw $exception; // Rethrow for Laravel's queue to handle retries
         }
     }
 

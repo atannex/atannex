@@ -62,6 +62,7 @@ trait Cache
                 $value = $this->recursiveKeySort($value);
             }
         }
+
         return $array;
     }
 }

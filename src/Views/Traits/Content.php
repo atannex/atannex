@@ -2,6 +2,7 @@
 
 namespace Atannex\Views\Traits;
 
+use Generator;
 use App\Enums\PostType;
 use App\Models\Pages\Page;
 use Atannex\Helpers\Cache;
@@ -14,7 +15,7 @@ trait Content
 
     protected function resolveSection(?Page $page): void
     {
-        if (!$page) {
+        if (!$page instanceof Page) {
             return;
         }
 
@@ -28,7 +29,7 @@ trait Content
     /**
      * Lazy generator that yields the section itself and its widgets (if any).
      */
-    private function yieldSectionAndWidgets(object $section): \Generator
+    private function yieldSectionAndWidgets(object $section): Generator
     {
         yield $section;
 
@@ -112,7 +113,7 @@ trait Content
     private function resolveTabs(array $tabs): array
     {
 
-        if (empty($tabs)) {
+        if ($tabs === []) {
             return [];
         }
 
