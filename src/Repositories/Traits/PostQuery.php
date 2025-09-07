@@ -5,6 +5,7 @@ namespace Atannex\Repositories\Traits;
 use App\Models\Posts\Post;
 use App\Models\Pages\Category;
 use App\Models\Regions\Region;
+use Atannex\Traits\Resolver;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -14,6 +15,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 trait PostQuery
 {
+    use Resolver;
+
     protected const DEFAULT_PAGINATION_LIMIT   = 50;
 
     protected const DEFAULT_RECENT_POSTS_LIMIT = 5;
