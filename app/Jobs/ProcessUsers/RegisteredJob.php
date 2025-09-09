@@ -4,9 +4,9 @@ namespace App\Jobs\ProcessUsers;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use App\Mail\Auth\RegisteredMail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\Auth\Auth\RegisteredMail;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;

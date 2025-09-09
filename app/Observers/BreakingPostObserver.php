@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Posts\Post;
-use App\Events\BreakingPost;
+use App\Events\Posts\BreakingPost;
 use App\Jobs\ProcessPosts\BreakingPostJob;
 
 class BreakingPostObserver

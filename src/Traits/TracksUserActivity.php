@@ -4,11 +4,11 @@ namespace Atannex\Traits;
 
 use Exception;
 use Throwable;
-use Illuminate\Http\Request;
-use App\Jobs\LogUserActivity;
-use Jenssegers\Agent\Agent;
-use Illuminate\Support\Facades\Log;
 use GeoIp2\Database\Reader;
+use Jenssegers\Agent\Agent;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Jobs\ProcessUsers\ProcessUsers\LogUserActivity;
 
 /**
  * Trait TracksUserActivity

@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use App\Events\BreakingPost;
 use App\Events\Users\UserCreated;
 use App\Events\Docs\DocumentCreated;
+use App\Events\Posts\Posts\BreakingPost;
 use App\Listeners\SendDocs\DocumentNotification;
 use App\Listeners\SendPosts\BreakingPostListener;
 use App\Listeners\SendUsers\SendUserRegisteredNotification;
@@ -22,6 +22,7 @@ class EventServiceProvider extends ServiceProvider
         DocumentCreated::class => [
             DocumentNotification::class,
         ],
+
         UserCreated::class => [
             SendUserRegisteredNotification::class,
         ],

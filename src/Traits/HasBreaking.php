@@ -5,7 +5,7 @@ namespace Atannex\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 use App\Enums\Flag;
-use App\Events\BreakingPost;
+use App\Events\Posts\BreakingPost;
 
 trait HasBreaking
 {

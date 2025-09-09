@@ -2,7 +2,7 @@
 
 namespace App\Listeners\SendPosts;
 
-use App\Events\BreakingPost;
+use App\Events\Posts\BreakingPost;
 use App\Models\User;
 use App\Notifications\BreakingPostNotification;
 use Illuminate\Support\Facades\Notification;
