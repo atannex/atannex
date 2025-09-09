@@ -2,33 +2,43 @@
 
 namespace Atannex\Components\With;
 
-use Illuminate\Support\Arr;
 use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
-use Atannex\Traits\HasHierarchyWithRelations;
 
 trait GetCategoryWithPosts
 {
-    use HasHierarchyWithRelations;
+    use BaseHierarchyWithPosts;
 
     /**
      * Get categories with their latest posts.
      *
-     * @param array $config
-     * @return \Illuminate\Support\Collection
+     * @param array{
+     *     posts_with_id?: array<int>,
+     *     limit?: int,
+     *     post_limit?: int,
+     *     leaf_post_limit?: int,
+     *     children_relation?: string,
+     *     sub_relation?: string,
+     *     select_fields?: array<string>,
+     *     children_select_fields?: array<string>,
+     *     sort_field?: string,
+     *     sub_sort_field?: string
+     * } $config
+     *
+     * @return Collection<int, Category>
      */
     public function getCategoryWithPosts(array $config): Collection
     {
-        $mappedConfig = [
-            'model_class' => Category::class,
-            'ids' => Arr::get($config, 'posts_with_id'),
-            'limit' => Arr::get($config, 'limit', 5),
-            'sub_limit' => Arr::get($config, 'post_limit', 5),
-            'leaf_sub_limit' => Arr::get($config, 'leaf_posts_limit', 1),
-            'children_relation' => 'children',
-            'sub_relation' => 'posts',
+        $categoryDefaults = [
+            // Example: Override defaults if needed
+            // 'children_relation' => 'category_children',
+            // 'sub_relation' => 'category_posts',
+            // 'select_fields' => ['id', 'category_name', 'parent_id', 'created_at'],
+            // 'children_select_fields' => ['id', 'parent_id', 'category_name', 'created_at'],
+            // 'sort_field' => 'category_name',
+            // 'sub_sort_field' => 'updated_at',
         ];
 
-        return $this->getHierarchyWithRelations($mappedConfig);
+        return $this->buildConfigAndGetHierarchy($config, Category::class, $categoryDefaults);
     }
 }

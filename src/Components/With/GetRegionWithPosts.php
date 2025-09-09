@@ -2,37 +2,43 @@
 
 namespace Atannex\Components\With;
 
-use Illuminate\Support\Arr;
 use App\Models\Regions\Region;
 use Illuminate\Support\Collection;
-use Atannex\Traits\HasHierarchyWithRelations;
 
 trait GetRegionWithPosts
 {
-    use HasHierarchyWithRelations;
+    use BaseHierarchyWithPosts;
 
     /**
-     * Get regions with their latest posts using HasHierarchyWithRelations trait.
+     * Get regions with their latest posts.
      *
-     * @param array $config
-     * @return Collection
+     * @param array{
+     *     posts_with_id?: array<int>,
+     *     limit?: int,
+     *     post_limit?: int,
+     *     leaf_post_limit?: int,
+     *     children_relation?: string,
+     *     sub_relation?: string,
+     *     select_fields?: array<string>,
+     *     children_select_fields?: array<string>,
+     *     sort_field?: string,
+     *     sub_sort_field?: string
+     * } $config
+     *
+     * @return Collection<int, Region>
      */
     public function getRegionWithPosts(array $config): Collection
     {
-        $config = [
-            'model_class' => Region::class,
-            'ids' => Arr::get($config, 'posts_with_id'),
-            'limit' => max(1, (int) ($config['limit'] ?? 5)),
-            'sub_limit' => max(1, (int) ($config['post_limit'] ?? 5)),
-            'leaf_sub_limit' => max(1, (int) ($config['leaf_post_limit'] ?? 1)),
-            'children_relation' => 'children',
-            'sub_relation' => 'posts',
-            'select_fields' => ['id', 'name', 'parent_id', 'created_at'],
-            'children_select_fields' => ['id', 'parent_id', 'name', 'created_at'],
-            'sort_field' => 'created_at',
-            'sub_sort_field' => 'created_at',
+        $regionDefaults = [
+            // Example: Override defaults if needed
+            // 'children_relation' => 'region_children',
+            // 'sub_relation' => 'region_posts',
+            // 'select_fields' => ['id', 'region_name', 'parent_id', 'created_at'],
+            // 'children_select_fields' => ['id', 'parent_id', 'region_name', 'created_at'],
+            // 'sort_field' => 'region_name',
+            // 'sub_sort_field' => 'created_at',
         ];
 
-        return $this->getHierarchyWithRelations($config);
+        return $this->buildConfigAndGetHierarchy($config, Region::class, $regionDefaults);
     }
 }

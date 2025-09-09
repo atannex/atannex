@@ -3,7 +3,6 @@
 namespace Atannex\Traits;
 
 use Atannex\Views\Traits\Normalize;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,21 +18,20 @@ trait HasHierarchyWithRelations
      */
     public function getHierarchyWithRelations(array $config): Collection
     {
-        $modelClass = Arr::get($config, 'model_class');
+        $modelClass           = $config['model_class'];
+        $ids                  = $this->normalizeIds($config['ids']);
+        $limit                = $config['limit'] ?? 4;
+        $subLimit             = $config['sub_limit'] ?? 3;
+        $leafSubLimit         = $config['leaf_sub_limit'] ?? 1;
 
-        $ids = $this->normalizeIds(Arr::get($config, 'ids'));
-        $limit = max(1, (int) Arr::get($config, 'limit', 4));
-        $subLimit = max(1, (int) Arr::get($config, 'sub_limit', 3));
-        $leafSubLimit = max(1, (int) Arr::get($config, 'leaf_sub_limit', 1));
+        $childrenRelation     = $config['children_relation'] ?? 'children';
+        $subRelation          = $config['sub_relation'] ?? 'posts';
 
-        $childrenRelation = Arr::get($config, 'children_relation', 'children');
-        $subRelation = Arr::get($config, 'sub_relation', 'posts');
-        $selectFields = Arr::get($config, 'select_fields', ['id', 'name', 'parent_id', 'published_at']);
-        $childrenSelectFields = Arr::get($config, 'children_select_fields', ['id', 'parent_id', 'name', 'published_at']);
-        $sortField = Arr::get($config, 'sort_field', 'published_at');
-        $subSortField = Arr::get($config, 'sub_sort_field', 'published_at');
+        $selectFields         = $config['select_fields'] ?? ['id', 'name', 'parent_id', 'published_at'];
+        $childrenSelectFields = $config['children_select_fields'] ?? ['id', 'parent_id', 'name', 'published_at'];
 
-
+        $sortField            = $config['sort_field'] ?? 'published_at';
+        $subSortField         = $config['sub_sort_field'] ?? 'published_at';
 
         $query = $modelClass::query()
             ->select($selectFields)
@@ -57,6 +55,7 @@ trait HasHierarchyWithRelations
             return $item;
         });
     }
+
 
     /**
      * Resolve sub-relations for an item, including leaf items.

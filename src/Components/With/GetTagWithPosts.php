@@ -3,41 +3,42 @@
 namespace Atannex\Components\With;
 
 use App\Models\Tags\Tag;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Atannex\Traits\HasHierarchyWithRelations;
 
 trait GetTagWithPosts
 {
-    use HasHierarchyWithRelations;
+    use BaseHierarchyWithPosts;
 
     /**
-     * Retrieve tags with their latest posts using HasHierarchyWithRelations trait.
+     * Retrieve tags with their latest posts.
      *
      * @param array{
-     *     tag_with_post_id: array<int>,
+     *     tag_with_post_id?: array<int>,
      *     limit?: int,
-     *     post_limit?: int
+     *     post_limit?: int,
+     *     leaf_post_limit?: int,
+     *     children_relation?: string,
+     *     sub_relation?: string,
+     *     select_fields?: array<string>,
+     *     children_select_fields?: array<string>,
+     *     sort_field?: string,
+     *     sub_sort_field?: string
      * } $config
      *
      * @return Collection<int, Tag>
      */
     public function getTagWithPosts(array $config): Collection
     {
-        $config = [
-            'model_class' => Tag::class,
-            'ids' => Arr::get($config, 'posts_with_id'),
-            'limit' => max(1, (int) ($config['limit'] ?? 5)),
-            'sub_limit' => max(1, (int) ($config['post_limit'] ?? 5)),
-            'leaf_sub_limit' => max(1, (int) ($config['post_limit'] ?? 5)),
-            'children_relation' => 'children',
-            'sub_relation' => 'posts',
-            'select_fields' => ['id', 'name', 'parent_id', 'created_at'],
-            'children_select_fields' => ['id', 'parent_id', 'name', 'created_at'],
-            'sort_field' => 'created_at',
-            'sub_sort_field' => 'created_at',
+        $tagDefaults = [
+            // Example: Override defaults if needed
+            // 'children_relation' => 'tag_children',
+            // 'sub_relation' => 'tag_posts',
+            // 'select_fields' => ['id', 'title', 'parent_id', 'created_at'],
+            // 'children_select_fields' => ['id', 'parent_id', 'title', 'created_at'],
+            // 'sort_field' => 'title',
+            // 'sub_sort_field' => 'published_at',
         ];
 
-        return $this->getHierarchyWithRelations($config);
+        return $this->buildConfigAndGetHierarchy($config, Tag::class, $tagDefaults);
     }
 }
