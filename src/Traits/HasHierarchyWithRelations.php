@@ -19,19 +19,21 @@ trait HasHierarchyWithRelations
     public function getHierarchyWithRelations(array $config): Collection
     {
         $modelClass           = $config['model_class'];
+
         $ids                  = $this->normalizeIds($config['ids']);
-        $limit                = $config['limit'] ?? 4;
-        $subLimit             = $config['sub_limit'] ?? 3;
-        $leafSubLimit         = $config['leaf_sub_limit'] ?? 1;
 
-        $childrenRelation     = $config['children_relation'] ?? 'children';
-        $subRelation          = $config['sub_relation'] ?? 'posts';
+        $limit                = $config['limit'];
+        $subLimit             = $config['sub_limit'];
+        $leafSubLimit         = $config['leaf_sub_limit'];
 
-        $selectFields         = $config['select_fields'] ?? ['id', 'name', 'parent_id', 'published_at'];
-        $childrenSelectFields = $config['children_select_fields'] ?? ['id', 'parent_id', 'name', 'published_at'];
+        $childrenRelation     = $config['children_relation'];
+        $subRelation          = $config['sub_relation'];
 
-        $sortField            = $config['sort_field'] ?? 'published_at';
-        $subSortField         = $config['sub_sort_field'] ?? 'published_at';
+        $selectFields         = $config['select_fields'];
+        $childrenSelectFields = $config['children_select_fields'];
+
+        $sortField            = $config['sort_field'];
+        $subSortField         = $config['sub_sort_field'];
 
         $query = $modelClass::query()
             ->select($selectFields)
