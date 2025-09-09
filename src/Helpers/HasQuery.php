@@ -10,7 +10,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
-trait Query
+trait HasQuery
 {
     /**
      * Default eager-load relations for posts.

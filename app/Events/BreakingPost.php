@@ -16,7 +16,7 @@ class BreakingPost
     /**
      * Create a new event instance.
      *
-     * @param \App\Models\Posts\Post $post
+     * @param Post $post
      */
     public function __construct(Post $post)
     {

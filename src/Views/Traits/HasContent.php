@@ -44,7 +44,7 @@ trait HasContent
      */
     private function resolveTabs(array $tabs): array
     {
-        if (!$tabs) {
+        if ($tabs === []) {
             return [];
         }
 
@@ -89,9 +89,9 @@ trait HasContent
     private function extractEntityAndIds(array $tab): array
     {
         $mapping = PostType::getEntityMapping($tab['type'] ?? '');
-        $ids     = !empty($mapping['idKey'])
-            ? $this->normalizeIds((array) ($tab[$mapping['idKey']] ?? []))
-            : [];
+        $ids     = empty($mapping['idKey'])
+            ? []
+            : $this->normalizeIds((array) ($tab[$mapping['idKey']] ?? []));
 
         return ['entity' => $mapping['entity'] ?? '', 'ids' => $ids];
     }

@@ -3,16 +3,10 @@
 namespace Atannex\Binders;
 
 use Atannex\AtannexProvider;
-use Atannex\Views\TagView;
-use Atannex\Views\PageView;
-use Atannex\Views\AuthorView;
 use Atannex\Views\ContentViews;
-use Atannex\Views\PostShowView;
 use Atannex\Services\TagService;
 use Atannex\Services\PageService;
 use Atannex\Services\CategoryService;
-use Atannex\Views\DateView;
-use Atannex\Views\RegionView;
 
 /**
  * Class GetView

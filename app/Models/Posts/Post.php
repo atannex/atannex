@@ -119,11 +119,11 @@ class Post extends Model implements Commentable, Sluggable
      *
      * @param string $value
      */
-    public function setTitleAttribute(string $value): void
+    protected function setTitleAttribute(string $value): void
     {
         $this->attributes['title'] = $value;
         if (empty($this->attributes['slug'])) {
-            $this->attributes['slug'] = $this->generateSlug($value);
+            $this->attributes['slug'] = $this->generateSlug();
         }
     }
 }

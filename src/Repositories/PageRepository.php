@@ -6,11 +6,11 @@ use App\Models\Pages\Page;
 use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
 use Atannex\Contracts\PageInterface;
-use Atannex\Helpers\Query;
+use Atannex\Helpers\HasQuery;
 
 class PageRepository implements PageInterface
 {
-    use Query;
+    use HasQuery;
 
     /**
      * Retrieve all top-level published page categories with their children recursively loaded.

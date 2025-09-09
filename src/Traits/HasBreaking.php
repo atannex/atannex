@@ -2,6 +2,7 @@
 
 namespace Atannex\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 use App\Enums\Flag;
 use App\Events\BreakingPost;
@@ -11,10 +12,10 @@ trait HasBreaking
     /**
      * Scope for active breaking posts.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
-    public function scopeActiveBreaking($query)
+    protected function scopeActiveBreaking($query)
     {
         return $query->where('is_breaking', true)
             ->where('breaking_until', '>', now())
@@ -67,7 +68,7 @@ trait HasBreaking
      *
      * @return bool
      */
-    public function getIsCurrentlyBreakingAttribute(): bool
+    protected function getIsCurrentlyBreakingAttribute(): bool
     {
         return $this->is_breaking && $this->breaking_until?->gt(Carbon::now());
     }

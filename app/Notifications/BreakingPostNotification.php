@@ -38,7 +38,7 @@ class BreakingPostNotification extends Notification
                     ->subject('Breaking News: ' . $this->post->title)
                     ->line('A new breaking post has been published:')
                     ->line($this->post->title)
-                    ->action('Read Post', url("/posts/{$this->post->id}"))
+                    ->action('Read Post', url('/posts/' . $this->post->id))
                     ->line('Stay updated with the latest news.');
     }
 

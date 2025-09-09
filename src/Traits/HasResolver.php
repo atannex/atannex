@@ -7,7 +7,7 @@ use App\Models\Pages\Category;
 use App\Models\Pivots\PostTag;
 use App\Models\Regions\Region;
 use App\Models\Regions\Employee;
-use Atannex\Helpers\Query;
+use Atannex\Helpers\HasQuery;
 
 /**
  * Trait Resolver
@@ -16,7 +16,7 @@ use Atannex\Helpers\Query;
  */
 trait HasResolver
 {
-    use Query;
+    use HasQuery;
 
     /**
      * Resolve an employee author by their user slug.

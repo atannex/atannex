@@ -4,7 +4,7 @@ namespace Atannex\Repositories\Traits;
 
 use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
-use Atannex\Helpers\Query;
+use Atannex\Helpers\HasQuery;
 use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +15,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 trait TagQuery
 {
-    use Query;
+    use HasQuery;
 
     protected const DEFAULT_PAGINATION_LIMIT   = 50;
 
