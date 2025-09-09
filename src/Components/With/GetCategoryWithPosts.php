@@ -33,8 +33,8 @@ trait GetCategoryWithPosts
             // Example: Override defaults if needed
             // 'children_relation' => 'category_children',
             // 'sub_relation' => 'category_posts',
-            // 'select_fields' => ['id', 'category_name', 'parent_id', 'created_at'],
-            // 'children_select_fields' => ['id', 'parent_id', 'category_name', 'created_at'],
+            'select_fields' => ['id', 'name', 'parent_id', 'published_at'],
+            'children_select_fields' => ['id', 'parent_id', 'name', 'published_at'],
             // 'sort_field' => 'category_name',
             // 'sub_sort_field' => 'updated_at',
         ];
