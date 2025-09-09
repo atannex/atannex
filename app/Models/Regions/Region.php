@@ -8,7 +8,7 @@ use Atannex\Enables\Slug;
 use Atannex\Enables\Scope;
 use Atannex\Filters\GetHierarchy;
 use Atannex\Relations\RegionRelation;
-use Atannex\Traits\Bootable;
+use Atannex\Traits\HasBootable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -23,7 +23,7 @@ class Region extends Model implements Sluggable
     use Slug;
     use Scope;
     use GetHierarchy;
-    use Bootable;
+    use HasBootable;
     use RegionRelation;
 
     protected string $slugSource = 'name';

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Atannex\Views\Traits;
 
-trait Normalize
+trait CanNormalize
 {
     /**
      * Normalizes input IDs into an array of integers or strings.

@@ -9,13 +9,13 @@ use App\Models\Regions\Employee;
 use App\Models\Posts\Post;
 use App\Models\Regions\Region;
 use Illuminate\View\View;
-use Atannex\Traits\Resolver;
+use Atannex\Traits\HasResolver;
 use Atannex\Services\PageService;
 use Atannex\Binders\GetView;
 
 class PageController extends Controller
 {
-    use Resolver;
+    use HasResolver;
 
     public function __construct(
         protected readonly PageService $pageService,

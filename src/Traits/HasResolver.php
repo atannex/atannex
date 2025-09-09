@@ -14,7 +14,7 @@ use Atannex\Helpers\Query;
  *
  * Provides methods to resolve various model instances by their slug.
  */
-trait Resolver
+trait HasResolver
 {
     use Query;
 

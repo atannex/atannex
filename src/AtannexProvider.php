@@ -9,22 +9,9 @@ use Illuminate\Support\Collection;
 final class AtannexProvider extends GetComponent
 {
     /**
-     * Map post types to their handler methods.
-     *
-     * @var array<string, string>
-     */
-    private array $postTypeMethods = [
-        PostType::POST_BY_CATEGORY     => 'GetPostsForCategory',
-        PostType::POST_BY_TAG          => 'getPostByTag',
-        PostType::POST_BY_REGION       => 'getPostsForRegion',
-    ];
-
-    /**
      * Retrieve posts based on the specified type.
      *
-     * The method checks if there is a dedicated method for the given post type.
-     * If found, it delegates the retrieval to that method. Otherwise, it falls
-     * back to retrieving only the just-published posts.
+     * This directly delegates the retrieval to the mapped method in PostType.
      *
      * @param array $config Configuration array containing:
      *                      - 'type' (string): The post type to fetch.
@@ -34,11 +21,7 @@ final class AtannexProvider extends GetComponent
      */
     public function getPostsByType(array $config): Collection
     {
-        if (isset($config['type'], $this->postTypeMethods[$config['type']])) {
-            $method = $this->postTypeMethods[$config['type']];
-            return $this->{$method}($config);
-        }
-
-        return $this->getJustPublishedPosts($config);
+        $mapping = PostType::getEntityMapping($config['type']);
+        return $this->{$mapping['method']}($config);
     }
 }

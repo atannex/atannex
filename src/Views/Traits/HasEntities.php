@@ -5,7 +5,7 @@ namespace Atannex\Views\Traits;
 use Illuminate\Support\Collection;
 use App\Enums\PostType;
 
-trait Entities
+trait HasEntities
 {
     /**
      * Resolve entities based on type, IDs, and full config.
@@ -15,7 +15,9 @@ trait Entities
     {
         $mapping = PostType::getEntityMapping($type);
 
-        $config[$mapping['idKey']] = $ids;
+        if (!empty($mapping['idKey'])) {
+            $config[$mapping['idKey']] = $ids;
+        }
 
         return $this->getComponent->{$mapping['method']}($config);
     }

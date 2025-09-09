@@ -3,7 +3,7 @@
 namespace App\Models\Modules;
 
 use App\Models\Posts\Post;
-use Atannex\Traits\Reading;
+use Atannex\Traits\HasReading;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class PostModule extends Model
 {
     use SoftDeletes;
-    use Reading;
+    use HasReading;
 
     /**
      * The table associated with the model.

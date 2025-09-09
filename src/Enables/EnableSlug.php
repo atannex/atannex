@@ -8,42 +8,43 @@ use Spatie\Sluggable\SlugOptions;
 /**
  * Trait EnableSlug
  *
- * Provides functionality to automatically generate and manage URL-friendly slugs
- * for Eloquent models using the Spatie Sluggable package.
+ * Provides automatic slug generation for Eloquent models using Spatie Sluggable.
  */
 trait EnableSlug
 {
     use HasSlug;
 
     /**
-     * Get the source field for slug generation.
+     * Get the source field(s) for slug generation.
      *
-     * @return string The name of the field to generate the slug from
+     * @return string|array
      */
-    protected function getSlugSource(): string
+    protected function getSlugSource(): string|array
     {
-        return $this->slugSource;
+        return property_exists($this, 'slugSource') ? $this->slugSource : 'title';
     }
 
     /**
      * Get the destination field for storing the generated slug.
      *
-     * @return string The name of the field to store the slug
+     * @return string
      */
     protected function getSlugDestination(): string
     {
-        return $this->slugDestination ?? 'slug';
+        return property_exists($this, 'slugDestination') ? $this->slugDestination : 'slug';
     }
 
     /**
      * Configure the slug generation options.
      *
-     * @return SlugOptions The configured slug options
+     * @return SlugOptions
      */
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom($this->getSlugSource())
-            ->saveSlugsTo($this->getSlugDestination());
+            ->saveSlugsTo($this->getSlugDestination())
+            ->usingSeparator('-')
+            ->doNotGenerateSlugsOnUpdate();
     }
 }

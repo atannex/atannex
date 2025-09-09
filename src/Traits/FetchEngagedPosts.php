@@ -4,12 +4,12 @@ namespace Atannex\Traits;
 
 use Carbon\Carbon;
 use App\Models\Posts\Post;
-use Atannex\Traits\Metrics;
+use Atannex\Traits\HasMetrics;
 use Illuminate\Database\Eloquent\Collection;
 
 trait FetchEngagedPosts
 {
-    use Metrics;
+    use HasMetrics;
 
     /**
      * Generic method to fetch posts with engagement scoring and filtering.

@@ -4,12 +4,12 @@ namespace Atannex\Components\For\Get;
 
 use Carbon\Carbon;
 use App\Models\Posts\Post;
-use Atannex\Traits\Metrics;
+use Atannex\Traits\HasMetrics;
 use Illuminate\Database\Eloquent\Collection;
 
 trait GetTrendingPost
 {
-    use Metrics;
+    use HasMetrics;
 
     public function getTrendingPosts(array $config = []): Collection
     {

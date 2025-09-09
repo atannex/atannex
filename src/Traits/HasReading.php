@@ -2,7 +2,7 @@
 
 namespace Atannex\Traits;
 
-trait Reading
+trait HasReading
 {
     /**
      * Calculate the estimated reading time of the module content.

@@ -6,7 +6,7 @@ use Atannex\AtannexProvider;
 use Atannex\Views\TagView;
 use Atannex\Views\PageView;
 use Atannex\Views\AuthorView;
-use Atannex\Views\CategoryView;
+use Atannex\Views\ContentViews;
 use Atannex\Views\PostShowView;
 use Atannex\Services\TagService;
 use Atannex\Services\PageService;
@@ -52,11 +52,6 @@ class GetView
      * Traits providing modular view logic.
      * Each trait contains methods for rendering or preparing specific view types.
      */
-    use AuthorView;
-    use CategoryView;
-    use PageView;
-    use TagView;
-    use PostShowView;
-    use RegionView;
-    use DateView;
+
+    use ContentViews;
 }

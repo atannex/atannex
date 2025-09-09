@@ -11,7 +11,7 @@ use App\Contracts\Sluggable;
  *
  * @mixin Sluggable
  */
-trait Bootable
+trait HasBootable
 {
     /**
      * Build a slug path dynamically, using hierarchy if available.

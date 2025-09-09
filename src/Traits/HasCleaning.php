@@ -4,7 +4,7 @@ namespace Atannex\Traits;
 
 use Illuminate\Support\Facades\Storage;
 
-trait Cleaning
+trait HasCleaning
 {
     /**
      * Boot the trait and hook into model lifecycle events.

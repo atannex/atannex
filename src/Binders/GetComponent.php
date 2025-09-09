@@ -22,51 +22,33 @@ use Atannex\Components\For\Editorials\GetEditorWeeklyPick;
 use Atannex\Components\For\Get\GetHeadlineOfTheDay;
 use Atannex\Components\For\Get\GetJustPublishedPosts;
 use Atannex\Components\For\Engagements\GetMostCommentedPost;
+use Atannex\Components\For\Get\GetBreakingPost;
 use Atannex\Components\For\Locations\GetPostByRegion;
 use Atannex\Components\For\Locations\GetPostByTag;
 
-/**
- * Class GetComponent
- *
- * Centralized binder for all reusable post-related components.
- * Aggregates multiple traits for fetching posts based on different criteria:
- * - Editorial picks (weekly and daily)
- * - Engagement metrics (most liked, shared, viewed, commented)
- * - Time-based filters (today, this week, two weeks, weekly top)
- * - Category, tag, or region-based post collections
- * - Popular, headline, and just published posts
- *
- * Acts as a unified entry point for fetching and rendering components
- * across the application.
- *
- * @package Atannex\Binders
- */
 class GetComponent
 {
-    /**
-     * Traits providing modular component logic.
-     * Each trait encapsulates a specific post-fetching or rendering functionality.
-     */
-    use GetEditorPick;             // Fetch editor's picks
-    use GetHeadlineOfTheDay;       // Fetch headline of the day
-    use GetJustPublishedPosts;      // Fetch recently published posts
-    use GetMostCommentedPost;      // Fetch most commented posts
-    use GetMostEngagedPost;        // Fetch posts with highest engagement
-    use GetMostLikedPost;          // Fetch posts with most likes
-    use GetMostReadPost;           // Fetch posts with highest reads
-    use GetMostSharedPost;         // Fetch posts with most shares
-    use GetMostViewedPost;         // Fetch posts with most views
-    use GetPopularPost;            // Fetch generally popular posts
-    use GetCategoryWithPosts;      // Fetch posts for a specific category
-    use GetRegionWithPosts;        // Fetch posts for a specific fondom (fan community)
-    use GetTagWithPosts;           // Fetch posts associated with a tag
-    use GetPostByToday;            // Fetch posts published today
-    use GetPostByTwoWeeks;         // Fetch posts from the past two weeks
-    use GetPostByWeek;             // Fetch posts from the past week
-    use GetTopRatedPost;           // Fetch posts with highest ratings
-    use GetThisWeekTopPost;        // Fetch top posts of this week
-    use GetEditorWeeklyPick;       // Fetch editor's weekly picks
-    use GetPostsForCategory;       // Fetch posts for a given category
+    use GetEditorPick;
+    use GetHeadlineOfTheDay;
+    use GetJustPublishedPosts;
+    use GetMostCommentedPost;
+    use GetMostEngagedPost;
+    use GetMostLikedPost;
+    use GetMostReadPost;
+    use GetMostSharedPost;
+    use GetMostViewedPost;
+    use GetPopularPost;
+    use GetCategoryWithPosts;
+    use GetRegionWithPosts;
+    use GetTagWithPosts;
+    use GetPostByToday;
+    use GetPostByTwoWeeks;
+    use GetPostByWeek;
+    use GetTopRatedPost;
+    use GetThisWeekTopPost;
+    use GetEditorWeeklyPick;
+    use GetPostsForCategory;
     use GetPostByRegion;
     use GetPostByTag;
+    use GetBreakingPost;
 }

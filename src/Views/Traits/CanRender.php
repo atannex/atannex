@@ -7,9 +7,8 @@ use App\Models\Posts\Post;
 use App\Models\Pages\Category;
 
 
-trait Render
+trait CanRender
 {
-
     /**
      * Render a view with merged data.
      */

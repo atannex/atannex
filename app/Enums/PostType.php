@@ -11,7 +11,8 @@ final class PostType extends Enum
 {
     use GetEnum;
 
-    // PostType constants
+    public const BREAKING_POSTS = 'breaking-posts';
+
     public const GET_CATEGORY_WITH_POSTS = 'category-with-posts';
 
     public const GET_TAG_WITH_POSTS = 'tag-with-posts';
@@ -30,6 +31,14 @@ final class PostType extends Enum
     public static function boot(): void
     {
         static::setMetadata([
+
+            self::BREAKING_POSTS => [
+                'label' => 'Breaking News',
+                'description' => 'Breaking News.',
+                'color' => 'emerald',
+                'icon' => 'heroicon-o-clock',
+            ],
+
             self::POST_BY_CATEGORY => [
                 'label' => 'Post by Category',
                 'description' => 'Posts grouped by category.',
@@ -79,36 +88,49 @@ final class PostType extends Enum
      * This is used by the Entities trait to resolve data dynamically.
      */
     private const ENTITY_MAPPING = [
+
+        self::BREAKING_POSTS => [
+            'entity' => 'breaking-posts',
+            'idKey'  => null,
+            'method' => 'getBreakingPosts',
+        ],
+
         self::POST_BY_REGION => [
             'entity' => 'post-by-region',
             'idKey'  => 'region_id',
-            'method' => 'getRegionWithPosts',
+            'method' => 'getPostsForRegion',
         ],
+
         self::POST_BY_CATEGORY => [
             'entity' => 'post-by-category',
             'idKey'  => 'category_id',
-            'method' => 'getCategoryWithPosts',
+            'method' => 'getPostsForCategory',
         ],
+
         self::POST_BY_TAG => [
             'entity' => 'post-by-tag',
             'idKey'  => 'tag_id',
-            'method' => 'getTagWithPosts',
+            'method' => 'getPostByTag',
         ],
+
         self::GET_TAG_WITH_POSTS => [
             'entity' => 'tag-with-posts',
             'idKey'  => 'posts_with_id',
             'method' => 'getTagWithPosts',
         ],
+
         self::GET_REGION_WITH_POSTS => [
             'entity' => 'region-with-posts',
             'idKey'  => 'posts_with_id',
             'method' => 'getRegionWithPosts',
         ],
+
         self::GET_CATEGORY_WITH_POSTS => [
             'entity' => 'category-with-posts',
             'idKey'  => 'posts_with_id',
             'method' => 'getCategoryWithPosts',
         ],
+
     ];
 
     /**
@@ -119,6 +141,6 @@ final class PostType extends Enum
      */
     public static function getEntityMapping(string $type): ?array
     {
-        return self::ENTITY_MAPPING[$type];
+        return self::ENTITY_MAPPING[$type] ?? null;
     }
 }

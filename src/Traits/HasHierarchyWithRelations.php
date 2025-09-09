@@ -2,13 +2,13 @@
 
 namespace Atannex\Traits;
 
-use Atannex\Views\Traits\Normalize;
+use Atannex\Views\Traits\CanNormalize;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 trait HasHierarchyWithRelations
 {
-    use Normalize;
+    use CanNormalize;
 
     /**
      * Get hierarchical items with their sub-relations.
