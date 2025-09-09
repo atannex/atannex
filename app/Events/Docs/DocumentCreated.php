@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Docs;
 
-use App\Models\User;
+use App\Models\Docs\Document;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserRegistered
+class DocumentCreated
 {
     use Dispatchable;
     use SerializesModels;
 
-    public User $user;
+    public Document $document;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(User $user)
+    public function __construct(Document $document)
     {
-        $this->user = $user;
+        $this->document = $document;
     }
 }

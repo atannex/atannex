@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\ProcessUsers;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Auth\Auth\RegisteredMail;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\WelcomeMail;
 
-class SendWelcomeEmailJob implements ShouldQueue
+class RegisteredJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -33,6 +34,7 @@ class SendWelcomeEmailJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->user->email)->send(new WelcomeMail($this->user));
+        Log::info('SendWelcomeEmailJob executed for: ' . $this->user->email);
+        Mail::to($this->user->email)->send(new RegisteredMail($this->user));
     }
 }

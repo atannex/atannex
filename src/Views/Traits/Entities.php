@@ -3,41 +3,20 @@
 namespace Atannex\Views\Traits;
 
 use Illuminate\Support\Collection;
+use App\Enums\PostType;
 
 trait Entities
 {
     /**
      * Resolve entities based on type, IDs, and full config.
+     * Assumes $type is valid and mapping/method exists.
      */
-    private function resolveEntities(?string $type, array $ids, array $config = []): Collection
+    private function resolveEntities(string $type, array $ids, array $config = []): Collection
     {
-        if ($type === null || $type === '' || $type === '0' || $ids === []) {
-            return collect();
-        }
+        $mapping = PostType::getEntityMapping($type);
 
-        $resolverMap = [
-            'tag_with_posts' => [
-                'method' => 'getTagWithPosts',
-                'key'    => 'tag_with_post_id',
-            ],
-            'region_with_posts' => [
-                'method' => 'getRegionWithPosts',
-                'key'    => 'region_with_post_id',
-            ],
+        $config[$mapping['idKey']] = $ids;
 
-            'category_with_posts' => [
-                'method' => 'getCategoryWithPosts',
-                'key'    => 'category_with_post_id',
-            ],
-        ];
-
-        if (!isset($resolverMap[$type])) {
-            return collect();
-        }
-
-        $resolver = $resolverMap[$type];
-        $config[$resolver['key']] = $ids;
-
-        return $this->getComponent->{$resolver['method']}($config) ?? collect();
+        return $this->getComponent->{$mapping['method']}($config);
     }
 }

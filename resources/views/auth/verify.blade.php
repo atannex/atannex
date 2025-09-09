@@ -1,8 +1,7 @@
-<x-layouts.guest :title="'Verify - ' . __('Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')">
+<x-layouts.guest :title="seo_title('Verify')">
     <div class="space2">
         <div class="container">
             <div class="row">
-
                 <div class="mx-auto col-md-8 col-xl-7">
                     <div class="card quote-form-box">
                         <div class="text-center card-header">

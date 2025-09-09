@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\PageSections\Traits;
 
 use App\Enums\PostType;
@@ -9,6 +11,7 @@ use App\Models\Regions\Region;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 
 class ContentFiltering
 {
@@ -32,95 +35,70 @@ class ContentFiltering
 
                     Select::make('region_id')
                         ->label('Filter by Region')
-                        ->options(fn() => self::region())
+                        ->options(fn () => self::region())
                         ->searchable()
                         ->multiple()
                         ->placeholder('Select Region')
                         ->helperText('Show only posts with this Region')
                         ->preload()
-                        ->visible(fn($get) => $get('type') === PostType::POST_BY_REGION),
-
-                    // Select::make('territory')
-                    //     ->label('Filter by Post Territory')
-                    //     ->options(Territories::labels())
-                    //     ->searchable()
-                    //     ->placeholder('Select Post Territory')
-                    //     ->helperText('Show only posts with this Territory')
-                    //     ->preload()
-                    //     ->visible(
-                    //         fn($get) =>
-                    //         $get('type') === PostType::GET_REGION_WITH_POSTS ||
-                    //             $get('type') === PostType::POST_BY_REGION
-                    //     ),
+                        ->visible(fn (Get $get) => $get('type') === PostType::POST_BY_REGION),
 
                     Select::make('tag_id')
                         ->label('Filter by Tag')
-                        ->options(fn() => self::tags())
+                        ->options(fn () => self::tags())
                         ->searchable()
                         ->multiple()
                         ->placeholder('Select Tags')
                         ->helperText('Show only posts with this Tag')
                         ->preload()
-                        ->visible(fn($get) => $get('type') === PostType::POST_BY_TAG),
+                        ->visible(fn (Get $get) => $get('type') === PostType::POST_BY_TAG),
 
                     Select::make('category_id')
                         ->label('Filter by Category')
-                        ->options(fn() => self::categories())
+                        ->options(fn () => self::categories())
                         ->searchable()
                         ->multiple()
                         ->placeholder('Select Categories')
                         ->helperText('Show only posts from this Category')
                         ->preload()
-                        ->visible(fn($get) => $get('type') === PostType::POST_BY_CATEGORY),
+                        ->visible(fn (Get $get) => $get('type') === PostType::POST_BY_CATEGORY),
 
-                    // Get entities with all posts
-                    Select::make('tag_with_post_id')
-                        ->label('Get Tag and All Corresponding Posts')
-                        ->options(fn() => self::tags())
+                    Select::make('posts_with_id')
+                        ->label('Select Entity')
+                        ->options(fn (Get $get) => match ($get('type')) {
+                            PostType::GET_TAG_WITH_POSTS => self::tags(),
+                            PostType::GET_REGION_WITH_POSTS => self::region(),
+                            PostType::GET_CATEGORY_WITH_POSTS => self::categories(),
+                            default => [],
+                        })
                         ->searchable()
                         ->multiple()
-                        ->placeholder('Select Tags')
-                        ->helperText('Show posts under selected Tags')
+                        ->placeholder('Select entities')
+                        ->helperText('Show posts under selected entities')
                         ->preload()
-                        ->visible(fn($get) => $get('type') === PostType::GET_TAG_WITH_POSTS),
-
-                    Select::make('region_with_post_id')
-                        ->label('Get Region and All Corresponding Posts')
-                        ->options(fn() => self::region())
-                        ->searchable()
-                        ->multiple()
-                        ->placeholder('Select Region')
-                        ->helperText('Show posts under selected Region')
-                        ->preload()
-                        ->visible(fn($get) => $get('type') === PostType::GET_REGION_WITH_POSTS),
-
-                    Select::make('category_with_post_id')
-                        ->label('Get Category and All Corresponding Posts')
-                        ->options(fn() => self::categories())
-                        ->searchable()
-                        ->multiple()
-                        ->placeholder('Select Categories')
-                        ->helperText('Show posts under selected Categories')
-                        ->preload()
-                        ->visible(fn($get) => $get('type') === PostType::GET_CATEGORY_WITH_POSTS),
+                        ->visible(fn (Get $get) => in_array($get('type'), [
+                            PostType::GET_TAG_WITH_POSTS,
+                            PostType::GET_REGION_WITH_POSTS,
+                            PostType::GET_CATEGORY_WITH_POSTS,
+                        ])),
                 ]),
             ])
             ->compact();
     }
 
-    /** @return array<int,string> */
+    /** @return array<int, string> */
     private static function region(): array
     {
         return Region::pluck('name', 'id')->toArray();
     }
 
-    /** @return array<int,string> */
+    /** @return array<int, string> */
     private static function tags(): array
     {
         return Tag::pluck('name', 'id')->toArray();
     }
 
-    /** @return array<int,string> */
+    /** @return array<int, string> */
     private static function categories(): array
     {
         return Category::pluck('name', 'id')->toArray();

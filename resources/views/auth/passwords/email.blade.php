@@ -1,4 +1,4 @@
-<x-layouts.guest :title="'Email - ' . __('Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')">
+<x-layouts.guest :title="seo_title('Email')">
     <div class="space2">
         <div class="container">
             <div class="row justify-content-center">

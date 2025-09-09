@@ -5,7 +5,7 @@ namespace Atannex\Traits;
 use Exception;
 use Throwable;
 use Illuminate\Http\Request;
-use App\Jobs\LogUserActivityJob;
+use App\Jobs\LogUserActivity;
 use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Log;
 use GeoIp2\Database\Reader;
@@ -149,7 +149,7 @@ trait TracksUserActivity
     protected function queueActivity(array $attributes, string $type): void
     {
         try {
-            LogUserActivityJob::dispatch($attributes, $type)
+            LogUserActivity::dispatch($attributes, $type)
                 ->onQueue(config('activity.queue', 'default'));
         } catch (Exception $exception) {
             Log::error(sprintf('Failed to dispatch %s activity for user %s: %s', $type, $attributes['user_id'], $exception->getMessage()));

@@ -3,23 +3,19 @@
 namespace Atannex\Components\With;
 
 use App\Models\Tags\Tag;
-use Atannex\Views\Traits\Normalize;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Atannex\Traits\HasHierarchyWithRelations;
 
-/**
- * Trait GetTagWithPosts
- *
- * Provides a method to retrieve tags along with their latest posts.
- */
 trait GetTagWithPosts
 {
-    use Normalize;
+    use HasHierarchyWithRelations;
 
     /**
-     * Retrieve tags with their associated posts.
+     * Retrieve tags with their latest posts using HasHierarchyWithRelations trait.
      *
      * @param array{
-     *     tag_id: array<int>,
+     *     tag_with_post_id: array<int>,
      *     limit?: int,
      *     post_limit?: int
      * } $config
@@ -28,22 +24,20 @@ trait GetTagWithPosts
      */
     public function getTagWithPosts(array $config): Collection
     {
-        $tagIds     = $this->normalizeIds($config['tag_with_post_id']);
-        $limit      = $config['limit'] ?? 5;
-        $postLimit  = $config['post_limit'] ?? 5;
+        $config = [
+            'model_class' => Tag::class,
+            'ids' => Arr::get($config, 'posts_with_id'),
+            'limit' => max(1, (int) ($config['limit'] ?? 5)),
+            'sub_limit' => max(1, (int) ($config['post_limit'] ?? 5)),
+            'leaf_sub_limit' => max(1, (int) ($config['post_limit'] ?? 5)),
+            'children_relation' => 'children',
+            'sub_relation' => 'posts',
+            'select_fields' => ['id', 'name', 'parent_id', 'created_at'],
+            'children_select_fields' => ['id', 'parent_id', 'name', 'created_at'],
+            'sort_field' => 'created_at',
+            'sub_sort_field' => 'created_at',
+        ];
 
-        if (empty($tagIds)) {
-            return collect();
-        }
-
-        return Tag::with([
-            'posts' => function ($query) use ($postLimit) {
-                $query->latest('created_at')->take($postLimit);
-            },
-        ])
-            ->whereIn('id', $tagIds)
-            ->latest('created_at')
-            ->take($limit)
-            ->get();
+        return $this->getHierarchyWithRelations($config);
     }
 }

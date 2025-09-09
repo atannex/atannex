@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Events\Users\UserCreated;
+use App\Events\Docs\DocumentCreated;
+use App\Listeners\SendDocs\DocumentNotification;
+use App\Listeners\SendUsers\SendUsers\SendUserRegisteredNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use App\Events\UserRegistered;
-use App\Listeners\SendWelcomeEmail;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -15,8 +17,12 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         // register event/listeners
-        UserRegistered::class => [
-            SendWelcomeEmail::class,
+
+        DocumentCreated::class => [
+            DocumentNotification::class,
+        ],
+        UserCreated::class => [
+            SendUserRegisteredNotification::class,
         ],
     ];
 

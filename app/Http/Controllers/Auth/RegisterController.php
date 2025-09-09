@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Events\UserRegistered;
+use App\Events\Users\UserCreated;
 use App\Models\User;
 use App\Rules\Auth\StrongName;
 use App\Rules\Auth\StrongEmail;
 use App\Rules\Auth\StrongPassword;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -17,11 +18,14 @@ class RegisterController extends Controller
     use RegistersUsers;
 
     /**
-     * Where to redirect users after registration.
+     * Where to redirect users when the intended URL fails.
      *
-     * @var string
+     * @return string
      */
-    protected $redirectTo = '/home';
+    public function redirectTo()
+    {
+        return route('home');
+    }
 
     /**
      * Create a new controller instance.
@@ -55,7 +59,8 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        event(new UserRegistered($user));
+        event(new UserCreated($user));
+        Log::info('UserRegistered event dispatched for user ID: ' . $user->id);
 
         return $user;
     }

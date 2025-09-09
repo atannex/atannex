@@ -1,4 +1,4 @@
-<x-layouts.guest :title="'Register - ' . __('Top Stories, Breaking News & Headlines') . ' | ' . config('app.name')">
+<x-layouts.guest :title="seo_title('Register')">
     <div class="space2 d-flex justify-content-center align-items-center" style="min-height: 100vh;">
         <div class="container">
             <div class="row justify-content-center">
@@ -102,45 +102,3 @@
         </div>
     </div>
 </x-layouts.guest>
-<<<<<<< HEAD
-=======
-
-{{-- <form method="POST" action="{{ route('register') }}">
-    @csrf
-    <div>
-        <label for="name">Name</label>
-        <input id="name" type="text" name="name" value="{{ old('name') }}" required>
-        @error('name') <span>{{ $message }}</span> @enderror
-    </div>
-    <div>
-        <label for="email">Email</label>
-        <input id="email" type="email" name="email" value="{{ old('email') }}" required>
-        @error('email') <span>{{ $message }}</span> @enderror
-    </div>
-    <div>
-        <label for="password">Password</label>
-        <input id="password" type="password" name="password" required>
-        @error('password') <span>{{ $message }}</span> @enderror
-    </div>
-    <div>
-        <label for="password_confirmation">Confirm Password</label>
-        <input id="password_confirmation" type="password" name="password_confirmation" required>
-    </div>
-    <div>
-        <label for="locale">Language</label>
-        <select id="locale" name="locale">
-            <option value="en" {{ old('locale') == 'en' ? 'selected' : '' }}>English</option>
-            <option value="es" {{ old('locale') == 'es' ? 'selected' : '' }}>Español</option>
-        </select>
-        @error('locale') <span>{{ $message }}</span> @enderror
-    </div>
-    <div>
-        <label>
-            <input type="checkbox" name="terms" required>
-            I accept the <a href="{{ config('app.terms_url', '/terms') }}">Terms of Service</a>
-        </label>
-        @error('terms') <span>{{ $message }}</span> @enderror
-    </div>
-    <button type="submit">Register</button>
-</form> --}}
->>>>>>> b90bee7 (SEO for news → news_keywords, article:section, published_time improve indexing by Google News.)
