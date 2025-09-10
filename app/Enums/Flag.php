@@ -35,7 +35,7 @@ final class Flag extends Enum
 
     public static function boot(): void
     {
-        static::setMetadata([
+        self::setMetadata([
             self::DRAFT => [
                 'label' => 'Draft',
                 'description' => 'Post in initial creation stage',

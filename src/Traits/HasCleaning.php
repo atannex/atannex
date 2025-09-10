@@ -33,7 +33,7 @@ trait HasCleaning
      * @param UploadedFile|string|null $value The uploaded file or path string
      * @return void
      */
-    public function setImageAttribute($value): void
+    protected function setImageAttribute($value): void
     {
         $attribute = $this->getImageAttributeName();
         $this->attributes[$attribute] = $value instanceof UploadedFile

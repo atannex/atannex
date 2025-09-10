@@ -30,7 +30,7 @@ final class PostType extends Enum
      */
     public static function boot(): void
     {
-        static::setMetadata([
+        self::setMetadata([
 
             self::BREAKING_POSTS => [
                 'label' => 'Breaking News',

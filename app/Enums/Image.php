@@ -41,7 +41,7 @@ final class Image extends Enum
      */
     public static function boot(): void
     {
-        static::setMetadata([
+        self::setMetadata([
             self::LOGO => [
                 'label' => 'Logo',
                 'description' => 'Company or brand logo image',

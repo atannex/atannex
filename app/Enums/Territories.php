@@ -25,7 +25,7 @@ final class Territories extends Enum
 
     public static function boot(): void
     {
-        static::setMetadata([
+        self::setMetadata([
             self::FONDOM => [
                 'label' => 'Fondom',
                 'description' => 'Traditional territory led by a Fon',

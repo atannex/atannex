@@ -17,7 +17,7 @@ trait HasBreaking
      * @param Builder $query
      * @return Builder
      */
-    public function scopeActiveBreaking(Builder $query): Builder
+    protected function scopeActiveBreaking(Builder $query): Builder
     {
         return $query->where('is_breaking', true)
             ->where('breaking_until', '>', Carbon::now())
@@ -72,7 +72,7 @@ trait HasBreaking
      *
      * @return bool
      */
-    public function getIsCurrentlyBreakingAttribute(): bool
+    protected function getIsCurrentlyBreakingAttribute(): bool
     {
         return $this->is_breaking && $this->breaking_until?->gt(Carbon::now());
     }
