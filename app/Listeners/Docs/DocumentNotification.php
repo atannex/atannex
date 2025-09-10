@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Listeners\SendDocs;
+namespace App\Listeners\Docs;
 
+use App\Jobs\Docs\DocumentJob;
 use Illuminate\Support\Facades\Log;
 use App\Events\Docs\DocumentCreated;
-use App\Jobs\ProcessDocs\DocumentJob;
 
 class DocumentNotification
 {

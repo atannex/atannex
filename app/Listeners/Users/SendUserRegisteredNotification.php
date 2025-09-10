@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Listeners\SendUsers;
+namespace App\Listeners\Users;
 
 use App\Events\Users\UserCreated;
-use App\Jobs\ProcessUsers\RegisteredJob;
+use App\Jobs\Users\RegisteredJob;
 
 class SendUserRegisteredNotification
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners\SendPosts;
+namespace App\Listeners\Posts;
 
 use App\Events\Posts\BreakingPost;
 use App\Models\User;

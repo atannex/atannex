@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\ProcessDocs;
+namespace App\Jobs\Docs;
 
 use App\Models\User;
 use App\Models\Docs\Document;

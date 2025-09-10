@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\ProcessPosts;
+namespace App\Jobs\Posts;
 
 use App\Models\Posts\Post;
 use Illuminate\Queue\SerializesModels;

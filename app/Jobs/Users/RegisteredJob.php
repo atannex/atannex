@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\ProcessUsers;
+namespace App\Jobs\Users;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
