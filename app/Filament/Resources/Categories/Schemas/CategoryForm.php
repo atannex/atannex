@@ -23,6 +23,7 @@ class CategoryForm
                     ->required()
                     ->default('pending'),
                 FileUpload::make('image')
+                    ->directory(fn($record) => $record->getImageDirectory())
                     ->image(),
                 Textarea::make('description')
                     ->default(null)

@@ -96,7 +96,6 @@ class PostForm
                                     ->schema([
                                         Grid::make(1)
                                             ->schema([
-
                                                 Select::make('category_id')
                                                     ->label('Category')
                                                     ->options(function () {
@@ -242,7 +241,7 @@ class PostForm
                                             ->label('Featured Image')
                                             ->disk('public')
                                             ->visibility('public')
-                                            ->directory('posts/images')
+                                            ->directory(fn($record) => $record->getImageDirectory())
                                             ->image()
                                             ->imageEditor()
                                             ->imageEditorAspectRatios([
