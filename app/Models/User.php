@@ -85,7 +85,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
      */
     public function getImageDirectory(): string
     {
-        return 'posts';
+        return 'users';
     }
 
 
