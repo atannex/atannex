@@ -8,6 +8,7 @@ use App\Enums\Gender;
 use App\Enums\Status;
 use Atannex\Enables\EnableSlug;
 use Atannex\Relations\UserRelation;
+use Atannex\Traits\HasCleaning;
 use Illuminate\Support\Facades\Log;
 use Atannex\Traits\TracksUserActivity;
 use Spatie\Permission\Traits\HasRoles;
@@ -39,6 +40,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     use SoftDeletes;
     use TracksUserActivity;
     use UserRelation;
+    use HasCleaning;
 
     /**
      * The attribute used as the slug source.
@@ -69,6 +71,23 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         'slug',
         'timezone'
     ];
+
+    /**
+     * Image attribute used by HasCleaning trait.
+     */
+    public function getImageAttributeName(): string
+    {
+        return 'image';
+    }
+
+    /**
+     * Directory used by HasCleaning trait.
+     */
+    public function getImageDirectory(): string
+    {
+        return 'posts';
+    }
+
 
     /**
      * Attributes hidden from serialization.
