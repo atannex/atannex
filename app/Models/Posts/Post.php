@@ -95,23 +95,19 @@ class Post extends Model implements Commentable, Sluggable
     protected $appends = ['is_currently_breaking'];
 
     /**
-     * Attributes that store image paths for cleanup.
-     *
-     * @return string[]
+     * Image attribute used by HasCleaning trait.
      */
-    protected function imageAttributes(): array
+    public function getImageAttributeName(): string
     {
-        return ['image'];
+        return 'image';
     }
 
     /**
-     * Storage disk for image cleanup.
-     *
-     * @return string
+     * Directory used by HasCleaning trait.
      */
-    protected function imageDisk(): string
+    public function getImageDirectory(): string
     {
-        return 'public';
+        return 'posts';
     }
 
     /**

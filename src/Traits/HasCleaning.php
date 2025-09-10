@@ -2,118 +2,79 @@
 
 namespace Atannex\Traits;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Trait HasCleaning
+ *
+ * Provides functionality for handling image uploads and automatic cleanup of old images
+ * when updating or deleting models.
+ */
 trait HasCleaning
 {
     /**
-     * Boot the trait and hook into model lifecycle events.
-     */
-    public static function bootCleaning(): void
-    {
-        static::updating(function ($model) {
-            $model->deleteOldImagesOnUpdate();
-        });
-
-        static::deleting(function ($model) {
-            $method = method_exists($model, 'isForceDeleting') && !$model->isForceDeleting()
-                ? 'deleteImagesOnSoftDelete'
-                : 'deleteImagesOnForceDelete';
-            $model->$method();
-        });
-    }
-
-    /**
-     * Get attributes that hold image paths. Override in model to customize.
-     *
-     * @return array<string>
-     */
-    protected function imageAttributes(): array
-    {
-        return ['image'];
-    }
-
-    /**
-     * Get storage disk for image cleanup. Override in model to customize.
+     * Get the name of the image attribute.
      *
      * @return string
      */
-    protected function imageDisk(): string
-    {
-        return 'public';
-    }
+    abstract public function getImageAttributeName(): string;
 
     /**
-     * Delete images removed during model update.
-     */
-    protected function deleteOldImagesOnUpdate(): void
-    {
-        foreach ($this->imageAttributes() as $attribute) {
-            if ($this->isDirty($attribute)) {
-                $original = $this->ensureArray($this->getOriginal($attribute));
-                $current = $this->ensureArray($this->{$attribute});
-                $this->deleteImageFiles(array_diff($original, $current));
-            }
-        }
-    }
-
-    /**
-     * Delete images on soft delete if configured.
-     */
-    protected function deleteImagesOnSoftDelete(): void
-    {
-        if (property_exists($this, 'deleteImageOnSoftDelete') && !$this->deleteImageOnSoftDelete) {
-            return;
-        }
-
-        $this->deleteAllImages();
-    }
-
-    /**
-     * Delete images on force delete.
-     */
-    protected function deleteImagesOnForceDelete(): void
-    {
-        $this->deleteAllImages();
-    }
-
-    /**
-     * Delete all images for the model.
-     */
-    protected function deleteAllImages(): void
-    {
-        foreach ($this->imageAttributes() as $attribute) {
-            $this->deleteImageFiles($this->ensureArray($this->{$attribute}));
-        }
-    }
-
-    /**
-     * Delete image files from the storage disk.
+     * Get the storage directory for the image.
      *
-     * @param array<string> $paths
+     * @return string
      */
-    protected function deleteImageFiles(array $paths): void
-    {
-        $disk = Storage::disk($this->imageDisk());
+    abstract public function getImageDirectory(): string;
 
-        foreach ($paths as $path) {
-            if ($path && $disk->exists($path)) {
-                $disk->delete($path);
-            }
+    /**
+     * Set the image attribute, storing uploaded files and updating the attribute value.
+     *
+     * @param UploadedFile|string|null $value The uploaded file or path string
+     * @return void
+     */
+    public function setImageAttribute($value): void
+    {
+        $attribute = $this->getImageAttributeName();
+        $this->attributes[$attribute] = $value instanceof UploadedFile
+            ? $value->store($this->getImageDirectory(), 'public')
+            : $value;
+    }
+
+    /**
+     * Delete an image file from storage.
+     *
+     * @param string|null $file The file path to delete (defaults to the model's current image)
+     * @return void
+     */
+    public function deleteImage(?string $file = null): void
+    {
+        $fileToDelete = $file ?? $this->getOriginal($this->getImageAttributeName());
+
+        if ($fileToDelete && Storage::disk('public')->exists($fileToDelete)) {
+            Storage::disk('public')->delete($fileToDelete);
         }
     }
 
     /**
-     * Ensure input is an array of non-empty strings.
+     * Boot the trait, setting up event listeners for image cleanup.
      *
-     * @param mixed $value
-     * @return array<string>
+     * @return void
      */
-    protected function ensureArray(mixed $value): array
+    protected static function bootHasCleaning(): void
     {
-        return array_filter(
-            is_array($value) ? $value : [],
-            fn($item) => is_string($item) && $item !== ''
-        );
+        // Clean up old image when updating
+        static::saving(function ($model) {
+            $attribute = $model->getImageAttributeName();
+            if ($model->isDirty($attribute)) {
+                $model->deleteImage($model->getOriginal($attribute));
+            }
+        });
+
+        // Clean up image on soft or force delete
+        static::deleted(fn($model) => $model->deleteImage());
+
+        static::forceDeleted(fn($model) => $model->deleteImage());
+
     }
 }

@@ -30,23 +30,19 @@ class Category extends Model implements Sluggable
     use CategoryBuilder;
 
     /**
-     * Attributes that store image paths.
-     *
-     * @return array<string>
+     * Image attribute used by HasCleaning trait.
      */
-    protected function imageAttributes(): array
+    public function getImageAttributeName(): string
     {
-        return ['image'];
+        return 'image';
     }
 
     /**
-     * Storage disk for image cleanup.
-     *
-     * @return string
+     * Directory used by HasCleaning trait.
      */
-    protected function imageDisk(): string
+    public function getImageDirectory(): string
     {
-        return 'public';
+        return 'category';
     }
 
     /**

@@ -20,14 +20,16 @@ class GalleryForm
             ->components([
                 TextInput::make('original_name')
                     ->default(null),
+
                 self::makeEnumField('type', Image::class, default: Image::LOGO)
                     ->required()
                     ->label('Choose Your Image Type'),
+
                 FileUpload::make('image')
                     ->label('Featured Image')
                     ->disk('public')
                     ->visibility('public')
-                    ->directory('icons')
+                    ->directory(fn($record) => $record->getImageDirectory())
                     ->image()
                     ->imageEditor()
                     ->imageEditorAspectRatios([
@@ -41,6 +43,7 @@ class GalleryForm
                     ->imagePreviewHeight('250')
                     ->uploadingMessage('Uploading your image...')
                     ->columnSpanFull(),
+
                 Textarea::make('description')
                     ->default(null)
                     ->columnSpanFull(),
