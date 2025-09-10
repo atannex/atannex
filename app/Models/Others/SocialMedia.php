@@ -3,7 +3,7 @@
 namespace App\Models\Others;
 
 use App\Enums\Flag;
-use Atannex\Enables\EnableScope;
+use Atannex\Enables\HasScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class SocialMedia extends Model
 {
     use SoftDeletes;
-    use EnableScope;
+    use HasScope;
 
     protected $fillable = [
         'label',

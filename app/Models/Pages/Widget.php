@@ -2,13 +2,14 @@
 
 namespace App\Models\Pages;
 
-use Atannex\Enables\EnableSlug;
+use Atannex\Enables\HasSlug;
 use Atannex\Relations\WidgetRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Widget extends Model
 {
-    use EnableSlug;
+    use HasSlug;
     use SoftDeletes;
     use WidgetRelation;
 

@@ -6,9 +6,9 @@ use Exception;
 use Filament\Panel;
 use App\Enums\Gender;
 use App\Enums\Status;
-use Atannex\Enables\EnableSlug;
-use Atannex\Relations\UserRelation;
+use Atannex\Enables\HasSlug;
 use Atannex\Traits\HasCleaning;
+use Atannex\Relations\UserRelation;
 use Illuminate\Support\Facades\Log;
 use Atannex\Traits\TracksUserActivity;
 use Spatie\Permission\Traits\HasRoles;
@@ -35,7 +35,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
     use Notifiable;
-    use EnableSlug;
+    use HasSlug;
     use HasRoles;
     use SoftDeletes;
     use TracksUserActivity;

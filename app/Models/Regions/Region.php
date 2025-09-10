@@ -4,8 +4,8 @@ namespace App\Models\Regions;
 
 use App\Contracts\Sluggable;
 use App\Enums\Flag;
-use Atannex\Enables\Slug;
-use Atannex\Enables\Scope;
+use Atannex\Enables\HasSlug;
+use Atannex\Enables\HasScope;
 use Atannex\Filters\GetHierarchy;
 use Atannex\Relations\RegionRelation;
 use Atannex\Traits\HasBootable;
@@ -20,8 +20,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Region extends Model implements Sluggable
 {
     use SoftDeletes;
-    use Slug;
-    use Scope;
+    use HasSlug;
+    use HasScope;
     use GetHierarchy;
     use HasBootable;
     use RegionRelation;

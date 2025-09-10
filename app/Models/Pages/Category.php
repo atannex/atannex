@@ -3,13 +3,13 @@
 namespace App\Models\Pages;
 
 use App\Contracts\Sluggable;
-use Atannex\Builders\CategoryBuilder;
-use Atannex\Traits\HasResolver;
-use Atannex\Enables\EnableSlug;
-use Atannex\Enables\EnableScope;
-use Atannex\Filters\GetHierarchy;
-use Atannex\Relations\CategoryRelation;
+use Atannex\Enables\HasSlug;
+use Atannex\Enables\HasScope;
 use Atannex\Traits\HasCleaning;
+use Atannex\Traits\HasResolver;
+use Atannex\Filters\GetHierarchy;
+use Atannex\Builders\CategoryBuilder;
+use Atannex\Relations\CategoryRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -21,9 +21,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Category extends Model implements Sluggable
 {
     use SoftDeletes;
-    use EnableSlug;
+    use HasSlug;
     use CategoryRelation;
-    use EnableScope;
+    use HasScope;
     use GetHierarchy;
     use HasResolver;
     use HasCleaning;

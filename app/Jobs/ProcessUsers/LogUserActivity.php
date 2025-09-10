@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\ProcessUsers\ProcessUsers;
+namespace App\Jobs\ProcessUsers;
 
 use InvalidArgumentException;
 use Throwable;

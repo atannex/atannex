@@ -3,9 +3,9 @@
 namespace App\Models\Tags;
 
 use App\Models\Posts\Post;
+use Atannex\Enables\HasSlug;
 use App\Models\Pivots\PostTag;
 use Atannex\Builders\TagBuilder;
-use Atannex\Enables\EnableSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Tag extends Model
 {
     use SoftDeletes;
-    use EnableSlug;
+    use HasSlug;
     use TagBuilder;
 
     /**

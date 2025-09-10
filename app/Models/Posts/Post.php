@@ -4,19 +4,20 @@ namespace App\Models\Posts;
 
 use App\Enums\Flag;
 use App\Contracts\Sluggable;
+use Atannex\Enables\HasSlug;
+use Atannex\Enables\HasScope;
 use App\Contracts\Commentable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Atannex\Traits\HasBootable;
-use Atannex\Traits\HasCleaning;
 use Atannex\Enables\EnableSlug;
-use Atannex\Enables\EnableScope;
+use Atannex\Traits\HasBootable;
+use Atannex\Traits\HasBreaking;
+use Atannex\Traits\HasCleaning;
 use Atannex\Relations\PostRelation;
 use App\Livewire\Interactions\HasLikes;
 use App\Livewire\Interactions\HasViews;
+use Illuminate\Database\Eloquent\Model;
 use App\Livewire\Interactions\HasShares;
 use App\Livewire\Interactions\HasRatings;
-use Atannex\Traits\HasBreaking;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Post
@@ -27,8 +28,8 @@ use Atannex\Traits\HasBreaking;
 class Post extends Model implements Commentable, Sluggable
 {
     use SoftDeletes;
-    use EnableSlug;
-    use EnableScope;
+    use HasSlug;
+    use HasScope;
     use PostRelation;
     use HasCleaning;
     use HasBootable;

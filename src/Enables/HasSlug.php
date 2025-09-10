@@ -2,7 +2,7 @@
 
 namespace Atannex\Enables;
 
-use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\HasSlug as Slug;
 use Spatie\Sluggable\SlugOptions;
 
 /**
@@ -11,9 +11,9 @@ use Spatie\Sluggable\SlugOptions;
  * Provides functionality to automatically generate and manage URL-friendly slugs
  * for Eloquent models using the Spatie Sluggable package.
  */
-trait Slug
+trait HasSlug
 {
-    use HasSlug;
+    use Slug;
 
     /**
      * Get the source field for slug generation.
