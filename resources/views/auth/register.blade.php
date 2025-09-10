@@ -13,8 +13,11 @@
                         </div>
 
                         <div class="card-body">
-                            <form action="{{ route('register') }}" method="POST" class="contact-form">
+                            <form action="{{ route('register') }}" method="POST" class="contact-form" id="registerForm">
                                 @csrf
+
+                                <!-- Hidden input for timezone -->
+                                <input type="hidden" name="timezone" id="timezone">
 
                                 <div class="mb-4 form-group">
                                     <label for="name" class="form-label fw-medium form-text">
@@ -101,4 +104,13 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const timezoneInput = document.getElementById('timezone');
+            if (timezoneInput) {
+                timezoneInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            }
+        });
+    </script>
 </x-layouts.guest>

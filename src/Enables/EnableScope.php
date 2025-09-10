@@ -15,14 +15,16 @@ trait EnableScope
      */
     protected function scopePublished(Builder $query, ?string $type = null): Builder
     {
+        $query->where('flag', Flag::PUBLISHED);
+
         if ($type === 'global' || $type === 'non-global') {
-            return $query->where('is_global', $type === 'global')
-                ->where('flag', Flag::PUBLISHED);
+            return $query->where('is_global', $type === 'global');
         }
 
         return $query->whereNotNull('published_at')
             ->where('published_at', '<=', now());
     }
+
 
     /**
      * Scope to order by the `order` column.

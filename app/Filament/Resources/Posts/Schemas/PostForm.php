@@ -2,13 +2,14 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
-use App\Models\Regions\Region;
 use App\Enums\Flag;
 use App\Models\Tags\Tag;
 use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
 use App\Models\Pages\Category;
+use App\Models\Regions\Region;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Textarea;
@@ -158,7 +159,25 @@ class PostForm
                                                     ->disabled()
                                                     ->placeholder('User ID')
                                                     ->helperText('Tracking field for audit purposes'),
-                                            ]),
+
+                                                Toggle::make('is_breaking')
+                                                    ->label('Breaking News')
+                                                    ->default(true)
+                                                    ->helperText('Enable this to mark the post as breaking news.')
+                                                    ->inline(false)
+                                                    ->reactive(),
+
+                                                DateTimePicker::make('breaking_until')
+                                                    ->label('Breaking Until')
+                                                    ->placeholder('Select date and time')
+                                                    ->helperText('Leave empty to publish immediately.')
+                                                    ->native(false)
+                                                    ->displayFormat('M d, Y - H:i')
+                                                    ->seconds(false)
+                                                    ->visible(fn($get) => $get('is_breaking')),
+
+
+                                            ])->columns(2),
                                     ])
                                     ->compact()
                                     ->collapsible()

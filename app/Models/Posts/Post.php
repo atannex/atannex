@@ -71,7 +71,7 @@ class Post extends Model implements Commentable, Sluggable
      */
     protected $casts = [
         'published_at' => 'datetime',
-        'breaking_until' => 'datetime',
+        'breaking_until' => 'datetime:Y-m-d H:i:sP',
         'is_breaking' => 'boolean',
         'flag' => Flag::class,
         'author_id' => 'integer',

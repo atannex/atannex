@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\Posts\Posts;
+namespace App\Events\Posts;
 
 use App\Models\Posts\Post;
 use Illuminate\Queue\SerializesModels;

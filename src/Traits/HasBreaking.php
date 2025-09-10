@@ -2,23 +2,25 @@
 
 namespace Atannex\Traits;
 
-use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 use App\Enums\Flag;
 use App\Events\Posts\BreakingPost;
+use Illuminate\Database\Eloquent\Builder;
 
 trait HasBreaking
 {
     /**
      * Scope for active breaking posts.
      *
+     * Usage: Post::activeBreaking()->get();
+     *
      * @param Builder $query
      * @return Builder
      */
-    protected function scopeActiveBreaking($query)
+    public function scopeActiveBreaking(Builder $query): Builder
     {
         return $query->where('is_breaking', true)
-            ->where('breaking_until', '>', now())
+            ->where('breaking_until', '>', Carbon::now())
             ->where('flag', Flag::PUBLISHED);
     }
 
@@ -33,8 +35,8 @@ trait HasBreaking
         $hours = max(1, $hours);
 
         $updated = $this->update([
-            'is_breaking' => true,
-            'breaking_until' => now()->addHours($hours),
+            'is_breaking'   => true,
+            'breaking_until' => Carbon::now()->addHours($hours),
         ]);
 
         if ($updated) {
@@ -52,7 +54,7 @@ trait HasBreaking
     public function expireBreaking(): bool
     {
         $updated = $this->update([
-            'is_breaking' => false,
+            'is_breaking'    => false,
             'breaking_until' => null,
         ]);
 
@@ -66,9 +68,11 @@ trait HasBreaking
     /**
      * Check if the post is currently breaking news.
      *
+     * Access via: $post->is_currently_breaking
+     *
      * @return bool
      */
-    protected function getIsCurrentlyBreakingAttribute(): bool
+    public function getIsCurrentlyBreakingAttribute(): bool
     {
         return $this->is_breaking && $this->breaking_until?->gt(Carbon::now());
     }
@@ -76,12 +80,13 @@ trait HasBreaking
     /**
      * Automatically handle breaking status transition.
      *
+     * Extends breaking news if active, expires if past breaking_until.
+     *
      * @param int $extendHours Number of hours to extend if already breaking
      * @return bool
      */
     public function handleBreakingTransition(int $extendHours = 1): bool
     {
-
         if ($this->is_breaking && $this->breaking_until?->isPast()) {
             return $this->expireBreaking();
         }

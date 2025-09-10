@@ -67,6 +67,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         'phone',
         'status',
         'slug',
+        'timezone'
     ];
 
     /**
