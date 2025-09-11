@@ -1,12 +1,12 @@
 <?php
 
-namespace Atannex\Components\For\Editorials;
+namespace Atannex\Components\GetPosts;
 
 use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 
-trait GetEditorPick
+trait ByEditorPick
 {
     /**
      * Retrieve editor's picks.

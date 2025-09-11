@@ -12,9 +12,10 @@ use App\Models\Modules\PostModule;
 use Atannex\Views\Traits\CanRender;
 use Atannex\Views\Traits\HasContent;
 
-trait ContentViews
+trait HasViews
 {
-    use CanRender, HasContent;
+    use CanRender;
+    use HasContent;
 
     /**
      * Render a tag page with related posts and metadata.

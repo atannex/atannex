@@ -3,10 +3,10 @@
 namespace Atannex;
 
 use App\Enums\PostType;
-use Atannex\Binders\GetComponent;
+use Atannex\Binders\Components;
 use Illuminate\Support\Collection;
 
-final class AtannexProvider extends GetComponent
+final class AtannexProvider extends Components
 {
     /**
      * Retrieve posts based on the specified type.

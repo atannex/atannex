@@ -7,8 +7,8 @@ use Throwable;
 use GeoIp2\Database\Reader;
 use Jenssegers\Agent\Agent;
 use Illuminate\Http\Request;
+use App\Jobs\Users\LogUserActivity;
 use Illuminate\Support\Facades\Log;
-use App\Jobs\ProcessUsers\ProcessUsers\LogUserActivity;
 
 /**
  * Trait TracksUserActivity

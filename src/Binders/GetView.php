@@ -3,7 +3,7 @@
 namespace Atannex\Binders;
 
 use Atannex\AtannexProvider;
-use Atannex\Views\ContentViews;
+use Atannex\Views\HasViews;
 use Atannex\Services\TagService;
 use Atannex\Services\PageService;
 use Atannex\Services\CategoryService;
@@ -31,7 +31,7 @@ class GetView
      * @param TagService $tagService Service for tag-related operations.
      * @param CategoryService $categoryService Service for category-related operations.
      * @param GetPost $getPost Helper for fetching and preparing post data.
-     * @param GetComponent $getComponent Helper for fetching reusable components.
+     * @param Components $getComponent Helper for fetching reusable components.
      */
     public function __construct(
         protected readonly PageService $pageService,
@@ -39,7 +39,7 @@ class GetView
         protected readonly TagService $tagService,
         protected readonly CategoryService $categoryService,
         protected readonly GetPost $getPost,
-        protected GetComponent $getComponent,
+        protected Components $getComponent,
     ) {}
 
     /**
@@ -47,5 +47,5 @@ class GetView
      * Each trait contains methods for rendering or preparing specific view types.
      */
 
-    use ContentViews;
+    use HasViews;
 }

@@ -110,7 +110,7 @@ final class PostType extends Enum
         self::POST_BY_TAG => [
             'entity' => 'post-by-tag',
             'idKey'  => 'tag_id',
-            'method' => 'getPostByTag',
+            'method' => 'getPostsByTag',
         ],
 
         self::GET_TAG_WITH_POSTS => [

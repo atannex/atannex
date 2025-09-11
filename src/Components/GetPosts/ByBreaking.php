@@ -1,12 +1,12 @@
 <?php
 
-namespace Atannex\Components\For\Get;
+namespace Atannex\Components\GetPosts;
 
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
-trait GetBreakingPost
+trait ByBreaking
 {
     /**
      * Retrieve breaking posts with optional sorting, limit, and user timezone.
@@ -29,10 +29,8 @@ trait GetBreakingPost
 
         $config = array_merge($defaults, $config);
 
-        $sortDir = strtolower($config['order']) === 'asc' ? 'asc' : 'desc';
-
         return Post::activeBreaking($config['timezone'])
-            ->orderBy($config['sort'], $sortDir)
+            ->orderBy('published_at')
             ->limit($config['limit'])
             ->get();
     }

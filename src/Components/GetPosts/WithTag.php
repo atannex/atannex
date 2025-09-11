@@ -1,13 +1,14 @@
 <?php
 
-namespace Atannex\Components\With;
+namespace Atannex\Components\GetPosts;
 
 use App\Models\Tags\Tag;
 use Illuminate\Support\Collection;
+use Atannex\Traits\HasPostWithHierarchy;
 
-trait GetTagWithPosts
+trait WithTag
 {
-    use BaseHierarchyWithPosts;
+    use HasPostWithHierarchy;
 
     /**
      * Retrieve tags with their latest posts.

@@ -1,21 +1,19 @@
 <?php
 
-namespace Atannex\Components\For\Engagements;
+namespace Atannex\Components\GetEngagementsPosts;
 
-use InvalidArgumentException;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 
-trait GetMostEngagedPost
+trait ByLiked
 {
     /**
-     * Retrieve posts sorted by a specified engagement metric.
+     * Retrieve the most liked posts.
      *
-     * Supports filtering by category or tag, configurable limit,
-     * and eager loading of relations.
+     * Fetches posts ordered by like count in descending order.
+     * Supports optional filtering by category or tag, eager loading,
+     * and configurable limit.
      *
-     * @param string $metric The engagement metric to sort by
-     *                       e.g., 'rating', 'views', 'shares', 'likes', 'comments_count'
      * @param array $config Optional configuration:
      *                      - 'limit' => int Number of posts to retrieve (default 5)
      *                      - 'category_id' => int Filter by category ID
@@ -23,13 +21,8 @@ trait GetMostEngagedPost
      *                      - 'with' => array Eager load relations (default ['category', 'tags'])
      * @return Collection<int, Post>
      */
-    public function getMostEngagedPosts(string $metric, array $config = []): Collection
+    public function getMostLikedPosts(array $config = []): Collection
     {
-        $allowedMetrics = ['rating', 'views', 'shares', 'likes', 'comments_count'];
-        if (!in_array($metric, $allowedMetrics)) {
-            throw new InvalidArgumentException(sprintf("Invalid engagement metric '%s'. Allowed metrics: ", $metric) . implode(', ', $allowedMetrics));
-        }
-
         $limit = $config['limit'] ?? 5;
         $categoryId = $config['category_id'] ?? null;
         $tagId = $config['tag_id'] ?? null;
@@ -40,7 +33,7 @@ trait GetMostEngagedPost
             ->when($categoryId, fn($q) => $q->where('category_id', $categoryId))
             ->when($tagId, fn($q) => $q->whereHas('tags', fn($q) => $q->where('id', $tagId)))
             ->with($relations)
-            ->orderByDesc($metric)
+            ->orderByDesc('likes') // Sort by like count
             ->limit($limit);
 
         return $query->get();

@@ -1,12 +1,11 @@
 <?php
 
-namespace Atannex\Components\With;
+namespace Atannex\Traits;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Atannex\Traits\HasHierarchyWithRelations;
 
-trait BaseHierarchyWithPosts
+trait HasPostWithHierarchy
 {
     use HasHierarchyWithRelations;
 

@@ -1,16 +1,16 @@
 <?php
 
-namespace Atannex\Components\For\Engagements;
+namespace Atannex\Components\GetEngagementsPosts;
 
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 
-trait GetMostSharedPost
+trait ByCommented
 {
     /**
-     * Retrieve the most shared posts.
+     * Retrieve the most commented posts.
      *
-     * Fetches posts ordered by share count in descending order.
+     * Fetches posts ordered by comment count in descending order.
      * Supports optional filtering by category or tag, eager loading,
      * and configurable limit.
      *
@@ -21,7 +21,7 @@ trait GetMostSharedPost
      *                      - 'with' => array Eager load relations (default ['category', 'tags'])
      * @return Collection<int, Post>
      */
-    public function getMostSharedPosts(array $config = []): Collection
+    public function getMostCommentedPosts(array $config = []): Collection
     {
         $limit = $config['limit'] ?? 5;
         $categoryId = $config['category_id'] ?? null;
@@ -33,7 +33,7 @@ trait GetMostSharedPost
             ->when($categoryId, fn($q) => $q->where('category_id', $categoryId))
             ->when($tagId, fn($q) => $q->whereHas('tags', fn($q) => $q->where('id', $tagId)))
             ->with($relations)
-            ->orderByDesc('shares') // Sort by share count
+            ->orderByDesc('comments_count')
             ->limit($limit);
 
         return $query->get();

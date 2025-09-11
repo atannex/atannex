@@ -1,13 +1,14 @@
 <?php
 
-namespace Atannex\Components\With;
+namespace Atannex\Components\GetPosts;
 
 use App\Models\Pages\Category;
 use Illuminate\Support\Collection;
+use Atannex\Traits\HasPostWithHierarchy;
 
-trait GetCategoryWithPosts
+trait WithCategory
 {
-    use BaseHierarchyWithPosts;
+    use HasPostWithHierarchy;
 
     /**
      * Get categories with their latest posts.

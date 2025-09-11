@@ -1,13 +1,14 @@
 <?php
 
-namespace Atannex\Components\With;
+namespace Atannex\Components\GetPosts;
 
 use App\Models\Regions\Region;
 use Illuminate\Support\Collection;
+use Atannex\Traits\HasPostWithHierarchy;
 
-trait GetRegionWithPosts
+trait WithRegion
 {
-    use BaseHierarchyWithPosts;
+    use HasPostWithHierarchy;
 
     /**
      * Get regions with their latest posts.
