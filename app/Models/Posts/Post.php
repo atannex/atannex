@@ -7,7 +7,6 @@ use App\Contracts\Sluggable;
 use Atannex\Enables\HasSlug;
 use Atannex\Enables\HasScope;
 use App\Contracts\Commentable;
-use Atannex\Enables\EnableSlug;
 use Atannex\Traits\HasBootable;
 use Atannex\Traits\HasBreaking;
 use Atannex\Traits\HasCleaning;
@@ -53,7 +52,6 @@ class Post extends Model implements Commentable, Sluggable
         'title',
         'slug',
         'slug_path',
-        'date_path',
         'flag',
         'category_id',
         'author_id',
@@ -87,13 +85,6 @@ class Post extends Model implements Commentable, Sluggable
     protected $attributes = [
         'flag' => Flag::DRAFT,
     ];
-
-    /**
-     * Appended attributes for serialization.
-     *
-     * @var string[]
-     */
-    protected $appends = ['is_currently_breaking'];
 
     /**
      * Image attribute used by HasCleaning trait.

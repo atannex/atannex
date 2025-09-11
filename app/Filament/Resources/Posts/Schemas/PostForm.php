@@ -161,19 +161,17 @@ class PostForm
 
                                                 Toggle::make('is_breaking')
                                                     ->label('Breaking News')
-                                                    ->default(true)
-                                                    ->helperText('Enable this to mark the post as breaking news.')
-                                                    ->inline(false)
-                                                    ->reactive(),
+                                                    ->default(false)
+                                                    ->reactive()
+                                                    ->helperText('Enable this to mark the post as breaking news.'),
 
                                                 DateTimePicker::make('breaking_until')
                                                     ->label('Breaking Until')
                                                     ->placeholder('Select date and time')
-                                                    ->helperText('Leave empty to publish immediately.')
-                                                    ->native(false)
                                                     ->displayFormat('M d, Y - H:i')
-                                                    ->seconds(false)
-                                                    ->visible(fn($get) => $get('is_breaking')),
+                                                    ->native(false)
+                                                    ->visible(fn($get) => $get('is_breaking'))
+                                                    ->required(fn($get) => $get('is_breaking')),
 
 
                                             ])->columns(2),

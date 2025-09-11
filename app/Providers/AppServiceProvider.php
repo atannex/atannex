@@ -20,7 +20,6 @@ use Ngangagah\Handlers\Navigation;
 use Atannex\Adapters\WidgetAdapter;
 use App\Observers\SluggableObserver;
 use Atannex\Adapters\SectionAdapter;
-use App\Observers\BreakingPostObserver;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -58,7 +57,6 @@ class AppServiceProvider extends ServiceProvider
         Region::observe(SluggableObserver::class);
         PostTag::observe(SluggableObserver::class);
         Post::observe(SluggableObserver::class);
-        Post::observe(BreakingPostObserver::class);
     }
 
     /**
