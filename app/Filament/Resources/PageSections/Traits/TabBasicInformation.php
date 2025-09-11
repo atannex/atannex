@@ -3,63 +3,61 @@
 namespace App\Filament\Resources\PageSections\Traits;
 
 use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 
+/**
+ * Class TabBasicInformation
+ *
+ * Provides the schema definition for the "Basic Information" tab
+ * used in page sections within the Filament admin panel.
+ */
 class TabBasicInformation
 {
     /**
-     * Get the schema for the Tab Basic Information section.
+     * Creates the schema for the Basic Information tab.
      *
-     * @return \Filament\Forms\Components\Section
+     * @return Section
      */
     public static function make(): Section
     {
-        return Section::make('Tab Basic Information')
+        return Section::make('Basic Information')
             ->schema([
                 Grid::make(2)
                     ->schema([
                         TextInput::make('title')
                             ->label('Tab Title')
                             ->placeholder('e.g., Breaking News, Latest Updates')
-                            ->helperText('Display name for this tab')
+                            ->helperText('The display name of this tab in the interface.')
                             ->maxLength(50)
                             ->required(),
 
                         TextInput::make('limit')
-                            ->label('Content Limit')
+                            ->label('Posts Limit')
                             ->numeric()
                             ->default(5)
                             ->minValue(1)
                             ->maxValue(50)
                             ->suffix('posts')
-                            ->helperText('Maximum number of posts to display')
+                            ->helperText('Maximum number of posts to display in this tab.')
                             ->required(),
-                        TextInput::make('post_limit')
-                            ->label('Category Post Limit')
+
+                        TextInput::make('limit_per_leaf_post')
+                            ->label('Limit per Leaf Post')
                             ->numeric()
                             ->default(5)
                             ->minValue(1)
                             ->maxValue(50)
                             ->suffix('posts')
-                            ->helperText('Maximum number of posts to display')
-                            ->required(),
-                        TextInput::make('leaf_post_limit')
-                            ->label('leaf_post_limit')
-                            ->numeric()
-                            ->default(5)
-                            ->minValue(1)
-                            ->maxValue(50)
-                            ->suffix('posts')
-                            ->helperText('Maximum number of posts to display')
+                            ->helperText('Maximum number of posts to display for each child element.')
                             ->required(),
 
                         Select::make('sort')
                             ->label('Sort By')
                             ->options([
-                                'published_at' => 'Published At',
-                                'created_at' => 'Created At',
+                                'published_at' => 'Published Date',
+                                'created_at' => 'Creation Date',
                                 'title' => 'Title',
                                 'name' => 'Name',
                                 'views' => 'Views',
@@ -68,7 +66,7 @@ class TabBasicInformation
                                 'shares_count' => 'Shares Count',
                             ])
                             ->default('created_at')
-                            ->helperText('Field to sort the content by'),
+                            ->helperText('Select the field by which content should be sorted.'),
 
                         Select::make('order')
                             ->label('Sort Order')
@@ -77,8 +75,7 @@ class TabBasicInformation
                                 'desc' => 'Descending',
                             ])
                             ->default('desc')
-                            ->helperText('Sorting direction'),
-
+                            ->helperText('Choose the sorting direction.'),
                     ]),
             ])
             ->compact();

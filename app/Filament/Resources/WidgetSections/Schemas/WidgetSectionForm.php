@@ -2,25 +2,18 @@
 
 namespace App\Filament\Resources\WidgetSections\Schemas;
 
-use App\Enums\PostType;
-use App\Models\Tags\Tag;
 use Filament\Schemas\Schema;
-use App\Models\Pages\Category;
-use App\Models\Regions\Region;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use App\Filament\Resources\PageSections\Traits\ContentFiltering;
 use App\Filament\Resources\PageSections\Traits\DateRangeSection;
 use App\Filament\Resources\PageSections\Traits\TabBasicInformation;
-use App\Filament\Resources\PageSections\Traits\ScoringOptionsSection;
 use App\Filament\Resources\PageSections\Traits\EngagementWeightsSection;
-use App\Filament\Resources\PageSections\Traits\AdditionalSettingsSection;
 
 class WidgetSectionForm
 {
@@ -98,8 +91,6 @@ class WidgetSectionForm
                                                 ContentFiltering::make(),
                                                 DateRangeSection::make(),
                                                 EngagementWeightsSection::make(),
-                                                ScoringOptionsSection::make(),
-                                                AdditionalSettingsSection::make(),
                                             ])
                                             ->columns(1)
                                             ->itemLabel(fn(array $state): ?string => $state['title'] ?? 'Untitled Tab')

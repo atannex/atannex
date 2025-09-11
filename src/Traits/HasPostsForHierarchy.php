@@ -29,15 +29,12 @@ trait HasPostsForHierarchy
         ?callable $leafIdResolver = null,
         ?callable $groupByResolver = null
     ): Collection {
-        if (empty($ids)) {
-            return collect();
-        }
 
         // Normalize and validate options
         $limit = max(1, (int) ($options['limit'] ?? 10));
         $limitPerLeafPost = max(1, (int) ($options['limit_per_leaf_post'] ?? 1));
-        $sortBy = $options['sort_by'] ?? ($options['sort'] ?? 'published_at');
-        $sortDir = $options['sort_dir'] ?? ($options['order'] ?? 'desc');
+        $sortBy = $options['sort'] ?? 'published_at';
+        $sortDir = $options['order'] ?? 'desc';
 
         // Fetch items with children in a single query
         $items = $modelClass::with('children')->whereIn('id', $ids)->get();
@@ -46,10 +43,6 @@ trait HasPostsForHierarchy
         foreach ($items as $item) {
             // Determine leaf IDs based on whether the item has children
             $leafIds = $this->resolveLeafIds($item, $leafIdResolver);
-
-            if (empty($leafIds)) {
-                continue;
-            }
 
             // Build the post query
             $query = Post::published()

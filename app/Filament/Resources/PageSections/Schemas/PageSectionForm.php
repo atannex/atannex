@@ -14,9 +14,7 @@ use Filament\Schemas\Components\Grid as SchemaGrid;
 use App\Filament\Resources\PageSections\Traits\ContentFiltering;
 use App\Filament\Resources\PageSections\Traits\DateRangeSection;
 use App\Filament\Resources\PageSections\Traits\TabBasicInformation;
-use App\Filament\Resources\PageSections\Traits\ScoringOptionsSection;
 use App\Filament\Resources\PageSections\Traits\EngagementWeightsSection;
-use App\Filament\Resources\PageSections\Traits\AdditionalSettingsSection;
 
 class PageSectionForm
 {
@@ -92,8 +90,6 @@ class PageSectionForm
                                             ContentFiltering::make(),
                                             DateRangeSection::make(),
                                             EngagementWeightsSection::make(),
-                                            ScoringOptionsSection::make(),
-                                            AdditionalSettingsSection::make(),
                                         ])
                                         ->columns(1)
                                         ->itemLabel(fn(array $state): ?string => $state['title'] ?? 'Untitled Tab')
