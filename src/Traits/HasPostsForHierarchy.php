@@ -49,7 +49,7 @@ trait HasPostsForHierarchy
                 ->when($foreignKey, fn($q) => $q->whereIn($foreignKey, $leafIds))
                 ->when(!$foreignKey, fn($q) => $q->whereHas(
                     $relationName,
-                    fn(Builder $builder) => $builder->whereIn("{$relationName}.id", $leafIds)
+                    fn(Builder $builder) => $builder->whereIn($relationName . '.id', $leafIds)
                 ))
                 ->orderBy($sortBy, $sortDir);
 

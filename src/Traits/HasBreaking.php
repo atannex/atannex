@@ -17,7 +17,7 @@ trait HasBreaking
      * @param  string|null $timezone  User timezone (default: app timezone)
      * @return Builder
      */
-    public function scopeActiveBreaking(Builder $query, ?string $timezone = null): Builder
+    protected function scopeActiveBreaking(Builder $query, ?string $timezone = null): Builder
     {
         $now = Carbon::now($timezone ?? config('app.timezone'));
 
@@ -34,7 +34,7 @@ trait HasBreaking
      * @param  Builder $query
      * @return Builder
      */
-    public function scopeBreaking(Builder $query): Builder
+    protected function scopeBreaking(Builder $query): Builder
     {
         return $query->where('is_breaking', true);
     }

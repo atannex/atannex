@@ -12,7 +12,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Grid as SchemaGrid;
 use App\Filament\Resources\PageSections\Traits\ContentFiltering;
-use App\Filament\Resources\PageSections\Traits\DateRangeSection;
 use App\Filament\Resources\PageSections\Traits\TabBasicInformation;
 use App\Filament\Resources\PageSections\Traits\EngagementWeightsSection;
 
@@ -88,7 +87,6 @@ class PageSectionForm
                                         ->schema([
                                             TabBasicInformation::make(),
                                             ContentFiltering::make(),
-                                            DateRangeSection::make(),
                                             EngagementWeightsSection::make(),
                                         ])
                                         ->columns(1)
@@ -96,7 +94,6 @@ class PageSectionForm
                                         ->addActionLabel('Add New Tab')
                                         ->reorderable()
                                         ->collapsible()
-                                        ->collapsed()
                                         ->cloneable()
                                         ->minItems(1)
                                         ->maxItems(6)

@@ -18,19 +18,24 @@ trait ByBreaking
      *                       - 'timezone' : string User timezone (default: user timezone or app timezone)
      * @return Collection Returns a collection of breaking posts.
      */
-    public function getBreakingPosts(array $config = []): Collection
+    public function getBreakingPosts(array $config = [
+        'limit'    => 5,
+        'sort'     => 'published_at',
+        'order'    => 'desc',
+        'timezone' => 'UTC',
+    ]): Collection
     {
         $defaults = [
             'limit'    => 5,
             'sort'     => 'published_at',
             'order'    => 'desc',
-            'timezone' => Auth::user()->timezone ?? config('app.timezone'),
+            'timezone' => Auth::user()->timezone,
         ];
 
         $config = array_merge($defaults, $config);
 
         return Post::activeBreaking($config['timezone'])
-            ->orderBy('published_at')
+            ->orderBy($config['sort'], $config['order'])
             ->limit($config['limit'])
             ->get();
     }

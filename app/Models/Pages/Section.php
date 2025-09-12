@@ -4,7 +4,6 @@ namespace App\Models\Pages;
 
 use Atannex\Enables\HasSlug;
 use Atannex\Enables\HasScope;
-use Atannex\Enables\EnableSlug;
 use Atannex\Relations\SectionRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

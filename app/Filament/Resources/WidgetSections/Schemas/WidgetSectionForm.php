@@ -11,7 +11,6 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use App\Filament\Resources\PageSections\Traits\ContentFiltering;
-use App\Filament\Resources\PageSections\Traits\DateRangeSection;
 use App\Filament\Resources\PageSections\Traits\TabBasicInformation;
 use App\Filament\Resources\PageSections\Traits\EngagementWeightsSection;
 
@@ -89,7 +88,6 @@ class WidgetSectionForm
                                             ->schema([
                                                 TabBasicInformation::make(),
                                                 ContentFiltering::make(),
-                                                DateRangeSection::make(),
                                                 EngagementWeightsSection::make(),
                                             ])
                                             ->columns(1)
@@ -97,7 +95,6 @@ class WidgetSectionForm
                                             ->addActionLabel('Add New Tab')
                                             ->reorderable()
                                             ->collapsible()
-                                            ->collapsed()
                                             ->cloneable()
                                             ->minItems(1)
                                             ->maxItems(6)

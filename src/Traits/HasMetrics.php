@@ -143,7 +143,7 @@ trait HasMetrics
     public function calculateTopByMetric(Collection $items, string $metric, int $limit = 5): Collection
     {
         if (!in_array($metric, self::METRICS, true)) {
-            throw new BadMethodCallException("Invalid metric: {$metric}. Must be one of: " . implode(', ', self::METRICS));
+            throw new BadMethodCallException(sprintf('Invalid metric: %s. Must be one of: ', $metric) . implode(', ', self::METRICS));
         }
 
         $countField = $metric . '_count';
