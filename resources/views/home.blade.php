@@ -121,7 +121,6 @@
                     </div>
                 </div>
 
-
                 @if($featuredPost)
                 <div class="col-xxl-6">
                     <div class="dark-theme img-overlay2">
