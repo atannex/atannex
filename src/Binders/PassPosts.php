@@ -21,7 +21,7 @@ use Atannex\Components\GetEngagementsPosts\ByCommented;
  *
  * @package Atannex\Binders
  */
-class GetPost
+class PassPosts
 {
     use GetRecentPost;
     use GetPostNavigation;

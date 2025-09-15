@@ -19,7 +19,7 @@ use Atannex\Services\CategoryService;
  *
  * @package Atannex\Binders
  */
-class GetView
+class PassView
 {
     /**
      * Constructor
@@ -30,7 +30,7 @@ class GetView
      * @param AtannexProvider $atannex Core provider for application-wide utilities.
      * @param TagService $tagService Service for tag-related operations.
      * @param CategoryService $categoryService Service for category-related operations.
-     * @param GetPost $getPost Helper for fetching and preparing post data.
+     * @param PassPosts $getPost Helper for fetching and preparing post data.
      * @param Components $getComponent Helper for fetching reusable components.
      */
     public function __construct(
@@ -38,7 +38,7 @@ class GetView
         protected readonly AtannexProvider $atannex,
         protected readonly TagService $tagService,
         protected readonly CategoryService $categoryService,
-        protected readonly GetPost $getPost,
+        protected readonly PassPosts $getPost,
         protected Components $getComponent,
     ) {}
 

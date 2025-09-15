@@ -2,13 +2,13 @@
 
 namespace Atannex;
 
+use Atannex\Binders\PassPosts;
 use App\Enums\Image;
-use Atannex\Binders\GetPost;
 use Atannex\Services\PageService;
 use Atannex\Helpers\HasMedia;
 use Atannex\Services\TagService;
 
-final class LebialemProvider extends GetPost
+final class LebialemProvider extends PassPosts
 {
     use HasMedia;
 

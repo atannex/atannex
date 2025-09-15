@@ -11,7 +11,7 @@ use App\Models\Regions\Region;
 use Illuminate\View\View;
 use Atannex\Traits\HasResolver;
 use Atannex\Services\PageService;
-use Atannex\Binders\GetView;
+use Atannex\Binders\PassView;
 
 class PageController extends Controller
 {
@@ -19,7 +19,7 @@ class PageController extends Controller
 
     public function __construct(
         protected readonly PageService $pageService,
-        protected readonly GetView $getView,
+        protected readonly PassView $getView,
     ) {
         $this->middleware(['auth', 'verified', 'password.confirm']);
     }

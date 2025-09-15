@@ -37,32 +37,4 @@ class Page extends Model
         'published_at' => 'datetime',
         'is_active' => 'boolean',
     ];
-
-    /**
-     * Get all tabs from sections and their widgets for this page.
-     *
-     * @return array
-     */
-    public function allTabs(): array
-    {
-        $tabs = [];
-
-        foreach ($this->sections as $section) {
-            // Section tabs
-            if (!empty($section->pivot->config['tabs'])) {
-                $tabs = array_merge($tabs, $section->pivot->config['tabs']);
-            }
-
-            // Widgets inside sections
-            if (!empty($section->widgets)) {
-                foreach ($section->widgets as $widget) {
-                    if (!empty($widget->pivot->config['tabs'])) {
-                        $tabs = array_merge($tabs, $widget->pivot->config['tabs']);
-                    }
-                }
-            }
-        }
-
-        return $tabs;
-    }
 }
