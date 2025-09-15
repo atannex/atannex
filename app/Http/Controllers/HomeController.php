@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Atannex\Binders\PassPosts;
 use Illuminate\Contracts\Support\Renderable;
-use Atannex\Binders\PassPostss;
 
 class HomeController extends Controller
 {

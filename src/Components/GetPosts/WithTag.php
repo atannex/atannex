@@ -3,35 +3,38 @@
 namespace Atannex\Components\GetPosts;
 
 use App\Models\Tags\Tag;
-use Atannex\Traits\HasHierarchyWithRelations;
+use Atannex\Traits\WithHierarchicalPosts;
 use Illuminate\Support\Collection;
 
+/**
+ * Trait WithTag
+ *
+ * Provides methods to retrieve tags with their associated hierarchical posts.
+ */
 trait WithTag
 {
-    // use HasHierarchyWithRelations;
+    use WithHierarchicalPosts;
 
     /**
-     * Get tags with posts.
+     * Retrieve tags along with their hierarchical posts.
      *
-     * @param array $config
-     * [
-     *   'ids' => [1,2,3],              // tag IDs
-     *   'limit' => 4,                   // max number of tags
-     *   'relation_limit' => 3,          // posts per tag
-     *   'leaf_relation_limit' => 1,     // posts per leaf tag
-     *   'order_column' => 'published_at'
-     * ]
+     * @param array $config Configuration options:
+     *  - 'ids' => array of tag IDs (optional)
+     *  - 'limit' => number of top-level tags (optional)
+     *  - 'relation_limit' => posts per top-level tag (optional)
+     *  - 'leaf_relation_limit' => posts per child tag (optional)
+     *  - 'sort_field' => field to sort posts by (optional)
+     *  - 'sort_direction' => sorting direction: 'asc' or 'desc' (optional)
      *
      * @return Collection
      */
     public function getTagWithPosts(array $config): Collection
     {
-        $config = array_merge($config, [
-            'model' => Tag::class,
-            'relation' => 'posts',
-            'children' => 'children'
-        ]);
-
-        return $this->getModelsWithRelation($config);
+        return $this->getHierarchicalWithPosts(
+            Tag::class,
+            $config,
+            'children',
+            'posts'
+        );
     }
 }

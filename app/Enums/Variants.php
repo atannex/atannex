@@ -17,7 +17,7 @@ use BenSampo\Enum\Enum;
  * @method static static S()
  * @method static static T()
  */
-final class LeetspeakVariants extends Enum
+final class Variants extends Enum
 {
     public const A = 'a';
 

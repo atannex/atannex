@@ -8,7 +8,7 @@
                         <div class="blog-style1">
                             <div class="blog-img">
 
-                                 @include('partials.image',['class'=> 'small-image-carousel'])
+                                @include('partials.image',['class'=> 'small-image-carousel'])
 
                                 @include('partials.category')
 
