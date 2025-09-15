@@ -15,11 +15,17 @@ final class Entity extends Enum
     use GetEnum;
 
     public const BREAKING_POSTS = 'breaking-posts';
+
     public const POST_BY_CATEGORY = 'post-by-category';
+
     public const POST_BY_REGION = 'post-by-region';
+
     public const POST_BY_TAG = 'post-by-tag';
+
     public const GET_CATEGORY_WITH_POSTS = 'category-with-posts';
+
     public const GET_REGION_WITH_POSTS = 'region-with-posts';
+
     public const GET_TAG_WITH_POSTS = 'tag-with-posts';
 
     /**

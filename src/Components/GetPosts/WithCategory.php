@@ -4,7 +4,6 @@ namespace Atannex\Components\GetPosts;
 
 use Illuminate\Support\Arr;
 use App\Models\Pages\Category;
-use Atannex\Traits\HasHierarchyWithRelations;
 use Atannex\Views\Traits\CanNormalize;
 use Illuminate\Support\Collection;
 
