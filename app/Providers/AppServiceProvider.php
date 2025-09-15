@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Enums\Flag;
 use App\Enums\Icons;
 use App\Enums\Image;
-use App\Enums\Binding;
 use App\Enums\Entity;
 use App\Enums\Territories;
 use App\Models\Posts\Post;
@@ -66,7 +65,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Flag::boot();
         Entity::boot();
-        Binding::boot();
         Icons::boot();
         Image::boot();
         Territories::boot();
