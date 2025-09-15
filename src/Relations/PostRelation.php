@@ -84,4 +84,66 @@ trait PostRelation
             ->whereNull('parent_id')
             ->latest();
     }
+
+    /**
+     * ---------------------------
+     * Sluggable Implementation
+     * ---------------------------
+     */
+
+    /**
+     * Get the base string for slug generation.
+     *
+     * @return string|null The category's slug path.
+     */
+    public function getSlugBase(): ?string
+    {
+        return $this->category?->slug_path;
+    }
+
+    /**
+     * Get the generated slug for this post.
+     *
+     * @return string|null
+     */
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Rebuild this post's slug path.
+     */
+    public function rebuildSlugPath(): void
+    {
+        $this->slug_path = $this->buildDynamicSlugPath();
+    }
+
+    /**
+     * Cascade slug path updates to related tags pivot and self.
+     */
+    public function cascadeSlugPathUpdates(): void
+    {
+        // Update the post's own slug path
+        $this->rebuildSlugPath();
+        $this->saveQuietly();
+
+        // Update related tags' pivot slug paths
+        $categorySlug = $this->category?->slug_path;
+        if ($categorySlug) {
+            $this->tags()->get()->each(function (Tag $tag) use ($categorySlug) {
+                $tag->pivot?->forceFill([
+                    'slug_path' => $this->buildSlugPath($categorySlug, $tag->slug),
+                ])->saveQuietly();
+            });
+        }
+    }
+
+    /**
+     * Clear slug paths for related tags pivots.
+     */
+    public function clearRelatedSlugPaths(): void
+    {
+        $this->tags()->newPivotQuery()->update(['slug_path' => null]);
+    }
 }

@@ -3,19 +3,19 @@
 namespace App\Models\Posts;
 
 use App\Enums\Flag;
-use App\Models\Tags\Tag;
 use App\Contracts\Sluggable;
+use Atannex\Enables\HasSlug;
+use Atannex\Enables\HasScope;
 use App\Contracts\Commentable;
-use Atannex\Traits\Bootable;
-use Atannex\Enables\EnableSlug;
-use Atannex\Enables\EnableScope;
-use Atannex\Traits\Cleaning;
+use Atannex\Traits\HasBootable;
+use Atannex\Traits\HasBreaking;
+use Atannex\Traits\HasCleaning;
 use Atannex\Relations\PostRelation;
 use App\Livewire\Interactions\HasLikes;
 use App\Livewire\Interactions\HasViews;
+use Illuminate\Database\Eloquent\Model;
 use App\Livewire\Interactions\HasShares;
 use App\Livewire\Interactions\HasRatings;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -27,53 +27,31 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Post extends Model implements Commentable, Sluggable
 {
     use SoftDeletes;
-    use EnableSlug;
-    use EnableScope;
+    use HasSlug;
+    use HasScope;
     use PostRelation;
-    use Cleaning;
-    use Bootable;
+    use HasCleaning;
+    use HasBootable;
     use HasLikes;
     use HasRatings;
     use HasShares;
     use HasViews;
-
-    /**
-     * Attributes that store image paths.
-     *
-     * @return array<string>
-     */
-    protected function imageAttributes(): array
-    {
-        return ['image'];
-    }
-
-    /**
-     * Storage disk for image cleanup.
-     *
-     * @return string
-     */
-    protected function imageDisk(): string
-    {
-        return 'public';
-    }
+    use HasBreaking;
 
     /**
      * Source attribute for slug generation.
-     *
-     * @var string
      */
     protected string $slugSource = 'title';
 
     /**
      * Mass assignable attributes.
      *
-     * @var array<string>
+     * @var string[]
      */
     protected $fillable = [
         'title',
         'slug',
         'slug_path',
-        'date_path',
         'flag',
         'category_id',
         'author_id',
@@ -81,6 +59,8 @@ class Post extends Model implements Commentable, Sluggable
         'description',
         'image',
         'published_at',
+        'is_breaking',
+        'breaking_until',
     ];
 
     /**
@@ -90,7 +70,11 @@ class Post extends Model implements Commentable, Sluggable
      */
     protected $casts = [
         'published_at' => 'datetime',
+        'breaking_until' => 'datetime:Y-m-d H:i:sP',
+        'is_breaking' => 'boolean',
         'flag' => Flag::class,
+        'author_id' => 'integer',
+        'category_id' => 'integer',
     ];
 
     /**
@@ -103,64 +87,31 @@ class Post extends Model implements Commentable, Sluggable
     ];
 
     /**
-     * ---------------------------
-     * Sluggable Implementation
-     * ---------------------------
+     * Image attribute used by HasCleaning trait.
      */
+    public function getImageAttributeName(): string
+    {
+        return 'image';
+    }
 
     /**
-     * Get the base string for slug generation.
+     * Directory used by HasCleaning trait.
+     */
+    public function getImageDirectory(): string
+    {
+        return 'posts';
+    }
+
+    /**
+     * Automatically generate slug when title changes.
      *
-     * @return string|null The category's slug path.
+     * @param string $value
      */
-    public function getSlugBase(): ?string
+    protected function setTitleAttribute(string $value): void
     {
-        return $this->category?->slug_path;
-    }
-
-    /**
-     * Get the generated slug for this post.
-     *
-     * @return string|null
-     */
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    /**
-     * Rebuild this post's slug path.
-     */
-    public function rebuildSlugPath(): void
-    {
-        $this->slug_path = $this->buildDynamicSlugPath();
-    }
-
-    /**
-     * Cascade slug path updates to related tags pivot and self.
-     */
-    public function cascadeSlugPathUpdates(): void
-    {
-        // Update the post's own slug path
-        $this->rebuildSlugPath();
-        $this->saveQuietly();
-
-        // Update related tags' pivot slug paths
-        $categorySlug = $this->category?->slug_path;
-        if ($categorySlug) {
-            $this->tags()->get()->each(function (Tag $tag) use ($categorySlug) {
-                $tag->pivot?->forceFill([
-                    'slug_path' => $this->buildSlugPath($categorySlug, $tag->slug),
-                ])->saveQuietly();
-            });
+        $this->attributes['title'] = $value;
+        if (empty($this->attributes['slug'])) {
+            $this->attributes['slug'] = $this->generateSlug();
         }
-    }
-
-    /**
-     * Clear slug paths for related tags pivots.
-     */
-    public function clearRelatedSlugPaths(): void
-    {
-        $this->tags()->newPivotQuery()->update(['slug_path' => null]);
     }
 }

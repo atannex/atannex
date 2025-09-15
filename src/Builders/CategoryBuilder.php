@@ -3,11 +3,11 @@
 namespace Atannex\Builders;
 
 use App\Models\Posts\Post;
-use Atannex\Traits\Bootable;
+use Atannex\Traits\HasBootable;
 
 trait CategoryBuilder
 {
-    use Bootable;
+    use HasBootable;
 
     /**
      * ---------------------------

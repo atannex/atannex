@@ -4,11 +4,11 @@ namespace App\Models\Regions;
 
 use App\Contracts\Sluggable;
 use App\Enums\Flag;
-use Atannex\Enables\EnableSlug;
-use Atannex\Enables\EnableScope;
+use Atannex\Enables\HasSlug;
+use Atannex\Enables\HasScope;
 use Atannex\Filters\GetHierarchy;
 use Atannex\Relations\RegionRelation;
-use Atannex\Traits\Bootable;
+use Atannex\Traits\HasBootable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,10 +20,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Region extends Model implements Sluggable
 {
     use SoftDeletes;
-    use EnableSlug;
-    use EnableScope;
+    use HasSlug;
+    use HasScope;
     use GetHierarchy;
-    use Bootable;
+    use HasBootable;
     use RegionRelation;
 
     protected string $slugSource = 'name';

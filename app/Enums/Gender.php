@@ -25,7 +25,7 @@ final class Gender extends Enum
      */
     public static function boot(): void
     {
-        static::setMetadata([
+        self::setMetadata([
             self::MALE => [
                 'label' => 'Male',
                 'description' => 'Male gender',

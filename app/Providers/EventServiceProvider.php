@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Events\Users\UserCreated;
+use App\Events\Docs\DocumentCreated;
+use App\Events\Posts\Posts\BreakingPost;
+use App\Listeners\SendDocs\DocumentNotification;
+use App\Listeners\SendPosts\BreakingPostListener;
+use App\Listeners\SendUsers\SendUserRegisteredNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use App\Events\UserLoggedIn;
-use App\Events\UserLoggedOut;
-use App\Listeners\LogUserLoginActivity;
-use App\Listeners\LogUserLogoutActivity;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -16,11 +18,17 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        UserLoggedIn::class => [
-            LogUserLoginActivity::class,
+
+        DocumentCreated::class => [
+            DocumentNotification::class,
         ],
-        UserLoggedOut::class => [
-            LogUserLogoutActivity::class,
+
+        UserCreated::class => [
+            SendUserRegisteredNotification::class,
+        ],
+
+        BreakingPost::class => [
+            BreakingPostListener::class,
         ],
     ];
 
@@ -30,5 +38,13 @@ class EventServiceProvider extends ServiceProvider
     public function boot(): void
     {
         parent::boot();
+    }
+
+    /**
+     * Determine if events and listeners should be automatically discovered.
+     */
+    public function shouldDiscoverEvents(): bool
+    {
+        return false;
     }
 }

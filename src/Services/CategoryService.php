@@ -6,7 +6,7 @@ namespace Atannex\Services;
 
 use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
-use Atannex\Helpers\Media;
+use Atannex\Helpers\HasMedia;
 use App\Models\Pages\Category;
 use App\Models\Regions\Region;
 use App\Models\Regions\Employee;
@@ -23,7 +23,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 final class CategoryService
 {
-    use Media;
+    use HasMedia;
 
     protected const DEFAULT_PAGINATION_LIMIT      = 50;
 

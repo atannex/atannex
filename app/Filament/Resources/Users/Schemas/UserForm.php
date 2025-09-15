@@ -127,7 +127,7 @@ class UserForm
                                         FileUpload::make('image')
                                             ->label('Profile Picture')
                                             ->disk('public')
-                                            ->directory('profiles')
+                                            ->directory(fn($record) => $record->getImageDirectory())
                                             ->visibility('public')
                                             ->image()
                                             ->imageEditor()

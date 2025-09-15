@@ -4,16 +4,16 @@ namespace App\Models\Others;
 
 use App\Enums\Flag;
 use App\Enums\Image;
-use Atannex\Enables\EnableScope;
-use Atannex\Traits\Cleaning;
+use Atannex\Enables\HasScope;
+use Atannex\Traits\HasCleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Gallery extends Model
 {
     use SoftDeletes;
-    use EnableScope;
-    use Cleaning;
+    use HasScope;
+    use HasCleaning;
 
     protected $fillable = [
         'original_name',
@@ -29,22 +29,18 @@ class Gallery extends Model
     ];
 
     /**
-     * Define attributes that store image paths.
-     *
-     * @return array<string>
+     * Image attribute used by HasCleaning trait.
      */
-    protected function imageAttributes(): array
+    public function getImageAttributeName(): string
     {
-        return ['image'];
+        return 'image';
     }
 
     /**
-     * Define the storage disk for image cleanup.
-     *
-     * @return string
+     * Directory used by HasCleaning trait.
      */
-    protected function imageDisk(): string
+    public function getImageDirectory(): string
     {
-        return 'public';
+        return 'gallery';
     }
 }

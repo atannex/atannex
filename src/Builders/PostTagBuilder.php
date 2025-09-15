@@ -2,11 +2,11 @@
 
 namespace Atannex\Builders;
 
-use Atannex\Traits\Bootable;
+use Atannex\Traits\HasBootable;
 
 trait PostTagBuilder
 {
-    use Bootable;
+    use HasBootable;
 
     /**
      * Get the base string for slug generation.

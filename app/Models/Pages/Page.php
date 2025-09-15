@@ -2,8 +2,8 @@
 
 namespace App\Models\Pages;
 
-use Atannex\Enables\EnableSlug;
-use Atannex\Enables\EnableScope;
+use Atannex\Enables\HasSlug;
+use Atannex\Enables\HasScope;
 use Atannex\Relations\PageRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Page extends Model
 {
     use SoftDeletes;
-    use EnableSlug;
-    use EnableScope;
+    use HasSlug;
+    use HasScope;
     use PageRelation;
 
     protected string $slugSource = 'title';

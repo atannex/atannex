@@ -3,13 +3,13 @@
 namespace App\Models\Pages;
 
 use App\Contracts\Sluggable;
-use Atannex\Builders\CategoryBuilder;
-use Atannex\Traits\Resolver;
-use Atannex\Enables\EnableSlug;
-use Atannex\Enables\EnableScope;
+use Atannex\Enables\HasSlug;
+use Atannex\Enables\HasScope;
+use Atannex\Traits\HasCleaning;
+use Atannex\Traits\HasResolver;
 use Atannex\Filters\GetHierarchy;
+use Atannex\Builders\CategoryBuilder;
 use Atannex\Relations\CategoryRelation;
-use Atannex\Traits\Cleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -21,32 +21,28 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Category extends Model implements Sluggable
 {
     use SoftDeletes;
-    use EnableSlug;
+    use HasSlug;
     use CategoryRelation;
-    use EnableScope;
+    use HasScope;
     use GetHierarchy;
-    use Resolver;
-    use Cleaning;
+    use HasResolver;
+    use HasCleaning;
     use CategoryBuilder;
 
     /**
-     * Attributes that store image paths.
-     *
-     * @return array<string>
+     * Image attribute used by HasCleaning trait.
      */
-    protected function imageAttributes(): array
+    public function getImageAttributeName(): string
     {
-        return ['image'];
+        return 'image';
     }
 
     /**
-     * Storage disk for image cleanup.
-     *
-     * @return string
+     * Directory used by HasCleaning trait.
      */
-    protected function imageDisk(): string
+    public function getImageDirectory(): string
     {
-        return 'public';
+        return 'category';
     }
 
     /**

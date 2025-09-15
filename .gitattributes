@@ -1,11 +1,52 @@
+# ===============================
+# Line endings
+# ===============================
+# Ensure consistent line endings across platforms
 * text=auto eol=lf
 
-*.blade.php diff=html
-*.css diff=css
-*.html diff=html
-*.md diff=markdown
-*.php diff=php
+# ===============================
+# Language-specific diff settings
+# ===============================
+*.php        diff=php
+*.blade.php  diff=html
+*.html       diff=html
+*.css        diff=css
+*.js         diff=javascript
+*.json       diff=json
+*.md         diff=markdown
+*.xml        diff=xml
+*.yml        diff=yaml
+*.yaml       diff=yaml
+*.sh         diff=sh
+*.sql        diff=sql
 
-/.github export-ignore
-CHANGELOG.md export-ignore
-.styleci.yml export-ignore
+# ===============================
+# Export-ignore for archives
+# ===============================
+# Exclude development or metadata files from git archive
+/.github       export-ignore
+/.vscode       export-ignore
+/.idea         export-ignore
+/.env          export-ignore
+/.env.*        export-ignore
+CHANGELOG.md   export-ignore
+README.md      export-ignore
+/composer.lock export-ignore
+/node_modules  export-ignore
+/public/hot    export-ignore
+/public/storage export-ignore
+/storage/*.key export-ignore
+.styleci.yml  export-ignore
+
+# ===============================
+# Binary files
+# ===============================
+# Ensure binary files are treated correctly
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.zip  binary
+*.gz   binary
+*.pdf  binary

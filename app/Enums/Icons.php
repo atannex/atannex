@@ -69,7 +69,7 @@ final class Icons extends Enum
      */
     public static function boot(): void
     {
-        static::setMetadata([
+        self::setMetadata([
             self::TWITTER    => [
                 'label' => 'Twitter',
                 'color' => 'primary',

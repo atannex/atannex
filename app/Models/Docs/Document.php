@@ -2,9 +2,9 @@
 
 namespace App\Models\Docs;
 
-use Atannex\Enables\EnableSlug;
+use Atannex\Enables\HasSlug;
+use Atannex\Enables\HasScope;
 use App\Models\Regions\Employee;
-use Atannex\Enables\EnableScope;
 use App\Models\Modules\DocumentModule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,8 +14,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Document extends Model
 {
     use SoftDeletes;
-    use EnableSlug;
-    use EnableScope;
+    use HasSlug;
+    use HasScope;
 
     /**
      * The attribute used to generate the slug

@@ -2,34 +2,10 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     @livewireStyles()
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ $title ?? config('app.name') }}</title>
+    @include('components.layouts.files.header')
 
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-
-    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    @php $favicon = asset('storage/' . $global['favicon']?->image) @endphp
-    <link rel="icon" type="image/png" sizes="96x96" href="{{ $favicon }}">
-    <link rel="icon" type="image/svg+xml" href="{{ $favicon }}">
-    <link rel="shortcut icon" href="{{ $favicon }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ $favicon }}">
-
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/image.css') }}">
-
-    @include('components.partials.googletagmanager')
+    @include('components.layouts.files.googletagmanager')
 
 </head>
 <body>

@@ -6,7 +6,8 @@ use Exception;
 use Filament\Panel;
 use App\Enums\Gender;
 use App\Enums\Status;
-use Atannex\Enables\EnableSlug;
+use Atannex\Enables\HasSlug;
+use Atannex\Traits\HasCleaning;
 use Atannex\Relations\UserRelation;
 use Illuminate\Support\Facades\Log;
 use Atannex\Traits\TracksUserActivity;
@@ -34,11 +35,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
     use Notifiable;
-    use EnableSlug;
+    use HasSlug;
     use HasRoles;
     use SoftDeletes;
     use TracksUserActivity;
     use UserRelation;
+    use HasCleaning;
 
     /**
      * The attribute used as the slug source.
@@ -67,7 +69,25 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         'phone',
         'status',
         'slug',
+        'timezone'
     ];
+
+    /**
+     * Image attribute used by HasCleaning trait.
+     */
+    public function getImageAttributeName(): string
+    {
+        return 'image';
+    }
+
+    /**
+     * Directory used by HasCleaning trait.
+     */
+    public function getImageDirectory(): string
+    {
+        return 'users';
+    }
+
 
     /**
      * Attributes hidden from serialization.

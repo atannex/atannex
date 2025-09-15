@@ -28,7 +28,7 @@ class PostsTable
     {
         return $table
             ->columns([
-
+                TextColumn::make('id'),
                 ImageColumn::make('image')
                     ->label('Featured Image')
                     ->disk('public')

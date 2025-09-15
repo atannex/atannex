@@ -13,25 +13,30 @@ use Illuminate\Database\Eloquent\Builder;
 trait CategoryTree
 {
     /**
-     * Retrieves the root category for a given category.
+     * Get the root category for a given category.
      */
     protected function getRootCategory(Category $category): Category
     {
-        return $category->getAncestors()->first() ?? $category;
+
+        $ancestors = $category->getAncestors();
+
+        return $ancestors->last() ?: $category;
     }
 
+
     /**
-     * Retrieves category IDs within a category tree, excluding a given ID if provided.
+     * Get IDs of a category tree, optionally excluding a given ID.
      */
     protected function getCategoryTreeIds(Category $category, ?int $excludeId = null): Collection
     {
-        $ids = $category->getDescendantsAndSelf()->pluck('id');
-
-        return $this->excludeId($ids, $excludeId);
+        return $this->excludeId(
+            $category->getDescendants()->pluck('id')->push($category->id),
+            $excludeId
+        );
     }
 
     /**
-     * Retrieves related categories within a category tree.
+     * Get related categories for a given ancestor category, excluding optional ID.
      */
     protected function getRelatedCategories(Category $ancestor, ?int $excludeId = null, int $limit = 12): Collection
     {
@@ -45,7 +50,7 @@ trait CategoryTree
     }
 
     /**
-     * Retrieves related categories for a given category, excluding itself.
+     * Get related categories for a specific category, excluding itself.
      */
     public function getRelatedCategoriesForCategory(Category $category, int $limit = 12): Collection
     {
@@ -66,13 +71,11 @@ trait CategoryTree
      */
     private function excludeId(Collection $ids, ?int $excludeId): Collection
     {
-        return $excludeId !== null
-            ? $ids->reject(fn($id) => $id === $excludeId)->values()
-            : $ids->values();
+        return $excludeId ? $ids->reject(fn($id) => $id === $excludeId)->values() : $ids->values();
     }
 
     /**
-     * Scope for counting only published posts.
+     * Scope to count only published posts.
      */
     private function publishedPostsScope(): Closure
     {

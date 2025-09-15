@@ -1,18 +1,38 @@
+# Top-most EditorConfig file
 root = true
 
+# ===============================
+# Default settings for all files
+# ===============================
 [*]
 charset = utf-8
 end_of_line = lf
-indent_size = 4
 indent_style = space
+indent_size = 4
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+# ===============================
+# Markdown files
+# ===============================
 [*.md]
+# Preserve trailing whitespace for line breaks
 trim_trailing_whitespace = false
 
+# ===============================
+# YAML files
+# ===============================
 [*.{yml,yaml}]
 indent_size = 2
 
+# ===============================
+# Docker Compose file
+# ===============================
 [docker-compose.yml]
+indent_size = 4
+
+# ===============================
+# JSON, JS, TS, CSS, SCSS, HTML, PHP files
+# ===============================
+[*.{json,js,ts,css,scss,html,php,vue}]
 indent_size = 4

@@ -2,8 +2,8 @@
 
 namespace App\Models\Pages;
 
-use Atannex\Enables\EnableSlug;
-use Atannex\Enables\EnableScope;
+use Atannex\Enables\HasSlug;
+use Atannex\Enables\HasScope;
 use Atannex\Relations\SectionRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Section extends Model
 {
     use SoftDeletes;
-    use EnableSlug;
+    use HasSlug;
     use SectionRelation;
-    use EnableScope;
+    use HasScope;
 
     protected string $slugSource = 'name';
 

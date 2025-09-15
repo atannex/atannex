@@ -42,7 +42,7 @@ final class Status extends Enum
      */
     public static function boot(): void
     {
-        static::setMetadata([
+        self::setMetadata([
             self::PENDING => [
                 'label' => 'Pending',
                 'description' => 'User account awaiting activation or review',

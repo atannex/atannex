@@ -3,10 +3,9 @@
 namespace Atannex\Repositories\Traits;
 
 use App\Models\Posts\Post;
-use Atannex\Helpers\Query;
-use Atannex\Traits\Resolver;
 use App\Models\Pages\Category;
 use App\Models\Regions\Region;
+use Atannex\Traits\HasResolver;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -16,9 +15,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 trait PostQuery
 {
-
-    use Query;
-    use Resolver;
+    use HasResolver;
 
     protected const DEFAULT_PAGINATION_LIMIT   = 50;
 
@@ -27,94 +24,96 @@ trait PostQuery
     protected const DEFAULT_POPULAR_TAGS_LIMIT = 12;
 
     /**
-     * Retrieve paginated posts for a given category.
+     * Get paginated posts for a category.
      */
     public function getPostsByCategory(?Category $category, int $limit = self::DEFAULT_PAGINATION_LIMIT): LengthAwarePaginator
     {
-        return $this->buildPostQuery($category)
-            ->latest()
-            ->paginate($this->sanitizeLimit($limit));
+        $categoryIds = $this->getModelWithDescendantsIds($category);
+
+        return $this->paginatePosts(
+            Post::published()->whereIn('category_id', $categoryIds)->with($this->defaultRelations()),
+            $limit
+        );
     }
 
     /**
-     * Retrieve posts associated with a specific region, limited by a specified number.
-     *
-     * This method fetches posts that belong to leaf categories (categories without children)
-     * and are linked to the provided region. The posts are returned with their related
-     * categories and regions, ordered by latest creation date.
-     *
-     * @param Region $region The region entity to filter posts by.
-     * @param int $limit Optional. The maximum number of posts to return. Default is 15.
+     * Get paginated posts for a region.
      */
     public function getPostsByRegion(?Region $region, int $limit = 15): LengthAwarePaginator
     {
-        $regionIds = $region->getDescendantsAndSelf()->pluck('id');
+        $regionIds = $this->getModelWithDescendantsIds($region);
 
-        return Post::whereHas('category', function ($query) {
-            $query->doesntHave('children');
-        })
-            ->whereHas('regions', function ($query) use ($regionIds) {
-                $query->whereIn('region_id', $regionIds);
-            })
-            ->with(['category', 'regions'])
-            ->latest()
-            ->paginate($this->sanitizeLimit($limit));
+        $query = Post::whereHas('category', fn($q) => $q->doesntHave('children'))
+            ->whereHas('regions', fn($q) => $q->whereIn('region_id', $regionIds))
+            ->with(['category', 'regions']);
+
+        return $this->paginatePosts($query, $limit);
     }
 
     /**
-     * Retrieve recent posts for a given post's category, excluding the post itself.
+     * Get recent posts in the same root category, excluding a post.
      */
     public function getRecentPosts(?Post $post, int $limit = self::DEFAULT_RECENT_POSTS_LIMIT): Collection
     {
-        if (!$post?->category) {
-            return collect();
-        }
+        abort_if(!$post?->category, 404);
 
         $category = $this->getRootCategory($post->category);
-        if (is_null($category)) {
-            return collect();
-        }
+        abort_if(!$category, 404);
 
-        return $this->buildPostQuery($category, $post->id)
+        $collection = $this->buildPostQuery($category, $post->id)
             ->latest()
             ->take($this->sanitizeLimit($limit))
             ->get();
+
+        abort_if($collection->isEmpty(), 404);
+
+        return $collection;
     }
 
     /**
-     * Retrieve paginated posts by an author identified by their slug.
+     * Get paginated posts by author slug.
      */
     public function getPostsByAuthor(?string $slugPath, int $limit = self::DEFAULT_PAGINATION_LIMIT): LengthAwarePaginator
     {
-        if ($slugPath === null || $slugPath === '' || $slugPath === '0') {
-            return $this->emptyPaginator($limit);
-        }
+        abort_if(!$slugPath || $slugPath === '0', 404);
 
-        if (!$author = $this->resolveAuthor($slugPath)) {
-            return $this->emptyPaginator($limit);
-        }
+        $author = $this->resolveAuthor($slugPath) ?: abort(404);
 
-        return Post::published()
+        $query = Post::published()
             ->where('author_id', $author->id)
             ->with([
-                'author'   => $this->authorWithPostCount(),
+                'author' => $this->authorWithPostCount(),
                 'category'
             ])
-            ->orderByDesc('created_at')
-            ->paginate($this->sanitizeLimit($limit))
-            ->appends(['slug' => $slugPath]);
+            ->latest();
+
+        return $this->paginatePosts($query, $limit)->appends(['slug' => $slugPath]);
     }
 
     /**
-     * Build a query for published posts within a category tree.
+     * Get paginated posts filtered by year and month.
+     */
+    public function getPostsByDate(?string $yearMonth = null, int $perPage = 15): LengthAwarePaginator
+    {
+        $query = Post::query()->whereNotNull('published_at');
+
+        if ($yearMonth) {
+            ['year' => $year, 'month' => $month] = $this->parseDateSlug($yearMonth);
+
+            $query->when($year, fn($q) => $q->whereYear('published_at', $year))
+                ->when($month, fn($q) => $q->whereMonth('published_at', $month));
+        }
+
+        return $this->paginatePosts($query->latest('published_at'), $perPage);
+    }
+
+    /**
+     * Build a reusable query for posts in a category, optionally excluding a post.
      */
     protected function buildPostQuery(?Category $category, ?int $excludeId = null): Builder
     {
-        $categoryIds = $category instanceof Category ? $this->getCategoryTreeIds($category) : collect();
-
-        if ($categoryIds->isEmpty()) {
-            return $this->emptyPostQuery();
-        }
+        $categoryIds = $this->getCategoryTreeIds($category);
+        abort_if($categoryIds->isEmpty(), 404);
 
         $query = Post::published()
             ->whereIn('category_id', $categoryIds)
@@ -128,28 +127,23 @@ trait PostQuery
     }
 
     /**
-     * Retrieves paginated posts filtered by an optional year and month slug.
-     *
-     * This method queries published posts, optionally filtering by a date slug containing
-     * year and/or month components. If a date slug is provided, it is parsed to extract
-     * year and month, and the query is filtered accordingly. Posts are ordered by publication
-     * date in descending order and returned as a paginated result.
-     *
-     * @param string|null $yearMonth The date slug (e.g., '2023' or '2023-10') to filter posts by year and/or month, or null for no date filter.
-     * @param int $perPage The number of posts per page for pagination (default: 15).
-     * @return LengthAwarePaginator A paginated collection of posts matching the specified criteria.
+     * Helper to get IDs of a model and all its descendants.
      */
-    public function getPostsByDate(?string $yearMonth = null, int $perPage = 15): LengthAwarePaginator
+    protected function getModelWithDescendantsIds($model): Collection
     {
-        $query = Post::query()->whereNotNull('published_at');
+        abort_if(!$model, 404);
 
-        if ($yearMonth) {
-            ['year' => $year, 'month' => $month] = $this->parseDateSlug($yearMonth);
+        return $model->getDescendants()->push($model)->pluck('id');
+    }
 
-            $query->when($year, fn($q) => $q->whereYear('published_at', $year))
-                ->when($month, fn($q) => $q->whereMonth('published_at', $month));
-        }
+    /**
+     * Helper to paginate a query and abort if empty.
+     */
+    protected function paginatePosts(Builder $query, int $limit): LengthAwarePaginator
+    {
+        $paginator = $query->latest()->paginate($this->sanitizeLimit($limit));
+        abort_if($paginator->isEmpty(), 404);
 
-        return $query->orderByDesc('published_at')->paginate($perPage);
+        return $paginator;
     }
 }

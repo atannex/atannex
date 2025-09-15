@@ -14,7 +14,7 @@ class TagRepository implements TagInterface
      */
     public function getTagBySlug(string $slug): ?Tag
     {
-        return Tag::where('slug', $slug)->first();
+        return $this->queryTag()->where('slug', $slug)->first();
     }
 
     /**
@@ -24,7 +24,7 @@ class TagRepository implements TagInterface
      */
     public function getTagsForPost(int $postId): Collection
     {
-        $post = Post::findOrFail($postId);
+        $post = $this->findPost($postId);
         return $post->tags()->orderBy('name')->get();
     }
 
@@ -35,8 +35,8 @@ class TagRepository implements TagInterface
      */
     public function getPostsForTag(string $tagId): Collection
     {
-        $tag = Tag::findOrFail($tagId);
-        return $tag->posts()->orderBy('published_at', 'desc')->get();
+        $tag = $this->findTag($tagId);
+        return $tag->posts()->orderByDesc('published_at')->get();
     }
 
     /**
@@ -46,34 +46,51 @@ class TagRepository implements TagInterface
      */
     public function searchTags(string $searchTerm): Collection
     {
-        return Tag::where('name', 'like', '%' . $searchTerm . '%')
+        return $this->queryTag()
+            ->where('name', 'like', '%' . $searchTerm . '%')
             ->orderBy('name')
             ->get();
     }
 
     /**
-     * Retrieves the most popular tags based on the number of associated published posts,
-     * including pivot data such as 'slug_path' from the post_tag pivot table.
+     * Retrieves the most popular tags based on the number of associated published posts.
      *
      * @param int $limit
-     * @return Collection
+     * @return Collection<Tag>
      */
     public function getPopularTags(int $limit = 10): Collection
     {
-        return Tag::whereHas('posts', function ($query) {
-            $query->published();
-        })
-            ->withCount(['posts' => function ($query) {
-                $query->published();
-            }])
+        return $this->queryTag()
+            ->whereHas('posts', fn($q) => $q->published())
+            ->withCount(['posts' => fn($q) => $q->published()])
             ->orderByDesc('posts_count')
-            ->with(['posts' => function ($query) {
-                $query->published()
-                    ->with('category')
-                    ->select('posts.*', 'post_tag.slug_path');
-            }])
+            ->with(['posts' => fn($q) => $q->published()->with('category')->select('posts.*', 'post_tag.slug_path')])
             ->having('posts_count', '>=', 2)
             ->take($limit)
             ->get();
+    }
+
+    /**
+     * Reusable base query for Tag.
+     */
+    private function queryTag()
+    {
+        return Tag::query();
+    }
+
+    /**
+     * Finds a tag or fails.
+     */
+    private function findTag(string $tagId): Tag
+    {
+        return Tag::findOrFail($tagId);
+    }
+
+    /**
+     * Finds a post or fails.
+     */
+    private function findPost(int $postId): Post
+    {
+        return Post::findOrFail($postId);
     }
 }
