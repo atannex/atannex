@@ -7,32 +7,33 @@ namespace App\Enums;
 use BenSampo\Enum\Enum;
 use Atannex\Filters\GetEnum;
 
+/**
+ * Flag Enum (Filament Optimized)
+ *
+ * Handles post/article states, moderation, and highlight tags.
+ */
 final class Flag extends Enum
 {
     use GetEnum;
 
+    // Post lifecycle
     public const DRAFT = 'draft';
-
     public const PENDING = 'pending';
-
     public const REVIEWED = 'reviewed';
-
     public const SCHEDULED = 'scheduled';
-
     public const PUBLISHED = 'published';
-
     public const ARCHIVED = 'archived';
-
     public const DELETED = 'deleted';
 
+    // Special tags
     public const FEATURED = 'featured';
-
     public const BREAKING = 'breaking';
-
     public const FACT_CHECKED = 'fact_checked';
-
     public const EDITORIAL_PICK = 'editorial_pick';
 
+    /**
+     * Initialize metadata for all post/article flags with Filament/Bootstrap colors and icons.
+     */
     public static function boot(): void
     {
         self::setMetadata([

@@ -3,7 +3,6 @@
 namespace Atannex\Components\GetPosts;
 
 use App\Models\Tags\Tag;
-use Atannex\Traits\HasHierarchyWithRelations;
 use Illuminate\Support\Collection;
 
 trait WithTag

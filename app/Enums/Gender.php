@@ -17,10 +17,15 @@ final class Gender extends Enum
     use GetEnum;
 
     public const MALE              = 'male';
+
     public const FEMALE            = 'female';
+
     public const NON_BINARY        = 'non_binary';
+
     public const TRANSGENDER       = 'transgender';
+
     public const OTHER             = 'other';
+
     public const PREFER_NOT_TO_SAY = 'prefer_not_to_say';
 
     /**
