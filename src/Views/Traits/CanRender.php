@@ -23,11 +23,11 @@ trait CanRender
     {
         return [
             'popularTags'       => $this->tagService->getPopularTags(),
-            'relatedTags'       => $post ? $this->tagService->getTagsForPost($post->id) : [],
-            'navigation'        => $post ? $this->getPost->getPostNavigation($post) : [],
-            'relatedCategories' => $category ? $this->categoryService->getRelatedCategoriesForCategory($category) : [],
-            'recentPosts'       => $post ? $this->categoryService->getRecentPosts($post) : [],
-            'relatedPosts'      => $post ? $this->getPost->getRelatedPosts($post) : [],
+            'relatedTags'       => $post instanceof Post ? $this->tagService->getTagsForPost($post->id) : [],
+            'navigation'        => $post instanceof Post ? $this->getPost->getPostNavigation($post) : [],
+            'relatedCategories' => $category instanceof Category ? $this->categoryService->getRelatedCategoriesForCategory($category) : [],
+            'recentPosts'       => $post instanceof Post ? $this->categoryService->getRecentPosts($post) : [],
+            'relatedPosts'      => $post instanceof Post ? $this->getPost->getRelatedPosts($post) : [],
         ];
     }
 }
