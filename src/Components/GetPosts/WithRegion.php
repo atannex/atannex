@@ -2,44 +2,97 @@
 
 namespace Atannex\Components\GetPosts;
 
+
 use App\Models\Regions\Region;
+use Atannex\Views\Traits\CanNormalize;
 use Illuminate\Support\Collection;
-use Atannex\Traits\HasPostWithHierarchy;
 
 trait WithRegion
 {
-    use HasPostWithHierarchy;
+    use CanNormalize;
 
     /**
      * Get regions with their latest posts.
      *
-     * @param array{
-     *     posts_with_id?: array<int>,
-     *     limit?: int,
-     *     post_limit?: int,
-     *     leaf_post_limit?: int,
-     *     children_relation?: string,
-     *     sub_relation?: string,
-     *     select_fields?: array<string>,
-     *     children_select_fields?: array<string>,
-     *     sort_field?: string,
-     *     sub_sort_field?: string
-     * } $config
-     *
-     * @return Collection<int, Region>
+     * @param array $config
+     * @return Collection
      */
     public function getRegionWithPosts(array $config): Collection
     {
-        $regionDefaults = [
-            // Example: Override defaults if needed
-            // 'children_relation' => 'region_children',
-            // 'sub_relation' => 'region_posts',
-            // 'select_fields' => ['id', 'region_name', 'parent_id', 'created_at'],
-            // 'children_select_fields' => ['id', 'parent_id', 'region_name', 'created_at'],
-            // 'sort_field' => 'region_name',
-            // 'sub_sort_field' => 'created_at',
-        ];
+        $regionIds = array_filter(array_map('intval', $this->normalizeIds($config['posts_with_id'])));
+        $limit = max(1, (int) ($config['limit'] ?? 1));
+        $postLimit = max(1, (int) ($config['relation_limit'] ?? 1));
+        $leafPostLimit = max(1, (int) ($config['leaf_relation_limit'] ?? 1));
 
-        return $this->buildConfigAndGetHierarchy($config, Region::class, $regionDefaults);
+        if ($regionIds === []) {
+            return collect();
+        }
+
+        $regions = Region::query()
+            ->select(['id', 'name', 'parent_id', 'created_at'])
+            ->whereIn('id', $regionIds)
+            ->with([
+                'children:id,parent_id,name,created_at',
+                'children.posts' => fn($q) => $q->latest('created_at')->limit($leafPostLimit),
+                'posts' => fn($q) => $q->latest('created_at')->limit($postLimit),
+            ])
+            ->latest('created_at')
+            ->limit($limit)
+            ->get();
+
+        return $regions->map(fn(Region $region) => $this->attachPosts($region, $postLimit, $leafPostLimit));
+    }
+
+    /**
+     * Attach posts to a region, merging with leaf posts and removing duplicates.
+     */
+    private function attachPosts(Region $region, int $postLimit, int $leafPostLimit): Region
+    {
+        if ($region->children->isNotEmpty()) {
+            $leafPosts = $this->collectLeafRegionsPosts($region, $leafPostLimit, $postLimit);
+            $allPosts = $region->posts->merge($leafPosts)
+                ->unique('id')
+                ->sortByDesc('created_at')
+                ->take($postLimit)
+                ->values();
+
+            $region->setRelation('posts', $allPosts);
+        } else {
+
+            $region->setRelation('posts', $region->posts->unique('id')->values());
+        }
+
+        return $region;
+    }
+
+    /**
+     * Collect latest posts from all leaf regions of a region.
+     */
+    private function collectLeafRegionsPosts(Region $region, int $leafPostLimit, int $postLimit): Collection
+    {
+        $leafRegions = collect();
+        $this->collectLeafRegions($region, $leafRegions);
+
+        return $leafRegions
+            ->flatMap(fn(Region $leaf) => $leaf->posts->take($leafPostLimit))
+            ->filter()
+            ->sortByDesc('created_at')
+            ->take($postLimit)
+            ->values();
+    }
+
+    /**
+     * Recursively collect leaf regions (regions without children).
+     */
+    private function collectLeafRegions(Region $region, Collection &$leafRegions): void
+    {
+        if ($region->children->isEmpty()) {
+            $leafRegions->push($region);
+            return;
+        }
+
+        foreach ($region->children as $child) {
+            $this->collectLeafRegions($child, $leafRegions);
+        }
     }
 }

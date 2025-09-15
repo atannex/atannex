@@ -34,7 +34,7 @@ class TabBasicInformation
                             ->required(),
 
                         TextInput::make('limit')
-                            ->label('Posts Limit')
+                            ->label('Max number of categories')
                             ->numeric()
                             ->default(5)
                             ->minValue(1)
@@ -43,8 +43,18 @@ class TabBasicInformation
                             ->helperText('Maximum number of posts to display in this tab.')
                             ->required(),
 
-                        TextInput::make('limit_per_leaf_post')
-                            ->label('Limit per Leaf Post')
+                            TextInput::make('relation_limit')
+                            ->label('Posts Limit per category')
+                            ->numeric()
+                            ->default(5)
+                            ->minValue(1)
+                            ->maxValue(50)
+                            ->suffix('posts')
+                            ->helperText('Maximum number of posts to display in this tab.')
+                            ->required(),
+
+                        TextInput::make('leaf_relation_limit')
+                            ->label('Posts per leaf category')
                             ->numeric()
                             ->default(5)
                             ->minValue(1)

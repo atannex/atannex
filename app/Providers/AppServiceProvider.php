@@ -6,7 +6,7 @@ use App\Enums\Flag;
 use App\Enums\Icons;
 use App\Enums\Image;
 use App\Enums\Binding;
-use App\Enums\PostType;
+use App\Enums\Entity;
 use App\Enums\Territories;
 use App\Models\Posts\Post;
 use App\Models\Pages\Widget;
@@ -65,7 +65,7 @@ class AppServiceProvider extends ServiceProvider
     protected function bootEnums(): void
     {
         Flag::boot();
-        PostType::boot();
+        Entity::boot();
         Binding::boot();
         Icons::boot();
         Image::boot();

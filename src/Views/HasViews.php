@@ -63,7 +63,7 @@ trait HasViews
                     ? $this->categoryService->getPublishedEmployeeSocialMedia($module->post->author)
                     : collect(),
             ],
-            seo_title($post->title ?? 'Post'),
+            seo_title($post->title),
             $category,
             $post
         );
@@ -77,7 +77,7 @@ trait HasViews
         $page = $this->pageService->getHomePage($slug);
         $this->resolveSection($page);
 
-        return $this->renderView('pages', ['page' => $page], seo_title($page->title ?? 'Page'));
+        return $this->renderView('pages', ['page' => $page], seo_title($page->title));
     }
 
     /**

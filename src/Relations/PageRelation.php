@@ -61,7 +61,7 @@ trait PageRelation
                 'deleted_at',
             ])
             ->withTimestamps()
-            ->wherePivot('deleted_at', null)
+            ->wherePivot('deleted_at')
             ->orderBy('page_section.position');
     }
 }

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Contracts\Support\Renderable;
-use Atannex\Binders\GetPost;
+use Atannex\Binders\PassPostss;
 
 class HomeController extends Controller
 {
 
-    public function __construct(protected readonly GetPost $postService) {}
+    public function __construct(protected readonly PassPosts $postService) {}
 
     /**
      * Show the application dashboard.

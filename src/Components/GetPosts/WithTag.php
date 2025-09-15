@@ -3,43 +3,35 @@
 namespace Atannex\Components\GetPosts;
 
 use App\Models\Tags\Tag;
+use Atannex\Traits\HasHierarchyWithRelations;
 use Illuminate\Support\Collection;
-use Atannex\Traits\HasPostWithHierarchy;
 
 trait WithTag
 {
-    use HasPostWithHierarchy;
+    // use HasHierarchyWithRelations;
 
     /**
-     * Retrieve tags with their latest posts.
+     * Get tags with posts.
      *
-     * @param array{
-     *     tag_with_post_id?: array<int>,
-     *     limit?: int,
-     *     post_limit?: int,
-     *     leaf_post_limit?: int,
-     *     children_relation?: string,
-     *     sub_relation?: string,
-     *     select_fields?: array<string>,
-     *     children_select_fields?: array<string>,
-     *     sort_field?: string,
-     *     sub_sort_field?: string
-     * } $config
+     * @param array $config
+     * [
+     *   'ids' => [1,2,3],              // tag IDs
+     *   'limit' => 4,                   // max number of tags
+     *   'relation_limit' => 3,          // posts per tag
+     *   'leaf_relation_limit' => 1,     // posts per leaf tag
+     *   'order_column' => 'published_at'
+     * ]
      *
-     * @return Collection<int, Tag>
+     * @return Collection
      */
     public function getTagWithPosts(array $config): Collection
     {
-        $tagDefaults = [
-            // Example: Override defaults if needed
-            // 'children_relation' => 'tag_children',
-            // 'sub_relation' => 'tag_posts',
-            // 'select_fields' => ['id', 'title', 'parent_id', 'created_at'],
-            // 'children_select_fields' => ['id', 'parent_id', 'title', 'created_at'],
-            // 'sort_field' => 'title',
-            // 'sub_sort_field' => 'published_at',
-        ];
+        $config = array_merge($config, [
+            'model' => Tag::class,
+            'relation' => 'posts',
+            'children' => 'children'
+        ]);
 
-        return $this->buildConfigAndGetHierarchy($config, Tag::class, $tagDefaults);
+        return $this->getModelsWithRelation($config);
     }
 }
