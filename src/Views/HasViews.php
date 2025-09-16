@@ -138,7 +138,7 @@ trait HasViews
         ];
 
         $isMonth = $type === 'month';
-        $displayValue = $months[(int)$value];
+        $displayValue = $isMonth ? $months[(int)$value] : $value;
         $yearMonth = $isMonth ? ($year ?? date('Y')) . '/' . $value : $value;
 
         $seoTitle = $isMonth
