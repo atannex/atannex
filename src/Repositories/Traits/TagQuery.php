@@ -36,13 +36,9 @@ trait TagQuery
     /**
      * Retrieve popular tags within a tag's category tree.
      */
-    public function getPopularTagsByTagCategoryTree(?Tag $tag, int $limit = self::DEFAULT_POPULAR_TAGS_LIMIT): Collection
+    public function getPopularTagsByTagCategoryTree(Tag $tag, int $limit = self::DEFAULT_POPULAR_TAGS_LIMIT): Collection
     {
         $categoryIds = $this->getCategoryTreeIdsFromTag($tag);
-
-        if ($categoryIds->isEmpty()) {
-            return collect();
-        }
 
         return Tag::query()
             ->whereHas('posts', fn(Builder $query) => $this->postsInCategoryTree($query, $categoryIds))
@@ -55,25 +51,21 @@ trait TagQuery
     /**
      * Retrieve the root category for a given tag based on its first associated post.
      */
-    protected function getRootCategoryFromTag(?Tag $tag): ?Category
+    protected function getRootCategoryFromTag(Tag $tag): Category
     {
-        if (!$tag instanceof Tag) {
-            return null;
-        }
-
         $firstPost = $tag->posts()->with('category.parent')->first();
 
-        return $firstPost ? $this->getRootCategory($firstPost->category) : null;
+        return $this->getRootCategory($firstPost->category);
     }
 
     /**
      * Retrieve category IDs within a tag's category tree.
      */
-    protected function getCategoryTreeIdsFromTag(?Tag $tag): Collection
+    protected function getCategoryTreeIdsFromTag(Tag $tag): Collection
     {
         $rootCategory = $this->getRootCategoryFromTag($tag);
 
-        return $rootCategory ? $this->getCategoryTreeIds($rootCategory) : collect();
+        return $this->getCategoryTreeIds($rootCategory);
     }
 
     /**
@@ -83,9 +75,7 @@ trait TagQuery
     {
         $rootCategory = $this->getRootCategoryFromTag($tag);
 
-        return $rootCategory
-            ? $this->getRelatedCategories($rootCategory)
-            : collect();
+        return $this->getRelatedCategories($rootCategory);
     }
 
     /* -----------------------------------------------------------------

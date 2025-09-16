@@ -3,43 +3,38 @@
 namespace Atannex\Components\GetPosts;
 
 use App\Models\Regions\Region;
+use Atannex\Traits\WithHierarchicalPosts;
 use Illuminate\Support\Collection;
-use Atannex\Traits\HasPostWithHierarchy;
 
+/**
+ * Trait WithRegion
+ *
+ * Provides methods to retrieve regions with their hierarchical posts.
+ */
 trait WithRegion
 {
-    use HasPostWithHierarchy;
+    use WithHierarchicalPosts;
 
     /**
-     * Get regions with their latest posts.
+     * Retrieve regions along with their hierarchical posts.
      *
-     * @param array{
-     *     posts_with_id?: array<int>,
-     *     limit?: int,
-     *     post_limit?: int,
-     *     leaf_post_limit?: int,
-     *     children_relation?: string,
-     *     sub_relation?: string,
-     *     select_fields?: array<string>,
-     *     children_select_fields?: array<string>,
-     *     sort_field?: string,
-     *     sub_sort_field?: string
-     * } $config
+     * @param array $config Configuration options:
+     *  - 'ids' => array of region IDs (required)
+     *  - 'limit' => number of top-level regions (required)
+     *  - 'relation_limit' => posts per top-level region (required)
+     *  - 'leaf_relation_limit' => posts per child region (required)
+     *  - 'sort_field' => field to sort posts by (optional)
+     *  - 'sort_direction' => sorting direction: 'asc' or 'desc' (optional)
      *
-     * @return Collection<int, Region>
+     * @return Collection
      */
     public function getRegionWithPosts(array $config): Collection
     {
-        $regionDefaults = [
-            // Example: Override defaults if needed
-            // 'children_relation' => 'region_children',
-            // 'sub_relation' => 'region_posts',
-            // 'select_fields' => ['id', 'region_name', 'parent_id', 'created_at'],
-            // 'children_select_fields' => ['id', 'parent_id', 'region_name', 'created_at'],
-            // 'sort_field' => 'region_name',
-            // 'sub_sort_field' => 'created_at',
-        ];
-
-        return $this->buildConfigAndGetHierarchy($config, Region::class, $regionDefaults);
+        return $this->getHierarchicalWithPosts(
+            Region::class,
+            $config,
+            'children',
+            'posts'
+        );
     }
 }

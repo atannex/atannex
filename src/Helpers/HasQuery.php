@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-
 trait HasQuery
 {
     /**
@@ -88,6 +87,9 @@ trait HasQuery
         return fn($query) => $query->wherePivot('is_active', true);
     }
 
+    /**
+     * Parse year/month from a slug string.
+     */
     protected function parseDateSlug(string $slug): array
     {
         [$year, $month] = array_pad(explode('/', $slug, 2), 2, null);

@@ -25,7 +25,7 @@ final class Binding extends Enum
      */
     public static function boot(): void
     {
-        self::setMetadata([
+        static::setMetadata([
             self::EMPLOYEE => [
                 'label' => 'Employee',
                 'color' => 'success',

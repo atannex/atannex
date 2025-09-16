@@ -11,11 +11,7 @@
 
     <x-sections.pages.header />
 
-
-
     {{ $slot }}
-
-
 
     <x-sections.pages.footer />
 

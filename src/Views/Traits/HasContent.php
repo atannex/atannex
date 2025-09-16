@@ -2,97 +2,102 @@
 
 namespace Atannex\Views\Traits;
 
-use Generator;
-use App\Enums\PostType;
 use App\Models\Pages\Page;
+use App\Enums\Traits\HasEntityMapping;
 
 trait HasContent
 {
     use CanNormalize;
-    use HasEntities;
+    use HasEntityMapping;
 
     /**
-     * Resolve all sections and their widgets for a page.
+     * Resolve sections for a page.
+     *
+     * @param Page $page
+     * @return void
      */
-    protected function resolveSection(?Page $page): void
+    protected function resolveSection(Page $page): void
     {
-        if (!$page instanceof Page) {
-            return;
-        }
-
         foreach ($page->sections as $section) {
-            foreach ($this->yieldSectionAndWidgets($section) as $entity) {
-                $entity->tabs = $this->resolveTabs((array) ($entity->pivot->config['tabs'] ?? []));
+            $this->resolveSectionEntity($section);
+        }
+    }
+
+    /**
+     * Resolve a section entity and its widgets.
+     *
+     * @param object $section
+     * @return void
+     */
+    protected function resolveSectionEntity(object $section): void
+    {
+        $sectionConfig = $section->pivot->config;
+        $this->resolveEntityContent($section, $sectionConfig);
+
+        foreach ($section->widgets as $widget) {
+            $this->resolveWidgetEntity($widget);
+        }
+    }
+
+    /**
+     * Resolve a widget entity.
+     *
+     * @param object $widget
+     * @return void
+     */
+    protected function resolveWidgetEntity(object $widget): void
+    {
+        $this->resolveEntityContent($widget, $widget->pivot->config);
+    }
+
+    /**
+     * Resolve entity content.
+     *
+     * @param object $entity
+     * @param array $config
+     * @return void
+     */
+    private function resolveEntityContent(object $entity, ?array $config): void
+    {
+        $entity->tabs = empty($config['tabs']) ? [] : $this->resolveTabs($config['tabs']);
+    }
+
+    /**
+     * Resolve tabs configuration.
+     *
+     * @param array $tabsConfig
+     * @return array
+     */
+    private function resolveTabs(array $tabsConfig): array
+    {
+        $component = $this->getComponent;
+        $mappingsCache = [];
+
+        foreach ($tabsConfig as &$tab) {
+            $type = $tab['type'];
+            $mapping = $mappingsCache[$type] ??= $this->getMapping($type);
+
+            $method = $mapping['method'];
+            $args = $this->requiresIdKey($type)
+                ? [$mapping['idKey'] => $this->normalizeIds((array) $tab[$mapping['idKey']])]
+                : $tab;
+
+            $args['limit'] = $tab['limit'];
+            $args['relation_limit'] = $tab['relation_limit'];
+            $args['leaf_relation_limit'] = $tab['leaf_relation_limit'];
+            $args['sort'] = $tab['sort'];
+            $args['order'] = $tab['order'];
+
+            $entities = $component->$method($args);
+
+            if (is_array($entities) && count($entities) > $args['limit']) {
+                $entities = array_slice($entities, 0, $args['limit']);
             }
-        }
-    }
 
-    /**
-     * Yield the section and its widgets (lazy).
-     */
-    private function yieldSectionAndWidgets(object $section): Generator
-    {
-        yield $section;
-
-        foreach ($section->widgets ?? [] as $widget) {
-            yield $widget;
-        }
-    }
-
-    /**
-     * Resolve all tabs.
-     */
-    private function resolveTabs(array $tabs): array
-    {
-        if ($tabs === []) {
-            return [];
+            $tab['entities'] = $tab['content'] = $entities;
         }
 
-        // Group tabs by entity type
-        $grouped = [];
-        foreach ($tabs as $index => $tab) {
-            ['entity' => $type, 'ids' => $ids] = $this->extractEntityAndIds($tab);
-
-            $grouped[$type]['ids']   = array_merge($grouped[$type]['ids'] ?? [], $ids);
-            $grouped[$type]['tabs'][$index] = $tab;
-        }
-
-        foreach ($grouped as $type => $data) {
-            $mapping   = PostType::getEntityMapping($type);
-            $uniqueIds = array_unique($data['ids']);
-
-            foreach ($data['tabs'] as $index => $tab) {
-
-                // Resolve entities
-                $entities = empty($mapping['idKey'])
-                    ? collect()
-                    : $this->resolveEntities($type, $uniqueIds);
-
-                // Apply limit if present
-                if (!empty($tab['limit'])) {
-                    $entities = $entities->take($tab['limit']);
-                }
-
-                $tabs[$index]['entities'] = $entities;
-
-                // Resolve posts
-                $tabs[$index]['content'] = $this->atannex->getPostsByType($tab);
-            }
-        }
-
-        return $tabs;
-    }
-
-    /**
-     * Extract entity type and normalized IDs from a tab.
-     */
-    private function extractEntityAndIds(array $tab): array
-    {
-        $mapping = PostType::getEntityMapping($tab['type'] ?? '');
-        $ids     = empty($mapping['idKey'])
-            ? []
-            : $this->normalizeIds((array) ($tab[$mapping['idKey']] ?? []));
-
-        return ['entity' => $mapping['entity'] ?? '', 'ids' => $ids];
+        unset($tab);
+        return $tabsConfig;
     }
 }

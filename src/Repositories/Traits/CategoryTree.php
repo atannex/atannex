@@ -17,12 +17,8 @@ trait CategoryTree
      */
     protected function getRootCategory(Category $category): Category
     {
-
-        $ancestors = $category->getAncestors();
-
-        return $ancestors->last() ?: $category;
+        return $category->getAncestors()->last() ?: $category;
     }
-
 
     /**
      * Get IDs of a category tree, optionally excluding a given ID.

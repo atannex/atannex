@@ -36,14 +36,18 @@
                 {{-- Recent Posts --}}
                 <div class="col-md-6 col-xl-auto">
                     <div class="widget footer-widget">
-                        @includeIf('partials.recent-posts')
+
+                        @include('partials.recent-posts')
+
                     </div>
                 </div>
 
                 {{-- Tags --}}
                 <div class="col-md-6 col-xl-3">
                     <div class="widget widget_tag_cloud footer-widget">
-                        @includeIf('components.partials.tags')
+
+                        @include('components.partials.tags')
+
                     </div>
                 </div>
             </div>

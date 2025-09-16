@@ -2,26 +2,37 @@
 
 namespace Atannex;
 
-use App\Enums\PostType;
+use App\Enums\Traits\HasEntityMapping;
 use Atannex\Binders\Components;
 use Illuminate\Support\Collection;
 
+/**
+ * Class AtannexProvider
+ *
+ * Service provider for retrieving posts based on entity types.
+ * Extends base Components class and uses HasEntityMapping trait
+ * to dynamically resolve methods according to the entity type.
+ *
+ * @package Atannex
+ */
 final class AtannexProvider extends Components
 {
+    use HasEntityMapping;
+
     /**
-     * Retrieve posts based on the specified type.
+     * Retrieve posts by the specified entity type.
      *
-     * This directly delegates the retrieval to the mapped method in PostType.
+     * @param array $config Configuration array containing at least a 'type' key.
+     * @return Collection Returns a Laravel Collection of posts.
+     * Resolve the corresponding method name dynamically using the trait
+     * Call the resolved method with the given configuration
      *
-     * @param array $config Configuration array containing:
-     *                      - 'type' (string): The post type to fetch.
-     *                      - Additional optional parameters for the specific retrieval method.
-     *
-     * @return Collection Collection of posts.
+     * @throws \BadMethodCallException if the resolved method does not exist.
      */
     public function getPostsByType(array $config): Collection
     {
-        $mapping = PostType::getEntityMapping($config['type']);
-        return $this->{$mapping['method']}($config);
+        $entity = $config['type'];
+        $methodName = self::resolveMethod($entity);
+        return $this->$methodName($config);
     }
 }

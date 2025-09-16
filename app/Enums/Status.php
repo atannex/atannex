@@ -10,8 +10,7 @@ use Atannex\Filters\GetEnum;
 /**
  * UserStatus Enum (Filament Optimized with Bootstrap colors)
  *
- * Defines the status of a user account for use within the Filament admin panel.
- * Ordered according to typical user account lifecycle transitions.
+ * Handles user account states in the system.
  */
 final class Status extends Enum
 {
@@ -31,14 +30,8 @@ final class Status extends Enum
 
     public const RESTRICTED = 'restricted';
 
-    public const REVIEWED = 'reviewed';
-
-    public const RESPONDED = 'responded';
-
-    public const CLOSED = 'closed';
-
     /**
-     * Initialize metadata for all user status types with Bootstrap colors.
+     * Initialize metadata for all user status types with Filament/Bootstrap colors and icons.
      */
     public static function boot(): void
     {

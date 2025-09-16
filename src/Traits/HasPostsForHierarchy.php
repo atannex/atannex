@@ -33,7 +33,7 @@ trait HasPostsForHierarchy
                 $foreignKey,
                 $relationName,
                 $leafIdResolver,
-                $groupByResolver
+                $groupByResolver,
             ) {
                 $leafIds = $this->resolveLeafIds($item, $leafIdResolver);
 

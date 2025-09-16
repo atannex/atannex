@@ -29,7 +29,7 @@ trait HasViews
             'tag'               => $tag,
             'posts'             => $this->categoryService->getPostsByTag($tag),
             'relatedCategories' => $this->categoryService->getRelatedCategoriesForTag($tag),
-            'recentPosts'       => $first ? $this->categoryService->getRecentPosts($first, 6) : collect(),
+            'recentPosts'       => $this->categoryService->getRecentPosts($first, 6),
             'popularTags'       => $this->tagService->getPopularTags(8),
         ], seo_title($tag->name));
     }
@@ -50,22 +50,28 @@ trait HasViews
      */
     public function renderPostShow(Category $category, string $slug): View
     {
-        $post   = Post::where('slug_path', $slug)->firstOrFail();
         $module = PostModule::with('post')
             ->whereHas('post', fn($q) => $q->where('slug_path', $slug))
             ->firstOrFail();
 
+        $post = $module->post;
+        $postUrl = route('page.index', ['slug' => $post->slug_path]);
+
+        $postImage = $post->image;
+        $postDesc  = $post->description;
+
+        $shareUrls = $this->shareService->getAllShareUrls($postUrl, $post->title, $postImage, $postDesc);
+
+        $viewData = [
+            'module'   => $module,
+            'shares'   => $shareUrls,
+            'medias'   => $this->categoryService->getPublishedEmployeeSocialMedia($post->author),
+        ];
+
         return $this->renderView(
             'shows.index',
-            [
-                'module' => $module,
-                'medias' => $module->post
-                    ? $this->categoryService->getPublishedEmployeeSocialMedia($module->post->author)
-                    : collect(),
-            ],
-            seo_title($post->title ?? 'Post'),
-            $category,
-            $post
+            $viewData,
+            $category
         );
     }
 
@@ -77,7 +83,7 @@ trait HasViews
         $page = $this->pageService->getHomePage($slug);
         $this->resolveSection($page);
 
-        return $this->renderView('pages', ['page' => $page], seo_title($page->title ?? 'Page'));
+        return $this->renderView('pages', ['page' => $page], seo_title($page->title));
     }
 
     /**
@@ -89,7 +95,7 @@ trait HasViews
             'author'      => $author,
             'posts'       => $this->categoryService->getPostsByAuthor($author->user->slug),
             'user_medias' => $this->categoryService->getPublishedEmployeeSocialMedia($author),
-        ], seo_title($author->name ?? 'Author'));
+        ], seo_title($author->name));
     }
 
     /**
@@ -132,7 +138,7 @@ trait HasViews
         ];
 
         $isMonth = $type === 'month';
-        $displayValue = $isMonth ? ($months[(int)$value] ?? '') : $value;
+        $displayValue = $months[(int)$value];
         $yearMonth = $isMonth ? ($year ?? date('Y')) . '/' . $value : $value;
 
         $seoTitle = $isMonth

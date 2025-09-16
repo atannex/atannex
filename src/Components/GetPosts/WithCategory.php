@@ -3,43 +3,38 @@
 namespace Atannex\Components\GetPosts;
 
 use App\Models\Pages\Category;
+use Atannex\Traits\WithHierarchicalPosts;
 use Illuminate\Support\Collection;
-use Atannex\Traits\HasPostWithHierarchy;
 
+/**
+ * Trait WithCategory
+ *
+ * Provides methods to retrieve categories with their hierarchical posts.
+ */
 trait WithCategory
 {
-    use HasPostWithHierarchy;
+    use WithHierarchicalPosts;
 
     /**
-     * Get categories with their latest posts.
+     * Retrieve categories along with their hierarchical posts.
      *
-     * @param array{
-     *     posts_with_id?: array<int>,
-     *     limit?: int,
-     *     post_limit?: int,
-     *     leaf_post_limit?: int,
-     *     children_relation?: string,
-     *     sub_relation?: string,
-     *     select_fields?: array<string>,
-     *     children_select_fields?: array<string>,
-     *     sort_field?: string,
-     *     sub_sort_field?: string
-     * } $config
+     * @param array $config Configuration options:
+     *  - 'ids' => array of category IDs (required)
+     *  - 'limit' => number of top-level categories (required)
+     *  - 'relation_limit' => posts per top-level category (required)
+     *  - 'leaf_relation_limit' => posts per child category (required)
+     *  - 'sort_field' => field to sort posts by (optional)
+     *  - 'sort_direction' => sorting direction: 'asc' or 'desc' (optional)
      *
-     * @return Collection<int, Category>
+     * @return Collection
      */
     public function getCategoryWithPosts(array $config): Collection
     {
-        $categoryDefaults = [
-            // Example: Override defaults if needed
-            // 'children_relation' => 'category_children',
-            // 'sub_relation' => 'category_posts',
-            'select_fields' => ['id', 'name', 'parent_id', 'published_at'],
-            'children_select_fields' => ['id', 'parent_id', 'name', 'published_at'],
-            // 'sort_field' => 'category_name',
-            // 'sub_sort_field' => 'updated_at',
-        ];
-
-        return $this->buildConfigAndGetHierarchy($config, Category::class, $categoryDefaults);
+        return $this->getHierarchicalWithPosts(
+            Category::class,
+            $config,
+            'children',
+            'posts'
+        );
     }
 }

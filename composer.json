@@ -29,6 +29,7 @@
         "laravel/ui": "*",
         "livewire/livewire": "^3.6",
         "mews/purifier": "^3.4",
+        "spatie/error-solutions": "^2.0",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-medialibrary": "^11.14",
         "spatie/laravel-permission": "^6.21",
