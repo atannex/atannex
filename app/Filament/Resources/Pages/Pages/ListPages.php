@@ -22,19 +22,20 @@ class ListPages extends ListRecords
         ];
     }
 
-    public function getTabs(): array{
+    public function getTabs(): array
+    {
         return [
             'active' => Tab::make('Active Pages')
-            ->icon('heroicon-m-check-circle')
-            ->iconPosition(IconPosition::After)
-            ->badge(Page::query()->where('is_active',true)->count())
-            ->modifyQueryUsing(fn($query)=> $query->where('is_active',true)),
-            
+                ->icon('heroicon-m-check-circle')
+                ->iconPosition(IconPosition::After)
+                ->badge(Page::query()->where('is_active', true)->count())
+                ->modifyQueryUsing(fn($query) => $query->where('is_active', true)),
+
             'In-active' => Tab::make('In-Active Pages')
-            ->icon('heroicon-o-x-circle')
-            ->badge(Page::query()->where('is_active',false)->count())
-            ->iconPosition(IconPosition::After)
-            ->modifyQueryUsing(fn($query)=> $query->where('is_active',false))
+                ->icon('heroicon-o-x-circle')
+                ->badge(Page::query()->where('is_active', false)->count())
+                ->iconPosition(IconPosition::After)
+                ->modifyQueryUsing(fn($query) => $query->where('is_active', false))
         ];
     }
 }
