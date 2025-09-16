@@ -50,20 +50,28 @@ trait HasViews
      */
     public function renderPostShow(Category $category, string $slug): View
     {
-        $post   = Post::where('slug_path', $slug)->first();
         $module = PostModule::with('post')
             ->whereHas('post', fn($q) => $q->where('slug_path', $slug))
-            ->first();
+            ->firstOrFail();
+
+        $post = $module->post;
+        $postUrl = route('page.index', ['slug' => $post->slug_path]);
+
+        $postImage = $post->image;
+        $postDesc  = $post->description;
+
+        $shareUrls = $this->shareService->getAllShareUrls($postUrl, $post->title, $postImage, $postDesc);
+
+        $viewData = [
+            'module'   => $module,
+            'shares'   => $shareUrls,
+            'medias'   => $this->categoryService->getPublishedEmployeeSocialMedia($post->author),
+        ];
 
         return $this->renderView(
             'shows.index',
-            [
-                'module' => $module,
-                'medias' => $this->categoryService->getPublishedEmployeeSocialMedia($module->post->author),
-            ],
-            seo_title($post->title),
-            $category,
-            $post
+            $viewData,
+            $category
         );
     }
 

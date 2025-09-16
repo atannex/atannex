@@ -7,6 +7,7 @@ use Atannex\Views\HasViews;
 use Atannex\Services\TagService;
 use Atannex\Services\PageService;
 use Atannex\Services\CategoryService;
+use Atannex\Services\ShareService;
 
 /**
  * Class GetView
@@ -39,7 +40,8 @@ class PassView
         protected readonly TagService $tagService,
         protected readonly CategoryService $categoryService,
         protected readonly PassPosts $getPost,
-        protected Components $getComponent,
+        protected readonly Components $getComponent,
+        protected readonly ShareService $shareService,
     ) {}
 
     /**
