@@ -59,7 +59,7 @@
                                             {{ __('Didn\'t receive the email? No worries!') }}
                                         </p>
 
-                                        <button type="submit" class="mb-3 btn btn-primary btn-lg">
+                                        <button type="submit" class="mb-3 th-btn btn-lg w-100">
                                             <i class="fas fa-paper-plane me-2"></i>
                                             {{ __('Send Me Another Verification Email') }}
                                             <i class="fas fa-arrow-right ms-2"></i>

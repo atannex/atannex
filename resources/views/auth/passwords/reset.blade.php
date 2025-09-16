@@ -76,7 +76,7 @@
                                         </button>
 
                                         <div class="text-center alternative-actions">
-                                            <a href="{{ route('login') }}" class="text-decoration-none text-muted">
+                                            <a href="{{ route('login') }}" class="text-decoration-none fw-semibold text-muted">
                                                 <i class="fas fa-arrow-left me-1"></i>
                                                 {{ __('Back to login') }}
                                             </a>

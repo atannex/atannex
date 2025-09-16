@@ -67,7 +67,7 @@
                                             <br>
                                             @endif
 
-                                            <a href="{{ url()->previous() }}" class="text-decoration-none text-muted">
+                                            <a href="{{ url()->previous() }}" class="text-decoration-none fw-semibold text-muted">
                                                 <i class="fas fa-arrow-left me-1"></i>
                                                 {{ __('Take me back') }}
                                             </a>

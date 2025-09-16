@@ -58,7 +58,7 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'timezone' => $data['timezone'] ?? config('app.timezone'),
+            'timezone' => $data['timezone'],
         ]);
 
         event(new UserCreated($user));
