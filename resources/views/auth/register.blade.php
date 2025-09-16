@@ -81,9 +81,9 @@
                                 </div>
 
                                 <div class="mb-4 form-group">
-                                    <div class="form-check d-flex align-items-start">
+                                    <div class="form-check align-items-start">
                                         <input class="form-check-input mt-1 @error('terms') is-invalid @enderror" type="checkbox" name="terms" id="terms" {{ old('terms') ? 'checked' : '' }}>
-                                        <div class="ms-2">
+                                        {{-- <div class="ms-2"> --}}
                                             <label class="form-check-label form-text" for="terms">
                                                 <i class="fas fa-handshake me-1 text-muted"></i>
                                                 {{ __('I agree to the') }}
@@ -94,7 +94,7 @@
                                             <div class="form-text">
                                                 {{ __('Don\'t worry, we keep it simple and fair!') }}
                                             </div>
-                                        </div>
+                                        {{-- </div> --}}
                                     </div>
                                     @error('terms')
                                     <div class="invalid-feedback d-block"><strong>{{ $message }}</strong></div>

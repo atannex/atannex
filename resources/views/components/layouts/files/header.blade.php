@@ -3,28 +3,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {{-- Dynamic Title --}}
-    <title>{{ $metaTitle ?? $title ?? __("'Atannex - Lebialem Community News'") }}</title>
+    <title>{{ $metaTitle ?? $title ?? 'Atannex - Lebialem Community News' }}</title>
 
     {{-- Basic SEO --}}
     <meta name="description" content="{{ $metaDescription ?? 'Atannex - The trusted news source for the Lebialem community. Stay updated on local news, culture, politics, and events.' }}">
     <meta name="keywords" content="{{ $metaKeywords ?? 'Lebialem news, Atannex, community news, Cameroon, local news, Lebialem culture' }}">
     <meta name="author" content="{{ $metaAuthor ?? 'Atannex Media' }}">
 
-    <!-- Open Graph / Facebook / LinkedIn -->
-    <meta property="og:title" content="{{ $globalPost->title ?? 'Atannex - Lebialem Community News' }}">
-    <meta property="og:description" content="{{ $globalPost->description ?? 'Stay updated on local news, culture, politics, and events.' }}">
-    {{-- <meta property="og:image" content="{{ $globalPost->image ? asset('storage/' . $globalPost->image) : asset('storage/' . $global['favicon']?->image) }}"> --}}
-    <meta property="og:url" content="{{ $postUrl ?? url()->current() }}">
+    {{-- Open Graph / Facebook / LinkedIn --}}
+    <meta property="og:title" content="{{ $metaTitle ?? $title ?? 'Atannex - Lebialem Community News' }}">
+    <meta property="og:description" content="{{ $metaDescription ?? 'Atannex brings you the latest news and updates from Lebialem.' }}">
+    <meta property="og:image" content="{{ $metaImage ?? asset('storage/' . $global['favicon']?->image) }}">
+    <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Atannex - Lebialem Community News">
 
-    <!-- Twitter Card -->
+    {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $globalPost->title ?? 'Atannex - Lebialem Community News' }}">
-    <meta name="twitter:description" content="{{ $globalPost->description ?? 'Lebialem news, culture, and community updates' }}">
-    {{-- <meta name="twitter:image" content="{{ $globalPost->image ? asset('storage/' . $globalPost->image) : asset('storage/' . $global['favicon']?->image) }}"> --}}
+    <meta name="twitter:title" content="{{ $metaTitle ?? $title ?? 'Atannex - Lebialem Community News' }}">
+    <meta name="twitter:description" content="{{ $metaDescription ?? 'Lebialem news, culture, and community updates' }}">
+    <meta name="twitter:image" content="{{ $metaImage ?? asset('storage/' . $global['favicon']?->image) }}">
     <meta name="twitter:site" content="@AtannexNews">
-
 
     {{-- Google News & Article Metadata --}}
     <meta name="news_keywords" content="{{ $metaKeywords ?? 'Lebialem, Alou, Fontem, Wabane community news' }}">
