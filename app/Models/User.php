@@ -147,6 +147,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
             }
 
             return $this->isEmployee();
+            // return true;
         } catch (Exception $exception) {
             Log::error(sprintf('Error checking panel access for user %s: %s', $this->id, $exception->getMessage()));
             return false;
