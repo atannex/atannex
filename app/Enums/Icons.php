@@ -24,7 +24,6 @@ final class Icons extends Enum
 {
     use GetEnum;
 
-    // Enum values
     public const TWITTER   = 'twitter';
     public const FACEBOOK  = 'facebook';
     public const LINKEDIN  = 'linkedin';
@@ -85,12 +84,4 @@ final class Icons extends Enum
             ],
         ]);
     }
-
-    public static function getShareUrl($platform)
-{
-    // Create an enum instance for the value
-    $icon = new self($platform);
-    return $icon->getMetaField('share_url');
-}
-
 }

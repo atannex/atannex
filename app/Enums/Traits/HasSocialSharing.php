@@ -11,7 +11,7 @@ trait HasSocialSharing
     /**
      * Generate a share URL for a specific platform and post.
      *
-     * @param string      $platform   The social media platform
+     * @param string      $platform   The social media platform (Icons enum value)
      * @param string      $postUrl    The URL of the post to share
      * @param string|null $postTitle  The title of the post
      * @param string|null $postImage  URL of the post image
@@ -26,7 +26,12 @@ trait HasSocialSharing
         ?string $postImage = null,
         ?string $postDesc = null
     ): string {
-        $baseUrl = Icons::getShareUrl($platform);
+
+        // Retrieve the enum instance for the given platform value
+        $enumInstance = Icons::fromValue($platform);
+
+        // Retrieve the base share URL from the Icons enum metadata
+        $baseUrl = $enumInstance->getMetadata('share_url');
         $encodedUrl = rawurlencode($postUrl);
 
         switch ($platform) {
@@ -40,15 +45,25 @@ trait HasSocialSharing
 
             case Icons::TWITTER:
                 $params = [];
-                if ($postTitle) $params['text'] = $postTitle;
-                if ($postUrl) $params['url'] = $postUrl;
-                // Twitter card will pick up OG tags from the post URL
+                if ($postTitle) {
+                    $params['text'] = $postTitle;
+                }
+                if ($postUrl) {
+                    $params['url'] = $postUrl;
+                }
+                // Twitter/X card will pick up OG tags from the post URL
                 return $baseUrl . '?' . http_build_query($params);
 
             case Icons::PINTEREST:
                 $params = ['url' => $postUrl];
-                if ($postImage) $params['media'] = $postImage;
-                if ($postTitle) $params['description'] = $postTitle;
+                if ($postImage) {
+                    $params['media'] = $postImage;
+                }
+                if ($postDesc) {
+                    $params['description'] = $postDesc;
+                } elseif ($postTitle) {
+                    $params['description'] = $postTitle;
+                }
                 return $baseUrl . '?' . http_build_query($params);
 
             case Icons::LINKEDIN:
@@ -70,7 +85,7 @@ trait HasSocialSharing
      * @param string|null $postImage
      * @param string|null $postDesc
      *
-     * @return array<string, array{label: string, url: string, icon: string, color: string}>
+     * @return array<string, array{label: string, url: string, icon: string, color: string, description: string}>
      */
     public static function getAllShareUrls(
         string $postUrl,
@@ -78,12 +93,13 @@ trait HasSocialSharing
         ?string $postImage = null,
         ?string $postDesc = null
     ): array {
+
         $result = [];
-        foreach (Icons::all() as $platform => $data) {
+        foreach (Icons::getOptions() as $platform => $data) {
             $result[$platform] = [
                 'label' => $data['label'],
-                'url'   => self::getShareUrlForPost($platform, $postUrl, $postTitle, $postImage, $postDesc),
-                'icon'  => $data['icon'],
+                'url' => self::getShareUrlForPost($platform, $postUrl, $postTitle, $postImage, $postDesc),
+                'icon' => $data['icon'],
                 'color' => $data['color'],
             ];
         }
