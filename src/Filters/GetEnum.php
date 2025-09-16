@@ -5,134 +5,94 @@ namespace Atannex\Filters;
 trait GetEnum
 {
     /**
-     * Default metadata structure for unknown values.
+     * Stores metadata for all enum cases.
+     * Format: [enumValue => ['label' => ..., 'color' => ..., 'icon' => ..., ...]]
+     */
+    protected static $metadata = [];
+
+    /**
+     * Retrieve the full metadata array for the current enum value.
+     */
+    public function getMetadata()
+    {
+        return static::$metadata[$this->value];
+    }
+
+    /**
+     * Retrieve a specific metadata field for the current enum value.
      *
-     * @var array<string, mixed>
+     * @param string $field The metadata key to retrieve
      */
-    protected static array $defaultMetadata = [
-        'label' => null,
-        'color' => 'gray',
-        'icon' => 'heroicon-o-question-mark-circle',
-    ];
-
-    /**
-     * Metadata storage for enum cases.
-     *
-     * @var array<string, array<string, mixed>>
-     */
-    protected static array $metadata = [];
-
-    /**
-     * Get metadata for the current enum case.
-     *
-     * @return array<string, mixed>
-     */
-    public function getMetadata(): array
+    public function getMetaField($field)
     {
-        return static::$metadata[$this->value] ?? static::getDefaultMetadata($this->value);
+        return $this->getMetadata()[$field];
     }
 
     /**
-     * Get a specific metadata field.
-     *
-     * @param string $field The metadata field to retrieve
-     * @param mixed $default Default value if field is not found
+     * Get the 'label' of the current enum value.
      */
-    public function getMetaField(string $field, mixed $default = null): mixed
+    public function getLabel()
     {
-        $metadata = $this->getMetadata();
-        return $metadata[$field] ?? $default;
+        return $this->getMetaField('label');
     }
 
     /**
-     * Get the label for the current enum case.
+     * Get the 'description' of the current enum value.
      */
-    public function getLabel(): string
+    public function getDescriptions()
     {
-        return (string) $this->getMetaField('label', $this->value);
-    }
-
-    public function getDescriptions(): string
-    {
-        return (string) $this->getMetaField('description', $this->value);
+        return $this->getMetaField('description');
     }
 
     /**
-     * Get the color for the current enum case.
+     * Get the 'color' associated with the current enum value.
      */
-    public function getColor(): string
+    public function getColor()
     {
-        return (string) $this->getMetaField('color', static::$defaultMetadata['color']);
+        return $this->getMetaField('color');
     }
 
     /**
-     * Get the icon for the current enum case.
+     * Get the 'icon' associated with the current enum value.
      */
-    public function getIcon(): string
+    public function getIcon()
     {
-        return (string) $this->getMetaField('icon', static::$defaultMetadata['icon']);
+        return $this->getMetaField('icon');
     }
 
     /**
-     * Get all metadata for all enum cases.
-     *
-     * @return array<string, array<string, mixed>>
+     * Return all metadata for all enum values.
      */
-    public static function getOptions(): array
+    public static function getOptions()
     {
         return static::$metadata;
     }
 
     /**
-     * Get all enum values.
-     *
-     * @return string[]
+     * Return all enum values (keys of the metadata array).
      */
-    public static function values(): array
+    public static function values()
     {
         return array_keys(static::$metadata);
     }
 
     /**
-     * Get key => label array for all enum cases.
-     *
-     * @return array<string, string>
+     * Return an array mapping enum values to their labels.
      */
-    public static function labels(): array
+    public static function labels()
     {
         return array_map(
-            fn($meta) => (string) ($meta['label'] ?? ''),
+            function ($meta) { return $meta['label']; },
             static::$metadata
         );
     }
 
     /**
-     * Provide default metadata structure for unknown values.
+     * Set metadata for all enum cases at once.
      *
-     * @param string $value The enum value
-     * @return array<string, mixed>
+     * @param array $metadata Array of metadata keyed by enum values
      */
-    protected static function getDefaultMetadata(string $value): array
-    {
-        return array_merge(static::$defaultMetadata, ['label' => $value]);
-    }
-
-    /**
-     * Set custom default metadata for the enum.
-     *
-     * @param array<string, mixed> $metadata
-     */
-    public static function setDefaultMetadata(array $metadata): void
-    {
-        static::$defaultMetadata = array_merge(static::$defaultMetadata, $metadata);
-    }
-
-    /**
-     * Set metadata for all enum cases.
-     *
-     * @param array<string, array<string, mixed>> $metadata
-     */
-    public static function setMetadata(array $metadata): void
+    public static function setMetadata($metadata)
     {
         static::$metadata = $metadata;
     }
@@ -140,14 +100,11 @@ trait GetEnum
     /**
      * Add or update metadata for a specific enum value.
      *
-     * @param string $value The enum value
-     * @param array<string, mixed> $metadata
+     * @param string $value Enum value
+     * @param array $metadata Metadata to assign
      */
-    public static function addMetadata(string $value, array $metadata): void
+    public static function addMetadata($value, $metadata)
     {
-        static::$metadata[$value] = array_merge(
-            static::getDefaultMetadata($value),
-            $metadata
-        );
+        static::$metadata[$value] = $metadata;
     }
 }
