@@ -17,9 +17,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $recentPosts = $this->postService->getRecentPublishedPosts(5);
+        $recentPosts = $this->postService->getRecentPosts(5);
         // $editorPicks = $this->postService->getEditorPicks();
-        $editorPicks = $this->postService->getRecentPublishedPosts(20);
+        $editorPicks = $this->postService->getRecentPosts(20);
         $featuredPost = $editorPicks->first();
         $smallPosts = $editorPicks->take(5)->skip(1);
 

@@ -15,7 +15,7 @@
                         <div class="blog-content-wrap">
                             <div class="share-links-wrap">
 
-                                {{-- <x-shows.social-share :share="$module->post" /> --}}
+                                <x-shows.social-share :shares="$shares" />
 
                             </div>
                             <div class="blog-content">

@@ -65,7 +65,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Flag::boot();
         Entity::boot();
-        Icons::boot();
         Image::boot();
         Territories::boot();
     }

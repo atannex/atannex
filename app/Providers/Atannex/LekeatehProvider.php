@@ -8,9 +8,11 @@ use Atannex\Repositories\TagRepository;
 use Illuminate\Support\ServiceProvider;
 use Atannex\Contracts\CategoryInterface;
 use Atannex\Contracts\DocumentInterface;
+use Atannex\Contracts\ShareInterface;
 use Atannex\Repositories\PageRepository;
 use Atannex\Repositories\CategoryRepository;
 use Atannex\Repositories\DocumentRepository;
+use Atannex\Repositories\ShareRepository;
 
 /**
  * Lekeateh service provider for binding repository implementations to interfaces.
@@ -47,6 +49,11 @@ class LekeatehProvider extends ServiceProvider
         $this->app->bind(
             TagInterface::class,
             TagRepository::class
+        );
+
+        $this->app->bind(
+            ShareInterface::class,
+            ShareRepository::class
         );
     }
 }
