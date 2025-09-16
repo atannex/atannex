@@ -109,13 +109,13 @@
 
 /* Form Controls */
 .form-check-input:checked {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #007bff !important;
+    border-color: #007bff !important;
 }
 
 .form-check-input:checked.success {
-    background-color: #28a745;
-    border-color: #28a745;
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
 }
 
 .form-check-label a {
