@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Enums\Binding;
 use App\Enums\Flag;
 use App\Enums\Icons;
 use App\Enums\Image;
@@ -67,5 +68,7 @@ class AppServiceProvider extends ServiceProvider
         Entity::boot();
         Image::boot();
         Territories::boot();
+        Binding::boot();
+        Icons::boot();
     }
 }
