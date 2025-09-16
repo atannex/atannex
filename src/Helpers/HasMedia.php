@@ -20,11 +20,12 @@ trait HasMedia
 
         return [
             'url'   => $media->url,
-            'label' => $platform->getLabel(),
-            'icon'  => $platform->getIcon(),
-            'color' => $platform->getColor(),
+            'label' => Icons::getLabel($platform->value),
+            'icon'  => Icons::getIcon($platform->value),
+            'color' => Icons::getColor($platform->value),
         ];
     }
+
 
     /**
      * Retrieve all published global social media entries mapped with icons and metadata.
