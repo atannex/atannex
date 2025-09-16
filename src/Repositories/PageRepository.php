@@ -8,6 +8,12 @@ use Illuminate\Support\Collection;
 use Atannex\Contracts\PageInterface;
 use Atannex\Helpers\HasQuery;
 
+/**
+ * Repository handling page and category retrieval.
+ *
+ * Implements the PageInterface without internal error handling.
+ * Assumes all data exists and queries always return valid results.
+ */
 class PageRepository implements PageInterface
 {
     use HasQuery;
@@ -15,7 +21,7 @@ class PageRepository implements PageInterface
     /**
      * Retrieve all top-level published page categories with their children recursively loaded.
      *
-     * @return Collection<int, Category>
+     * @return Collection<int, Category> Collection of Category instances.
      */
     public function getAllCategoryPages(): Collection
     {
@@ -29,7 +35,7 @@ class PageRepository implements PageInterface
     /**
      * Retrieve all published and active home pages.
      *
-     * @return Collection<int, Page>
+     * @return Collection<int, Page> Collection of Page instances.
      */
     public function getAllHomePages(): Collection
     {
@@ -38,6 +44,9 @@ class PageRepository implements PageInterface
 
     /**
      * Retrieve a single active home page by slug, including only active sections and widgets.
+     *
+     * @param string $slug The slug of the homepage.
+     * @return Page The matching Page instance.
      */
     public function getHomePage(string $slug): ?Page
     {

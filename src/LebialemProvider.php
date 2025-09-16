@@ -32,7 +32,7 @@ final class LebialemProvider extends PassPosts
             'global_icons' => $this->getSocialMediaIcons(),
             'home' => $this->pageService->getAllHomePages(),
             'navs' => $this->pageService->getAllCategoryPages(),
-            'recentPosts'  => $this->getRecentPublishedPosts(4),
+            'recentPosts'  => $this->getRecentPosts(2),
         ];
     }
 }

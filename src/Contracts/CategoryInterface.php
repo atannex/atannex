@@ -13,16 +13,14 @@ use Illuminate\Pagination\LengthAwarePaginator;
 /**
  * Interface defining the contract for category-related operations.
  *
- * Provides methods for retrieving posts, related categories, recent posts, popular tags,
- * and user social media within a category structure.
+ * This interface provides a consistent API for managing categories, posts, tags,
+ * and related user social media within the application. Implementing classes
+ * must handle data retrieval and query logic according to the defined method signatures.
  */
 interface CategoryInterface
 {
     /**
-     * Retrieve paginated posts for a category and its descendants.
-     *
-     * Fetches published posts associated with the specified category and its subcategories,
-     * returned in a paginated format for efficient data handling.
+     * Retrieve paginated posts for a category and all its descendant categories.
      *
      * @param Category $category The category to fetch posts from.
      * @param int $limit Number of posts per page (default: 15).
@@ -31,28 +29,29 @@ interface CategoryInterface
     public function getPostsByCategory(Category $category, int $limit = 15): LengthAwarePaginator;
 
     /**
-     * Retrieve a paginated list of posts filtered by a specific region.
-     *
-     * This method fetches posts associated with the given Region entity,
-     * returning a paginated result to simplify frontend display and
-     * limit memory usage. The number of posts per page can be customized.
+     * Retrieve paginated posts filtered by a specific region.
      *
      * @param Region $region The region entity used to filter posts.
-     * @param int $limit Optional. The number of posts per page. Default is 15.
-     *
-     * @return LengthAwarePaginator A paginator instance containing the posts.
+     * @param int $limit Number of posts per page (default: 15).
+     * @return LengthAwarePaginator Paginated collection of posts for the region.
      */
     public function getPostsByRegion(Region $region, int $limit = 15): LengthAwarePaginator;
 
-         public function getPostsByDate(?string $yearMonth = null, int $perPage = 15): LengthAwarePaginator;
+    /**
+     * Retrieve paginated posts filtered by a specific year and month.
+     *
+     * @param string $yearMonth The year/month string in "YYYY/MM" format.
+     * @param int $perPage Number of posts per page (default: 15).
+     * @return LengthAwarePaginator Paginated collection of posts for the date range.
+     */
+    public function getPostsByDate(string $yearMonth, int $perPage = 15): LengthAwarePaginator;
 
     /**
      * Retrieve categories related to the specified category.
      *
-     * Returns a collection of categories that are contextually related, such as siblings or
-     * parent categories, based on the application's category hierarchy logic.
+     * Typically includes sibling or child categories within the category hierarchy.
      *
-     * @param Category $category The category to find related categories for.
+     * @param Category $category The reference category.
      * @return Collection Collection of related Category instances.
      */
     public function getRelatedCategoriesForCategory(Category $category): Collection;
@@ -60,10 +59,9 @@ interface CategoryInterface
     /**
      * Retrieve recent posts relative to a given post.
      *
-     * Fetches a collection of recent posts, typically excluding the reference post,
-     * based on the category of the provided post, suitable for recommendations or listings.
+     * Useful for displaying recommended or contextually relevant posts.
      *
-     * @param Post $post The reference post to base the query on.
+     * @param Post $post The reference post.
      * @param int $limit Maximum number of recent posts to retrieve (default: 5).
      * @return Collection Collection of recent Post instances.
      */
@@ -72,31 +70,27 @@ interface CategoryInterface
     /**
      * Retrieve popular tags within the category tree of a tag's associated post.
      *
-     * Fetches tags with the highest count of published posts within the category tree
-     * of the tag's associated post, useful for displaying trending or relevant tags.
+     * Useful for showing trending or relevant tags within a specific category context.
      *
-     * @param Tag|null $tag The tag to base the category tree on, or null for no filtering.
-     * @param int $limit Maximum number of popular tags to retrieve (default: 12).
+     * @param Tag $tag The tag to base the category tree on.
+     * @param int $limit Maximum number of tags to retrieve (default: 12).
      * @return Collection Collection of popular Tag instances with post counts.
      */
-    public function getPopularTagsByTagCategoryTree(?Tag $tag, int $limit = 12): Collection;
+    public function getPopularTagsByTagCategoryTree(Tag $tag, int $limit = 12): Collection;
 
     /**
      * Retrieve paginated posts associated with a specific tag.
      *
-     * Fetches published posts that have the specified tag, returned in a paginated format.
-     *
      * @param Tag $tag The tag to filter posts by.
      * @param int $limit Number of posts per page (default: 20).
-     * @return LengthAwarePaginator Paginated collection of posts.
+     * @return LengthAwarePaginator Paginated collection of posts with the tag.
      */
     public function getPostsByTag(Tag $tag, int $limit = 20): LengthAwarePaginator;
 
     /**
-     * Retrieve related categories within the category tree of a given tag.
+     * Retrieve categories related to a tag's associated post category tree.
      *
-     * Fetches categories related to the tag's associated post's category tree,
-     * useful for contextual navigation or recommendations.
+     * Useful for navigating or recommending related categories in context.
      *
      * @param Tag $tag The tag to base the category query on.
      * @return Collection Collection of related Category instances.
@@ -104,12 +98,9 @@ interface CategoryInterface
     public function getRelatedCategoriesForTag(Tag $tag): Collection;
 
     /**
-     * Retrieve published social media profiles for a given user.
+     * Retrieve published social media profiles for a given employee/user.
      *
-     * Fetches a collection of the user's social media profiles that are marked as published,
-     * ordered by display order.
-     *
-     * @param Employee $user The user to fetch social media profiles for.
+     * @param Employee $employee The user whose social media profiles are requested.
      * @return Collection Collection of published social media profiles.
      */
     public function getPublishedEmployeeSocialMedia(Employee $employee): Collection;
@@ -117,12 +108,9 @@ interface CategoryInterface
     /**
      * Retrieve paginated posts by an author identified by their slug.
      *
-     * Fetches published posts authored by the user with the specified slug,
-     * returned in a paginated format.
-     *
-     * @param string $slugPath The author's unique slug.
+     * @param string $slug_path The author's unique slug identifier.
      * @param int $limit Number of posts per page (default: 15).
-     * @return LengthAwarePaginator Paginated collection of posts.
+     * @return LengthAwarePaginator Paginated collection of posts authored by the user.
      */
-    public function getPostsByAuthor(string $slugPath, int $limit = 15): LengthAwarePaginator;
+    public function getPostsByAuthor(string $slug_path, int $limit = 15): LengthAwarePaginator;
 }

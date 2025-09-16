@@ -2,11 +2,9 @@
 
 namespace Atannex\Binders;
 
-use Atannex\Sections\GetRecentPost;
-use Atannex\Sections\GetRelatedPost;
-use Atannex\Sections\GetPostNavigation;
-use Atannex\Components\GetPosts\ByEditorPick;
-use Atannex\Components\GetEngagementsPosts\ByCommented;
+use Atannex\Sections\GetPosts\ByRecent;
+use Atannex\Sections\GetPosts\ByRelated;
+use Atannex\Sections\GetPosts\ByNavigation;
 
 /**
  * Class GetPost
@@ -23,9 +21,7 @@ use Atannex\Components\GetEngagementsPosts\ByCommented;
  */
 class PassPosts
 {
-    use GetRecentPost;
-    use GetPostNavigation;
-    use GetRelatedPost;
-    use ByCommented;
-    use ByEditorPick;
+    use ByRecent;
+    use ByNavigation;
+    use ByRelated;
 }
