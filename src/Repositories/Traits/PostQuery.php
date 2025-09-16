@@ -55,19 +55,12 @@ trait PostQuery
      */
     public function getRecentPosts(?Post $post, int $limit = self::DEFAULT_RECENT_POSTS_LIMIT): Collection
     {
-        abort_if(!$post?->category, 404);
-
         $category = $this->getRootCategory($post->category);
-        abort_if(!$category, 404);
 
-        $collection = $this->buildPostQuery($category, $post->id)
+        return $this->buildPostQuery($category, $post->id)
             ->latest()
             ->take($this->sanitizeLimit($limit))
             ->get();
-
-        abort_if($collection->isEmpty(), 404);
-
-        return $collection;
     }
 
     /**
@@ -75,9 +68,7 @@ trait PostQuery
      */
     public function getPostsByAuthor(?string $slugPath, int $limit = self::DEFAULT_PAGINATION_LIMIT): LengthAwarePaginator
     {
-        abort_if(!$slugPath || $slugPath === '0', 404);
-
-        $author = $this->resolveAuthor($slugPath) ?: abort(404);
+        $author = $this->resolveAuthor($slugPath);
 
         $query = Post::published()
             ->where('author_id', $author->id)
@@ -113,7 +104,6 @@ trait PostQuery
     protected function buildPostQuery(?Category $category, ?int $excludeId = null): Builder
     {
         $categoryIds = $this->getCategoryTreeIds($category);
-        abort_if($categoryIds->isEmpty(), 404);
 
         $query = Post::published()
             ->whereIn('category_id', $categoryIds)
@@ -131,19 +121,14 @@ trait PostQuery
      */
     protected function getModelWithDescendantsIds($model): Collection
     {
-        abort_if(!$model, 404);
-
         return $model->getDescendants()->push($model)->pluck('id');
     }
 
     /**
-     * Helper to paginate a query and abort if empty.
+     * Helper to paginate a query.
      */
     protected function paginatePosts(Builder $query, int $limit): LengthAwarePaginator
     {
-        $paginator = $query->latest()->paginate($this->sanitizeLimit($limit));
-        abort_if($paginator->isEmpty(), 404);
-
-        return $paginator;
+        return $query->latest()->paginate($this->sanitizeLimit($limit));
     }
 }

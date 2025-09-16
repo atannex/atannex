@@ -1,6 +1,6 @@
 <?php
 
-namespace Atannex\Sections;
+namespace Atannex\Sections\GetPosts;
 
 use App\Enums\Flag;
 use App\Models\Posts\Post;
@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
  * Provides functionality to retrieve related published posts
  * based on category and shared tags.
  */
-trait GetRelatedPost
+trait ByRelated
 {
     /**
      * Retrieve related posts based on the same category or shared tags.

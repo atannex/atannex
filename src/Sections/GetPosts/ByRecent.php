@@ -1,6 +1,6 @@
 <?php
 
-namespace Atannex\Sections;
+namespace Atannex\Sections\GetPosts;
 
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
@@ -10,17 +10,17 @@ use Illuminate\Support\Collection;
  *
  * Provides functionality to retrieve recent published posts.
  */
-trait GetRecentPost
+trait ByRecent
 {
     /**
      * Retrieve the most recent published posts.
      *
      * @param int $limit The number of posts to retrieve.
      */
-    public function getRecentPublishedPosts(int $limit = 5): Collection
+    public function getRecentPosts(int $limit = 5): Collection
     {
-        return Post::published(false)
-            ->latest('created_at')
+        return Post::published()
+            ->latest('published_at')
             ->limit($limit)
             ->get();
     }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Atannex\Sections;
+namespace Atannex\Sections\GetPosts;
 
 use App\Enums\Flag;
 use App\Models\Posts\Post;
 
-trait GetPostNavigation
+trait ByNavigation
 {
     /**
      * Get previous and next posts relative to the given post.

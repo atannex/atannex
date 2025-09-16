@@ -2,7 +2,6 @@
 
 namespace Atannex\Helpers;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Enums\Flag;
 use App\Enums\Icons;
 use App\Enums\Image;
@@ -15,13 +14,9 @@ trait HasMedia
     /**
      * Map a SocialMedia model instance to a simplified array representation.
      */
-    protected function mapSocialMedia(SocialMedia $media): ?array
+    protected function mapSocialMedia(SocialMedia $media): array
     {
         $platform = Icons::coerce($media->platform);
-
-        if (!$platform instanceof Icons) {
-            return null;
-        }
 
         return [
             'url'   => $media->url,
@@ -42,16 +37,11 @@ trait HasMedia
             ->orderBy('order')
             ->get()
             ->map(fn(SocialMedia $media) => $this->mapSocialMedia($media))
-            ->filter()
             ->values();
     }
 
-
     /**
      * Retrieve a single published gallery image of the given type.
-     *
-     *
-     * @throws ModelNotFoundException
      */
     protected function getGalleryImage(Image $type): ?Gallery
     {
