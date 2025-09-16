@@ -738,12 +738,12 @@ input[type="number"] {
 
 input[type="checkbox"] {
     visibility: hidden;
-    opacity: 100;
+    opacity: 0;
     display: inline-block;
     vertical-align: middle;
     width: 0;
     height: 0;
-    display: block;
+    display: none;
 }
 input[type="checkbox"]:checked ~ label:before {
     content: "\f00c";
