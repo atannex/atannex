@@ -81,28 +81,28 @@
                                 </div>
 
                                 <div class="mb-4 form-group">
-                                    <div class="form-check d-flex align-items-start">
-                                        <input class="form-check-input mt-1 @error('terms') is-invalid @enderror" type="checkbox" name="terms" id="terms" {{ old('terms') ? 'checked' : '' }}>
-                                        <div class="ms-2">
-                                            <label class="form-check-label form-text" for="terms">
-                                                <i class="fas fa-handshake me-1 text-muted"></i>
-                                                {{ __('I agree to the') }}
-                                                <a href="{{ route('document.index', ['type' => 'terms']) }}" target="_blank" class="text-primary">{{ __('Terms of Service') }}</a>
-                                                {{ __('and') }}
-                                                <a href="{{ route('document.index', ['type' => 'privacy']) }}" target="_blank" class="text-primary">{{ __('Privacy Policy') }}</a>
-                                            </label>
-                                            <div class="form-text">
-                                                {{ __('Don\'t worry, we keep it simple and fair!') }}
-                                            </div>
+                                    <div class="form-check align-items-start">
+                                        <input class="form-check-input mt-1 @error('terms') is-invalid @enderror" type="checkbox" name="terms" id="terms" {{ old('terms') ? 'checked' : '' }} required>
+                                        <label class="form-check-label form-text" for="terms">
+                                            <i class="fas fa-handshake me-1 text-muted"></i>
+                                            {{ __('I agree to the') }}
+                                            <a href="{{ route('document.index', ['type' => 'terms']) }}" target="_blank" class="text-primary">{{ __('Terms of Service') }}</a>
+                                            {{ __('and') }}
+                                            <a href="{{ route('document.index', ['type' => 'privacy']) }}" target="_blank" class="text-primary">{{ __('Privacy Policy') }}</a>
+                                        </label>
+                                        <div class="form-text">
+                                            {{ __('Don\'t worry, we keep it simple and fair!') }}
                                         </div>
                                     </div>
                                     @error('terms')
-                                    <div class="invalid-feedback d-block"><strong>{{ $message }}</strong></div>
+                                    <div class="invalid-feedback d-block">
+                                        <strong>{{ $message }}</strong>
+                                    </div>
                                     @enderror
                                 </div>
 
                                 <div class="mb-4 form-btn d-grid">
-                                    <button type="submit" class="btn btn-primary btn-lg">
+                                    <button type="submit" class="mb-3 th-btn btn-lg w-100">
                                         <i class="fas fa-rocket me-2"></i>
                                         {{ __('Create My Account') }}
                                         <i class="fas fa-arrow-right ms-2"></i>
@@ -114,7 +114,7 @@
                                 <div class="text-center alternative-actions">
                                     <div class="existing-user-section">
                                         <p class="mb-2 text-muted">{{ __("Already part of our community?") }}</p>
-                                        <a href="{{ route('login') }}" class="btn btn-outline-primary">
+                                        <a href="{{ route('login') }}" class="text-decoration-none fw-semibold">
                                             <i class="fas fa-sign-in-alt me-1"></i>
                                             {{ __('Sign In Instead') }}
                                         </a>

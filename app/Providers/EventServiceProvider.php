@@ -4,10 +4,8 @@ namespace App\Providers;
 
 use App\Events\Users\UserCreated;
 use App\Events\Docs\DocumentCreated;
-use App\Events\Posts\Posts\BreakingPost;
-use App\Listeners\SendDocs\DocumentNotification;
-use App\Listeners\SendPosts\BreakingPostListener;
-use App\Listeners\SendUsers\SendUserRegisteredNotification;
+use App\Listeners\Docs\DocumentNotification;
+use App\Listeners\Users\SendUserRegisteredNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -26,10 +24,6 @@ class EventServiceProvider extends ServiceProvider
         UserCreated::class => [
             SendUserRegisteredNotification::class,
         ],
-
-        BreakingPost::class => [
-            BreakingPostListener::class,
-        ],
     ];
 
     /**
@@ -37,14 +31,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        parent::boot();
-    }
 
-    /**
-     * Determine if events and listeners should be automatically discovered.
-     */
-    public function shouldDiscoverEvents(): bool
-    {
-        return false;
     }
 }

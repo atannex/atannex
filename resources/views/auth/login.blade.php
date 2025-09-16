@@ -87,7 +87,7 @@
 
                                 {{-- Submit --}}
                                 <div class="mb-4 form-btn d-grid">
-                                    <button type="submit" class="btn btn-primary btn-lg">
+                                    <button type="submit" class="mb-3 th-btn btn-lg w-100">
                                         <i class="fas fa-sign-in-alt me-2"></i>
                                         {{ __('Sign Me In') }}
                                         <i class="fas fa-arrow-right ms-2"></i>
@@ -98,7 +98,7 @@
                                 <div class="text-center alternative-actions">
                                     @if (Route::has('password.request'))
                                     <div class="mb-3">
-                                        <a class="text-decoration-none text-primary" href="{{ route('password.request') }}">
+                                        <a class="text-decoration-none fw-semibold" href="{{ route('password.request') }}">
                                             <i class="fas fa-key me-1"></i>
                                             {{ __('Forgot your password? No worries!') }}
                                         </a>
@@ -108,7 +108,7 @@
                                     @if (Route::has('register'))
                                     <div class="new-user-section">
                                         <p class="mb-2 text-muted">{{ __("New here?") }}</p>
-                                        <a class="text-decoration-none fw-semibold btn btn-outline-primary" href="{{ route('register') }}">
+                                        <a class="text-decoration-none fw-semibold" href="{{ route('register') }}">
                                             <i class="fas fa-user-plus me-1"></i>
                                             {{ __('Create Your Account') }}
                                         </a>

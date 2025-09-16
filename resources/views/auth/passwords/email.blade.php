@@ -61,13 +61,13 @@
                                             <p class="mb-2 text-muted">
                                                 <small>{{ __('Remember your password now?') }}</small>
                                             </p>
-                                            <a href="{{ route('login') }}" class="mb-2 text-decoration-none text-primary d-inline-block">
+                                            <a href="{{ route('login') }}" class="mb-2 text-decoration-none fw-semibold d-inline-block">
                                                 <i class="fas fa-sign-in-alt me-1"></i>
                                                 {{ __('Back to Login') }}
                                             </a>
                                             <br>
                                             @if (Route::has('register'))
-                                            <a href="{{ route('register') }}" class="text-decoration-none text-muted">
+                                            <a href="{{ route('register') }}" class="text-decoration-none fw-semibold text-muted">
                                                 <i class="fas fa-user-plus me-1"></i>
                                                 {{ __('Don\'t have an account? Sign up') }}
                                             </a>
