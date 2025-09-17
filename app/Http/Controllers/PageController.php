@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Models\Pages\Page;
 use App\Models\Pages\Category;
 use App\Models\Pivots\PostTag;
@@ -44,7 +45,7 @@ class PageController extends Controller
      * @param string $slug The slug to resolve (e.g., page URL segment).
      * @return View
      *
-     * @throws \Illuminate\Http\Exceptions\HttpResponseException Throws 404 if resource is not found.
+     * @throws HttpResponseException Throws 404 if resource is not found.
      */
     public function resolve(string $slug): View
     {

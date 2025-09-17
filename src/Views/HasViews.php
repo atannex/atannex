@@ -3,7 +3,6 @@
 namespace Atannex\Views;
 
 use Illuminate\View\View;
-use App\Models\Posts\Post;
 use App\Models\Pages\Category;
 use App\Models\Pivots\PostTag;
 use App\Models\Regions\Region;
