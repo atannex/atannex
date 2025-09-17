@@ -2,6 +2,7 @@
 
 namespace Atannex;
 
+use BadMethodCallException;
 use App\Enums\Traits\HasEntityMapping;
 use Atannex\Binders\Components;
 use Illuminate\Support\Collection;
@@ -27,7 +28,7 @@ final class AtannexProvider extends Components
      * Resolve the corresponding method name dynamically using the trait
      * Call the resolved method with the given configuration
      *
-     * @throws \BadMethodCallException if the resolved method does not exist.
+     * @throws BadMethodCallException if the resolved method does not exist.
      */
     public function getPostsByType(array $config): Collection
     {
