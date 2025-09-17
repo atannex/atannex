@@ -3,7 +3,6 @@
 namespace Atannex\Views;
 
 use Illuminate\View\View;
-use App\Models\Posts\Post;
 use App\Models\Pages\Category;
 use App\Models\Pivots\PostTag;
 use App\Models\Regions\Region;
@@ -60,11 +59,11 @@ trait HasViews
         $postImage = $post->image;
         $postDesc  = $post->description;
 
-        $shareUrls = $this->shareService->getAllShareUrls($postUrl, $post->title, $postImage, $postDesc);
+        // $shareUrls = $this->shareService->getAllShareUrls($postUrl, $post->title, $postImage, $postDesc);
 
         $viewData = [
             'module'   => $module,
-            'shares'   => $shareUrls,
+            // 'shares'   => $shareUrls,
             'medias'   => $this->categoryService->getPublishedEmployeeSocialMedia($post->author),
         ];
 

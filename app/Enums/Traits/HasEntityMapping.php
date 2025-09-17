@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enums\Traits;
 
+use OutOfBoundsException;
 use App\Enums\Entity;
 
 /**
@@ -64,7 +65,7 @@ trait HasEntityMapping
      *
      * @param string $entity The entity type to retrieve the mapping for.
      * @return array The mapping configuration for the specified entity.
-     * @throws \OutOfBoundsException If the entity is not found in the mappings.
+     * @throws OutOfBoundsException If the entity is not found in the mappings.
      */
     public static function getMapping(string $entity): array
     {
@@ -76,7 +77,7 @@ trait HasEntityMapping
      *
      * @param string $entity The entity type to resolve the method for.
      * @return string The method name associated with the entity.
-     * @throws \OutOfBoundsException If the entity is not found in the mappings.
+     * @throws OutOfBoundsException If the entity is not found in the mappings.
      */
     public static function resolveMethod(string $entity): string
     {

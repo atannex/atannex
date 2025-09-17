@@ -30,12 +30,6 @@ class AtannexProvider extends ServiceProvider
         Gate::policy(Comment::class, CommentPolicy::class);
         Gate::after(fn($user) => $user->hasRole('Super Admin') ? true : null);
         $this->shareGlobalData($lebialemProvider);
-
-        View::composer('components.layouts.files.header', function ($view) {
-            if ($view->offsetExists('posts')) {
-                $view->with('globalPost', $view->getData()['post']);
-            }
-        });
     }
 
     /**

@@ -25,11 +25,17 @@ final class Icons extends Enum
     use GetEnum;
 
     public const TWITTER   = 'twitter';
+
     public const FACEBOOK  = 'facebook';
+
     public const LINKEDIN  = 'linkedin';
+
     public const WHATSAPP  = 'whatsapp';
+
     public const REDDIT    = 'reddit';
+
     public const PINTEREST = 'pinterest';
+
     public const TELEGRAM  = 'telegram';
 
     /**
@@ -39,7 +45,7 @@ final class Icons extends Enum
      */
     public static function boot(): void
     {
-        static::setMetadata([
+        self::setMetadata([
             self::TWITTER => [
                 'label'     => 'Twitter',
                 'color'     => '#000000',
