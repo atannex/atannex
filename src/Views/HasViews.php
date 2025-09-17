@@ -60,11 +60,11 @@ trait HasViews
         $postImage = $post->image;
         $postDesc  = $post->description;
 
-        $shareUrls = $this->shareService->getAllShareUrls($postUrl, $post->title, $postImage, $postDesc);
+        // $shareUrls = $this->shareService->getAllShareUrls($postUrl, $post->title, $postImage, $postDesc);
 
         $viewData = [
             'module'   => $module,
-            'shares'   => $shareUrls,
+            // 'shares'   => $shareUrls,
             'medias'   => $this->categoryService->getPublishedEmployeeSocialMedia($post->author),
         ];
 
