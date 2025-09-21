@@ -165,8 +165,8 @@ trait HasViews
         $yearMonth = $isMonth ? ($year ?? date('Y')) . '/' . $value : $value;
 
         $seoTitle = $isMonth
-            ? "Posts for the month of {$displayValue}"
-            : "Posts for the year {$value}";
+            ? 'Posts for the month of ' . $displayValue
+            : 'Posts for the year ' . $value;
 
         return $this->renderView('date', [
             'posts' => $this->categoryService->getPostsByDate($yearMonth),

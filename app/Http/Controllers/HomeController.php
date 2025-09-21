@@ -7,8 +7,9 @@ use Illuminate\Contracts\Support\Renderable;
 
 class HomeController extends Controller
 {
-
-    public function __construct(protected readonly PassPosts $postService) {}
+    public function __construct(
+        protected readonly PassPosts $postService
+    ) {}
 
     /**
      * Show the application dashboard.
@@ -17,12 +18,23 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $recentPosts = $this->postService->getRecentPosts(5);
-        // $editorPicks = $this->postService->getEditorPicks();
-        $editorPicks = $this->postService->getRecentPosts(20);
-        $featuredPost = $editorPicks->first();
-        $smallPosts = $editorPicks->take(5)->skip(1);
+        $todayPosts  = $this->postService->getTodayPosts(6);
+        $recentPosts = $this->postService->getRecentPosts(6);
+        $regions     = $this->postService->getRegionWithPost(6);
+        $editorPicks = $this->postService->getEditorPick(10);
 
-        return view('home', ['recentPosts' => $recentPosts, 'editorPicks' => $editorPicks, 'featuredPost' => $featuredPost, 'smallPosts' => $smallPosts]);
+        $allPosts = $todayPosts->isNotEmpty()
+            ? $todayPosts->take(6)
+            : $recentPosts->take(6);
+
+        $heroTitle = $todayPosts->isNotEmpty()
+            ? __("Today Updates")
+            : __("Recent Updates");
+
+
+        $featuredBlog = $todayPosts->first();
+        $sideBlogs    = $todayPosts->take(3)->skip(1);
+
+        return view('home', ['heroTitle'=> $heroTitle ,'allPosts' => $allPosts, 'editorPicks' => $editorPicks, 'sideBlogs' => $sideBlogs, 'featuredBlog' => $featuredBlog, 'regions' => $regions, 'todayPosts' => $todayPosts]);
     }
 }

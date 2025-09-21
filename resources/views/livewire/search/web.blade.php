@@ -35,13 +35,16 @@
                             </a>
                             <div>
                                 <h6 class="mb-1" style="font-size: 0.95rem;">
-                                    <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }} class="text-white text-decoration-none fw-semibold">
+                                    <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }} class="text-white  text-decoration-none fw-semibold">
                                         {{ \Illuminate\Support\Str::limit($post->title, 90) }}
                                     </a>
                                 </h6>
                                 <div class="text-muted small">
-                                    <i class="fal fa-calendar-days me-1"></i>
-                                    {{ $post->created_at->format('d M, Y') }}
+                                    <span>
+
+                                        @include('partials.date', ['post' => $post])
+
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -53,4 +56,3 @@
         </form>
     </div>
 </div>
-

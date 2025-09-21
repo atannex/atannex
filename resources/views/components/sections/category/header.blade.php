@@ -6,9 +6,9 @@
             <div class="row justify-content-center justify-content-lg-between align-items-center gy-2">
                 <div class="col-auto d-none d-lg-inline-block">
                     <div class="header-logo">
-                        <a href="{{ route('home') }}">
-                            <img class="dark-img" src="{{ asset('storage/'. $global['logo']?->image) }}" class="img-fluid" style="max-width: 98px; height: 98px; object-fit: cover;">
-                        </a>
+
+                        @include('partials.logo')
+
                     </div>
                 </div>
                 <div class="text-center col d-none d-md-block">
@@ -36,13 +36,17 @@
                 <div class="row align-items-center justify-content-between">
                     <div class="col-auto d-lg-none d-block">
                         <div class="header-logo">
-                            <a href="{{ route('home') }}">
-                                <img class="dark-img" src="{{ asset('storage/'. $global['logo']?->image) }}" class="img-fluid" style="max-width: 70px; height: 70px; object-fit: cover;">
-                            </a>
+
+                            @include('partials.logo')
+
                         </div>
                     </div>
                     <div class="col-auto d-none d-lg-block">
-                        <div class="header-button"><a href="#" class="simple-icon sideMenuToggler d-none d-lg-block"><i class="far fa-bars"></i></a></div>
+                        <div class="header-button">
+                            <a href="javascript:void(0)" class="simple-icon sideMenuToggler d-none d-lg-block">
+                                <i class="far fa-bars"></i>
+                            </a>
+                        </div>
                     </div>
                     <div class="col-auto">
 

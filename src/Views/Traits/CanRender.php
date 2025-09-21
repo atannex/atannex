@@ -11,7 +11,7 @@ trait CanRender
      */
     protected function renderView(string $view, array $data = [], string $seoTitle = ''): View
     {
-        if ($seoTitle) {
+        if ($seoTitle !== '' && $seoTitle !== '0') {
             $data['seoTitle'] = $seoTitle;
         }
 

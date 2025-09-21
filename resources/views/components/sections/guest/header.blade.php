@@ -1,93 +1,90 @@
-@include('components.partials.mobile-menu')
+<div class="th-menu-wrapper">
+    <div class="text-center th-menu-area">
+        <button class="th-menu-toggle">
+            <i class="fal fa-times"></i>
+        </button>
+        <div class="mobile-logo">
 
-<header class="th-header header-layout1">
+            @include('partials.logo')
+
+        </div>
+        <div class="th-mobile-menu">
+
+            @include('partials.menu')
+
+        </div>
+    </div>
+</div>
+
+<header class="th-header header-layout5 dark-theme">
     <div class="sticky-wrapper">
-        <div class="menu-area">
-            <div class="container">
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-auto d-lg-none d-block">
-                        <div class="header-logo">
-                            <a href="{{ route('home') }}">
-                                <img class="dark-img" src="{{ asset('storage/'. $global['logo']?->image) }}" class="img-fluid" style="max-width: 70px; height: 70px; object-fit: cover;">
-                            </a>
+        <div class="container">
+            <div class="row gx-0">
+                <div class="col-lg-2 d-none d-lg-inline-block">
+                    <div class="header-logo">
+
+                        @include('partials.logo')
+
+                    </div>
+                </div>
+                <div class="col-lg-10">
+                    <div class="header-top">
+                        <div class="row align-items-center">
+                            <div class="col-xl-9">
+                                <div class="news-area">
+                                    <div class="title">Breaking News :</div>
+                                    <div class="news-wrap">
+                                        <div class="row slick-marquee">
+                                            <div class="col-auto">
+                                                <a href="blog-details.html" class="breaking-news">Relaxation redefined, your beach resort
+                                                    sanctuary.</a>
+                                            </div>
+                                            <div class="col-auto">
+                                                <a href="blog-details.html" class="breaking-news">From health to fashion, lifestyle news
+                                                    curated.</a>
+                                            </div>
+                                            <div class="col-auto">
+                                                <a href="blog-details.html" class="breaking-news">Sun, sand, and luxury at our resort</a>
+                                            </div>
+                                            <div class="col-auto">
+                                                <a href="blog-details.html" class="breaking-news">Relaxation redefined, your beach resort
+                                                    sanctuary.</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 text-end d-none d-xl-block">
+
+                                @include('partials.social-links')
+
+                            </div>
                         </div>
                     </div>
-                    <div class="col-auto">
-                        <nav class="main-menu d-none d-lg-inline-block">
-                            <ul>
-                                <li>
-                                    @guest
-                                    <a href="{{ route('home') }}">{{ __('Home') }}</a>
-                                    @elseauth
-                                    @if($global['home'])
-                                    <a href="{{ route('page.index', ['slug' => $global['home']->first()->slug]) }}">
-                                        {{ __('Home') }}
-                                    </a>
-                                    @endif
-                                    @endguest
-                                </li>
+                    <div class="menu-area">
+                        <div class="row align-items-center justify-content-between">
+                            <div class="col-auto d-none d-xl-block"></div>
+                            <div class="col-auto d-lg-none d-block">
+                                <div class="header-logo">
 
-                                <li>
-                                    <a href="{{ route('document.index', ['type' => 'faq']) }}">
-                                        {{ __('FAQs') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('document.index', ['type' => 'testimonials']) }}">{{ __('Testimonials') }}</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('document.index', ['type' => 'help-center']) }}">{{ __('Help Center') }}</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('document.index', ['type' => 'privacy']) }}">
-                                        {{ __('Privacy Policy') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('document.index', ['type' => 'terms']) }}">
-                                        {{ __('Terms & Conditions') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('document.index', ['type' => 'guidelines']) }}">
-                                        {{ __('Guidelines') }}
-                                    </a>
-                                </li>
-                                @guest
-                                @switch(true)
-                                @case(Route::currentRouteNamed('login'))
-                                <li>
-                                    <a href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                                @break
-                                @case(Route::currentRouteNamed('register'))
-                                <li>
-                                    <a href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                                @break
-                                @default
-                                <li class="menu-item-has-children">
-                                    <a href="{{ route('login') }}">{{ __("Authenticate") }}</a>
-                                    <ul class="sub-menu">
-                                        <li>
-                                            <a href="{{ route('login') }}">{{ __('Login') }}</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('register') }}">{{ __('Register') }}</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                @endswitch
-                                @endguest
-                            </ul>
+                                    @include('partials.logo')
 
-                        </nav>
-                    </div>
-                    <div class="col-auto">
-                        <div class="header-button">
-                            <button type="button" class="th-menu-toggle d-block d-lg-none">
-                                <i class="far fa-bars"></i>
-                            </button>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <nav class="main-menu d-none d-lg-inline-block">
+
+                                    @include('partials.menu')
+
+                                </nav>
+                            </div>
+                            <div class="col-auto">
+                                <div class="header-button">
+                                    <button type="button" class="th-menu-toggle d-block d-lg-none">
+                                        <i class="far fa-bars"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

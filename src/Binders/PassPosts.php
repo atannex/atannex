@@ -2,9 +2,12 @@
 
 namespace Atannex\Binders;
 
+use Atannex\Sections\GetPosts\ByEditorPick;
 use Atannex\Sections\GetPosts\ByRecent;
 use Atannex\Sections\GetPosts\ByRelated;
 use Atannex\Sections\GetPosts\ByNavigation;
+use Atannex\Sections\GetPosts\ByRegion;
+use Atannex\Sections\GetPosts\ByToday;
 
 /**
  * Class GetPost
@@ -24,4 +27,7 @@ class PassPosts
     use ByRecent;
     use ByNavigation;
     use ByRelated;
+    use ByToday;
+    use ByRegion;
+    use ByEditorPick;
 }

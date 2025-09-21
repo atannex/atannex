@@ -74,8 +74,15 @@ trait GetEnum
      */
     public static function labels(): array
     {
-        return array_column(static::$metadata, 'label');
+        // Return value => label pairs instead of just labels
+        $pairs = [];
+        foreach (static::$metadata as $value => $data) {
+            $pairs[$value] = $data['label'];
+        }
+
+        return $pairs;
     }
+
 
     /**
      * Set metadata for all enum cases at once.
