@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use Exception;
 use Filament\Panel;
 use App\Enums\Gender;
 use App\Enums\Status;
+use Illuminate\Support\Str;
 use Atannex\Enables\HasSlug;
 use Atannex\Traits\HasCleaning;
 use Atannex\Relations\UserRelation;
-use Illuminate\Support\Facades\Log;
 use Atannex\Traits\TracksUserActivity;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -69,7 +68,8 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         'phone',
         'status',
         'slug',
-        'timezone'
+        'timezone',
+        'name_token'
     ];
 
     /**
@@ -99,7 +99,17 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     protected $hidden = [
         'password',
         'remember_token',
+        'name_token'
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            if (empty($user->name_token)) {
+                $user->name_token = Str::random(64);
+            }
+        });
+    }
 
     /**
      * Cast attributes to native or custom types.
@@ -135,22 +145,18 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        try {
-            if (!$this->hasVerifiedEmail()) {
-                return false;
-            }
 
-            $allowedDomains = config('filament.allowed_email_domains', ['gmail.com', 'atannex.org', 'atannex.com']);
-            $emailDomain = explode('@', $this->email)[1] ?? '';
-            if (!in_array($emailDomain, $allowedDomains, true)) {
-                return false;
-            }
-
-            return $this->isEmployee();
-            // return true;
-        } catch (Exception $exception) {
-            Log::error(sprintf('Error checking panel access for user %s: %s', $this->id, $exception->getMessage()));
+        if (!$this->hasVerifiedEmail()) {
             return false;
         }
+
+        $allowedDomains = config('filament.allowed_email_domains', ['gmail.com', 'atannex.org', 'atannex.com']);
+        $emailDomain = explode('@', $this->email)[1];
+
+        if (!in_array($emailDomain, $allowedDomains, true)) {
+            return false;
+        }
+
+        return $this->isEmployee();
     }
 }
