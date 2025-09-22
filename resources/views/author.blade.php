@@ -58,50 +58,59 @@
                                     <img src="{{ asset('storage/' . $user->image) }}" alt="Image">
                                 </div>
                                 <div class="author-content">
-                                    <h3 class="box-title-24">{{ $user->name }}</h3>
+                                    <h3 class="box-title-24">
+                                        {{ $user->name }}
+                                    </h3>
                                     <div class="info-wrap">
-                                        <span class="info">{{ $user->getRoleNames()->first() }}</span>
+
+                                        <span class="info">
+                                            {{ $user->getRoleNames()->first() }}
+                                        </span>
+
                                         @if($user->posts_count)
                                         <span class="info">
-                                            <strong>{{ __("Post: ") }}</strong>{{ $user->posts_count }}
+                                            <strong>
+                                                {{ __("Post: ") }}
+                                            </strong>
+                                            {{ $user->posts_count }}
                                         </span>
                                         @endif
+
                                     </div>
-                                    <p class="author-bio">{!! $user->bio !!}</p>
 
-                                    @php
-                                    $contacts = [
-                                    'email' => [
-                                    'label' => __("Email :"),
-                                    'value' => $user->email,
-                                    'href' => $user->email ? 'mailto:' . $user->email : null,
-                                    'display' => $user->email ? Str::limit($user->email, 25, '...') : null,
-                                    'wrapper_class' => 'info-wrap top-border'
-                                    ],
-                                    'phone' => [
-                                    'label' => __("Phone :"),
-                                    'value' => $user->tell,
-                                    'href' => $user->tell ? 'tel:' . $user->tell : null,
-                                    'display' => $user->tell,
-                                    'wrapper_class' => 'info-wrap'
-                                    ],
-                                    ];
-                                    @endphp
+                                    <p class="author-bio">
+                                        {!! $user->bio !!}
+                                    </p>
 
-                                    @foreach ($contacts as $contact)
-                                    @if ($contact['value'])
-                                    <div class="{{ $contact['wrapper_class'] }}">
-                                        <span class="info"><strong>{{ $contact['label'] }}</strong></span>
+                                    @if($user->email)
+                                    <div class="info-wrap top-border">
                                         <span class="info">
-                                            @if ($contact['href'])
-                                            <a href="{{ $contact['href'] }}">{{ $contact['display'] }}</a>
-                                            @else
-                                            {{ $contact['display'] }}
-                                            @endif
+                                            <strong>
+                                                {{ __("Email :") }}
+                                            </strong>
+                                        </span>
+                                        <span class="info">
+                                            <a href="mailto:{{ $user->email }}">
+                                                {{ Str::limit($user->email, 25, '...') }}
+                                            </a>
                                         </span>
                                     </div>
                                     @endif
-                                    @endforeach
+
+                                    @if($user->tell)
+                                    <div class="info-wrap">
+                                        <span class="info">
+                                            <strong>
+                                                {{ __("Phone :") }}
+                                            </strong>
+                                        </span>
+                                        <span class="info">
+                                            <a href="tel:{{ $user->tell }}">
+                                                {{ $user->tell }}
+                                            </a>
+                                        </span>
+                                    </div>
+                                    @endif
 
                                     @if($user_medias)
                                     <h4 class="box-title-18">{{ __("Social Media") }}</h4>
@@ -113,11 +122,13 @@
                                         @endforeach
                                     </div>
                                     @endif
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
             </div>
         </div>
