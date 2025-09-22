@@ -3,7 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {{-- Dynamic Title --}}
-    <title>{{ $metaTitle ?? $title ?? 'Atannex - Lebialem Community News' }}</title>
+    <title>{{ $metaTitle ?? $title ?? __("'Atannex - Lebialem Community News'") }}</title>
 
     {{-- Basic SEO --}}
     <meta name="description" content="{{ $metaDescription ?? 'Atannex - The trusted news source for the Lebialem community. Stay updated on local news, culture, politics, and events.' }}">
