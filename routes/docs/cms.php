@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | Protected Routes
-| Middleware: Authenticated, Verified Email, Password Confirmation
+| Middleware: Onboarded (auth + verified + password.confirm)
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'verified', 'password.confirm'])->group(function () {
+Route::middleware('onboarded')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
@@ -28,20 +28,24 @@ Route::middleware(['auth', 'verified', 'password.confirm'])->group(function () {
     | Prefix: /user/name
     |--------------------------------------------------------------------------
     */
-    Route::prefix('user/name')->controller(ProfileController::class)->group(function () {
-        Route::get('set/{token}', 'show')->name('name.index');
-        Route::post('complete/{token}', 'store')->name('name.complete');
-    });
+    Route::prefix('user/name')
+        ->controller(ProfileController::class)
+        ->group(function () {
+            Route::get('set/{token}', 'show')->name('name.index');
+            Route::post('complete/{token}', 'store')->name('name.complete');
+        });
+});
 
-    /*
-    |--------------------------------------------------------------------------
-    | Page Routes
-    | Middleware: Complete Name
-    |--------------------------------------------------------------------------
-    */
-    Route::middleware('complete.name')->controller(PageController::class)->group(function () {
+/*
+|--------------------------------------------------------------------------
+| Page Routes
+| Middleware: Pages (onboarded + complete.name)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('pages')
+    ->controller(PageController::class)
+    ->group(function () {
         Route::get('{slug}', 'resolve')
             ->where('slug', '.*')
             ->name('page.index');
     });
-});

@@ -16,6 +16,17 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'complete.name' => CheckNameComplete::class
         ]);
+
+        $middleware->group('onboarded', [
+            'auth',
+            'verified',
+            'password.confirm',
+        ]);
+
+        $middleware->group('pages', [
+            'onboarded',
+            'complete.name',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

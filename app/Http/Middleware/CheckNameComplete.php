@@ -34,8 +34,6 @@ class CheckNameComplete
                 ->with('info', 'Please complete your profile by providing a name.');
         }
 
-        // abort(Response::HTTP_FORBIDDEN, 'Access denied: Profile name already set or invalid token.');
-
         return $next($request);
     }
 }
