@@ -23,21 +23,7 @@
                             <form action="{{ route('register') }}" method="POST" class="contact-form" id="registerForm">
                                 @csrf
 
-                                <!-- Hidden input for timezone -->
                                 <input type="hidden" name="timezone" id="timezone">
-
-                                <div class="mb-4 form-group">
-                                    <label for="name" class="form-label fw-medium form-text text-start d-block">
-                                        <i class="fas fa-user me-1"></i>
-                                        {{ __('What\'s your full name?') }}
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text" id="name" name="name" class="form-control form-control-lg @error('name') is-invalid @enderror" placeholder="{{ __('Enter your first and last name') }}" value="{{ old('name') }}" required autofocus>
-                                    <div class="form-text">{{ __('We\'ll use this to personalize your experience') }}</div>
-                                    @error('name')
-                                    <div class="invalid-feedback d-block"><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</div>
-                                    @enderror
-                                </div>
 
                                 <div class="mb-4 form-group">
                                     <label for="email" class="form-label fw-medium form-text text-start d-block">
@@ -45,7 +31,7 @@
                                         {{ __('Your email address') }}
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <input type="email" id="email" name="email" class="form-control form-control-lg @error('email') is-invalid @enderror" placeholder="{{ __('Enter your best email address') }}" value="{{ old('email') }}" required>
+                                    <input type="email" id="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="{{ __('Enter your best email address') }}" value="{{ old('email') }}" required>
                                     <div class="form-text">{{ __('We\'ll send you a quick confirmation email - check your spam folder too!') }}</div>
                                     @error('email')
                                     <div class="invalid-feedback d-block"><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</div>
@@ -58,8 +44,8 @@
                                         {{ __('Create a secure password') }}
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <div class="input-group input-group-lg position-relative">
-                                        <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror pe-5" placeholder="{{ __('Make it strong and memorable') }}" required>
+                                    <div class="input-group position-relative">
+                                        <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ __('Make it strong and memorable') }}" required>
                                         <button type="button" class="p-0 bg-transparent border-0 btn position-absolute top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password', 'toggle-icon-password')" aria-label="{{ __('Toggle password visibility') }}">
                                             <i class="fas fa-eye text-muted fs-5" id="toggle-icon-password"></i>
                                         </button>
@@ -68,16 +54,6 @@
                                     @error('password')
                                     <div class="invalid-feedback d-block"><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</div>
                                     @enderror
-                                </div>
-
-                                <div class="mb-4 form-group">
-                                    <label for="password-confirm" class="form-label fw-medium form-text text-start d-block">
-                                        <i class="fas fa-check-double me-1"></i>
-                                        {{ __('Confirm your password') }}
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="password" id="password-confirm" name="password_confirmation" class="form-control form-control-lg" placeholder="{{ __('Type it again to make sure we got it right') }}" required>
-                                    <div class="form-text">{{ __('Just to make sure there are no typos!') }}</div>
                                 </div>
 
                                 <div class="mb-4 form-group">

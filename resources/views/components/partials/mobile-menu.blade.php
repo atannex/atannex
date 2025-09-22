@@ -4,9 +4,9 @@
                 <i class="fal fa-times"></i>
             </button>
             <div class="mobile-logo">
-                <a href="{{ route('home') }}">
-                    <img class="dark-img" src="{{ asset('storage/'. $global['logo']?->image) }}" class="img-fluid" style="max-width: 70px; height: 70px; object-fit: cover;">
-                </a>
+
+                @include('partials.logo')
+
             </div>
             <div class="th-mobile-menu">
 

@@ -61,6 +61,8 @@ class Post extends Model implements Commentable, Sluggable
         'published_at',
         'is_breaking',
         'breaking_until',
+        'feature_priority',
+        'featured_until',
     ];
 
     /**

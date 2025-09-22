@@ -36,10 +36,9 @@
 
                     </h4>
                     <div class="recent-post-meta">
-                        <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}">
-                            <i class="fal fa-calendar-days"></i>
-                            {{ $post->published_at->format('d M, Y') }}
-                        </a>
+
+                        @include('partials.date')
+
                     </div>
                 </div>
             </div>
@@ -50,9 +49,9 @@
     </div>
     <div class="widget widget_tag_cloud">
 
-          @include('components.partials.tags')
+        @include('components.partials.tags')
 
-        </div>
+    </div>
     </div>
 
 </aside>

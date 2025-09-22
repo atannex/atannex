@@ -58,7 +58,6 @@ trait PostQuery
         $category = $this->getRootCategory($post->category);
 
         return $this->buildPostQuery($category, $post->id)
-            ->latest()
             ->take($this->sanitizeLimit($limit))
             ->get();
     }
@@ -105,7 +104,9 @@ trait PostQuery
     {
         $categoryIds = $this->getCategoryTreeIds($category);
 
-        $query = Post::published()
+        $query = Post::query()
+        ->published()
+            ->latest('published_at')
             ->whereIn('category_id', $categoryIds)
             ->with($this->defaultRelations());
 

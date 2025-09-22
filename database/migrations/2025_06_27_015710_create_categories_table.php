@@ -13,7 +13,6 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('slug')->unique()->index();
-            $table->string('flag', 50)->default(Flag::PENDING);
             $table->string('image')->nullable();
             $table->text('description')->nullable();
             $table->timestamp('published_at')->nullable();
