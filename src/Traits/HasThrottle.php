@@ -50,8 +50,8 @@ trait HasThrottle
         $userId = $request->user()->id ?? 'guest';
         $ip = $request->ip();
 
-        $identifierPart = $identifier ?: ($request->input('email') ?? 'guest');
+        $identifierPart = $identifier ?: ($request->input('email', 'guest'));
 
-        return Str::lower("throttle|{$userId}|{$identifierPart}|{$ip}");
+        return Str::lower(sprintf('throttle|%s|%s|%s', $userId, $identifierPart, $ip));
     }
 }
