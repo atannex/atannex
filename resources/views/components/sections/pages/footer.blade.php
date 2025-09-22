@@ -3,23 +3,19 @@
         <div class="container">
             <div class="row justify-content-between">
 
-                {{-- Company Info --}}
                 <div class="col-md-6 col-xl-3">
                     <div class="widget footer-widget">
                         <div class="th-widget-about">
                             <div class="about-logo">
-                                <a href="{{ route('home') }}">
-                                    <img class="dark-img img-fluid" src="{{ isset($global['logo']->image)
-                                                ? asset('storage/' . $global['logo']->image)
-                                                : asset('images/default-logo.png') }}" alt="{{ config('app.name') }}" style="max-width: 98px; height: 98px; object-fit: cover;">
-                                </a>
+
+                                @include('partials.logo')
+
                             </div>
 
                             <p class="about-text">
                                 {{-- Optional: {{ $company->description ?? '' }} --}}
                             </p>
 
-                            {{-- Social Links --}}
                             <div class="th-social style-black">
                                 @if(!empty($global['global_icons']))
                                 @foreach ($global['global_icons'] as $media)
@@ -33,7 +29,6 @@
                     </div>
                 </div>
 
-                {{-- Recent Posts --}}
                 <div class="col-md-6 col-xl-auto">
                     <div class="widget footer-widget">
 
@@ -42,7 +37,6 @@
                     </div>
                 </div>
 
-                {{-- Tags --}}
                 <div class="col-md-6 col-xl-3">
                     <div class="widget widget_tag_cloud footer-widget">
 
@@ -54,7 +48,6 @@
         </div>
     </div>
 
-    {{-- Copyright --}}
     <div class="copyright-wrap">
         <div class="container">
             <div class="row justify-content-between align-items-center">

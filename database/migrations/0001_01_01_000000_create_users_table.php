@@ -16,16 +16,16 @@ return new class extends Migration
         // Create users table
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100)->index(); // Added length and index for faster searches
-            $table->string('slug', 100)->unique(); // Reduced length for optimization
-            $table->string('email', 150)->unique()->index(); // Added length and index
+            $table->string('name', 100)->nullable()->index();
+            $table->string('slug', 100)->nullable()->unique();
+            $table->string('email', 150)->unique()->index();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password', 255); // Explicit length for clarity
+            $table->string('password', 255);
             $table->string('image')->nullable();
             $table->date('date_of_birth')->nullable();
-            $table->string('gender')->default(Gender::MALE)->nullable(); // Using enum for better type safety
-            $table->string('phone', 20)->nullable(); // Added length for phone numbers
-            $table->string('status')->default(Status::RESTRICTED); // Using enum for status
+            $table->string('gender')->default(Gender::MALE)->nullable();
+            $table->string('phone', 20)->nullable();
+            $table->string('status')->default(Status::PENDING);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

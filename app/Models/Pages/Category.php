@@ -3,6 +3,7 @@
 namespace App\Models\Pages;
 
 use App\Contracts\Sluggable;
+use App\Enums\Flag;
 use Atannex\Enables\HasSlug;
 use Atannex\Enables\HasScope;
 use Atannex\Traits\HasCleaning;
@@ -68,6 +69,7 @@ class Category extends Model implements Sluggable
      */
     protected $casts = [
         'published_at' => 'datetime',
+        'flag' => Flag::class
     ];
 
     /**

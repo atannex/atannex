@@ -12,16 +12,17 @@
 
             <div class="media-body">
                 <h4 class="post-title">
-                    <a class="hover-line" href="{{ route('page.index', ['slug' => $post->slug_path ]) }}">
-                        {{ $post->title }}
-                    </a>
+
+                    @include('partials.title', ['post' => $post])
+
                 </h4>
 
                 <div class="recent-post-meta">
-                    <a href="{{ route('page.index', $post->published_at->format('Y/m')) }}" aria-label="Posts on {{ $post->created_at->format('d M, Y') }}">
-                        <i class="fal fa-calendar-days"></i>
-                        {{ $post->created_at->format('d M, Y') }}
-                    </a>
+                    <span>
+
+                        @include('partials.date', ['post' => $post])
+
+                    </span>
                 </div>
             </div>
         </div>

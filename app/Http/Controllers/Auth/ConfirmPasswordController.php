@@ -19,6 +19,7 @@ class ConfirmPasswordController extends Controller
     */
 
     use ConfirmsPasswords;
+
     /**
      * Where to redirect users when the intended URL fails.
      *
@@ -36,6 +37,9 @@ class ConfirmPasswordController extends Controller
      */
     public function __construct()
     {
+
         $this->middleware('auth');
+
+        $this->middleware('throttle:5,1')->only('confirm');
     }
 }
