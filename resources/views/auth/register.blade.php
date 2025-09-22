@@ -10,7 +10,6 @@
                             <p class="form-description text-muted">
                                 {{ __('Ready to get started? Create your account and unlock exclusive features designed just for you.') }}
                             </p>
-
                             <div class="mt-2 security-badge primary">
                                 <small class="text-primary">
                                     <i class="fas fa-user-shield me-1"></i>
@@ -22,7 +21,6 @@
                         <div class="card-body">
                             <form action="{{ route('register') }}" method="POST" class="contact-form" id="registerForm">
                                 @csrf
-
                                 <input type="hidden" name="timezone" id="timezone">
 
                                 <div class="mb-4 form-group">
@@ -54,6 +52,28 @@
                                     @error('password')
                                     <div class="invalid-feedback d-block"><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</div>
                                     @enderror
+
+                                    <div class="mt-1" id="password-strength-container" style="display: none;">
+                                        <small id="password-strength-text" class="form-text"></small>
+                                        <div class="progress" style="height: 5px;">
+                                            <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4 form-group">
+                                    <label for="password-confirm" class="form-label fw-medium form-text text-start d-block">
+                                        <i class="fas fa-check-double me-1"></i>
+                                        {{ __('Confirm your password') }}
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group position-relative">
+                                        <input type="password" id="password-confirm" name="password_confirmation" class="form-control" placeholder="{{ __('Type your password again') }}" required>
+                                        <button type="button" class="p-0 bg-transparent border-0 btn position-absolute top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password-confirm', 'toggle-icon-confirm')" aria-label="{{ __('Toggle password visibility') }}">
+                                            <i class="fas fa-eye text-muted fs-5" id="toggle-icon-confirm"></i>
+                                        </button>
+                                    </div>
+                                    <small id="password-match-text" class="mt-1 form-text"></small>
                                 </div>
 
                                 <div class="mb-4 form-group">
@@ -66,9 +86,7 @@
                                             {{ __('and') }}
                                             <a href="{{ route('document.index', ['type' => 'privacy']) }}" target="_blank" class="text-primary">{{ __('Privacy Policy') }}</a>
                                         </label>
-                                        <div class="form-text">
-                                            {{ __('Don\'t worry, we keep it simple and fair!') }}
-                                        </div>
+                                        <div class="form-text">{{ __('Don\'t worry, we keep it simple and fair!') }}</div>
                                     </div>
                                     @error('terms')
                                     <div class="invalid-feedback d-block">
@@ -86,7 +104,6 @@
                                 </div>
 
                                 <p class="mt-3 mb-0 form-messages"></p>
-
                                 <div class="text-center alternative-actions">
                                     <div class="existing-user-section">
                                         <p class="mb-2 text-muted">{{ __("Already part of our community?") }}</p>
@@ -103,29 +120,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const timezoneInput = document.getElementById('timezone');
-            if (timezoneInput) {
-                timezoneInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            }
-        });
-
-        function togglePasswordVisibility(inputId, iconId) {
-            const passwordInput = document.getElementById(inputId);
-            const toggleIcon = document.getElementById(iconId);
-
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-            }
-        }
-
-    </script>
 </x-layouts.guest>

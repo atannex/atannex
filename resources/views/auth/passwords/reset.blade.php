@@ -10,7 +10,6 @@
                             <p class="form-description text-muted">
                                 {{ __("You're just one step away from securing your account with a fresh new password.") }}
                             </p>
-
                             <div class="mt-2 security-badge">
                                 <small class="text-success">
                                     <i class="fas fa-shield-alt me-1"></i>
@@ -22,48 +21,49 @@
                         <div class="card-body">
                             <form action="{{ route('password.update') }}" method="POST" class="contact-form">
                                 @csrf
-
                                 <input type="hidden" name="token" value="{{ $token }}">
+                                <input type="hidden" name="email" value="{{ old('email', request()->email) }}">
 
                                 <div class="row">
-                                    <div class="form-group col-md-12">
-                                        <label for="email" class="mb-2 form-label text-start d-block">
-                                            <i class="fas fa-envelope me-1"></i>
-                                            {{ __('Your Email Address') }}
-                                        </label>
-                                        <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" placeholder="{{ __('Enter your email address') }}" value="{{ old('email', request()->email) }}" required autofocus>
-                                        @error('email')
-                                        <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                                        @enderror
-                                        <small class="mt-1 form-text text-muted">
-                                            {{ __('This should be the email you used to request the password reset') }}
-                                        </small>
-                                    </div>
 
                                     <div class="form-group col-md-12 position-relative">
                                         <label for="password" class="mb-2 form-label text-start d-block">
                                             <i class="fas fa-key me-1"></i>
                                             {{ __('Create New Password') }}
                                         </label>
-                                        <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ __('Enter your new secure password') }}" required autocomplete="new-password">
-                                        <span class="toggle-password" onclick="togglePasswordVisibility('password', 'toggle-icon-password')" style="position:absolute; right: 15px; top: 70%; transform: translateY(-50%); cursor:pointer;">
-                                            <i class="fas fa-eye" id="toggle-icon-password"></i>
-                                        </span>
+                                        <div class="position-relative">
+                                            <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ __('Enter your new secure password') }}" required autocomplete="new-password">
+                                            <span class="toggle-password" onclick="togglePasswordVisibility('password', 'toggle-icon-password')" style="position:absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor:pointer;">
+                                                <i class="fas fa-eye" id="toggle-icon-password"></i>
+                                            </span>
+                                        </div>
                                         @error('password')
                                         <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                                         @enderror
                                         <small class="mt-1 form-text text-muted">
                                             {{ __('Use at least 8 characters with a mix of letters, numbers, and symbols') }}
                                         </small>
+
+                                        <div class="mt-1" id="password-strength-container" style="display: none;">
+                                            <small id="password-strength-text" class="form-text"></small>
+                                            <div class="progress" style="height: 5px;">
+                                                <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class="form-group col-md-12">
+                                    <div class="form-group col-md-12 position-relative">
                                         <label for="password-confirm" class="mb-2 form-label text-start d-block">
                                             <i class="fas fa-check-double me-1"></i>
                                             {{ __('Confirm Your New Password') }}
                                         </label>
-                                        <input type="password" name="password_confirmation" id="password-confirm" class="form-control" placeholder="{{ __('Type your password again to confirm') }}" required>
-                                        <small class="mt-1 form-text text-muted">
+                                        <div class="position-relative">
+                                            <input type="password" name="password_confirmation" id="password-confirm" class="form-control" placeholder="{{ __('Type your password again to confirm') }}" required>
+                                            <span class="toggle-password" onclick="togglePasswordVisibility('password-confirm', 'toggle-icon-confirm')" style="position:absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor:pointer;">
+                                                <i class="fas fa-eye" id="toggle-icon-confirm"></i>
+                                            </span>
+                                        </div>
+                                        <small id="password-match-text" class="mt-1 form-text text-muted">
                                             {{ __('Make sure both passwords match perfectly') }}
                                         </small>
                                     </div>
@@ -102,22 +102,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function togglePasswordVisibility(inputId, iconId) {
-            const passwordInput = document.getElementById(inputId);
-            const toggleIcon = document.getElementById(iconId);
-
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-            }
-        }
-
-    </script>
 </x-layouts.guest>
