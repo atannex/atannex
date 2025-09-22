@@ -6,7 +6,7 @@ use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-trait ThrottlesPerUser
+trait HasThrottle
 {
     /**
      * Apply per-user + IP throttling.
