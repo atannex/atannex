@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Exception;
 use App\Models\User;
 use Illuminate\Support\Str;
 use App\Rules\Auth\StrongEmail;
@@ -72,31 +71,24 @@ class RegisterController extends Controller
      *
      * @param array $data Validated registration data
      * @return User The newly created user instance
-     * @throws Exception If user creation fails
      */
     protected function create(array $data): User
     {
-        try {
-            $user = User::create([
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'timezone' => $data['timezone'],
-                'name_token' => Str::random(64),
-                'slug' => null,
-            ]);
+        $user = User::create([
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'timezone' => $data['timezone'],
+            'name_token' => Str::random(64),
+        ]);
 
-            event(new UserCreated($user));
-            Log::info('UserRegistered event dispatched for user ID: ' . $user->id, [
-                'email' => $data['email'],
-                'timezone' => $data['timezone'],
-            ]);
+        event(new UserCreated($user));
 
-            return $user;
-        } catch (Exception $exception) {
-            Log::error('User registration failed: ' . $exception->getMessage(), [
-                'email' => $data['email'],
-            ]);
-            throw $exception;
-        }
+        Log::info('User registered successfully', [
+            'id' => $user->id,
+            'email' => $data['email'],
+            'timezone' => $data['timezone'],
+        ]);
+
+        return $user;
     }
 }

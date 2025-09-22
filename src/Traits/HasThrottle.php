@@ -17,7 +17,7 @@ trait ThrottlesPerUser
      * @param callable|null $nextCallable
      * @return mixed
      */
-    protected function throttle(Request $request, int $maxAttempts = 5, int $decayMinutes = 1, callable $nextCallable = null)
+    protected function throttle(Request $request, int $maxAttempts = 5, int $decayMinutes = 1, ?callable $nextCallable = null)
     {
         /** @var RateLimiter $limiter */
         $limiter = app(RateLimiter::class);
