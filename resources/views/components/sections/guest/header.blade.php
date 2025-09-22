@@ -32,24 +32,18 @@
                         <div class="row align-items-center">
                             <div class="col-xl-9">
                                 <div class="news-area">
-                                    <div class="title">Breaking News :</div>
+                                    <div class="title">
+                                        {{ __("Breaking News :") }}
+                                    </div>
                                     <div class="news-wrap">
                                         <div class="row slick-marquee">
+                                            @foreach ($global['breaking'] as $post)
                                             <div class="col-auto">
-                                                <a href="blog-details.html" class="breaking-news">Relaxation redefined, your beach resort
-                                                    sanctuary.</a>
+                                                <a href="{{ route('page.index', $post->slug_path) }}" class="breaking-news">
+                                                    {{ $post->title }}
+                                                </a>
                                             </div>
-                                            <div class="col-auto">
-                                                <a href="blog-details.html" class="breaking-news">From health to fashion, lifestyle news
-                                                    curated.</a>
-                                            </div>
-                                            <div class="col-auto">
-                                                <a href="blog-details.html" class="breaking-news">Sun, sand, and luxury at our resort</a>
-                                            </div>
-                                            <div class="col-auto">
-                                                <a href="blog-details.html" class="breaking-news">Relaxation redefined, your beach resort
-                                                    sanctuary.</a>
-                                            </div>
+                                            @endforeach
                                         </div>
                                     </div>
                                 </div>
