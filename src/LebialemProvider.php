@@ -15,6 +15,7 @@ final class LebialemProvider extends PassPosts
     public function __construct(
         protected readonly PageService $pageService,
         protected readonly TagService $tagService,
+        protected readonly PassPosts $passPosts,
     ) {}
 
     /**
@@ -33,6 +34,7 @@ final class LebialemProvider extends PassPosts
             'home' => $this->pageService->getAllHomePages(),
             'navs' => $this->pageService->getAllCategoryPages(),
             'recentPosts'  => $this->getRecentPosts(2),
+            'breaking' => $this->passPosts->getBreakingPosts(),
         ];
     }
 }
