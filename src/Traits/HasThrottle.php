@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth\Traits;
+namespace Atannex\Traits;
 
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\Request;
