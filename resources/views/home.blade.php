@@ -53,7 +53,9 @@
                 <div class="hero-tab" data-asnavfor=".hero-slider-1">
                     @foreach($allPosts as $index => $post)
                     <div class="tab-btn {{ $index === 0 ? 'active' : '' }}">
+
                         @include('partials.image', ['post' => $post, 'class' => 'home-hero'])
+
                     </div>
                     @endforeach
                 </div>
@@ -68,7 +70,9 @@
 
             <div class="row align-items-center">
                 <div class="col">
-                    <h2 class="sec-title has-line">{{ __("Editor Picks") }}</h2>
+                    <h2 class="sec-title has-line">
+                        {{ __("Editor Picks") }}
+                    </h2>
                 </div>
                 <div class="col-auto">
                     <div class="sec-btn">
@@ -192,7 +196,9 @@
     @if($todayPosts->isNotEmpty())
     <section class="space">
         <div class="container">
-            <h2 class="sec-title has-line">{{ $heroTitle }}</h2>
+            <h2 class="sec-title has-line">
+                {{ $heroTitle }}
+            </h2>
             <div class="row">
 
                 <div class="col-xl-3">
@@ -266,266 +272,152 @@
         <div class="container">
             <div class="row">
                 <div class="col-xl-8">
-                    <h2 class="sec-title has-line">Popular News</h2>
+
+                    @if($popularPosts->isNotEmpty())
+                    <h2 class="sec-title has-line">
+                        {{ __("Popular News") }}
+                    </h2>
+
                     <div class="mb-4">
                         <div class="dark-theme img-overlay2 space-40">
                             <div class="blog-style3">
                                 <div class="blog-img">
-                                    <img src="assets/img/blog/blog_5_15.jpg" alt="blog image" />
+
+                                    @include('partials.image', ['post' => $popularPosts[0]])
+
                                 </div>
                                 <div class="blog-content">
-                                    <a data-theme-color="#6234AC" href="blog.html" class="category">Technology</a>
+
+                                    @include('partials.category', ['post' => $popularPosts[0]])
+
                                     <h3 class="box-title-40">
-                                        <a class="hover-line" href="blog-details.html">Tech Unleash possibilities, shape a brighter
-                                            future.</a>
+
+                                        @include('partials.title', ['post' => $popularPosts[0]])
+
                                     </h3>
                                     <div class="blog-meta">
-                                        <a href="author.html"><i class="far fa-user"></i>By - Tnews</a>
-                                        <a href="blog.html"><i class="fal fa-calendar-days"></i>15 Mar, 2023</a>
+
+                                        @include('partials.author', ['post' => $popularPosts[0]])
+
+                                        @include('partials.date', ['post' => $popularPosts[0]])
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="row gy-4">
+                        @foreach($popularPosts->skip(1) as $blog)
                         <div class="col-md-6">
                             <div class="blog-style2">
                                 <div class="blog-img img-big">
-                                    <img src="assets/img/blog/blog_3_3_7.jpg" alt="blog image" />
+
+                                    @include('partials.image', ['post' => $blog])
+
                                 </div>
                                 <div class="blog-content">
-                                    <a data-theme-color="#6234AC" href="blog.html" class="category">Robotic</a>
+
+                                    @include('partials.category', ['post' => $blog])
+
                                     <h3 class="box-title-20">
-                                        <a class="hover-line" href="blog-details.html">Smarter living, gadgets make your world.</a>
+
+                                        @include('partials.title', ['post' => $blog])
+
                                     </h3>
                                     <div class="blog-meta">
-                                        <a href="blog.html"><i class="fal fa-calendar-days"></i>27 Mar, 2023</a>
+
+                                        @include('partials.date', ['post' => $blog])
+
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="blog-style2">
-                                <div class="blog-img img-big">
-                                    <img src="assets/img/blog/blog_3_3_8.jpg" alt="blog image" />
-                                </div>
-                                <div class="blog-content">
-                                    <a data-theme-color="#6234AC" href="blog.html" class="category">Tech</a>
-                                    <h3 class="box-title-20">
-                                        <a class="hover-line" href="blog-details.html">From dreams to reality, tech pioneers</a>
-                                    </h3>
-                                    <div class="blog-meta">
-                                        <a href="blog.html"><i class="fal fa-calendar-days"></i>16 Mar, 2023</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="blog-style2">
-                                <div class="blog-img img-big">
-                                    <img src="assets/img/blog/blog_3_3_9.jpg" alt="blog image" />
-                                </div>
-                                <div class="blog-content">
-                                    <a data-theme-color="#6234AC" href="blog.html" class="category">Gadget</a>
-                                    <h3 class="box-title-20">
-                                        <a class="hover-line" href="blog-details.html">Technology drives the digital revolution</a>
-                                    </h3>
-                                    <div class="blog-meta">
-                                        <a href="blog.html"><i class="fal fa-calendar-days"></i>27 Mar, 2023</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="blog-style2">
-                                <div class="blog-img img-big">
-                                    <img src="assets/img/blog/blog_3_3_10.jpg" alt="blog image" />
-                                </div>
-                                <div class="blog-content">
-                                    <a data-theme-color="#6234AC" href="blog.html" class="category">VR Glass</a>
-                                    <h3 class="box-title-20">
-                                        <a class="hover-line" href="blog-details.html">Where possibility meet boundless feelings</a>
-                                    </h3>
-                                    <div class="blog-meta">
-                                        <a href="blog.html"><i class="fal fa-calendar-days"></i>19 Mar, 2023</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
-                    <h2 class="sec-title has-line">Featured News</h2>
+                    @endif
+
+                    @if($featuredPosts->isNotEmpty())
+                    <h2 class="mt-5 sec-title has-line">
+                        {{ __("Featured News") }}
+                    </h2>
                     <div class="mbn-24">
+                        @foreach($featuredPosts as $blog)
                         <div class="mb-4">
                             <div class="blog-style4">
                                 <div class="blog-img w-270">
-                                    <img src="assets/img/blog/blog_6_3_1.jpg" alt="blog image" />
+
+                                    @include('partials.image', ['post' => $blog])
+
                                 </div>
                                 <div class="blog-content">
-                                    <a data-theme-color="#6234AC" href="blog.html" class="category">Gadget</a>
+
+                                    @include('partials.category', ['post' => $blog])
+
                                     <h3 class="box-title-22">
-                                        <a class="hover-line" href="blog-details.html">Tech brilliance, forging a path to a smarter
-                                            connected
-                                            universe.</a>
+
+                                        @include('partials.title', ['post' => $blog])
+
                                     </h3>
                                     <div class="blog-meta">
-                                        <a href="author.html"><i class="far fa-user"></i>By - Tnews</a>
-                                        <a href="blog.html"><i class="fal fa-calendar-days"></i>11 Mar, 2023</a>
+
+                                        @include('partials.author', ['post' => $blog])
+
+                                        @include('partials.date', ['post' => $blog])
+
                                     </div>
-                                    <a href="blog-details.html" class="th-btn style2">Read More<i class="fas fa-arrow-up-right ms-2"></i></a>
+                                    <a href="{{ route('page.index', ['slug' => $blog->slug_path]) }}" class="th-btn style2">
+                                        {{ __("Read More") }}
+                                        <i class="fas fa-arrow-up-right ms-2"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-4">
-                            <div class="blog-style4">
-                                <div class="blog-img w-270">
-                                    <img src="assets/img/blog/blog_6_3_2.jpg" alt="blog image" />
-                                </div>
-                                <div class="blog-content">
-                                    <a data-theme-color="#6234AC" href="blog.html" class="category">Technology</a>
-                                    <h3 class="box-title-22">
-                                        <a class="hover-line" href="blog-details.html">where possibilities blossom, and lives thrive with
-                                            technology.</a>
-                                    </h3>
-                                    <div class="blog-meta">
-                                        <a href="author.html"><i class="far fa-user"></i>By - Tnews</a>
-                                        <a href="blog.html"><i class="fal fa-calendar-days"></i>27 Mar, 2023</a>
-                                    </div>
-                                    <a href="blog-details.html" class="th-btn style2">Read More<i class="fas fa-arrow-up-right ms-2"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <div class="blog-style4">
-                                <div class="blog-img w-270">
-                                    <img src="assets/img/blog/blog_6_3_3.jpg" alt="blog image" />
-                                </div>
-                                <div class="blog-content">
-                                    <a data-theme-color="#6234AC" href="blog.html" class="category">Robotic</a>
-                                    <h3 class="box-title-22">
-                                        <a class="hover-line" href="blog-details.html">Robotics empowers progress, reshaping industries with
-                                            ingenuity.</a>
-                                    </h3>
-                                    <div class="blog-meta">
-                                        <a href="author.html"><i class="far fa-user"></i>By - Tnews</a>
-                                        <a href="blog.html"><i class="fal fa-calendar-days"></i>20 Mar, 2023</a>
-                                    </div>
-                                    <a href="blog-details.html" class="th-btn style2">Read More<i class="fas fa-arrow-up-right ms-2"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <div class="blog-style4">
-                                <div class="blog-img w-270">
-                                    <img src="assets/img/blog/blog_6_3_4.jpg" alt="blog image" />
-                                </div>
-                                <div class="blog-content">
-                                    <a data-theme-color="#6234AC" href="blog.html" class="category">Desk</a>
-                                    <h3 class="box-title-22">
-                                        <a class="hover-line" href="blog-details.html">where gadgets enhance your life effortlessly and
-                                            beautifully.</a>
-                                    </h3>
-                                    <div class="blog-meta">
-                                        <a href="author.html"><i class="far fa-user"></i>By - Tnews</a>
-                                        <a href="blog.html"><i class="fal fa-calendar-days"></i>17 Mar, 2023</a>
-                                    </div>
-                                    <a href="blog-details.html" class="th-btn style2">Read More<i class="fas fa-arrow-up-right ms-2"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <div class="blog-style4">
-                                <div class="blog-img w-270">
-                                    <img src="assets/img/blog/blog_6_3_5.jpg" alt="blog image" />
-                                </div>
-                                <div class="blog-content">
-                                    <a data-theme-color="#6234AC" href="blog.html" class="category">VR Glass</a>
-                                    <h3 class="box-title-22">
-                                        <a class="hover-line" href="blog-details.html">Elevate life, redefine human potential with virtual
-                                            reality.</a>
-                                    </h3>
-                                    <div class="blog-meta">
-                                        <a href="author.html"><i class="far fa-user"></i>By - Tnews</a>
-                                        <a href="blog.html"><i class="fal fa-calendar-days"></i>12 Mar, 2023</a>
-                                    </div>
-                                    <a href="blog-details.html" class="th-btn style2">Read More<i class="fas fa-arrow-up-right ms-2"></i></a>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
+                    @endif
                 </div>
+
+                @if($mostReadPosts->isNotEmpty())
                 <div class="mb-10 col-xl-4 mt-35 mt-xl-0 sidebar-wrap">
                     <div class="sidebar-area">
                         <div class="widget">
-                            <h2 class="sec-title fs-20 has-line">Most Read</h2>
+                            <h2 class="sec-title fs-20 has-line">
+                                {{ __("Most Read") }}
+                            </h2>
                             <div class="row gy-4">
+                                @foreach($mostReadPosts as $blog)
                                 <div class="col-xl-12 col-md-6">
                                     <div class="blog-style2">
                                         <div class="blog-img img-big">
-                                            <img src="assets/img/blog/blog_3_3_11.jpg" alt="blog image" />
+
+                                            @include('partials.image', ['post' => $blog])
+
                                         </div>
                                         <div class="blog-content">
-                                            <a data-theme-color="#6234AC" href="blog.html" class="category">Gadget</a>
+
+                                            @include('partials.category', ['post' => $blog])
+
                                             <h3 class="box-title-20">
-                                                <a class="hover-line" href="blog-details.html">Gadgets amaze, connect inspire you.</a>
+
+                                                @include('partials.title', ['post' => $blog])
+
                                             </h3>
                                             <div class="blog-meta">
-                                                <a href="blog.html"><i class="fal fa-calendar-days"></i>22 Mar, 2023</a>
+
+                                                @include('partials.date', ['post' => $blog])
+
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xl-12 col-md-6">
-                                    <div class="blog-style2">
-                                        <div class="blog-img img-big">
-                                            <img src="assets/img/blog/blog_3_3_12.jpg" alt="blog image" />
-                                        </div>
-                                        <div class="blog-content">
-                                            <a data-theme-color="#6234AC" href="blog.html" class="category">Phone</a>
-                                            <h3 class="box-title-20">
-                                                <a class="hover-line" href="blog-details.html">Tech at your fingertips, phone redefines</a>
-                                            </h3>
-                                            <div class="blog-meta">
-                                                <a href="blog.html"><i class="fal fa-calendar-days"></i>26 Mar, 2023</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-12 col-md-6">
-                                    <div class="blog-style2">
-                                        <div class="blog-img img-big">
-                                            <img src="assets/img/blog/blog_3_3_13.jpg" alt="blog image" />
-                                        </div>
-                                        <div class="blog-content">
-                                            <a data-theme-color="#6234AC" href="blog.html" class="category">VR Glass</a>
-                                            <h3 class="box-title-20">
-                                                <a class="hover-line" href="blog-details.html">Elevate life, embrace modern technology.</a>
-                                            </h3>
-                                            <div class="blog-meta">
-                                                <a href="blog.html"><i class="fal fa-calendar-days"></i>10 Mar, 2023</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-12 col-md-6">
-                                    <div class="blog-style2">
-                                        <div class="blog-img img-big">
-                                            <img src="assets/img/blog/blog_3_3_14.jpg" alt="blog image" />
-                                        </div>
-                                        <div class="blog-content">
-                                            <a data-theme-color="#6234AC" href="blog.html" class="category">Robotic</a>
-                                            <h3 class="box-title-20">
-                                                <a class="hover-line" href="blog-details.html">Robotic wonders redefine possibilities.</a>
-                                            </h3>
-                                            <div class="blog-meta">
-                                                <a href="blog.html"><i class="fal fa-calendar-days"></i>28 Mar, 2023</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
                 </div>
+                @endif
+
             </div>
         </div>
     </section>

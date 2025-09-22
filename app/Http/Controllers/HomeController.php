@@ -36,9 +36,10 @@ class HomeController extends Controller
         $recentPosts = $this->postService->getRecentPosts(6);
         $regions = $this->postService->getRegionWithPost(6);
         $editorPicks = $this->postService->getEditorPick(10);
-        $featuredPosts = $this->postService->getFeaturedPosts(10);
-        $mostReadPosts = $this->postService->getMostReadPosts(10);
-        $popularPosts = $this->postService->getPopularPosts(10);
+        // $featuredPosts = $this->postService->getFeaturedPosts(5);
+        $featuredPosts = $this->postService->getPopularPosts(5);
+        $mostReadPosts = $this->postService->getMostReadPosts(6);
+        $popularPosts = $this->postService->getPopularPosts(5);
 
         $allPosts = $this->getMainPosts($todayPosts, $recentPosts);
         $heroTitle = $this->getHeroTitle($todayPosts);
