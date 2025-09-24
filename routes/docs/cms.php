@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\PageController;
+use App\Http\Controllers\RegionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
@@ -43,7 +43,7 @@ Route::middleware('onboarded')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('pages')
-    ->controller(PageController::class)
+    ->controller(RegionController::class)
     ->group(function () {
         Route::get('{slug}', 'resolve')
             ->where('slug', '.*')

@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Pages\Widget;
+use App\Models\Regions\Widget;
 use Atannex\Adapters\WidgetAdapter;
 
 class WidgetObserver

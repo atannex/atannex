@@ -17,10 +17,10 @@ trait HasPostsForHierarchy
         ?callable $leafIdResolver = null,
         ?callable $groupByResolver = null
     ): Collection {
-        $limit = max(1, (int) ($options['limit'] ?? 10));
-        $limitPerLeafPost = max(1, (int) ($options['limit_per_leaf_post'] ?? 1));
-        $sortBy = $options['sort'] ?? 'published_at';
-        $sortDir = $options['order'] ?? 'desc';
+        $limit = max(1, (int) ($options['limit']));
+        $limitPerLeafPost = max(1, (int) ($options['leaf_relation_limit']));
+        $sortBy = $options['sort'];
+        $sortDir = $options['order'];
 
         return $modelClass::with('children')
             ->whereIn('id', $ids)
@@ -37,7 +37,8 @@ trait HasPostsForHierarchy
             ) {
                 $leafIds = $this->resolveLeafIds($item, $leafIdResolver);
 
-                $query = Post::published()
+                $query = Post::query()
+                    ->published()
                     ->when($foreignKey, fn($q) => $q->whereIn($foreignKey, $leafIds))
                     ->when(!$foreignKey, fn($q) => $q->whereHas(
                         $relationName,

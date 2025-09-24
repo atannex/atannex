@@ -5,18 +5,14 @@ namespace App\Models\Tags;
 use App\Models\Posts\Post;
 use Atannex\Enables\HasSlug;
 use App\Models\Pivots\PostTag;
-use Atannex\Builders\TagBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tag extends Model
 {
     use SoftDeletes;
     use HasSlug;
-    use TagBuilder;
 
     /**
      * Source field for slug generation.
@@ -31,34 +27,8 @@ class Tag extends Model
     protected $fillable = [
         'name',
         'description',
-        'parent_id',
+        'slug',
     ];
-
-    /**
-     * Relationships to always eager load.
-     *
-     * @var array<string>
-     */
-    protected $with = [
-        'children',
-    ];
-
-
-    /**
-     * Get the parent tag.
-     */
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(Tag::class, 'parent_id');
-    }
-
-    /**
-     * Get the immediate child tags.
-     */
-    public function children(): HasMany
-    {
-        return $this->hasMany(Tag::class, 'parent_id');
-    }
 
     /**
      * The posts that belong to the tag.
@@ -67,7 +37,6 @@ class Tag extends Model
     {
         return $this->belongsToMany(Post::class)
             ->using(PostTag::class)
-            ->withTimestamps()
-            ->withPivot('slug_path');
+            ->withTimestamps();
     }
 }

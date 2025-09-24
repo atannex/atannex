@@ -4,9 +4,9 @@ namespace App\Providers\Atannex;
 
 use App\Models\User;
 use App\Policies\UserPolicy;
+use Atannex\LebialemProvider;
 use App\Policies\CommentPolicy;
 use App\Models\Comments\Comment;
-use Atannex\LebialemProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -28,7 +28,7 @@ class AtannexProvider extends ServiceProvider
     {
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Comment::class, CommentPolicy::class);
-        Gate::after(fn($user) => $user->hasRole('Super Admin') ? true : null);
+        Gate::after(fn($user) => $user->hasRole('Super Administrator') ? true : null);
         $this->shareGlobalData($lebialemProvider);
     }
 

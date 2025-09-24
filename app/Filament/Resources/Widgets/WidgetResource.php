@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Widgets;
 use UnitEnum;
 use BackedEnum;
 use Filament\Tables\Table;
-use App\Models\Pages\Widget;
+use App\Models\Regions\Widget;
 use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;

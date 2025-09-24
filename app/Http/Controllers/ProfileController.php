@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserNameToken;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Rules\Auth\StrongName;
@@ -15,57 +16,47 @@ use Illuminate\Http\RedirectResponse;
  */
 class ProfileController extends Controller
 {
-    /**
-     * Redirect route name for home.
-     */
     protected const REDIRECT_HOME = 'home';
 
-    /**
-     * Route name for profile completion.
-     */
-    protected const PROFILE_COMPLETE_ROUTE = 'name.complete';
-
-    /**
-     * Create a new controller instance.
-     * Apply middleware for authentication, verification, and password confirmation.
-     */
     public function __construct()
     {
         $this->middleware(['auth', 'verified', 'password.confirm']);
     }
 
     /**
-     * Display the user profile form.
-     *
-     * @param string $token The unique token for profile access
-     * @return View The profile form view
+     * Display the user profile form using a token.
      */
     public function show(string $token): View
     {
-        /** @var User $user */
         $user = Auth::user();
 
-        if ($user->name_token !== $token) {
-            abort(403, 'Unauthorized access');
+        $tokenRecord = UserNameToken::where('user_id', $user->id)
+            ->where('token', $token)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if (!$tokenRecord) {
+            abort(403, 'Unauthorized access or token expired.');
         }
 
-        return view('auth.names', ['user' => $user]);
+        return view('auth.names', ['user' => $user, 'token' => $token]);
     }
 
     /**
      * Store the updated user profile information.
-     *
-     * @param Request $request The HTTP request containing form data
-     * @param string $token The unique token for profile access
-     * @return RedirectResponse Redirect to home with success message
      */
     public function store(Request $request, string $token): RedirectResponse
     {
         /** @var User $user */
         $user = Auth::user();
 
-        if ($user->name_token !== $token) {
-            abort(403, 'Unauthorized access');
+        $tokenRecord = UserNameToken::where('user_id', $user->id)
+            ->where('token', $token)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if (!$tokenRecord) {
+            abort(403, 'Unauthorized access or token expired.');
         }
 
         $validated = $request->validate([
@@ -73,8 +64,9 @@ class ProfileController extends Controller
         ]);
 
         $user->name = Str::of($validated['name'])->trim()->toString();
-        $user->name_token = null;
         $user->save();
+
+        $tokenRecord->delete();
 
         return redirect()
             ->route(self::REDIRECT_HOME)

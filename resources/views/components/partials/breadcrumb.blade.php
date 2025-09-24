@@ -1,10 +1,10 @@
 <div class="breadcumb-wrapper">
     <div class="container">
         <ul class="breadcumb-menu">
-            @if($global['home'])
+            @if($global['mainRegions'])
             <li>
-                <a href="{{ route('page.index', ['slug' => $global['home']->first()->slug]) }}">
-                    {{ __('Home') }}
+                <a href="{{ route('page.index', ['slug' => $global['mainRegions']->first()->slug]) }}">
+                    {{ $global['mainRegions']->first()->name }}
                 </a>
             </li>
             @endif

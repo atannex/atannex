@@ -34,4 +34,20 @@ class CategoryRepository implements CategoryInterface
             ->ordered()
             ->get();
     }
+
+    /**
+     * Ensure pagination/take limits are always positive integers.
+     */
+    private function sanitizeLimit(int $limit): int
+    {
+        return max(1, $limit);
+    }
+
+    /**
+     * Default eager-load relations for posts.
+     */
+    private function defaultRelations(): array
+    {
+        return ['category', 'tags', 'author'];
+    }
 }

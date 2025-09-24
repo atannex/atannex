@@ -2,35 +2,31 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\UserNameToken;
 
 /**
- * Middleware to check if the user's profile name is complete.
+ * Middleware to ensure users complete their profile using a token.
  */
 class CheckNameComplete
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param Request $request The incoming HTTP request
-     * @param Closure(Request): Response $next The next middleware in the stack
-     * @return Response The HTTP response
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        /** @var User|null $user */
         $user = Auth::user();
 
         if (!$user) {
             return redirect()->route('login')->with('error', 'Authentication required.');
         }
 
-        if (empty($user->name) && !empty($user->name_token)) {
-            return redirect()->route('name.index', ['token' => $user->name_token])
+        $token = UserNameToken::where('user_id', $user->id)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if (empty($user->name) && $token) {
+            return redirect()->route('name.index', ['token' => $token->token])
                 ->with('info', 'Please complete your profile by providing a name.');
         }
 

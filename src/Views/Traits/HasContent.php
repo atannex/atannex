@@ -2,7 +2,7 @@
 
 namespace Atannex\Views\Traits;
 
-use App\Models\Pages\Page;
+use App\Models\Regions\Region;
 use App\Enums\Traits\HasEntityMapping;
 
 trait HasContent
@@ -11,14 +11,14 @@ trait HasContent
     use HasEntityMapping;
 
     /**
-     * Resolve sections for a page.
+     * Resolve sections for a region.
      *
-     * @param Page $page
+     * @param Region $region
      * @return void
      */
-    protected function resolveSection(Page $page): void
+    protected function resolveSection(Region $region): void
     {
-        foreach ($page->sections as $section) {
+        foreach ($region->sections as $section) {
             $this->resolveSectionEntity($section);
         }
     }
@@ -54,7 +54,7 @@ trait HasContent
      * Resolve entity content.
      *
      * @param object $entity
-     * @param array $config
+     * @param array|null $config
      * @return void
      */
     private function resolveEntityContent(object $entity, ?array $config): void

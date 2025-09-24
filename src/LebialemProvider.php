@@ -4,7 +4,7 @@ namespace Atannex;
 
 use Atannex\Binders\PassPosts;
 use App\Enums\Image;
-use Atannex\Services\PageService;
+use Atannex\Services\RegionService;
 use Atannex\Helpers\HasMedia;
 use Atannex\Services\TagService;
 
@@ -13,27 +13,27 @@ final class LebialemProvider extends PassPosts
     use HasMedia;
 
     public function __construct(
-        protected readonly PageService $pageService,
+        protected readonly RegionService $regionService,
         protected readonly TagService $tagService,
         protected readonly PassPosts $passPosts,
     ) {}
 
     /**
-     * Prepare shared view data for public pages navigation.
+     * Prepare shared view data for public region navigation.
      *
      * @return array<string, mixed> The navigation data array
      */
     public function getGlobalData(): array
     {
         return [
-            'popularTags' =>$this->tagService->getPopularTags(10),
+            'popularTags' => $this->tagService->getPopularTags(10),
             'logo' => $this->getGalleryImage(Image::LOGO()),
             'banner' => $this->getGalleryImage(Image::BANNER()),
             'favicon' => $this->getGalleryImage(Image::FAVICON()),
             'global_icons' => $this->getSocialMediaIcons(),
-            'home' => $this->pageService->getAllHomePages(),
-            'navs' => $this->pageService->getAllCategoryPages(),
-            'recentPosts'  => $this->getRecentPosts(2),
+            'mainRegions' => $this->regionService->getAllMainRegions(),
+            'categoryRegions' => $this->regionService->getAllCategoryRegions(),
+            'recentPosts' => $this->getRecentPosts(2),
             'breaking' => $this->passPosts->getBreakingPosts(),
         ];
     }

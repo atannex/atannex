@@ -11,12 +11,6 @@ trait GeneratesDepartmentCode
         static::creating(function ($model) {
             $model->generateDepartmentCode();
         });
-
-        // static::updating(function ($model) {
-        //     if ($model->isDirty('name') || empty($model->department_code)) {
-        //         $model->generateDepartmentCode();
-        //     }
-        // });
     }
 
     /**
@@ -38,9 +32,9 @@ trait GeneratesDepartmentCode
             do {
                 $randomNumber = mt_rand(1000, 9999);
                 $code = 'ATA' . $year . $abbreviation . $randomNumber;
-            } while (self::where('department_code', $code)->exists());
+            } while (self::where('code', $code)->exists());
 
-            $this->department_code = $code;
+            $this->code = $code;
         }
     }
 }

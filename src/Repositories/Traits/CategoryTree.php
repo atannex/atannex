@@ -3,7 +3,7 @@
 namespace Atannex\Repositories\Traits;
 
 use Closure;
-use App\Models\Pages\Category;
+use App\Models\Regions\Category;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -17,7 +17,7 @@ trait CategoryTree
      */
     protected function getRootCategory(Category $category): Category
     {
-        return $category->getAncestors()->last() ?: $category;
+        return $category->getAncestors()->last() ?? $category;
     }
 
     /**
@@ -25,23 +25,25 @@ trait CategoryTree
      */
     protected function getCategoryTreeIds(Category $category, ?int $excludeId = null): Collection
     {
-        return $this->excludeId(
-            $category->getDescendants()->pluck('id')->push($category->id),
-            $excludeId
-        );
+        $ids = $category->getDescendants()->pluck('id')->push($category->id);
+
+        return $this->excludeId($ids, $excludeId);
     }
 
     /**
-     * Get related categories for a given ancestor category, excluding optional ID.
+     * Get related leaf categories (no children) under an ancestor category,
+     * ordered by post count, excluding an optional ID.
      */
     protected function getRelatedCategories(Category $ancestor, ?int $excludeId = null, int $limit = 12): Collection
     {
+        $ids = $this->getCategoryTreeIds($ancestor, $excludeId);
+
         return Category::query()
-            ->whereIn('id', $this->getCategoryTreeIds($ancestor, $excludeId))
+            ->whereIn('id', $ids)
             ->whereDoesntHave('children')
             ->withCount(['posts' => $this->publishedPostsScope()])
             ->orderByDesc('posts_count')
-            ->take($limit)
+            ->limit($limit)
             ->get();
     }
 
@@ -50,24 +52,19 @@ trait CategoryTree
      */
     public function getRelatedCategoriesForCategory(Category $category, int $limit = 12): Collection
     {
-        return $this->getRelatedCategories(
-            $this->getRootCategory($category),
-            $category->id,
-            $limit
-        );
-    }
+        $root = $this->getRootCategory($category);
 
-    /* -----------------------------------------------------------------
-     |  Private helpers
-     | -----------------------------------------------------------------
-     */
+        return $this->getRelatedCategories($root, $category->id, $limit);
+    }
 
     /**
      * Exclude a given ID from a collection of IDs.
      */
     private function excludeId(Collection $ids, ?int $excludeId): Collection
     {
-        return $excludeId ? $ids->reject(fn($id) => $id === $excludeId)->values() : $ids->values();
+        return $excludeId
+            ? $ids->reject(fn($id) => $id === $excludeId)->values()
+            : $ids->values();
     }
 
     /**

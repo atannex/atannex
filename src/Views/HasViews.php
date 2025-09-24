@@ -2,10 +2,11 @@
 
 namespace Atannex\Views;
 
+use App\Models\Tags\Tag;
 use Illuminate\View\View;
-use App\Models\Pages\Category;
 use App\Models\Pivots\PostTag;
 use App\Models\Regions\Region;
+use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
 use App\Models\Modules\PostModule;
 use Atannex\Views\Traits\CanRender;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Trait HasViews
- * Provides view rendering methods for various page types
+ * Provides view rendering methods for various region types
  */
 trait HasViews
 {
@@ -22,15 +23,14 @@ trait HasViews
     use HasContent;
 
     /**
-     * Render a tag page with related posts and metadata.
+     * Render a tag view with related posts and metadata.
      *
-     * @param PostTag $postTag The post tag relationship model
+     * @param PostTag $postTag
      * @return View
      * @throws ModelNotFoundException
      */
-    public function renderTagView(PostTag $postTag): View
+    public function renderTagView(Tag $tag): View
     {
-        $tag = $postTag->tag;
         $first = $tag->posts->first();
 
         return $this->renderView('tag', [
@@ -43,9 +43,9 @@ trait HasViews
     }
 
     /**
-     * Render a region page with associated posts.
+     * Render a region view with associated posts.
      *
-     * @param Region $region The region model
+     * @param Region $region
      * @return View
      */
     public function renderRegionView(Region $region): View
@@ -57,10 +57,10 @@ trait HasViews
     }
 
     /**
-     * Render a single post page with its module and author social media.
+     * Render a single post view with its module and author social media.
      *
-     * @param Category $category The category model
-     * @param string $slug The post slug
+     * @param Category $category
+     * @param string $slug
      * @return View
      */
     public function renderPostShow(Category $category, string $slug): View
@@ -86,24 +86,24 @@ trait HasViews
     }
 
     /**
-     * Render a static page.
+     * Render a region page.
      *
-     * @param string $slug The page slug
+     * @param string $slug
      * @return View
      */
-    public function renderPageView(string $slug): View
+    public function renderRegionPageView(string $slug): View
     {
-        $page = $this->pageService->getHomePage($slug);
+        $region = $this->pageService->getMainRegion($slug);
 
-        $this->resolveSection($page);
+        $this->resolveSection($region);
 
-        return $this->renderView('pages', ['page' => $page], seo_title($page->title));
+        return $this->renderView('region-page', ['region' => $region], seo_title($region->title));
     }
 
     /**
-     * Render an author profile page with their posts and social media.
+     * Render an author profile view with their posts and social media.
      *
-     * @param Employee $author The author model
+     * @param Employee $author
      * @return View
      */
     public function renderAuthorView(Employee $author): View
@@ -116,9 +116,9 @@ trait HasViews
     }
 
     /**
-     * Render a category page with its posts.
+     * Render a category view with its posts.
      *
-     * @param Category $category The category model
+     * @param Category $category
      * @return View
      */
     public function renderCategoryView(Category $category): View
@@ -138,9 +138,9 @@ trait HasViews
     /**
      * Render posts filtered by date.
      *
-     * @param string $value The date value (month number or year)
-     * @param string $type The type of date filter ('month' or 'year')
-     * @param string|null $year Optional year for month filter
+     * @param string $value
+     * @param string $type
+     * @param string|null $year
      * @return View
      */
     public function renderDateView(string $value, string $type, ?string $year = null): View

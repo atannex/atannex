@@ -2,7 +2,6 @@
 
 namespace App\Models\Posts;
 
-use App\Enums\Flag;
 use App\Contracts\Sluggable;
 use Atannex\Enables\HasSlug;
 use Atannex\Enables\HasScope;
@@ -10,6 +9,7 @@ use App\Contracts\Commentable;
 use Atannex\Traits\HasBootable;
 use Atannex\Traits\HasBreaking;
 use Atannex\Traits\HasCleaning;
+use App\Models\Regions\Employee;
 use Atannex\Relations\PostRelation;
 use App\Livewire\Interactions\HasLikes;
 use App\Livewire\Interactions\HasViews;
@@ -44,14 +44,13 @@ class Post extends Model implements Commentable, Sluggable
     protected string $slugSource = 'title';
 
     /**
-     * Mass assignable attributes.
+     * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var array<int, string>
      */
     protected $fillable = [
         'title',
         'slug',
-        'slug_path',
         'flag',
         'category_id',
         'author_id',
@@ -59,33 +58,36 @@ class Post extends Model implements Commentable, Sluggable
         'description',
         'image',
         'published_at',
+        'metadata',
+        'slug_path',
         'is_breaking',
         'breaking_until',
-        'feature_priority',
-        'featured_until',
+        'feature_until',
     ];
 
     /**
-     * Attribute casting.
+     * The attributes that should be cast to native types.
      *
      * @var array<string, string>
      */
     protected $casts = [
-        'published_at' => 'datetime',
-        'breaking_until' => 'datetime:Y-m-d H:i:sP',
-        'is_breaking' => 'boolean',
-        'flag' => Flag::class,
-        'author_id' => 'integer',
-        'category_id' => 'integer',
+        'published_at'   => 'datetime',
+        'breaking_until' => 'datetime',
+        'feature_until'  => 'datetime',
+        'metadata'       => 'array',
+        'is_breaking'    => 'boolean',
     ];
 
     /**
-     * Model default attributes.
+     * The attributes that should be mutated to dates.
+     * (SoftDeletes and timestamps)
      *
-     * @var array<string, mixed>
+     * @var array<string>
      */
-    protected $attributes = [
-        'flag' => Flag::DRAFT,
+    protected $dates = [
+        'deleted_at',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -105,15 +107,31 @@ class Post extends Model implements Commentable, Sluggable
     }
 
     /**
-     * Automatically generate slug when title changes.
-     *
-     * @param string $value
+     * Get the employee who last updated the post.
      */
-    protected function setTitleAttribute(string $value): void
+    public function updatedBy()
     {
-        $this->attributes['title'] = $value;
-        if (empty($this->attributes['slug'])) {
-            $this->attributes['slug'] = $this->generateSlug();
-        }
+        return $this->belongsTo(Employee::class, 'updated_by');
+    }
+
+    /**
+     * Scope a query to only include published posts.
+     */
+    protected function scopePublished($query)
+    {
+        return $query->where('flag', 'published')
+            ->where('published_at', '<=', now());
+    }
+
+    /**
+     * Scope a query to include only breaking news.
+     */
+    protected function scopeBreaking($query)
+    {
+        return $query->where('is_breaking', true)
+            ->where(function ($q) {
+                $q->whereNull('breaking_until')
+                    ->orWhere('breaking_until', '>=', now());
+            });
     }
 }

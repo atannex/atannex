@@ -2,7 +2,7 @@
 
 namespace Atannex\Components\GetPosts;
 
-use App\Models\Pages\Category;
+use App\Models\Regions\Category;
 use Atannex\Traits\WithHierarchicalPosts;
 use Illuminate\Support\Collection;
 

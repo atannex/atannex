@@ -21,7 +21,7 @@ class DepartmentsTable
     {
         return $table
             ->columns([
-                TextColumn::make('department_code')
+                TextColumn::make('code')
                     ->label('Code')
                     ->searchable()
                     ->sortable()
@@ -44,33 +44,6 @@ class DepartmentsTable
                     ->placeholder('—')
                     ->icon('heroicon-m-building-office-2')
                     ->iconColor('gray')
-                    ->toggleable(),
-
-                TextColumn::make('manager.user.name')
-                    ->label('Manager')
-                    ->sortable()
-                    ->searchable()
-                    ->placeholder('Unassigned')
-                    ->icon('heroicon-m-user')
-                    ->iconColor('primary')
-                    ->toggleable(),
-
-                TextColumn::make('phone')
-                    ->label('Phone')
-                    ->searchable()
-                    ->icon('heroicon-m-phone')
-                    ->iconColor('gray')
-                    ->copyable()
-                    ->placeholder('—')
-                    ->toggleable(),
-
-                TextColumn::make('email')
-                    ->label('Email')
-                    ->searchable()
-                    ->icon('heroicon-m-envelope')
-                    ->iconColor('gray')
-                    ->copyable()
-                    ->placeholder('—')
                     ->toggleable(),
 
                 TextColumn::make('status')

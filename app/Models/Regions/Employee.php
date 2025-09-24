@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\{BelongsTo, MorphMany, BelongsToMany,
 class Employee extends Model
 {
     use GeneratesEmployeeCode;
-    // use SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -50,7 +49,7 @@ class Employee extends Model
 
     public function departments(): BelongsToMany
     {
-        return $this->belongsToMany(Department::class, 'employee_departments')
+        return $this->belongsToMany(Department::class, 'employee_department')
             ->using(EmployeeDepartment::class)
             ->withTimestamps();
     }
