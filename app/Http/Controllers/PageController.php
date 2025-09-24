@@ -35,7 +35,7 @@ class PageController extends Controller
         protected readonly PassView $getView,
     ) {
 
-        $this->middleware(['auth', 'verified', 'password.confirm']);
+        $this->middleware(['auth', 'verified', 'password.confirm', 'user.logs']);
     }
 
     /**
