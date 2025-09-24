@@ -7,7 +7,7 @@ namespace Atannex\Services;
 use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
 use Atannex\Helpers\HasMedia;
-use App\Models\Pages\Category;
+use App\Models\Regions\Category;
 use App\Models\Regions\Region;
 use App\Models\Regions\Employee;
 use Illuminate\Support\Collection;

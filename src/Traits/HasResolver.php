@@ -2,12 +2,13 @@
 
 namespace Atannex\Traits;
 
+use App\Enums\Flag;
+use App\Enums\Status;
+use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
-use App\Models\Pages\Category;
-use App\Models\Pivots\PostTag;
+use App\Models\Regions\Category;
 use App\Models\Regions\Region;
 use App\Models\Regions\Employee;
-use Atannex\Helpers\HasQuery;
 
 /**
  * Trait Resolver
@@ -16,8 +17,6 @@ use Atannex\Helpers\HasQuery;
  */
 trait HasResolver
 {
-    use HasQuery;
-
     /**
      * Resolve an employee author by their user slug.
      *
@@ -26,32 +25,39 @@ trait HasResolver
      */
     protected function resolveAuthor(string $slug): ?Employee
     {
-        return Employee::whereHas('user', function ($query) use ($slug) {
-            $query->where('slug', $slug);
-        })->with('user')->first();
+        return Employee::query()
+            ->whereHas('user', function ($query) use ($slug) {
+                $query->where('slug', $slug);
+            })
+            ->with('user')
+            ->where('status', Status::ACTIVE)
+            ->first();
     }
 
     /**
      * Resolve a category by its slug path.
      *
      * @param string $slug The unique slug path of the category
-     * @return Category|null The matching Category instance or null if not found
+     * @return Category The matching Category instance or null if not found
      */
     protected function resolveCategory(string $slug): ?Category
     {
-        return Category::where('slug_path', $slug)->first();
+        return Category::query()
+            ->where('flag', Flag::PUBLISHED)
+            ->where('slug_path', $slug)
+            ->first();
     }
 
     /**
      * Resolve a post tag by its slug path.
      *
      * @param string $slug The unique slug path of the post tag
-     * @return PostTag|null The matching PostTag instance or null if not found
+     * @return Tag|null The matching PostTag instance or null if not found
      */
-    protected function resolveTag(string $slug): ?PostTag
+    protected function resolveTag(string $slug): ?Tag
     {
-        return PostTag::with(['tag', 'post.category'])
-            ->where('slug_path', $slug)
+        return Tag::query()
+            ->where('slug', $slug)
             ->first();
     }
 
@@ -63,7 +69,9 @@ trait HasResolver
      */
     protected function resolvePost(string $slug): ?Post
     {
-        return Post::where('slug_path', $slug)->first();
+        return Post::query()
+            ->where('slug_path', $slug)
+            ->first();
     }
 
     /**
@@ -77,7 +85,20 @@ trait HasResolver
      */
     protected function resolveRegion(string $slug): ?Region
     {
-        return Region::where('slug_path', $slug)->first();
+        return Region::query()
+            ->where('slug_path', $slug)
+            ->where('flag', Flag::PUBLISHED)
+            ->first();
+    }
+
+    /**
+     * Parse year/month from a slug string.
+     */
+    protected function parseDateSlug(string $slug): array
+    {
+        [$year, $month] = array_pad(explode('/', $slug, 2), 2, null);
+
+        return ['year' => $year, 'month' => $month];
     }
 
     /**

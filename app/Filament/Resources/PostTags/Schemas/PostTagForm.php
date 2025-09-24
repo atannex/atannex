@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\PostTags\Schemas;
 
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class PostTagForm
@@ -21,8 +20,6 @@ class PostTagForm
                     ->relationship('tag', 'name')
                     ->preload()
                     ->searchable()
-                    ->default(null),
-                TextInput::make('slug_path')
                     ->default(null),
             ]);
     }

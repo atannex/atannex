@@ -2,64 +2,63 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Resources\Abouts\AboutResource;
-use App\Filament\Resources\Achievements\AchievementResource;
-use App\Filament\Resources\CacheLocks\CacheLockResource;
-use App\Filament\Resources\Caches\CacheResource;
-use App\Filament\Resources\Categories\CategoryResource;
-use App\Filament\Resources\CategorySections\CategorySectionResource;
-use App\Filament\Resources\Colors\ColorResource;
-use App\Filament\Resources\Comments\CommentResource;
-use App\Filament\Resources\Contacts\ContactResource;
-use App\Filament\Resources\Departments\DepartmentResource;
-use App\Filament\Resources\DocumentModules\DocumentModuleResource;
-use App\Filament\Resources\Documents\DocumentResource;
-use App\Filament\Resources\EmployeeDepartments\EmployeeDepartmentResource;
-use App\Filament\Resources\Employees\EmployeeResource;
-use App\Filament\Resources\FailedJobs\FailedJobResource;
-use App\Filament\Resources\Galleries\GalleryResource;
-use App\Filament\Resources\JobBatches\JobBatchResource;
-use App\Filament\Resources\Jobs\JobResource;
-use App\Filament\Resources\Likes\LikeResource;
-use App\Filament\Resources\Pages\PageResource;
-use App\Filament\Resources\PageSections\PageSectionResource;
-use App\Filament\Resources\PasswordResetTokens\PasswordResetTokenResource;
-use App\Filament\Resources\Permissions\PermissionResource;
-use App\Filament\Resources\PostModules\PostModuleResource;
-use App\Filament\Resources\PostRegions\PostRegionResource;
-use App\Filament\Resources\Posts\PostResource;
-use App\Filament\Resources\PostTags\PostTagResource;
-use App\Filament\Resources\Ratings\RatingResource;
-use App\Filament\Resources\Regions\RegionResource;
-use App\Filament\Resources\Roles\RoleResource;
-use App\Filament\Resources\Rulers\RulerResource;
-use App\Filament\Resources\Sections\SectionResource;
-use App\Filament\Resources\Sessions\SessionResource;
-use App\Filament\Resources\Shares\ShareResource;
-use App\Filament\Resources\SocialMedia\SocialMediaResource;
-use App\Filament\Resources\Tags\TagResource;
-use App\Filament\Resources\Users\UserResource;
-use App\Filament\Resources\Views\ViewResource;
-use App\Filament\Resources\Widgets\WidgetResource;
-use App\Filament\Resources\WidgetSections\WidgetSectionResource;
-
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Filament\Navigation\NavigationGroup;
-use Filament\Navigation\NavigationBuilder;
+use Filament\Widgets\FilamentInfoWidget;
 use Filament\Http\Middleware\Authenticate;
+use Filament\Navigation\NavigationBuilder;
+use App\Filament\Resources\Jobs\JobResource;
+use App\Filament\Resources\Tags\TagResource;
+use App\Filament\Resources\Likes\LikeResource;
+use App\Filament\Resources\Posts\PostResource;
+use App\Filament\Resources\Roles\RoleResource;
+use App\Filament\Resources\Users\UserResource;
+use App\Filament\Resources\Views\ViewResource;
 use Illuminate\Session\Middleware\StartSession;
+use App\Filament\Resources\Abouts\AboutResource;
+use App\Filament\Resources\Caches\CacheResource;
+use App\Filament\Resources\Colors\ColorResource;
+use App\Filament\Resources\Rulers\RulerResource;
+use App\Filament\Resources\Shares\ShareResource;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
+use App\Filament\Resources\Ratings\RatingResource;
+use App\Filament\Resources\Regions\RegionResource;
+use App\Filament\Resources\Widgets\WidgetResource;
+use App\Filament\Resources\Comments\CommentResource;
+use App\Filament\Resources\Contacts\ContactResource;
+use App\Filament\Resources\PostTags\PostTagResource;
+use App\Filament\Resources\Sections\SectionResource;
+use App\Filament\Resources\Sessions\SessionResource;
+use App\Filament\Resources\Galleries\GalleryResource;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use App\Filament\Resources\Documents\DocumentResource;
+use App\Filament\Resources\Employees\EmployeeResource;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Resources\Categories\CategoryResource;
+use App\Filament\Resources\JobBatches\JobBatchResource;
+use App\Filament\Resources\CacheLocks\CacheLockResource;
+
+use App\Filament\Resources\FailedJobs\FailedJobResource;
 use Filament\Http\Middleware\DisableBladeIconComponents;
+use App\Filament\Resources\Departments\DepartmentResource;
+use App\Filament\Resources\Permissions\PermissionResource;
+use App\Filament\Resources\PostModules\PostModuleResource;
+use App\Filament\Resources\PostRegions\PostRegionResource;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use App\Filament\Resources\SocialMedia\SocialMediaResource;
+use App\Filament\Resources\Achievements\AchievementResource;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use App\Filament\Resources\RegionSections\RegionSectionResource;
+use App\Filament\Resources\WidgetSections\WidgetSectionResource;
+use App\Filament\Resources\DocumentModules\DocumentModuleResource;
+use App\Filament\Resources\CategorySections\CategorySectionResource;
+use App\Filament\Resources\EmployeeDepartments\EmployeeDepartmentResource;
+use App\Filament\Resources\PasswordResetTokens\PasswordResetTokenResource;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -99,11 +98,11 @@ class AdminPanelProvider extends PanelProvider
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder->groups([
 
-                    NavigationGroup::make('Pages & Sections')
+                    NavigationGroup::make('Regions & Sections')
                         ->items([
-                            ...PageResource::getNavigationItems(),
+                            ...RegionResource::getNavigationItems(),
                             ...SectionResource::getNavigationItems(),
-                            ...PageSectionResource::getNavigationItems(),
+                            ...RegionSectionResource::getNavigationItems(),
                             ...WidgetResource::getNavigationItems(),
                             ...WidgetSectionResource::getNavigationItems(),
                         ]),
@@ -136,7 +135,6 @@ class AdminPanelProvider extends PanelProvider
                             ...DepartmentResource::getNavigationItems(),
                             ...EmployeeResource::getNavigationItems(),
                             ...EmployeeDepartmentResource::getNavigationItems(),
-                            ...RegionResource::getNavigationItems(),
                             ...RulerResource::getNavigationItems(),
                         ]),
 

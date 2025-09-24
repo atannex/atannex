@@ -3,8 +3,8 @@
         @guest
         <a href="{{ route('home') }}">{{ __('Home') }}</a>
         @else
-        @if($global['home'])
-        <a href="{{ route('page.index', ['slug' => $global['home']->first()->slug]) }}">{{ __('Home') }}</a>
+        @if($global['mainRegions'])
+        <a href="{{ route('page.index', ['slug' => $global['mainRegions']->first()->slug]) }}">{{ __('Home') }}</a>
         @endif
         @endguest
     </li>

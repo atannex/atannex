@@ -5,7 +5,7 @@
                 <div class="col-md-8 col-xl-7 col-lg-6">
                     <div class="shadow card quote-form-box">
                         <div class="p-4 text-center card-header">
-                            <img src="{{ asset('storage/' . $global['logo']->image) }}" alt="Welcome Back" style="max-width: 200px;" class="mb-3">
+                            <img src="{{ asset('storage/' . $global['logo']?->image) }}" alt="Welcome Back" style="max-width: 200px;" class="mb-3">
                             <h4 class="mb-3 form-title">{{ __('Welcome Back!') }}</h4>
                             <p class="form-description text-muted">
                                 {{ __('Great to see you again! Sign in to access your dashboard and continue where you left off.') }}

@@ -3,13 +3,13 @@
 namespace App\Providers\Atannex;
 
 use Atannex\Contracts\TagInterface;
-use Atannex\Contracts\PageInterface;
+use Atannex\Contracts\RegionInterface;
 use Atannex\Repositories\TagRepository;
 use Illuminate\Support\ServiceProvider;
 use Atannex\Contracts\CategoryInterface;
 use Atannex\Contracts\DocumentInterface;
 use Atannex\Contracts\ShareInterface;
-use Atannex\Repositories\PageRepository;
+use Atannex\Repositories\RegionRepository;
 use Atannex\Repositories\CategoryRepository;
 use Atannex\Repositories\DocumentRepository;
 use Atannex\Repositories\ShareRepository;
@@ -32,8 +32,8 @@ class LekeatehProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(
-            PageInterface::class,
-            PageRepository::class
+            RegionInterface::class,
+            RegionRepository::class
         );
 
         $this->app->bind(

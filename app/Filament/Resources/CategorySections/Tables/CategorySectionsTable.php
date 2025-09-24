@@ -6,14 +6,12 @@ use Filament\Tables\Table;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Actions\ActionGroup;
-use Filament\Tables\Filters\Filter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\ReplicateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Actions\ForceDeleteBulkAction;
 
@@ -49,39 +47,6 @@ class CategorySectionsTable
                     ->placeholder('No section assigned')
                     ->copyable()
                     ->tooltip('Click to copy section name'),
-
-                TextColumn::make('position')
-                    ->label('Position')
-                    ->sortable()
-                    ->alignCenter()
-                    ->badge()
-                    ->color(fn (string $state): string => match (true) {
-                        $state == 0 => 'success',
-                        $state < 5 => 'warning',
-                        default => 'gray',
-                    })
-                    ->tooltip('Display order position'),
-
-                TextColumn::make('is_active')
-                    ->label('Status')
-                    ->badge()
-                    ->formatStateUsing(fn (bool $state): string => $state ? 'Active' : 'Inactive')
-                    ->colors([
-                        'success' => true,
-                        'danger' => false,
-                    ])
-                    ->icons([
-                        'heroicon-o-check-circle' => true,
-                        'heroicon-o-x-circle' => false,
-                    ]),
-
-                TextColumn::make('config')
-                    ->label('Configuration')
-                    ->limit(30)
-                    ->tooltip(fn (?string $state): ?string => $state)
-                    ->placeholder('No configuration')
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->wrap(),
 
                 TextColumn::make('created_at')
                     ->label('Created')
@@ -124,21 +89,6 @@ class CategorySectionsTable
                     ->multiple()
                     ->placeholder('All sections'),
 
-                Filter::make('is_active')
-                    ->label('Status')
-                    ->toggle()
-                    ->query(fn (Builder $query): Builder => $query->where('is_active', true)),
-
-                Filter::make('no_section')
-                    ->label('No Section Assigned')
-                    ->toggle()
-                    ->query(fn (Builder $query): Builder => $query->whereNull('section_id')),
-
-                Filter::make('has_config')
-                    ->label('Has Configuration')
-                    ->toggle()
-                    ->query(fn (Builder $query): Builder => $query->whereNotNull('config')),
-
                 TrashedFilter::make(),
             ])
             ->filtersFormColumns(3)
@@ -173,7 +123,6 @@ class CategorySectionsTable
                 ])
                 ->label('Bulk Actions'),
             ])
-            ->defaultSort('position', 'asc')
             ->striped()
             ->paginated([10, 25, 50, 100])
             ->defaultPaginationPageOption(25)

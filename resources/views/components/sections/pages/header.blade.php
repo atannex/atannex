@@ -110,7 +110,7 @@
                     <div class="col-auto">
                         <nav class="main-menu d-none d-lg-inline-block">
 
-                            @includeIf('components.partials.nav')
+                            @include('components.partials.nav')
 
                         </nav>
                     </div>

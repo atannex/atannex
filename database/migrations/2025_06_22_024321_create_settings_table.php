@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\Flag;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -17,7 +16,7 @@ return new class extends Migration
             $table->string('url', 255);
             $table->string('platform', 255)->default('generic');
             $table->unsignedInteger('order')->default(0);
-            $table->string('flag')->default(Flag::PENDING);
+            $table->string('flag')->default('pending');
             $table->boolean('is_global')->default(false);
             $table->timestamps();
             $table->softDeletes();
@@ -37,6 +36,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('colors');
         Schema::dropIfExists('social_media');
-        Schema::dropIfExists('atannexes');
     }
 };

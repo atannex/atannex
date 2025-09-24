@@ -6,7 +6,7 @@ use App\Enums\Flag;
 use App\Models\Tags\Tag;
 use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
-use App\Models\Pages\Category;
+use App\Models\Regions\Category;
 use App\Models\Regions\Region;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -239,7 +239,7 @@ class PostForm
                                             ->label('Featured Image')
                                             ->disk('public')
                                             ->visibility('public')
-                                            ->directory(fn($record) => $record->getImageDirectory())
+                                            ->directory(fn($record) => $record?->getImageDirectory())
                                             ->image()
                                             ->imageEditor()
                                             ->imageEditorAspectRatios([

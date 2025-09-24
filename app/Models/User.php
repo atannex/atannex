@@ -2,20 +2,19 @@
 
 namespace App\Models;
 
-use Filament\Panel;
 use App\Enums\Gender;
 use App\Enums\Status;
-use Illuminate\Support\Str;
 use Atannex\Enables\HasSlug;
 use Atannex\Traits\HasCleaning;
 use Atannex\Relations\UserRelation;
 use Atannex\Traits\TracksUserActivity;
-use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * Class User
@@ -42,19 +41,12 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     use HasCleaning;
 
     /**
-     * The attribute used as the slug source.
-     *
-     * Used by EnableSlug trait to generate human-readable slugs.
-     *
-     * @var string
+     * Slug source attribute (used by HasSlug).
      */
-    protected string $slugSource = 'name';
+    public const SLUG_SOURCE = 'name';
 
     /**
      * Mass assignable attributes.
-     *
-     * Restricts which fields can be set via `create()` or `update()`.
-     * Helps prevent mass assignment vulnerabilities.
      *
      * @var array<int, string>
      */
@@ -69,8 +61,33 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         'status',
         'slug',
         'timezone',
-        'name_token'
     ];
+
+    /**
+     * Attributes hidden from serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * Attribute casting rules.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password'          => 'hashed',
+            'date_of_birth'     => 'date',
+            'gender'            => Gender::class,
+            'status'            => Status::class,
+        ];
+    }
 
     /**
      * Image attribute used by HasCleaning trait.
@@ -88,75 +105,20 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         return 'users';
     }
 
-
-    /**
-     * Attributes hidden from serialization.
-     *
-     * Ensures sensitive data (e.g., password, tokens) is never exposed in API responses.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-        'name_token'
-    ];
-
-    protected static function booted()
-    {
-        static::creating(function ($user) {
-            if (empty($user->name_token)) {
-                $user->name_token = Str::random(64);
-            }
-        });
-    }
-
-    /**
-     * Cast attributes to native or custom types.
-     *
-     * - email_verified_at → Carbon datetime
-     * - password → Laravel's auto-hash
-     * - date_of_birth → Carbon date
-     * - gender/status → Backed Enums (App\Enums)
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'date_of_birth' => 'date',
-            'gender' => Gender::class,
-            'status' => Status::class,
-        ];
-    }
-
     /**
      * Check if user can access the given Filament admin panel.
      *
-     * Business logic:
+     * Business rules:
      * - Requires verified email.
-     * - Restricts access to allowed email domains (configurable via config/filament.php).
-     * - Must be associated with an Employee record.
-     *
-     * @param Panel $panel
-     * @return bool
+     * - Email domain must be allowed (configurable via config/filament.php).
+     * - Must be associated with an active employee record with roles.
      */
     public function canAccessPanel(Panel $panel): bool
     {
-
-        if (!$this->hasVerifiedEmail()) {
-            return false;
-        }
-
-        $allowedDomains = config('filament.allowed_email_domains', ['gmail.com', 'atannex.org', 'atannex.com']);
-        $emailDomain = explode('@', $this->email)[1];
-
-        if (!in_array($emailDomain, $allowedDomains, true)) {
-            return false;
-        }
-
-        return $this->isEmployee();
+        return $this->hasVerifiedEmail()
+            && $this->hasAllowedDomain(
+                config('filament.allowed_email_domains', ['gmail.com', 'atannex.org', 'atannex.com'])
+            )
+            && $this->isEmployee();
     }
 }

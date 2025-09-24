@@ -4,15 +4,14 @@ namespace App\Filament\Resources\WidgetSections\Schemas;
 
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use App\Filament\Resources\PageSections\Traits\ContentFiltering;
-use App\Filament\Resources\PageSections\Traits\TabBasicInformation;
-use App\Filament\Resources\PageSections\Traits\EngagementWeightsSection;
+use App\Filament\Traits\ContentFiltering;
+use App\Filament\Traits\TabBasicInformation;
+use App\Filament\Traits\EngagementWeightsSection;
 
 class WidgetSectionForm
 {
@@ -65,12 +64,6 @@ class WidgetSectionForm
                                             ->step(1)
                                             ->placeholder('0')
                                             ->helperText('Lower numbers appear first (0 = top position)'),
-
-                                        Toggle::make('is_active')
-                                            ->label('Active Status')
-                                            ->helperText('Enable to display this widget')
-                                            ->default(true)
-                                            ->inline(false),
                                     ]),
                             ]),
                     ])

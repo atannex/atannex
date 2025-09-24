@@ -2,8 +2,8 @@
 
 namespace App\Models\Pivots;
 
-use App\Models\Pages\Widget;
-use App\Models\Pages\Section;
+use App\Models\Regions\Widget;
+use App\Models\Regions\Section;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Class WidgetSection
  *
  * Pivot model representing the relationship between Widgets and Sections.
- * Utilizes soft deletes and provides metadata about the widget's position
- * and configuration within a section.
+ * Stores additional metadata such as configuration, position, and flag status.
+ * Supports soft deletes for safe removal.
  *
  * @package App\Models\Pivots
  */
@@ -26,7 +26,7 @@ class WidgetSection extends Pivot
      *
      * @var string
      */
-    protected $table = 'widget_sections';
+    protected $table = 'widget_section';
 
     /**
      * The attributes that are mass assignable.
@@ -34,11 +34,12 @@ class WidgetSection extends Pivot
      * @var array<int, string>
      */
     protected $fillable = [
-        'section_id', // ID of the associated section
-        'widget_id',  // ID of the associated widget
-        'config',     // JSON configuration for the widget in this section
-        'position',   // Position of the widget within the section
-        'is_active',  // Whether the widget is active in this section
+        'section_id',
+        'widget_id',
+        'config',
+        'position',
+        'flag',
+        'metadata',
     ];
 
     /**
@@ -47,9 +48,9 @@ class WidgetSection extends Pivot
      * @var array<string, string>
      */
     protected $casts = [
-        'config' => 'array',   // Automatically cast the JSON config to an array
+        'config' => 'array',
+        'metadata' => 'array',
         'position' => 'integer',
-        'is_active' => 'boolean',
     ];
 
     /**
@@ -59,7 +60,7 @@ class WidgetSection extends Pivot
      */
     public function section(): BelongsTo
     {
-        return $this->belongsTo(Section::class, 'section_id');
+        return $this->belongsTo(Section::class);
     }
 
     /**
@@ -69,6 +70,6 @@ class WidgetSection extends Pivot
      */
     public function widget(): BelongsTo
     {
-        return $this->belongsTo(Widget::class, 'widget_id');
+        return $this->belongsTo(Widget::class);
     }
 }

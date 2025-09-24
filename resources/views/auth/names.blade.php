@@ -21,7 +21,7 @@
                         </div>
 
                         <div class="card-body">
-                            <form action="{{ route('name.complete', ['token' => $user->name_token]) }}" method="POST" class="contact-form" id="registerForm">
+                            <form action="{{ route('name.complete', ['token' => $token]) }}" method="POST" class="contact-form" id="registerForm">
                                 @csrf
 
                                 <div class="mb-4 form-group">
