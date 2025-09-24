@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('source')->nullable();
             $table->timestamp('read_at')->nullable()->index();
             $table->timestamp('responded_at')->nullable()->index();
-            $table->string('flag')->default(Status::PENDING)->index();
+            $table->string('flag')->default('pending')->index();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
             $table->softDeletes();

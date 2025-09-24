@@ -2,10 +2,8 @@
 
 namespace App\Models\Pivots;
 
-use App\Contracts\Sluggable;
 use App\Models\Posts\Post;
 use App\Models\Tags\Tag;
-use Atannex\Builders\PostTagBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -14,10 +12,8 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  *
  * Pivot model representing the post-tag relationship with slug management.
  */
-class PostTag extends Pivot implements Sluggable
+class PostTag extends Pivot
 {
-    use PostTagBuilder;
-
     /**
      * The table associated with the pivot model.
      *
@@ -33,7 +29,6 @@ class PostTag extends Pivot implements Sluggable
     protected $fillable = [
         'post_id',
         'tag_id',
-        'slug_path',
     ];
 
     /**

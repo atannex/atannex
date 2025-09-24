@@ -37,7 +37,33 @@ class LoginController extends Controller
      */
     public function __construct()
     {
+        // Apply guest middleware for all except logout
         $this->middleware('guest')->except('logout');
+
+        // Apply auth middleware only for logout
         $this->middleware('auth')->only('logout');
+
+        // Apply login throttling: max 5 attempts per minute
+        $this->middleware('throttle:5,1')->only('login');
+    }
+
+    /**
+     * Customize the maximum number of login attempts.
+     *
+     * @return int
+     */
+    protected function maxAttempts()
+    {
+        return 5;
+    }
+
+    /**
+     * Customize the number of minutes to throttle for.
+     *
+     * @return int
+     */
+    protected function decayMinutes()
+    {
+        return 1;
     }
 }

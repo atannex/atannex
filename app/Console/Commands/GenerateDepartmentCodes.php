@@ -28,13 +28,13 @@ class GenerateDepartmentCodes extends Command
         $this->info(sprintf('Found %d departments...', $departments->count()));
 
         foreach ($departments as $department) {
-            if ($this->option('force') || empty($department->department_code)) {
+            if ($this->option('force') || empty($department->code)) {
                 $department->generateDepartmentCode();
                 $department->save();
 
-                $this->line(sprintf('✅ Updated: %s → %s', $department->name, $department->department_code));
+                $this->line(sprintf('✅ Updated: %s → %s', $department->name, $department->code));
             } else {
-                $this->line(sprintf('⏭ Skipped: %s (already has code: %s)', $department->name, $department->department_code));
+                $this->line(sprintf('⏭ Skipped: %s (already has code: %s)', $department->name, $department->code));
             }
         }
 

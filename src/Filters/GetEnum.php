@@ -6,64 +6,57 @@ trait GetEnum
 {
     /**
      * Stores metadata for all enum cases.
-     * Format: [enumValue => ['label' => ..., 'color' => ..., 'icon' => ..., ...]]
+     * Format: [enumValue => ['label' => ..., 'color' => ..., 'icon' => ..., 'description' => ...]]
      */
     protected static $metadata = [];
 
     /**
-     * Retrieve the full metadata array for the current enum value.
-     */
-    public function getMetadata()
-    {
-        return static::$metadata[$this->value];
-    }
-
-    /**
-     * Retrieve a specific metadata field for the current enum value.
+     * Retrieve metadata for the current enum value or a specific field.
      *
-     * @param string $field The metadata key to retrieve
+     * @param string|null $field The metadata key to retrieve, or null for full metadata
      */
-    public function getMetaField($field)
+    public function getMetadata(?string $field = null)
     {
-        return $this->getMetadata()[$field];
+        $metadata = static::$metadata[$this->value];
+        return $field !== null ? $metadata[$field] : $metadata;
     }
 
     /**
      * Get the 'label' of the current enum value.
      */
-    public function getLabel()
+    public function getLabel(): string
     {
-        return $this->getMetaField('label');
+        return $this->getMetadata('label');
     }
 
     /**
-     * Get the 'description' of the current enum value.
+     * Get the 'description' metadata of the current enum value.
      */
-    public function getDescriptions()
+    public function getDescriptionMetadata(): string
     {
-        return $this->getMetaField('description');
+        return $this->getMetadata('description');
     }
 
     /**
      * Get the 'color' associated with the current enum value.
      */
-    public function getColor()
+    public function getColor(): string
     {
-        return $this->getMetaField('color');
+        return $this->getMetadata('color');
     }
 
     /**
      * Get the 'icon' associated with the current enum value.
      */
-    public function getIcon()
+    public function getIcon(): string
     {
-        return $this->getMetaField('icon');
+        return $this->getMetadata('icon');
     }
 
     /**
      * Return all metadata for all enum values.
      */
-    public static function getOptions()
+    public static function getOptions(): array
     {
         return static::$metadata;
     }
@@ -71,7 +64,7 @@ trait GetEnum
     /**
      * Return all enum values (keys of the metadata array).
      */
-    public static function values()
+    public static function values(): array
     {
         return array_keys(static::$metadata);
     }
@@ -79,20 +72,24 @@ trait GetEnum
     /**
      * Return an array mapping enum values to their labels.
      */
-    public static function labels()
+    public static function labels(): array
     {
-        return array_map(
-            function ($meta) { return $meta['label']; },
-            static::$metadata
-        );
+        // Return value => label pairs instead of just labels
+        $pairs = [];
+        foreach (static::$metadata as $value => $data) {
+            $pairs[$value] = $data['label'];
+        }
+
+        return $pairs;
     }
+
 
     /**
      * Set metadata for all enum cases at once.
      *
      * @param array $metadata Array of metadata keyed by enum values
      */
-    public static function setMetadata($metadata)
+    public static function setMetadata(array $metadata): void
     {
         static::$metadata = $metadata;
     }
@@ -103,7 +100,7 @@ trait GetEnum
      * @param string $value Enum value
      * @param array $metadata Metadata to assign
      */
-    public static function addMetadata($value, $metadata)
+    public static function addMetadata(string $value, array $metadata): void
     {
         static::$metadata[$value] = $metadata;
     }

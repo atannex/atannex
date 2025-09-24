@@ -18,8 +18,6 @@ class PostTagsTable
                     ->searchable(),
                 TextColumn::make('tag.name')
                     ->searchable(),
-                TextColumn::make('slug_path')
-                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

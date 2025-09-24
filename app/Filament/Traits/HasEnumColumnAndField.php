@@ -3,7 +3,6 @@
 namespace App\Filament\Traits;
 
 use Closure;
-use InvalidArgumentException;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 
@@ -112,7 +111,6 @@ trait HasEnumColumnAndField
         if ($type === 'field') {
             $field = Select::make($name)
                 ->options($enumClass::labels())
-                ->required()
                 ->searchable()
                 ->preload()
                 ->native(false);
@@ -124,6 +122,7 @@ trait HasEnumColumnAndField
             return $field;
         }
 
-        throw new InvalidArgumentException('Invalid enum component type: ' . $type);
+        // throw new InvalidArgumentException('Invalid enum component type: ' . $type);
+        return null;
     }
 }

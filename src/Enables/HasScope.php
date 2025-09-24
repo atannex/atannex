@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait HasScope
 {
+    protected function scopeEditorPick(Builder $query): Builder
+    {
+        return $query->published()->where('flag', Flag::EDITORIAL_PICK);
+    }
+
     /**
      * Scope to only published posts.
      *
@@ -15,8 +20,6 @@ trait HasScope
      */
     protected function scopePublished(Builder $query, ?string $type = null): Builder
     {
-        $query->where('flag', Flag::PUBLISHED);
-
         if ($type === 'global' || $type === 'non-global') {
             return $query->where('is_global', $type === 'global');
         }

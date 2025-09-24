@@ -2,73 +2,75 @@
 
 namespace Atannex\Relations;
 
-use App\Models\Pages\Page;
-use App\Models\Pages\Widget;
-use App\Models\Pages\Category;
-use App\Models\Pivots\PageSection;
+use App\Models\Regions\Widget;
+use App\Models\Regions\Category;
+use App\Models\Pivots\RegionSection;
 use App\Models\Pivots\WidgetSection;
 use App\Models\Pivots\CategorySection;
+use App\Models\Regions\Region;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-/**
- * Trait Section
- *
- * Provides relationship definitions for section-related models, including
- * revisions, pages, and widgets associations.
- *
- * @package Ngangagah\Relations
- */
 trait SectionRelation
 {
     /**
-     * Get the pages that this section belongs to in a many-to-many relationship.
-     *
-     * @return BelongsToMany<PageRelation>
+     * Defines the relationship between this model and regions via the pivot table `region_section`.
+     * Includes pivot fields like config, position, flags, and timestamps.
+     * Orders results by the pivot's `position` column.
      */
-    public function pages(): BelongsToMany
+    public function regions(): BelongsToMany
     {
-        return $this->belongsToMany(Page::class, 'page_section')
-            ->using(PageSection::class)
+        return $this->belongsToMany(Region::class, 'region_section')
+            ->using(RegionSection::class)
             ->withPivot([
                 'config',
                 'position',
-                'is_active',
+                'flag',
+                'metadata',
                 'created_at',
                 'updated_at',
                 'deleted_at',
             ])
             ->withTimestamps()
-            ->wherePivot('deleted_at', null)
+            ->wherePivot('deleted_at')
             ->orderByPivot('position');
     }
 
     /**
-     * Get the widgets attached to this section in a many-to-many relationship.
-     *
-     * @return BelongsToMany<Widget>
+     * Defines the relationship between this model and widgets via the pivot table `widget_section`.
+     * Similar to regions, includes `position` for ordering.
      */
     public function widgets(): BelongsToMany
     {
-        return $this->belongsToMany(Widget::class, 'widget_sections')
+        return $this->belongsToMany(Widget::class, 'widget_section')
             ->using(WidgetSection::class)
             ->withPivot([
                 'config',
                 'position',
-                'is_active',
+                'flag',
+                'metadata',
                 'created_at',
                 'updated_at',
                 'deleted_at',
             ])
             ->withTimestamps()
-            ->wherePivot('deleted_at', null)
-            ->orderBy('widget_sections.position');
+            ->wherePivot('deleted_at')
+            ->orderByPivot('position');
     }
 
+    /**
+     * Defines the relationship between this model and categories via the pivot table `category_section`.
+     * This pivot table does NOT have a `position` column, so we avoid ordering by it.
+     * Only includes relevant pivot fields.
+     */
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class, 'category_sections')
-            ->withPivot(['config', 'position', 'is_active'])
-            ->withTimestamps()
-            ->using(CategorySection::class);
+        return $this->belongsToMany(Category::class, 'category_section')
+            ->using(CategorySection::class)
+            ->withPivot([
+                'config',
+                'flag',
+                'metadata',
+            ])
+            ->withTimestamps();
     }
 }

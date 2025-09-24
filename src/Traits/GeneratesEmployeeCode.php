@@ -11,12 +11,6 @@ trait GeneratesEmployeeCode
         static::creating(function ($model) {
             $model->generateEmployeeCode();
         });
-
-        // static::updating(function ($model) {
-        //     if (empty($model->employee_number)) {
-        //         $model->generateEmployeeCode();
-        //     }
-        // });
     }
 
     /**
@@ -24,7 +18,7 @@ trait GeneratesEmployeeCode
      */
     public function generateEmployeeCode()
     {
-        $userName = $this->user?->name;
+        $userName = $this->user->name;
         if (!$userName) {
             return;
         }
@@ -42,8 +36,8 @@ trait GeneratesEmployeeCode
             $randomNumber = mt_rand(1000, 9999);
             $code = 'ATA' . $year . $abbreviation . $randomNumber;
             $tries++;
-        } while (self::where('employee_number', $code)->exists() && $tries < 10);
+        } while (self::where('code', $code)->exists() && $tries < 10);
 
-        $this->employee_number = $code;
+        $this->code = $code;
     }
 }

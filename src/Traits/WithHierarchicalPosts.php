@@ -44,8 +44,8 @@ trait WithHierarchicalPosts
         $models = $modelClass::query()
             ->whereIn('id', $modelIds)
             ->with([
-                "{$childrenRelation}:id,parent_id,name,{$sortField}",
-                "{$childrenRelation}.{$postsRelation}" => fn($q) => $q->orderBy($sortField, $order)->limit($leafPostLimit),
+                sprintf('%s:id,parent_id,name,%s', $childrenRelation, $sortField),
+                sprintf('%s.%s', $childrenRelation, $postsRelation) => fn($q) => $q->orderBy($sortField, $order)->limit($leafPostLimit),
                 $postsRelation => fn($q) => $q->orderBy($sortField, $order)->limit($postLimit),
             ])
             ->orderBy($sortField, $order)
@@ -116,7 +116,7 @@ trait WithHierarchicalPosts
         $stack = [$model];
         $leafPosts = collect();
 
-        while (!empty($stack)) {
+        while ($stack !== []) {
             $current = array_pop($stack);
 
             if ($current->$childrenRelation->isEmpty()) {

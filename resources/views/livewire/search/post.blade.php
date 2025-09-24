@@ -49,8 +49,8 @@
 
                     <div class="mt-1 text-xs text-gray-500 recent-post-meta">
                         <span>
-                            <i class="mr-1 fal fa-calendar-days"></i>
-                            {{ $post->published_at->format('d F, Y') }}
+                            @include('partials.date', ['post' => $post])
+
                         </span>
                     </div>
                 </div>

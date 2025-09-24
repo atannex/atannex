@@ -1,4 +1,4 @@
-@includeIf('components.partials.mobile-menu')
+@include('components.partials.mobile-menu')
 
 <header class="th-header header-layout1">
     <div class="header-top">
@@ -110,7 +110,7 @@
                     <div class="col-auto">
                         <nav class="main-menu d-none d-lg-inline-block">
 
-                            @includeIf('components.partials.nav')
+                            @include('components.partials.nav')
 
                         </nav>
                     </div>

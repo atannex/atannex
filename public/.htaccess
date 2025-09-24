@@ -1,24 +1,32 @@
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
+        # Disable content negotiation and directory listings
         Options -MultiViews -Indexes
     </IfModule>
 
     RewriteEngine On
 
-    # Handle Authorization Header
-    RewriteCond %{HTTP: Authorization}.
+    # ----------------------------------------------------
+    # Preserve Authorization header for PHP
+    # ----------------------------------------------------
+    RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Handle X-XSRF-Token Header
+    # Preserve XSRF header for frameworks expecting it
     RewriteCond %{HTTP:x-xsrf-token} .
-    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:x-xsrf-token}]
 
-    # Redirect Trailing Slashes If Not A Folder...
+    # ----------------------------------------------------
+    # Remove trailing slash if not a directory
+    # Example: /about/ → /about
+    # ----------------------------------------------------
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # Send Requests To Front Controller...
+    # ----------------------------------------------------
+    # Send all other requests to index.php (front controller)
+    # ----------------------------------------------------
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]

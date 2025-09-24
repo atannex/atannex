@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Pages\Category;
+use App\Models\Regions\Category;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;

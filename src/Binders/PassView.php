@@ -5,7 +5,7 @@ namespace Atannex\Binders;
 use Atannex\AtannexProvider;
 use Atannex\Views\HasViews;
 use Atannex\Services\TagService;
-use Atannex\Services\PageService;
+use Atannex\Services\RegionService;
 use Atannex\Services\CategoryService;
 use Atannex\Services\ShareService;
 
@@ -35,7 +35,7 @@ class PassView
      * @param Components $getComponent Helper for fetching reusable components.
      */
     public function __construct(
-        protected readonly PageService $pageService,
+        protected readonly RegionService $pageService,
         protected readonly AtannexProvider $atannex,
         protected readonly TagService $tagService,
         protected readonly CategoryService $categoryService,

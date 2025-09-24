@@ -3,6 +3,7 @@
 namespace Atannex\Sections\GetPosts;
 
 use App\Models\Posts\Post;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 /**
@@ -19,7 +20,9 @@ trait ByRecent
      */
     public function getRecentPosts(int $limit = 5): Collection
     {
-        return Post::published()
+        return Post::query()
+            ->published()
+            ->whereDate('published_at', '<', Carbon::today())
             ->latest('published_at')
             ->limit($limit)
             ->get();

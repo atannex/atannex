@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Pages\Section;
+use App\Models\Regions\Section;
 use Atannex\Adapters\SectionAdapter;
 
 class SectionObserver

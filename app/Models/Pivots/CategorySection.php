@@ -2,20 +2,21 @@
 
 namespace App\Models\Pivots;
 
-use App\Models\Pages\Section;
-use App\Models\Pages\Category;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Regions\Section;
+use App\Models\Regions\Category;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Class CategorySection
- *
  * Pivot model representing the many-to-many relationship between Categories and Sections.
- * Stores additional metadata such as configuration, position, and active status
- * for a Section within a Category. Supports soft deletes.
  *
- * @package App\Models\Pivots
+ * Stores additional data for a Section within a Category, including:
+ * - `config` (JSON configuration)
+ * - `flag` (status indicator: active, pending, etc.)
+ * - `metadata` (arbitrary metadata)
+ *
+ * Supports soft deletes to safely remove relations without losing historical data.
  */
 class CategorySection extends Pivot
 {
@@ -23,52 +24,44 @@ class CategorySection extends Pivot
 
     /**
      * The table associated with the pivot model.
-     *
-     * @var string
      */
-    protected $table = 'category_sections';
+    protected $table = 'category_section';
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * Attributes that are mass assignable.
+     * Only these attributes can be updated via mass assignment.
      */
     protected $fillable = [
-        'category_id', // ID of the associated category
-        'section_id',  // ID of the associated section
-        'config',      // JSON configuration for this section within the category
-        'position',    // Position of the section in the category
-        'is_active',   // Whether the section is active in the category
+        'category_id',
+        'section_id',
+        'config',
+        'flag',
+        'metadata',
     ];
 
     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array<string, string>
+     * Attributes that should be cast to native types.
      */
     protected $casts = [
-        'config' => 'array',    // Cast JSON config to array
-        'is_active' => 'boolean', // Ensure active flag is boolean
-        'position' => 'integer',  // Ensure position is integer
+        'config' => 'array',
+        'metadata' => 'array',
     ];
 
     /**
-     * Get the category that this pivot belongs to.
-     *
-     * @return BelongsTo
+     * Define the relationship to the Category model.
+     * Each pivot belongs to a single Category.
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     /**
-     * Get the section that this pivot belongs to.
-     *
-     * @return BelongsTo
+     * Define the relationship to the Section model.
+     * Each pivot belongs to a single Section.
      */
     public function section(): BelongsTo
     {
-        return $this->belongsTo(Section::class);
+        return $this->belongsTo(Section::class, 'section_id');
     }
 }

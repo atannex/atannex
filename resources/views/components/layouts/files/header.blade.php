@@ -3,7 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {{-- Dynamic Title --}}
-    <title>{{ $metaTitle ?? $title ?? 'Atannex - Lebialem Community News' }}</title>
+    <title>{{ $metaTitle ?? $title ?? __("'Atannex - Lebialem Community News'") }}</title>
 
     {{-- Basic SEO --}}
     <meta name="description" content="{{ $metaDescription ?? 'Atannex - The trusted news source for the Lebialem community. Stay updated on local news, culture, politics, and events.' }}">
@@ -57,7 +57,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/image.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/image.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/auth.css') }}">
 </head>

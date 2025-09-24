@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Regions\Schemas;
 
+use App\Enums\Flag;
 use App\Enums\Territories;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -18,10 +19,12 @@ class RegionForm
                     ->required(),
                 TextInput::make('slug')
                     ->disabled(),
-                TextInput::make('flag')
+                Select::make('flag')
                     ->required()
+                    ->options(Flag::labels())
+                    ->searchable()
+                    ->preload()
                     ->default('pending'),
-
                 Select::make('territory')
                     ->label('Territory')
                     ->options(Territories::labels())

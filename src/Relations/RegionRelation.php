@@ -3,9 +3,11 @@
 namespace Atannex\Relations;
 
 use App\Models\Posts\Post;
+use App\Models\Regions\Section;
 use App\Models\Regions\Ruler;
 use App\Models\Regions\Region;
 use App\Models\Pivots\PostRegion;
+use App\Models\Pivots\RegionSection;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +32,14 @@ trait RegionRelation
     }
 
     /**
+     * Recursive children relationship.
+     */
+    public function childrenRecursive(): HasMany
+    {
+        return $this->children()->with('childrenRecursive');
+    }
+
+    /**
      * Ruler associated with this region.
      */
     public function ruler(): HasOne
@@ -45,5 +55,23 @@ trait RegionRelation
         return $this->belongsToMany(Post::class, 'post_region')
             ->withTimestamps()
             ->using(PostRegion::class);
+    }
+
+    /**
+     * Get the sections attached to this page through a many-to-many relationship.
+     *
+     * @return BelongsToMany<Section>
+     */
+    public function sections(): BelongsToMany
+    {
+        return $this->belongsToMany(Section::class, 'region_section')
+            ->using(RegionSection::class)
+            ->withPivot([
+                'config',
+                'deleted_at',
+            ])
+            ->withTimestamps()
+            ->wherePivot('deleted_at')
+            ->orderBy('region_section.position');
     }
 }
