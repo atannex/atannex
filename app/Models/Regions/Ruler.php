@@ -17,37 +17,49 @@ class Ruler extends Model
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
      */
     protected $fillable = [
         'name',
         'slug',
         'image',
-        'traditional_title',
-        'region_id',
-        'rank',
+        'dynasty',
+        'title',
+        'classification',
         'reign_start',
         'reign_end',
-        'description',
-        'flag',
-        'metadata',
-        'dynasty',
+        'region_id',
         'phone',
         'email',
+        'description',
+        'metadata',
+        'flag',
     ];
 
     /**
      * The attributes that should be cast.
-     *
-     * @var array<string, string>
      */
     protected $casts = [
         'reign_start' => 'date',
         'reign_end' => 'date',
         'metadata' => 'array',
-        'flag' => Flag::class,
     ];
+
+    /**
+     * The attributes that should be mutated to dates.
+     */
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    /**
+     * Scope: Filter by classification
+     */
+    public function scopeClassification($query, $classification)
+    {
+        return $query->where('classification', $classification);
+    }
 
     /**
      * Get the region associated with the Fon.
@@ -78,14 +90,6 @@ class Ruler extends Model
      */
     protected function getFullTitleAttribute(): string
     {
-        return trim(sprintf('%s %s', $this->traditional_title, $this->name));
-    }
-
-    /**
-     * Get status flag label (optional if you use enums with labels).
-     */
-    protected function getFlagLabelAttribute(): string
-    {
-        return $this->flag->label();
+        return trim(sprintf('%s %s', $this->title, $this->name));
     }
 }

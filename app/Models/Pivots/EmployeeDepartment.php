@@ -22,7 +22,7 @@ class EmployeeDepartment extends Pivot
      *
      * @var string
      */
-    protected $table = 'employee_departments';
+    protected $table = 'employee_department';
 
     /**
      * The attributes that are mass assignable.
@@ -30,8 +30,8 @@ class EmployeeDepartment extends Pivot
      * @var array<int, string>
      */
     protected $fillable = [
-        'employee_id',   // ID of the associated employee
-        'department_id', // ID of the associated department
+        'employee_id',
+        'department_id',
     ];
 
     /**
