@@ -10,7 +10,7 @@ use Atannex\Contracts\TagInterface;
 class TagRepository implements TagInterface
 {
     /**
-     * Retrieves a tag by its slug.
+     * Retrieves a tag by its slug (from the tags table).
      */
     public function getTagBySlug(string $slug): ?Tag
     {
@@ -29,14 +29,14 @@ class TagRepository implements TagInterface
     }
 
     /**
-     * Retrieves all blog posts associated with a tag, ordered by published date descending.
+     * Retrieves all blog posts associated with a tag (using the tag's slug), ordered by published date descending.
      *
      * @return Collection<Post>
      */
-    public function getPostsForTag(string $tagId): Collection
+    public function getPostsForTag(string $tagSlug): Collection
     {
-        $tag = $this->findTag($tagId);
-        return $tag->posts()->orderByDesc('published_at')->get();
+        $tag = $this->getTagBySlug($tagSlug);
+        return $tag->posts()->published()->orderByDesc('published_at')->get();
     }
 
     /**
@@ -64,14 +64,13 @@ class TagRepository implements TagInterface
             ->whereHas('posts', fn($q) => $q->published())
             ->withCount(['posts' => fn($q) => $q->published()])
             ->orderByDesc('posts_count')
-            ->with(['posts' => fn($q) => $q->published()->with('category')->select('posts.*', 'post_tag.slug_path')])
             ->having('posts_count', '>=', 2)
             ->take($limit)
             ->get();
     }
 
     /**
-     * Reusable base query for Tag.
+     * Reusable base query for Tag model.
      */
     private function queryTag()
     {
@@ -79,15 +78,7 @@ class TagRepository implements TagInterface
     }
 
     /**
-     * Finds a tag or fails.
-     */
-    private function findTag(string $tagId): Tag
-    {
-        return Tag::findOrFail($tagId);
-    }
-
-    /**
-     * Finds a post or fails.
+     * Finds a post by ID or fails.
      */
     private function findPost(int $postId): Post
     {

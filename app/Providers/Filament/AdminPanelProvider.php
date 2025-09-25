@@ -59,6 +59,7 @@ use App\Filament\Resources\DocumentModules\DocumentModuleResource;
 use App\Filament\Resources\CategorySections\CategorySectionResource;
 use App\Filament\Resources\EmployeeDepartments\EmployeeDepartmentResource;
 use App\Filament\Resources\PasswordResetTokens\PasswordResetTokenResource;
+use Filament\Pages\Dashboard;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -75,11 +76,14 @@ class AdminPanelProvider extends PanelProvider
             ->topNavigation()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
+            ->pages([
+                Dashboard::class,
+            ])
 
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                // AccountWidget::class,
+                // FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

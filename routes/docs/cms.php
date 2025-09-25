@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('onboarded')->group(function () {
+Route::middleware(['onboarded','user.logs'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +42,7 @@ Route::middleware('onboarded')->group(function () {
 | Middleware: Pages (onboarded + complete.name)
 |--------------------------------------------------------------------------
 */
-Route::middleware('pages')
+Route::middleware(['pages','user.logs']) // 'user.logs' middleware added here
     ->controller(RegionController::class)
     ->group(function () {
         Route::get('{slug}', 'resolve')

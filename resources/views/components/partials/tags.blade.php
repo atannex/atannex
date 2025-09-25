@@ -3,13 +3,8 @@
 </h3>
 <div class="tagcloud">
     @forelse ($global['popularTags'] as $tag)
-    @php
-    $firstPost = $tag->posts->first();
-    $slug = $firstPost?->pivot->slug_path;
-    @endphp
-
-    @if($slug)
-    <a href="{{ route('page.index', ['slug' => $slug]) }}" title="{{ $tag->name }}">
+    @if($tag->slug)
+    <a href="{{ route('page.index', ['slug' => $tag->slug]) }}" title="{{ $tag->name }}">
         {{ $tag->name }}
     </a>
     @else
