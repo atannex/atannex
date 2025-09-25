@@ -3,6 +3,7 @@
 namespace Atannex\Repositories;
 
 use App\Models\Regions\Employee;
+use Closure;
 use Illuminate\Support\Collection;
 use Atannex\Contracts\CategoryInterface;
 use Atannex\Repositories\Traits\TagQuery;
@@ -50,4 +51,14 @@ class CategoryRepository implements CategoryInterface
     {
         return ['category', 'tags', 'author'];
     }
+
+    /**
+     * Closure for eager-loading authors with post counts.
+     */
+    private function authorWithPostCount(): Closure
+    {
+        return fn($query) => $query->withCount('posts');
+    }
+
+
 }
