@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckNameComplete;
+use Illuminate\Console\Scheduling\Schedule;
 use App\Http\Middleware\UserAppLogs;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -14,7 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
+    ->withSchedule(function (Schedule $schedule) {
+
+        $schedule->command('model:prune')->dailyAt('22:59');
+    })
     ->withMiddleware(function (Middleware $middleware): void {
+
         $middleware->alias([
             'user.logs' => UserAppLogs::class,
             'complete.name' => CheckNameComplete::class
