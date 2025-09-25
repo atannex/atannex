@@ -18,9 +18,9 @@ class UserAppLogs
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $userId = Auth::id() ?? 0;
-        $path = $request->path();
-        addUserActivity($userId, $path);
+        if ($userId = Auth::id()) {
+            addUserActivity($userId, $request->path());
+        }
 
         return $next($request);
     }

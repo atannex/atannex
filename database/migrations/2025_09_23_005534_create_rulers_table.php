@@ -14,22 +14,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('image')->nullable();
             $table->string('dynasty')->nullable();
-            $table->enum('title', [
-                'HRM',
-                'NYIATEMEH',
-                'HRH',
-                'HRH-MARFOW',
-                'MARFOW',
-                'NDI-NKEM',
-                'NKEM',
-                'MBE',
-                'MBE-MORFAW',
-                'NWET',
-                'MBI',
-                'AFUNGONG'
-            ])->default('HRH');
-            $table->enum('classification', ['1st Class', '2nd Class', '3rd Class', 'Unclassified'])
-                ->default('Unclassified');
+            $table->string('title')->default('mbe');
+            $table->string('classification')->default('unclassified');
             $table->date('reign_start')->nullable();
             $table->date('reign_end')->nullable();
             $table->foreignId('region_id')->constrained('regions')->cascadeOnDelete();

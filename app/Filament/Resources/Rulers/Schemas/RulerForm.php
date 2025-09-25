@@ -17,43 +17,39 @@ class RulerForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                TextInput::make('slug'),
-                FileUpload::make('image')
-                    ->image()
+                TextInput::make('slug')
                     ->required(),
-                TextInput::make('traditional_title')
+                FileUpload::make('image')
+                    ->image(),
+                TextInput::make('dynasty')
                     ->default(null),
+                TextInput::make('title')
+                    ->required()
+                    ->default('mbe'),
+                TextInput::make('classification')
+                    ->required()
+                    ->default('unclassified'),
+                DatePicker::make('reign_start'),
+                DatePicker::make('reign_end'),
                 Select::make('region_id')
                     ->relationship('region', 'name')
                     ->required(),
-                Select::make('rank')
-                    ->options([
-                        '1st Class' => '1st class',
-                        '2nd Class' => '2nd class',
-                        '3rd Class' => '3rd class',
-                        'Unclassified' => 'Unclassified',
-                    ])
-                    ->default('Unclassified')
-                    ->required(),
-                DatePicker::make('reign_start'),
-                DatePicker::make('reign_end'),
+                TextInput::make('phone')
+                    ->tel()
+                    ->default(null),
+                TextInput::make('email')
+                    ->label('Email address')
+                    ->email()
+                    ->default(null),
                 Textarea::make('description')
+                    ->default(null)
+                    ->columnSpanFull(),
+                Textarea::make('metadata')
                     ->default(null)
                     ->columnSpanFull(),
                 TextInput::make('flag')
                     ->required()
                     ->default('pending'),
-                Textarea::make('metadata')
-                    ->default(null)
-                    ->columnSpanFull(),
-                TextInput::make('dynasty')
-                    ->default(null),
-                TextInput::make('phone')
-                    ->tel()
-                    ->default(null),
-                TextInput::make('email')
-                    ->email()
-                    ->default(null),
             ]);
     }
 }

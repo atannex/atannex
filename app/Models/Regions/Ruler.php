@@ -2,7 +2,6 @@
 
 namespace App\Models\Regions;
 
-use App\Enums\Flag;
 use Atannex\Enables\HasSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

@@ -5,7 +5,9 @@ namespace App\Filament\Resources\Rulers;
 use App\Filament\Resources\Rulers\Pages\CreateRuler;
 use App\Filament\Resources\Rulers\Pages\EditRuler;
 use App\Filament\Resources\Rulers\Pages\ListRulers;
+use App\Filament\Resources\Rulers\Pages\ViewRuler;
 use App\Filament\Resources\Rulers\Schemas\RulerForm;
+use App\Filament\Resources\Rulers\Schemas\RulerInfolist;
 use App\Filament\Resources\Rulers\Tables\RulersTable;
 use App\Models\Regions\Ruler;
 use BackedEnum;
@@ -27,6 +29,11 @@ class RulerResource extends Resource
         return RulerForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return RulerInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return RulersTable::configure($table);
@@ -44,13 +51,14 @@ class RulerResource extends Resource
         return [
             'index' => ListRulers::route('/'),
             'create' => CreateRuler::route('/create'),
+            'view' => ViewRuler::route('/{record}'),
             'edit' => EditRuler::route('/{record}/edit'),
         ];
     }
 
-    public static function getEloquentQuery(): Builder
+    public static function getRecordRouteBindingEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
+        return parent::getRecordRouteBindingEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);

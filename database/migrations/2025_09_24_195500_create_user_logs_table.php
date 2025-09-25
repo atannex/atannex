@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('user_id')->nullable();
             $table->string('ip');
             $table->string('device');
-            $table->string('activity');
+            $table->json('activity')->nullable();
             $table->timestamps();
         });
     }

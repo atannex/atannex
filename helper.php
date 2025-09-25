@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Users\UserLogs;
-use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 if (!function_exists('seo_title')) {
@@ -47,33 +46,39 @@ if (!function_exists('seo_title')) {
 
 if (!function_exists('addUserActivity')) {
     /**
-     * Log a user's activity if it hasn't occurred in the last 24 hours.
+     * Log a user's activity once per 24 hours per IP.
      *
      * @param int $userId The ID of the user.
-     * @param string $activity The activity description.
      * @return UserLogs|null The created log entry or null if skipped.
      */
-    function addUserActivity(int $userId, string $activity)
+    function addUserActivity(int $userId, string $action)
     {
-        $device = request()->header('device-name') ?? request()->userAgent();
         $ip = request()->ip();
+        $device = request()->header('device-name') ?? request()->userAgent();
 
-        $recentActivity = UserLogs::where('user_id', $userId)
+        $log = UserLogs::where('user_id', $userId)
             ->where('ip', $ip)
-            ->where('activity', $activity)
-            ->where('created_at', '>=', Carbon::now()->subDay())
-            ->latest()
+            ->whereDate('created_at', now()->toDateString())
             ->first();
 
-        if ($recentActivity) {
-            return null;
+        if (!$log) {
+            $log = UserLogs::create([
+                'user_id' => $userId,
+                'ip' => $ip,
+                'device' => $device,
+                'activity' => [],
+            ]);
         }
 
-        return UserLogs::create([
-            'user_id' => $userId,
-            'ip' => $ip,
-            'device' => $device,
-            'activity' => $activity,
-        ]);
+        $activities = $log->activity ?? [];
+        $activities[] = [
+            'action' => $action,
+            'time' => now()->toDateTimeString(),
+        ];
+
+        $log->activity = $activities;
+        $log->save();
+
+        return $log;
     }
 }

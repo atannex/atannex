@@ -7,8 +7,10 @@ use App\Enums\Icons;
 use App\Enums\Image;
 use App\Enums\Entity;
 use App\Enums\Binding;
+use App\Enums\Classification;
 use App\Enums\Status;
 use App\Enums\Territories;
+use App\Enums\Title;
 use App\Models\Posts\Post;
 use App\Models\Regions\Region;
 use App\Models\Regions\Widget;
@@ -70,5 +72,7 @@ class AppServiceProvider extends ServiceProvider
         Binding::boot();
         Icons::boot();
         Status::boot();
+        Title::boot();
+        Classification::boot();
     }
 }
