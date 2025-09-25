@@ -3,6 +3,7 @@
 namespace Atannex\Relations;
 
 use App\Enums\Status;
+use App\Models\Users\UserLogs;
 use App\Models\Comments\Comment;
 use App\Models\Controls\Session;
 use App\Models\Interactions\Like;
@@ -10,8 +11,8 @@ use App\Models\Interactions\Rating;
 use App\Models\Interactions\Share;
 use App\Models\Interactions\View;
 use App\Models\Regions\Employee;
-use App\Models\UserActivity;
-use App\Models\UserNameToken;
+use App\Models\Users\UserActivity;
+use App\Models\Users\UserNameToken;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -23,6 +24,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 trait UserRelation
 {
+    /**
+     * Relationship: User has many activity logs.
+     *
+     * @return HasMany
+     */
+    public function logs(): HasMany
+    {
+        return $this->hasMany(UserLogs::class);
+    }
+
     public function userNameToken(): HasOne
     {
         return $this->hasOne(UserNameToken::class);

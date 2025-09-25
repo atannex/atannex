@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\UserNameToken;
+use App\Models\Users\UserNameToken;
 
 /**
  * Middleware to ensure users complete their profile using a token.

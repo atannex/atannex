@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckNameComplete;
+use App\Http\Middleware\UserAppLogs;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,8 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-         $middleware->alias([
-            'user.logs' => \App\Http\Middleware\UserAppLogs::class,
+        $middleware->alias([
+            'user.logs' => UserAppLogs::class,
             'complete.name' => CheckNameComplete::class
         ]);
 
@@ -23,11 +24,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth',
             'verified',
             'password.confirm',
+            'user.logs',
         ]);
 
         $middleware->group('pages', [
             'onboarded',
             'complete.name',
+            'user.logs'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

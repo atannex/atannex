@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
-use App\Models\UserNameToken;
+use App\Models\Users\UserNameToken;
 use App\Rules\Auth\StrongEmail;
 use App\Rules\Auth\StrongPassword;
 use App\Events\Users\UserCreated;
