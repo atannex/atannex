@@ -98,13 +98,7 @@ class PostForm
                                             ->schema([
                                                 Select::make('category_id')
                                                     ->label('Category')
-                                                    ->options(function () {
-                                                        return Category::doesntHave('children')
-                                                            ->get()
-                                                            ->mapWithKeys(function ($category) {
-                                                                return [$category->id => $category->id . '-' . $category->name];
-                                                            });
-                                                    })
+                                                    ->relationship('category', 'name')
                                                     ->required()
                                                     ->searchable()
                                                     ->preload()
@@ -239,7 +233,7 @@ class PostForm
                                             ->label('Featured Image')
                                             ->disk('public')
                                             ->visibility('public')
-                                            ->directory(fn($record) => $record?->getImageDirectory())
+                                            ->directory(fn($record) => $record->getImageDirectory())
                                             ->image()
                                             ->imageEditor()
                                             ->imageEditorAspectRatios([

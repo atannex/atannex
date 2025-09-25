@@ -141,9 +141,11 @@
                                 {{ __('ALL') }}
                             </button>
                             @foreach($regions as $index => $region)
+                            @if($region->posts->count() > 0)
                             <button data-filter=".cat{{ $index+1 }}" class="tab-btn" type="button">
                                 {{ $region->name }}
                             </button>
+                            @endif
                             @endforeach
                         </div>
                     </div>
