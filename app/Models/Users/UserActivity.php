@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Users;
 
 use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 /**
  * Class UserActivity
@@ -44,7 +45,7 @@ class UserActivity extends Model
         'last_seen_at',
         'last_login_ip',
         'device',
-        'geo', // Added for geolocation support
+        'geo',
     ];
 
     /**
@@ -56,7 +57,7 @@ class UserActivity extends Model
         'last_login_at' => 'datetime:Y-m-d H:i:s',
         'last_logout_at' => 'datetime:Y-m-d H:i:s',
         'last_seen_at'  => 'datetime:Y-m-d H:i:s',
-        'geo' => 'array', // Cast geo as array for JSON data
+        'geo' => 'array',
     ];
 
     /**

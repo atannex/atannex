@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Users;
 
-// Importing required classes for model functionality, string utilities, and relationships
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\User;
 
 class UserNameToken extends Model
 {

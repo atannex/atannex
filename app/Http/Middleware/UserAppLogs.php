@@ -9,24 +9,19 @@ use Illuminate\Support\Facades\Auth;
 
 class UserAppLogs
 {
-     /**
-      * Handle an incoming request.
-      *
-      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-      * @param  \Illuminate\Http\Request  $request
-      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-      */
-     public function handle(Request $request, Closure $next): Response
-     {
-          $path = $request->path();
+    /**
+     * Handle an incoming request and log user activity.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        $userId = Auth::id() ?? 0;
+        $path = $request->path();
+        addUserActivity($userId, $path);
 
-          if (Auth::check()) {
-               addUserActivity(Auth::user()->id, $path);
-          } else {
-               addUserActivity(0, $path);
-          }
-
-          return $next($request);
-     }
+        return $next($request);
+    }
 }
