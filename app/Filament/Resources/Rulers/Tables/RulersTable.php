@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
@@ -23,24 +24,31 @@ class RulersTable
                 TextColumn::make('slug')
                     ->searchable(),
                 ImageColumn::make('image'),
-                TextColumn::make('traditional_title')
+                TextColumn::make('dynasty')
                     ->searchable(),
-                TextColumn::make('region.name')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('rank'),
+                TextColumn::make('title')
+                    ->searchable(),
+                TextColumn::make('classification')
+                    ->searchable(),
                 TextColumn::make('reign_start')
                     ->date()
                     ->sortable(),
                 TextColumn::make('reign_end')
                     ->date()
                     ->sortable(),
+                TextColumn::make('region.name')
+                    ->searchable(),
+                TextColumn::make('phone')
+                    ->searchable(),
+                TextColumn::make('email')
+                    ->label('Email address')
+                    ->searchable(),
+                TextColumn::make('flag')
+                    ->searchable(),
                 TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('flag')
-                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -49,17 +57,12 @@ class RulersTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('dynasty')
-                    ->searchable(),
-                TextColumn::make('phone')
-                    ->searchable(),
-                TextColumn::make('email')
-                    ->searchable(),
             ])
             ->filters([
                 TrashedFilter::make(),
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([

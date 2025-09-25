@@ -23,6 +23,10 @@ class UserLogs extends Model
         'activity',
     ];
 
+    protected $casts = [
+        'activity' => 'array',
+    ];
+
     /**
      * Define pruning logic: delete logs older than 1 day.
      *
