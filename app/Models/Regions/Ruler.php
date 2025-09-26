@@ -55,7 +55,7 @@ class Ruler extends Model
     /**
      * Scope: Filter by classification
      */
-    public function scopeClassification($query, $classification)
+    protected function scopeClassification($query, $classification)
     {
         return $query->where('classification', $classification);
     }

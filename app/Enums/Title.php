@@ -17,16 +17,27 @@ final class Title extends Enum
     use GetEnum;
 
     public const HRM         = 'hrm';
+
     public const NYIATEMEH   = 'nyiatemeh';
+
     public const HRH         = 'hrh';
+
     public const HRH_MARFOW  = 'hrh-marfow';
+
     public const MARFOW      = 'marfow';
+
     public const NDI_NKEM    = 'ndi-nkem';
+
     public const NKEM        = 'nkem';
+
     public const MBE         = 'mbe';
+
     public const MBE_MORFAW  = 'mbe-morfaw';
+
     public const NWET        = 'nwet';
+
     public const MBI         = 'mbi';
+
     public const AFUNGONG    = 'afungong';
 
     /**

@@ -6,7 +6,6 @@ use App\Enums\Flag;
 use App\Models\Tags\Tag;
 use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
-use App\Models\Regions\Category;
 use App\Models\Regions\Region;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;

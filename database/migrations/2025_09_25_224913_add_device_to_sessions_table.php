@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('device')->nullable()->after('user_id');
             $table->string('platform')->nullable()->after('device');
             $table->string('browser')->nullable()->after('platform');
-            $table->timestamp('logged_out_at')->nullable()->after('last_activity');
         });
     }
 
@@ -25,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('sessions', function (Blueprint $table) {
-            $table->dropColumn(['device', 'platform', 'browser', 'logged_out_at']);
+            $table->dropColumn(['device', 'platform', 'browser']);
         });
     }
 };

@@ -15,6 +15,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 trait TagQuery
 {
     protected const DEFAULT_PAGINATION_LIMIT   = 50;
+
     protected const DEFAULT_POPULAR_TAGS_LIMIT = 12;
 
     /**

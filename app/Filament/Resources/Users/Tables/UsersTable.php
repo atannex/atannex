@@ -51,6 +51,7 @@ class UsersTable
                         if ($record->email_verified_at) {
                             return '✅ Verified ' . $record->email_verified_at->format('M j, Y');
                         }
+
                         return '⚠️ Unverified';
                     }),
 
@@ -89,6 +90,7 @@ class UsersTable
                                 );
                             }
                         }
+
                         return $state;
                     })
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -102,6 +104,7 @@ class UsersTable
                             $age = Carbon::parse($record->date_of_birth)->age;
                             return $age . ' years old';
                         }
+
                         return null;
                     })
                     ->icon('heroicon-m-calendar-days')

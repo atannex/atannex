@@ -17,9 +17,13 @@ final class Classification extends Enum
     use GetEnum;
 
     public const FIRST_CLASS   = 'first_class';
+
     public const SECOND_CLASS  = 'second_class';
+
     public const THIRD_CLASS   = 'third_class';
+
     public const FOURTH_CLASS  = 'fourth_class';
+
     public const UNCLASSIFIED  = 'unclassified';
 
     /**
