@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckNameComplete;
+use App\Http\Middleware\TrackUserActivity;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Http\Middleware\UserAppLogs;
 use Illuminate\Foundation\Application;
@@ -22,7 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
 
         $middleware->alias([
-            'user.logs' => UserAppLogs::class,
+            'track.activity' => TrackUserActivity::class,
             'complete.name' => CheckNameComplete::class
         ]);
 
@@ -30,13 +31,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth',
             'verified',
             'password.confirm',
-            'user.logs',
+            'track.activity',
         ]);
 
         $middleware->group('pages', [
             'onboarded',
             'complete.name',
-            'user.logs'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

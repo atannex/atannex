@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('user_activities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('session_id')->nullable()->index();
             $table->string('event_type');
-            $table->string('ip_address', 45)->nullable();
-            $table->string('device')->nullable();
             $table->string('geo')->nullable();
-            $table->timestamps();
             $table->json('metadata')->nullable();
+            $table->timestamps();
         });
     }
 

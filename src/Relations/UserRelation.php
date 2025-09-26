@@ -3,15 +3,12 @@
 namespace Atannex\Relations;
 
 use App\Enums\Status;
-use App\Models\Users\UserLogs;
 use App\Models\Comments\Comment;
-use App\Models\Controls\Session;
 use App\Models\Interactions\Like;
 use App\Models\Interactions\Rating;
 use App\Models\Interactions\Share;
 use App\Models\Interactions\View;
 use App\Models\Regions\Employee;
-use App\Models\Users\UserActivity;
 use App\Models\Users\UserNameToken;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -24,27 +21,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 trait UserRelation
 {
-    /**
-     * Relationship: User has many activity logs.
-     *
-     * @return HasMany
-     */
-    public function logs(): HasMany
-    {
-        return $this->hasMany(UserLogs::class);
-    }
-
     public function userNameToken(): HasOne
     {
         return $this->hasOne(UserNameToken::class);
-    }
-
-    /**
-     * Relationship: User → Sessions
-     */
-    public function sessions(): HasMany
-    {
-        return $this->hasMany(Session::class);
     }
 
     /**
@@ -60,7 +39,7 @@ trait UserRelation
      */
     public function emailDomain(): string
     {
-        return explode('@', $this->email)[1] ?? '';
+        return explode('@', $this->email)[1];
     }
 
     /**
@@ -87,14 +66,6 @@ trait UserRelation
         return $this->hasVerifiedEmail()
             && $this->activeEmployee()->exists()
             && $this->roles()->exists();
-    }
-
-    /**
-     * Relationship: User → UserActivity
-     */
-    public function activity(): HasOne
-    {
-        return $this->hasOne(UserActivity::class, 'user_id');
     }
 
     /**
@@ -135,19 +106,5 @@ trait UserRelation
     public function ratings(): HasMany
     {
         return $this->hasMany(Rating::class);
-    }
-
-    /**
-     * Clean up expired sessions for the user.
-     *
-     * @return int Number of sessions deleted
-     */
-    public function cleanExpiredSessions(): int
-    {
-        $lifetime = config('session.lifetime', 120);
-
-        return $this->sessions()
-            ->where('last_activity', '<', now()->subMinutes($lifetime))
-            ->delete();
     }
 }

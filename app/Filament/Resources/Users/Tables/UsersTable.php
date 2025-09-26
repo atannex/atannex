@@ -51,7 +51,6 @@ class UsersTable
                         if ($record->email_verified_at) {
                             return '✅ Verified ' . $record->email_verified_at->format('M j, Y');
                         }
-
                         return '⚠️ Unverified';
                     }),
 
@@ -90,7 +89,6 @@ class UsersTable
                                 );
                             }
                         }
-
                         return $state;
                     })
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -104,7 +102,6 @@ class UsersTable
                             $age = Carbon::parse($record->date_of_birth)->age;
                             return $age . ' years old';
                         }
-
                         return null;
                     })
                     ->icon('heroicon-m-calendar-days')
@@ -137,6 +134,22 @@ class UsersTable
                     ->color('info')
                     ->separator(', ')
                     ->placeholder('No roles assigned')
+                    ->toggleable(),
+
+                TextColumn::make('online_status')
+                    ->label('Online Status')
+                    ->badge()
+                    ->getStateUsing(fn($record) => $record->isOnline() ? 'Online' : 'Offline')
+                    // ->description(fn($record) => $record->lastSeen())
+                    ->colors([
+                        'success' => 'Online',
+                        'gray' => 'Offline',
+                    ])
+                    ->icons([
+                        'heroicon-m-wifi' => 'Online',
+                        'heroicon-m-no-symbol' => 'Offline',
+                    ])
+                    ->sortable()
                     ->toggleable(),
 
                 TextColumn::make('created_at')
@@ -240,6 +253,22 @@ class UsersTable
                     ->query(
                         fn(Builder $query): Builder =>
                         $query->whereMonth('date_of_birth', now()->month)
+                    )
+                    ->toggle(),
+
+                Filter::make('online')
+                    ->label('Online Users')
+                    ->query(
+                        fn(Builder $query): Builder =>
+                        $query->whereHas('sessions', fn($query) => $query->where('last_activity', '>=', now()->subSeconds(300)->timestamp))
+                    )
+                    ->toggle(),
+
+                Filter::make('offline')
+                    ->label('Offline Users')
+                    ->query(
+                        fn(Builder $query): Builder =>
+                        $query->whereDoesntHave('sessions', fn($query) => $query->where('last_activity', '>=', now()->subSeconds(300)->timestamp))
                     )
                     ->toggle(),
             ])
