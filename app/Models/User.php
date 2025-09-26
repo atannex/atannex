@@ -96,9 +96,4 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     {
         return $this->hasMany(UserActivity::class);
     }
-
-    public function lastActivity(): ?UserActivity
-    {
-        return $this->activities()->latest()->first();
-    }
 }

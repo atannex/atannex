@@ -18,7 +18,9 @@ trait PostQuery
     use HasResolver;
 
     protected const DEFAULT_PAGINATION_LIMIT   = 50;
+
     protected const DEFAULT_RECENT_POSTS_LIMIT = 5;
+
     protected const DEFAULT_POPULAR_TAGS_LIMIT = 12;
 
     /**

@@ -2,8 +2,9 @@
 
 namespace Atannex\Traits;
 
+use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use App\Models\Controls\Session;
-use Illuminate\Support\Carbon;
 use App\Models\User;
 use App\Models\Users\UserActivity;
 use Illuminate\Support\Facades\Auth;
@@ -51,7 +52,7 @@ trait HasUserTracking
      * Get active sessions for the user.
      *
      * @param int $timeoutSeconds
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function activeSessions(int $timeoutSeconds = 300)
     {
@@ -94,13 +95,13 @@ trait HasUserTracking
     {
         $location = 'Unknown Location';
         try {
-            $reader = new Reader(storage_path('app/GeoLite2-City.mmdb'));
+            $reader = new Reader(storage_path('app/GeoLite2/GeoLite2-City.mmdb'));
             $record = $reader->city($ip);
             $city = $record->city->name ?? '';
             $country = $record->country->name ?? '';
-            $location = trim("{$city}, {$country}") ?: 'Unknown Location';
+            $location = trim(sprintf('%s, %s', $city, $country)) ?: 'Unknown Location';
             $reader->close();
-        } catch (\Exception) {
+        } catch (Exception) {
         }
 
         return $location;
