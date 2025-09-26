@@ -2,18 +2,20 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Widgets\StatsOverviewWidget;
 use App\Models\User;
-use App\Models\Users\UserLogs;
+use Atannex\Traits\HasUserTracking;
+use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class ActiveUsers extends StatsOverviewWidget
 {
+    use HasUserTracking;
+
     protected function getStats(): array
     {
         return [
-            Stat::make('Active Users', UserLogs::count())
-                ->description('Currently Online')
+            Stat::make('Active Users', $this->countActiveUsers())
+                ->description('Users online in the last 5 minutes')
                 ->descriptionIcon('heroicon-o-user-group')
                 ->color('success'),
             Stat::make('Total Users', User::count())

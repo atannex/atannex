@@ -1,5 +1,5 @@
 <x-layouts.guest :title="seo_title('Welcome Back!')">
-     <div class="space2">
+    <div class="space2">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-xl-7 col-lg-6">
@@ -23,7 +23,6 @@
                             <form action="{{ route('login') }}" method="POST" class="contact-form">
                                 @csrf
 
-                                {{-- Email --}}
                                 <div class="mb-4 form-group">
                                     <label for="email" class="form-label fw-medium form-text text-start d-block">
                                         <i class="fas fa-envelope me-1"></i>
@@ -43,14 +42,13 @@
                                     @enderror
                                 </div>
 
-                                {{-- Password --}}
                                 <div class="mb-4 form-group">
                                     <label for="password" class="form-label fw-medium form-text text-start d-block">
                                         <i class="fas fa-lock me-1"></i>
                                         {{ __('Your Password') }}
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <div class="input-group input-group-lg position-relative">
+                                    <div class="input-group position-relative">
                                         <input type="password" class="form-control pe-5 @error('password') is-invalid @enderror" name="password" id="password" placeholder="{{ __('Enter your password') }}" required>
 
                                         <button type="button" class="p-0 bg-transparent border-0 btn position-absolute top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password', 'toggle-icon-password')" aria-label="{{ __('Toggle password visibility') }}">
@@ -69,23 +67,19 @@
                                     @enderror
                                 </div>
 
-                                {{-- Remember Me --}}
                                 <div class="mb-4 form-group">
-                                    <div class="form-check d-flex align-items-start">
+                                    <div class="form-check align-items-start">
                                         <input type="checkbox" class="mt-1 form-check-input" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                                        <div class="ms-2">
-                                            <label class="form-check-label form-text" for="remember">
-                                                <i class="fas fa-user-clock me-1 text-muted"></i>
-                                                {{ __('Keep me signed in on this device') }}
-                                            </label>
-                                            <div class="form-text">
-                                                {{ __('Perfect for your personal devices - we\'ll remember you next time!') }}
-                                            </div>
+                                        <label class="form-check-label form-text" for="remember">
+                                            <i class="fas fa-user-clock me-1 text-muted"></i>
+                                            {{ __('Keep me signed in on this device') }}
+                                        </label>
+                                        <div class="form-text">
+                                            {{ __('Perfect for your personal devices - we\'ll remember you next time!') }}
                                         </div>
                                     </div>
                                 </div>
 
-                                {{-- Submit --}}
                                 <div class="mb-4 form-btn d-grid">
                                     <button type="submit" class="mb-3 th-btn btn-lg w-100">
                                         <i class="fas fa-sign-in-alt me-2"></i>
@@ -94,7 +88,6 @@
                                     </button>
                                 </div>
 
-                                {{-- Links --}}
                                 <div class="text-center alternative-actions">
                                     @if (Route::has('password.request'))
                                     <div class="mb-3">
@@ -118,26 +111,9 @@
                             </form>
                         </div>
                     </div>
-                </div> {{-- col --}}
-            </div> {{-- row --}}
-        </div> {{-- container --}}
-    </div> {{-- min-vh-100 --}}
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        function togglePasswordVisibility(inputId, iconId) {
-            const passwordInput = document.getElementById(inputId);
-            const toggleIcon = document.getElementById(iconId);
-
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-            }
-        }
-
-    </script>
 </x-layouts.guest>

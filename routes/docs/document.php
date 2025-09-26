@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DocumentController;
 
-Route::middleware('user.logs')
+Route::middleware('track.activity')
     ->name('document.')
     ->group(function () {
         Route::get('/how-to-use-atannex/{type}', [DocumentController::class, 'index'])
