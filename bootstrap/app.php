@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withSchedule(function (Schedule $schedule) {
 
+        // $schedule->command('model:prune')->dailyAt('22:59');
     })
     ->withMiddleware(function (Middleware $middleware): void {
 

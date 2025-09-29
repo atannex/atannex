@@ -3,7 +3,7 @@
     <div class="tagcloud">
         @forelse ($relatedTags as $tag)
         @if ($tag->posts->first() && $tag->posts->first()->category)
-        <a href="{{ route('page.index', ['slug' => $tag->posts->first()->pivot->slug_path]) }}">
+        <a href="{{ route('page.index', ['slug' => $tag->slug]) }}">
             {{ $tag->name }}
         </a>
         @endif

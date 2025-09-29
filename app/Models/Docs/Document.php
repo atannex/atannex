@@ -34,16 +34,7 @@ class Document extends Model
         'description',
         'author_id',
         'flag',
-        'published_at',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'published_at' => 'datetime:Y-m-d H:i:s',
+        'image'
     ];
 
     /**

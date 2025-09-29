@@ -2,6 +2,7 @@
 
 namespace Atannex\Repositories;
 
+use App\Enums\Flag;
 use App\Models\Docs\Document;
 use Illuminate\Support\Collection;
 use App\Models\Modules\DocumentModule;
@@ -68,10 +69,9 @@ class DocumentRepository implements DocumentInterface
      */
     private function addPublishedDocumentConstraints(Builder $query): void
     {
-        $query->published()
+        $query->where('flag', Flag::PUBLISHED)
             ->where(function (Builder $q): void {
-                $q->where('published_at', '<=', now())
-                    ->orWhereNull('published_at');
+                $q->where('flag', Flag::PUBLISHED);
             });
     }
 }

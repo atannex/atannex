@@ -3,3 +3,4 @@
 <script src="{{ asset('assets/js/app.min.js') }}"></script>
 <script src="{{ asset('assets/js/main.js') }}"></script>
 <script src="{{ asset('assets/js/auth/reset.js') }}"></script>
+<script src="{{ asset('js/share.js') }}"></script>

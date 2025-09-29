@@ -3,17 +3,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {{-- Dynamic Title --}}
-    <title>{{ $metaTitle ?? $title ?? __("'Atannex - Lebialem Community News'") }}</title>
+    <title>{{ $metaTitle ?? $title ?? __('Atannex - Lebialem Community News') }}</title>
+
+    {{-- Dynamic Meta Description --}}
+    <meta name="description" content="{{ $metaDescription ?? ($post->description ?? Str::limit($post->content ?? 'Atannex brings you the latest news and updates from Lebialem.', 160)) }}">
 
     {{-- Basic SEO --}}
-    <meta name="description" content="{{ $metaDescription ?? 'Atannex - The trusted news source for the Lebialem community. Stay updated on local news, culture, politics, and events.' }}">
     <meta name="keywords" content="{{ $metaKeywords ?? 'Lebialem news, Atannex, community news, Cameroon, local news, Lebialem culture' }}">
     <meta name="author" content="{{ $metaAuthor ?? 'Atannex Media' }}">
 
     {{-- Open Graph / Facebook / LinkedIn --}}
     <meta property="og:title" content="{{ $metaTitle ?? $title ?? 'Atannex - Lebialem Community News' }}">
-    <meta property="og:description" content="{{ $metaDescription ?? 'Atannex brings you the latest news and updates from Lebialem.' }}">
-    <meta property="og:image" content="{{ $metaImage ?? asset('storage/' . $global['favicon']?->image) }}">
+    <meta property="og:description" content="{{ $metaDescription ?? ($post->description ?? Str::limit($post->content ?? 'Atannex brings you the latest news and updates from Lebialem.', 200)) }}">
+    <meta property="og:image" content="{{ $metaImage ?? asset('storage/' . ($global['favicon']?->image ?? 'default-favicon.png')) }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Atannex - Lebialem Community News">
@@ -21,18 +23,18 @@
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $metaTitle ?? $title ?? 'Atannex - Lebialem Community News' }}">
-    <meta name="twitter:description" content="{{ $metaDescription ?? 'Lebialem news, culture, and community updates' }}">
-    <meta name="twitter:image" content="{{ $metaImage ?? asset('storage/' . $global['favicon']?->image) }}">
-    <meta name="twitter:site" content="@AtannexNews">
+    <meta name="twitter:description" content="{{ $metaDescription ?? ($post->description ?? Str::limit($post->content ?? 'Lebialem news, culture, and community updates', 200)) }}">
+    <meta name="twitter:image" content="{{ $metaImage ?? asset('storage/' . ($global['favicon']?->image ?? 'default-favicon.png')) }}">
+    <meta name="twitter:site" content="@atannex">
 
     {{-- Google News & Article Metadata --}}
     <meta name="news_keywords" content="{{ $metaKeywords ?? 'Lebialem, Alou, Fontem, Wabane community news' }}">
     <meta property="article:section" content="{{ $metaSection ?? 'Lebialem News' }}">
-    <meta property="article:published_time" content="{{ $metaPublished ?? now() }}">
-    <meta property="article:modified_time" content="{{ $metaUpdated ?? now() }}">
+    <meta property="article:published_time" content="{{ $metaPublished ?? ($post->published_at ?? now()) }}">
+    <meta property="article:modified_time" content="{{ $metaUpdated ?? ($post->updated_at ?? now()) }}">
 
     {{-- Mobile & Branding --}}
-    <meta name="theme-color" content="#008000"> {{-- Atannex brand color (example: green) --}}
+    <meta name="theme-color" content="#008000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -46,7 +48,7 @@
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     {{-- Favicon --}}
-    @php $favicon = asset('storage/' . $global['favicon']?->image) @endphp
+    @php $favicon = asset('storage/' . ($global['favicon']?->image ?? 'default-favicon.png')) @endphp
     <link rel="icon" type="image/png" sizes="96x96" href="{{ $favicon }}">
     <link rel="icon" type="image/svg+xml" href="{{ $favicon }}">
     <link rel="shortcut icon" href="{{ $favicon }}">

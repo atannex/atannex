@@ -2,15 +2,17 @@
 
 namespace Atannex\Views;
 
+use App\Enums\Traits\HasSocialSharing;
 use App\Models\Tags\Tag;
 use Illuminate\View\View;
 use App\Models\Pivots\PostTag;
 use App\Models\Regions\Region;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
-use App\Models\Modules\PostModule;
 use Atannex\Views\Traits\CanRender;
 use Atannex\Views\Traits\HasContent;
+use Atannex\Views\Traits\HasDate;
+use Atannex\Views\Traits\HasShow;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -21,6 +23,8 @@ trait HasViews
 {
     use CanRender;
     use HasContent;
+    use HasShow;
+    use HasDate;
 
     /**
      * Render a tag view with related posts and metadata.
@@ -54,35 +58,6 @@ trait HasViews
             'region' => $region,
             'posts'  => $this->categoryService->getPostsByRegion($region),
         ], seo_title($region->name));
-    }
-
-    /**
-     * Render a single post view with its module and author social media.
-     *
-     * @param Category $category
-     * @param string $slug
-     * @return View
-     */
-    public function renderPostShow(Category $category, string $slug): View
-    {
-        $module = PostModule::with('post')
-            ->whereHas('post', fn($q) => $q->where('slug_path', $slug))
-            ->firstOrFail();
-
-        $post = $module->post;
-
-        $viewData = [
-            'module'            => $module,
-            'popularTags'       => $this->tagService->getPopularTags(),
-            'relatedTags'       => $this->tagService->getTagsForPost($post->id),
-            'navigation'        => $this->getPost->getPostNavigation($post),
-            'relatedCategories' => $this->categoryService->getRelatedCategoriesForCategory($category),
-            'recentPosts'       => $this->categoryService->getRecentPosts($post),
-            'relatedPosts'      => $this->getPost->getRelatedPosts($post),
-            'medias'            => $this->categoryService->getPublishedEmployeeSocialMedia($post->author),
-        ];
-
-        return $this->renderView('shows.index', $viewData, seo_title($post->title));
     }
 
     /**
@@ -133,43 +108,5 @@ trait HasViews
             'recentPosts'       => $this->categoryService->getRecentPosts($firstPost, 6),
             'relatedCategories' => $this->categoryService->getRelatedCategoriesForCategory($category),
         ], seo_title($category->name));
-    }
-
-    /**
-     * Render posts filtered by date.
-     *
-     * @param string $value
-     * @param string $type
-     * @param string|null $year
-     * @return View
-     */
-    public function renderDateView(string $value, string $type, ?string $year = null): View
-    {
-        $months = [
-            1 => 'January',
-            2 => 'February',
-            3 => 'March',
-            4 => 'April',
-            5 => 'May',
-            6 => 'June',
-            7 => 'July',
-            8 => 'August',
-            9 => 'September',
-            10 => 'October',
-            11 => 'November',
-            12 => 'December'
-        ];
-
-        $isMonth = $type === 'month';
-        $displayValue = $isMonth ? ($months[(int)$value] ?? $value) : $value;
-        $yearMonth = $isMonth ? ($year ?? date('Y')) . '/' . $value : $value;
-
-        $seoTitle = $isMonth
-            ? 'Posts for the month of ' . $displayValue
-            : 'Posts for the year ' . $value;
-
-        return $this->renderView('date', [
-            'posts' => $this->categoryService->getPostsByDate($yearMonth),
-        ], seo_title($seoTitle));
     }
 }

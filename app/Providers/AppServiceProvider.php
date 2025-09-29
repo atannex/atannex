@@ -70,7 +70,6 @@ class AppServiceProvider extends ServiceProvider
         Image::boot();
         Territories::boot();
         Binding::boot();
-        Icons::boot();
         Status::boot();
         Title::boot();
         Classification::boot();

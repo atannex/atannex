@@ -26,7 +26,7 @@ class PostModule extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'module_content',
+        'content',
         'post_id',
     ];
 
@@ -36,7 +36,7 @@ class PostModule extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'module_content' => 'array',
+        'content' => 'array',
     ];
 
     /**
