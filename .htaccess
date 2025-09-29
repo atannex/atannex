@@ -2,10 +2,12 @@
 
 RewriteEngine On
 
-## If the request is already for the public folder, do nothing
+## Allow direct access to storage/gallery images
+
+RewriteCond %{REQUEST_URI} ^/storage/.*\.(jpg|jpeg|png|gif|webp)$ [NC]
+RewriteRule .* - [L]
+
+### If the request is already for the public folder, do nothing
 
 RewriteCond %{REQUEST_URI} !^/public/
-
-### Rewrite everything else to the public folder
-
 RewriteRule ^(.*)$ public/$1 [L]
