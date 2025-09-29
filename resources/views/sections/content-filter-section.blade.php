@@ -39,7 +39,7 @@
                             </a>
                         </div>
                         <h3 class="box-title-30">
-                            <a class="hover-line" href="#" title="{{ $featuredPost->title }}">
+                            <a class="hover-line" href="{{ $featuredPost->slug_path }}" title="{{ $featuredPost->title }}">
                                 {{ Str::limit($featuredPost->title, 60) }}
                             </a>
                         </h3>

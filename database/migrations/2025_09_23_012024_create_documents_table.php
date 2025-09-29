@@ -21,7 +21,6 @@ return new class extends Migration
             $table->softDeletes();
             $table->foreignId('author_id')->nullable()->constrained('employees')->nullOnDelete();
             $table->string('flag')->default('draft');
-            $table->timestamp('published_at')->nullable();
         });
     }
 

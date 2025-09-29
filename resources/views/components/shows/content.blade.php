@@ -1,5 +1,5 @@
 <div class="content">
-    @foreach ($module->module_content as $block)
+    @foreach ($module->content as $block)
     @switch($block['type'])
 
     {{-- Paragraph --}}

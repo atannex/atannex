@@ -47,7 +47,7 @@ class PostModuleForm
                         ->schema([
                             Grid::make(1)
                                 ->schema([
-                                    Builder::make('module_content')
+                                    Builder::make('content')
                                         ->label('')
                                         ->columnSpanFull()
                                         ->blocks([
