@@ -3,21 +3,21 @@
 namespace App\Filament\Resources\SocialMedia\Schemas;
 
 use App\Enums\Flag;
-use App\Enums\Icons;
-use App\Filament\Traits\HasEnumColumnAndField;
+use App\Enums\Icon;
+use Filament\Schemas\Schema;
+use Illuminate\Validation\Rule;
 use App\Models\Regions\Employee;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Component;
+use App\Filament\Traits\HasEnumColumnAndField;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
-use Filament\Schemas\Schema;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Validation\Rule;
 
 class SocialMediaForm
 {
@@ -112,7 +112,7 @@ class SocialMediaForm
 
     private static function platformField(): Component
     {
-        return self::makeEnumField('platform', Icons::class, default: Icons::FACEBOOK)
+        return self::makeEnumField('platform', Icon::class, default: Icon::FACEBOOK)
             ->label('Social Platform')
             ->helperText('Choose the social media platform')
             ->reactive()

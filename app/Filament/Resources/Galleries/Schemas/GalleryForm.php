@@ -29,7 +29,6 @@ class GalleryForm
                     ->label('Featured Image')
                     ->disk('public')
                     ->visibility('public')
-                    ->directory(fn($record) => $record?->getImageDirectory())
                     ->image()
                     ->imageEditor()
                     ->imageEditorAspectRatios([
