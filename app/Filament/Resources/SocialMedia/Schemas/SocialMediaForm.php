@@ -21,8 +21,6 @@ use Filament\Schemas\Components\Utilities\Set;
 
 class SocialMediaForm
 {
-    use HasEnumColumnAndField;
-
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -112,8 +110,12 @@ class SocialMediaForm
 
     private static function platformField(): Component
     {
-        return self::makeEnumField('platform', Icon::class, default: Icon::FACEBOOK)
+        return Select::make('platform')
+            ->options(Icon::asSelectArray())
+            ->default(Icon::FACEBOOK)
             ->label('Social Platform')
+            ->preload()
+            ->searchable()
             ->helperText('Choose the social media platform')
             ->reactive()
             ->rules(fn($get, ?Model $record) => self::platformValidationRules($get, $record))
@@ -124,7 +126,11 @@ class SocialMediaForm
 
     private static function statusFlagField(): Component
     {
-        return self::makeEnumField('flag', Flag::class, default: Flag::PENDING)
+        return Select::make('flag')
+            ->preload()
+            ->searchable()
+            ->options(Flag::asSelectArray())
+            ->default(Flag::PENDING)
             ->label('Status Flag')
             ->helperText('Current status of this account');
     }

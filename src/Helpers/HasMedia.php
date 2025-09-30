@@ -3,7 +3,7 @@
 namespace Atannex\Helpers;
 
 use App\Enums\Flag;
-use App\Enums\Icons;
+use App\Enums\Icon;
 use App\Enums\Image;
 use App\Models\Others\Gallery;
 use App\Models\Others\SocialMedia;
@@ -16,7 +16,7 @@ trait HasMedia
      */
     protected function mapSocialMedia(SocialMedia $media): array
     {
-        $platform = Icons::coerce($media->platform);
+        $platform = Icon::coerce($media->platform);
 
         return [
             'url'   => $media->url,

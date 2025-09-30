@@ -58,15 +58,9 @@
                             @endguest
 
                             <li>
-                                <div class="social-links">
-                                    @if(!empty($global['global_icons']))
-                                    @foreach ($global['global_icons'] as $media)
-                                    <a href="{{ $media['url'] ?? '#' }}" target="_blank" rel="noopener" title="{{ $media['label'] ?? '' }}" class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 1.5rem; height: 1.5rem; background-color: var(--bs-{{ $media['color'] ?? 'primary' }});">
-                                        <i class="{{ $media['icon'] ?? 'fas fa-link' }} text-white"></i>
-                                    </a>
-                                    @endforeach
-                                    @endif
-                                </div>
+
+                                @include('partials.social-links')
+
                             </li>
                         </ul>
                     </div>

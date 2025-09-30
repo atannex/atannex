@@ -19,8 +19,8 @@
                             <div class="th-social style-black">
                                 @if(!empty($global['global_icons']))
                                 @foreach ($global['global_icons'] as $media)
-                                <a href="{{ $media['url'] ?? '#' }}" target="_blank" rel="noopener" title="{{ $media['label'] ?? 'Social Link' }}" class="d-inline-flex align-items-center justify-content-center rounded-circle me-1" style="width: 2.5rem; height: 2.5rem; background-color: var(--bs-{{ $media['color'] ?? 'primary' }});">
-                                    <i class="{{ $media['icon'] ?? 'fas fa-link' }} text-white"></i>
+                                <a href="{{ $media['url'] }}" target="_blank" rel="noopener" class="d-inline-flex align-items-center justify-content-center rounded-circle me-1 social-icon" style="width: 2.5rem; height: 2.5rem; background-color: {{ $media['color'] }};">
+                                    <i class="{{ $media['icon'] }} text-white"></i>
                                 </a>
                                 @endforeach
                                 @endif
