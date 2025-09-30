@@ -12,7 +12,9 @@ trait HasFields
      */
     protected function newModelQuery(): Builder
     {
-        return Post::query();
+        return Post::query()
+            ->published()
+            ->with(['author', 'category', 'tags', 'regions']);
     }
 
     /**
