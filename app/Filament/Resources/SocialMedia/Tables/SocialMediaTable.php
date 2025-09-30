@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SocialMedia\Tables;
 
 use Carbon\Carbon;
+use App\Enums\Icon;
 use App\Enums\Flag;
 use App\Enums\Icons;
 use App\Enums\Binding;
@@ -52,7 +53,7 @@ class SocialMediaTable
 
                 HasEnumColumnAndField::makeEnumColumn(
                     name: 'platform',
-                    enumClass: Icons::class,
+                    enumClass: Icon::class,
                     withIcon: false
                 )
                     ->label('Platform Type'),
@@ -122,7 +123,7 @@ class SocialMediaTable
             ->filters([
                 SelectFilter::make('platform')
                     ->label('Platform')
-                    ->options(Icons::labels())
+                    ->options(Icon::asSelectArray())
                     ->multiple()
                     ->searchable()
                     ->preload(),

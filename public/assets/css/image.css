@@ -1,3 +1,9 @@
+.social-icon:hover {
+    filter: brightness(85%);
+    transform: scale(1.1);
+    transition: 0.2s;
+}
+
 /* =========================================
    Media query for screens 768px and above
    ========================================= */
