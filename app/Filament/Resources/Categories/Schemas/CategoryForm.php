@@ -108,6 +108,7 @@ class CategoryForm
                                     ->schema([
                                         FileUpload::make('image')
                                             ->label('Category Image')
+                                            ->directory(fn($record) => $record?->getImageDirectory())
                                             ->image()
                                             ->imageEditor()
                                             ->imageEditorAspectRatios([

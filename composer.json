@@ -41,6 +41,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "laravel/ui": "*",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "livewire/livewire": "^3.6",
         "mews/purifier": "^3.4",
         "spatie/laravel-activitylog": "^4.10",
