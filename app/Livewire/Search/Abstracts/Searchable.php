@@ -12,21 +12,26 @@ abstract class Searchable extends Component
     use WithPagination;
 
     public string $query = '';
-
     public int $perPage = 10;
-
     public string $sortBy = 'latest';
 
     protected const VALID_SORT_OPTIONS = ['latest', 'oldest'];
-
     protected const DEFAULT_SORT = 'latest';
-
     protected const DEFAULT_PER_PAGE = 10;
 
     /**
      * Define the base query for the search.
+     * Child classes may override if needed, but by default it includes eager-loaded relations.
      */
-    abstract protected function baseQuery(): Builder;
+    protected function baseQuery(): Builder
+    {
+        return $this->newModelQuery()->with($this->relationsToEagerLoad());
+    }
+
+    /**
+     * Return a fresh model query. Must be implemented by child classes.
+     */
+    abstract protected function newModelQuery(): Builder;
 
     /**
      * Specify the view to render.
@@ -101,15 +106,43 @@ abstract class Searchable extends Component
 
     /**
      * Add a search condition for a specific field.
+     * Supports unlimited nested relations (e.g., "author.user.profile.name").
      */
     protected function addSearchCondition(Builder $query, string $field, string $search): void
     {
-        if (str_contains($field, '.')) {
-            [$relation, $column] = explode('.', $field, 2);
-            $query->orWhereHas($relation, fn (Builder $q) => $q->where($column, 'like', $search));
-        } else {
-            $query->orWhere($field, 'like', $search);
+        $parts = explode('.', $field);
+
+        if (count($parts) === 1) {
+            $query->orWhere($parts[0], 'like', $search);
+            return;
         }
+
+        $column = array_pop($parts);
+        $relationPath = implode('.', $parts);
+
+        $query->orWhereHas($relationPath, function (Builder $q) use ($column, $search) {
+            $q->where($column, 'like', $search);
+        });
+    }
+
+    /**
+     * Collect relations to eager-load from searchable fields.
+     *
+     * @return array<string>
+     */
+    protected function relationsToEagerLoad(): array
+    {
+        $relations = [];
+
+        foreach ($this->searchableFields() as $field) {
+            $parts = explode('.', $field);
+            if (count($parts) > 1) {
+                array_pop($parts); // remove column
+                $relations[] = implode('.', $parts);
+            }
+        }
+
+        return array_unique($relations);
     }
 
     /**
@@ -123,25 +156,16 @@ abstract class Searchable extends Component
         };
     }
 
-    /**
-     * Validate the sort option.
-     */
     protected function isValidSortOption(string $option): bool
     {
         return in_array($option, self::VALID_SORT_OPTIONS, true);
     }
 
-    /**
-     * Sanitize the search query to prevent SQL injection.
-     */
     protected function sanitizeSearch(string $query): string
     {
         return preg_replace('/[^a-zA-Z0-9\s\-_]/', '', $query);
     }
 
-    /**
-     * Sanitize the perPage value to ensure it's a positive integer.
-     */
     protected function sanitizePerPage(mixed $perPage): int
     {
         $perPage = (int) $perPage;
