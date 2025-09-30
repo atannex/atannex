@@ -3,36 +3,11 @@
 namespace App\Livewire\Search;
 
 use App\Livewire\Search\Abstracts\Searchable;
-use App\Models\Posts\Post as PostModel;
-use Illuminate\Database\Eloquent\Builder;
-use Livewire\Attributes\Validate;
+use App\Livewire\Search\Traits\HasFields;
 
 final class Post extends Searchable
 {
-    #[Validate('string|max:255')]
-    public string $query = '';
-
-    /**
-     * Define the base query for the post search.
-     */
-    protected function baseQuery(): Builder
-    {
-        return PostModel::query()->with(['author', 'tags', 'category']);
-    }
-
-    /**
-     * Specify the fields to search on.
-     *
-     * @return array<string>
-     */
-    protected function searchableFields(): array
-    {
-        return [
-            'title',
-            'description',
-            'tags.name',
-        ];
-    }
+    use HasFields;
 
     /**
      * Specify the view to render.
