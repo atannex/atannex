@@ -30,8 +30,7 @@ class TabBasicInformation
                             ->label('Tab Title')
                             ->placeholder('e.g., Breaking News, Latest Updates')
                             ->helperText('The display name of this tab in the interface.')
-                            ->maxLength(50)
-                            ->required(),
+                            ->maxLength(50),
 
                         TextInput::make('limit')
                             ->label('Max number of categories')
@@ -40,18 +39,16 @@ class TabBasicInformation
                             ->minValue(1)
                             ->maxValue(50)
                             ->suffix('posts')
-                            ->helperText('Maximum number of posts to display in this tab.')
-                            ->required(),
+                            ->helperText('Maximum number of posts to display in this tab.'),
 
-                            TextInput::make('relation_limit')
+                        TextInput::make('relation_limit')
                             ->label('Posts Limit per category')
                             ->numeric()
                             ->default(5)
                             ->minValue(1)
                             ->maxValue(50)
                             ->suffix('posts')
-                            ->helperText('Maximum number of posts to display in this tab.')
-                            ->required(),
+                            ->helperText('Maximum number of posts to display in this tab.'),
 
                         TextInput::make('leaf_relation_limit')
                             ->label('Posts per leaf category')
@@ -60,8 +57,7 @@ class TabBasicInformation
                             ->minValue(1)
                             ->maxValue(50)
                             ->suffix('posts')
-                            ->helperText('Maximum number of posts to display for each child element.')
-                            ->required(),
+                            ->helperText('Maximum number of posts to display for each child element.'),
 
                         Select::make('sort')
                             ->label('Sort By')

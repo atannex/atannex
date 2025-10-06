@@ -63,10 +63,14 @@ trait HasContent
     }
 
     /**
-     * Resolve tabs configuration.
+     * Resolves tab configurations into their associated entity data.
      *
-     * @param array $tabsConfig
-     * @return array
+     * This method safely handles incomplete or null configurations
+     * and ensures that invalid mappings or missing fields do not
+     * break the resolution process.
+     *
+     * @param array $tabsConfig Array of tab configuration data.
+     * @return array The resolved tabs with their corresponding entities.
      */
     private function resolveTabs(array $tabsConfig): array
     {
@@ -74,29 +78,50 @@ trait HasContent
         $mappingsCache = [];
 
         foreach ($tabsConfig as &$tab) {
-            $type = $tab['type'];
+            // Skip invalid or incomplete tab entries
+            $type = $tab['type'] ?? null;
+            if (empty($type)) {
+                $tab['entities'] = $tab['content'] = [];
+                continue;
+            }
+
+            // Retrieve or cache the mapping (null-safe)
             $mapping = $mappingsCache[$type] ??= $this->getMapping($type);
+            if (empty($mapping) || empty($mapping['method'])) {
+                $tab['entities'] = $tab['content'] = [];
+                continue;
+            }
 
             $method = $mapping['method'];
-            $args = $this->requiresIdKey($type)
+
+            // Prepare argument list safely
+            $args = $this->requiresIdKey($type) && !empty($mapping['idKey']) && isset($tab[$mapping['idKey']])
                 ? [$mapping['idKey'] => $this->normalizeIds((array) $tab[$mapping['idKey']])]
-                : $tab;
+                : [];
 
-            $args['limit'] = $tab['limit'];
-            $args['relation_limit'] = $tab['relation_limit'];
-            $args['leaf_relation_limit'] = $tab['leaf_relation_limit'];
-            $args['sort'] = $tab['sort'];
-            $args['order'] = $tab['order'];
+            // Merge optional numeric and sorting parameters with fallbacks
+            $args['limit'] = $tab['limit'] ?? 5;
+            $args['relation_limit'] = $tab['relation_limit'] ?? 5;
+            $args['leaf_relation_limit'] = $tab['leaf_relation_limit'] ?? 5;
+            $args['sort'] = $tab['sort'] ?? 'created_at';
+            $args['order'] = $tab['order'] ?? 'desc';
 
-            $entities = $component->$method($args);
+            // Verify the component method exists before calling
+            if (!method_exists($component, $method)) {
+                $tab['entities'] = $tab['content'] = [];
+                continue;
+            }
 
-            if (is_array($entities) && count($entities) > $args['limit']) {
-                $entities = array_slice($entities, 0, $args['limit']);
+            // Execute component method and safely handle return
+            $entities = $component->$method($args) ?? [];
+
+            // Apply limit constraints safely
+            if (is_array($entities) && isset($args['limit']) && count($entities) > $args['limit']) {
+                $entities = array_slice($entities, 0, (int) $args['limit']);
             }
 
             $tab['entities'] = $tab['content'] = $entities;
         }
-
         unset($tab);
         return $tabsConfig;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\WidgetSections\Schemas;
 
+use App\Enums\Flag;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Grid;
@@ -64,6 +65,12 @@ class WidgetSectionForm
                                             ->step(1)
                                             ->placeholder('0')
                                             ->helperText('Lower numbers appear first (0 = top position)'),
+                                            Select::make('flag')
+                                                ->options(Flag::labels())
+                                                ->preload()
+                                                ->searchable()
+                                                ->required()
+                                                ->default('pending'),
                                     ]),
                             ]),
                     ])

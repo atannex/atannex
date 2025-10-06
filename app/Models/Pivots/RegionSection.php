@@ -38,24 +38,6 @@ class RegionSection extends Pivot
     ];
 
     /**
-     * Boot the model and apply global scopes.
-     */
-    protected static function booted(): void
-    {
-        static::addGlobalScope('published', function (Builder $builder) {
-            $builder->where('flag', Flag::PUBLISHED);
-        });
-    }
-
-    /**
-     * Scope for only published pivot entries.
-     */
-    protected function scopePublished(Builder $query): Builder
-    {
-        return $query->where('flag', Flag::PUBLISHED);
-    }
-
-    /**
      * Region relationship.
      */
     public function region(): BelongsTo

@@ -35,24 +35,6 @@ class PostTag extends Pivot
     ];
 
     /**
-     * Boot model with default global scopes.
-     */
-    protected static function booted(): void
-    {
-        static::addGlobalScope('published', function (Builder $builder) {
-            $builder->where('flag', Flag::PUBLISHED);
-        });
-    }
-
-    /**
-     * Scope for only published pivots.
-     */
-    protected function scopePublished(Builder $query): Builder
-    {
-        return $query->where('flag', Flag::PUBLISHED);
-    }
-
-    /**
      * Get the post associated with this pivot.
      */
     public function post(): BelongsTo
