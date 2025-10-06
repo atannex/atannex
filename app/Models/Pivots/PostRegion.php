@@ -2,8 +2,11 @@
 
 namespace App\Models\Pivots;
 
+use App\Enums\Flag;
 use App\Models\Posts\Post;
 use App\Models\Regions\Region;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -11,33 +14,46 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * Class PostRegion
  *
  * Pivot model representing the many-to-many relationship between Posts and Regions.
- * Includes a slug path for hierarchical URL resolution or region-specific routing.
- *
- * @package App\Models\Pivots
+ * Supports soft deletes and optional published filtering.
+ * Includes slug path for hierarchical URL resolution or region-specific routing.
  */
 class PostRegion extends Pivot
 {
-    /**
-     * The table associated with the pivot model.
-     *
-     * @var string
-     */
+    use SoftDeletes;
+
     protected $table = 'post_region';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'post_id',
         'region_id',
+        'slug_path',
+        'flag',
+    ];
+
+    protected $casts = [
+        'slug_path' => 'string',
     ];
 
     /**
+     * Apply a global scope to only return published pivot rows.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope('published', function (Builder $builder) {
+            $builder->where('flag', Flag::PUBLISHED);
+        });
+    }
+
+    /**
+     * Scope for only published pivots.
+     */
+    protected function scopePublished(Builder $query): Builder
+    {
+        return $query->where('flag', Flag::PUBLISHED);
+    }
+
+    /**
      * Get the post associated with this pivot record.
-     *
-     * @return BelongsTo<Post, PostRegion>
      */
     public function post(): BelongsTo
     {
@@ -46,8 +62,6 @@ class PostRegion extends Pivot
 
     /**
      * Get the region associated with this pivot record.
-     *
-     * @return BelongsTo<Region, PostRegion>
      */
     public function region(): BelongsTo
     {

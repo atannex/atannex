@@ -5,7 +5,6 @@ namespace App\Filament\Resources\SocialMedia\Tables;
 use Carbon\Carbon;
 use App\Enums\Icon;
 use App\Enums\Flag;
-use App\Enums\Icons;
 use App\Enums\Binding;
 use Filament\Tables\Table;
 use Filament\Actions\EditAction;

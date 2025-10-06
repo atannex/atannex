@@ -28,7 +28,6 @@ use App\Filament\Resources\Ratings\RatingResource;
 use App\Filament\Resources\Regions\RegionResource;
 use App\Filament\Resources\Widgets\WidgetResource;
 use App\Filament\Resources\Comments\CommentResource;
-use App\Filament\Resources\Contacts\ContactResource;
 use App\Filament\Resources\PostTags\PostTagResource;
 use App\Filament\Resources\Sections\SectionResource;
 use App\Filament\Resources\Sessions\SessionResource;
@@ -50,7 +49,6 @@ use App\Filament\Resources\PostRegions\PostRegionResource;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use App\Filament\Resources\SocialMedia\SocialMediaResource;
-use App\Filament\Resources\Achievements\AchievementResource;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use App\Filament\Resources\RegionSections\RegionSectionResource;
 use App\Filament\Resources\WidgetSections\WidgetSectionResource;
@@ -168,9 +166,8 @@ class AdminPanelProvider extends PanelProvider
                     NavigationGroup::make('Miscellaneous')
                         ->items([
                             ...AboutResource::getNavigationItems(),
-                            ...AchievementResource::getNavigationItems(),
                             ...ColorResource::getNavigationItems(),
-                            ...ContactResource::getNavigationItems(),
+                            // ...ContactResource::getNavigationItems(),
                             ...GalleryResource::getNavigationItems(),
                             ...SocialMediaResource::getNavigationItems(),
                         ]),

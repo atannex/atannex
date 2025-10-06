@@ -16,13 +16,13 @@ trait HasMedia
      */
     protected function mapSocialMedia(SocialMedia $media): array
     {
-        $platform = Icon::coerce($media->platform);
+        $data = Icon::getData($media->platform);
 
         return [
             'url'   => $media->url,
-            'label' => $platform->getLabel(),
-            'icon'  => $platform->getIcon(),
-            'color' => $platform->getColor(),
+            'label' => $data['label'],
+            'icon'  => $data['icon'],
+            'color' => $data['color'],
         ];
     }
 

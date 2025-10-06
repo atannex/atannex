@@ -2,6 +2,7 @@
 
 namespace Atannex\Relations;
 
+use App\Enums\Flag;
 use App\Models\Posts\Post;
 use App\Models\Regions\Section;
 use App\Models\Regions\Category;
@@ -27,7 +28,9 @@ trait CategoryRelation
      */
     public function children(): HasMany
     {
-        return $this->hasMany(Category::class, 'parent_id');
+        return $this->hasMany(Category::class, 'parent_id')
+            ->where('flag', Flag::PUBLISHED)
+            ->with('children');
     }
 
     /**

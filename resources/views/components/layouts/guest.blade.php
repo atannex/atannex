@@ -6,12 +6,14 @@
 
     <x-sections.guest.header />
 
+    @auth
+
+    <livewire:forms.subscription />
+
+    @endauth
 
     {{ $slot }}
 
-
-
     <x-sections.guest.footer />
-
 
 </x-layouts.base>

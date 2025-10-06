@@ -2,10 +2,11 @@
 
 namespace Atannex\Relations;
 
+use App\Enums\Flag;
 use App\Models\Posts\Post;
-use App\Models\Regions\Section;
 use App\Models\Regions\Ruler;
 use App\Models\Regions\Region;
+use App\Models\Regions\Section;
 use App\Models\Pivots\PostRegion;
 use App\Models\Pivots\RegionSection;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -24,15 +25,16 @@ trait RegionRelation
     }
 
     /**
-     * Child regions.
+     * Direct published children.
      */
     public function children(): HasMany
     {
-        return $this->hasMany(Region::class, 'parent_id');
+        return $this->hasMany(Region::class, 'parent_id')
+            ->where('flag', Flag::PUBLISHED);
     }
 
     /**
-     * Recursive children relationship.
+     * Recursive children relationship (all descendants).
      */
     public function childrenRecursive(): HasMany
     {
@@ -53,25 +55,21 @@ trait RegionRelation
     public function posts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class, 'post_region')
-            ->withTimestamps()
-            ->using(PostRegion::class);
+            ->using(PostRegion::class)
+            ->withTimestamps();
     }
 
     /**
-     * Get the sections attached to this page through a many-to-many relationship.
-     *
-     * @return BelongsToMany<Section>
+     * Sections attached to this region (many-to-many).
      */
     public function sections(): BelongsToMany
     {
         return $this->belongsToMany(Section::class, 'region_section')
             ->using(RegionSection::class)
-            ->withPivot([
-                'config',
-                'deleted_at',
-            ])
-            ->withTimestamps()
-            ->wherePivot('deleted_at')
-            ->orderBy('region_section.position');
+            ->withPivot(['config', 'deleted_at', 'flag', 'metadata', 'position'])
+            ->wherePivot('deleted_at', null)
+            ->wherePivot('flag', Flag::PUBLISHED)
+            ->orderBy('region_section.position')
+            ->withTimestamps();
     }
 }

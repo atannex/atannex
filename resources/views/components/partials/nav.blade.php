@@ -1,23 +1,27 @@
 <ul>
-    @if ($global['mainRegions']->isNotEmpty())
-        <li class="menu-item-has-children">
-            <a href="{{ route('page.index', ['slug' => $global['mainRegions']->first()->slug]) }}">
-                {{ $global['mainRegions']->first()->name }}
-            </a>
 
-            <ul class="sub-menu">
-                @foreach ($global['mainRegions'] as $region)
+    @if(!empty($global['mainRegions']) && $global['mainRegions']->isNotEmpty())
+    @php $mainRegion = $global['mainRegions']->first(); @endphp
 
-                    <x-partials.page-item :item="$region" />
+    <li class="menu-item-has-children">
+        <a href="{{ route('page.index', ['slug' => $mainRegion->slug]) }}">
+            {{ $mainRegion->name }}
+        </a>
 
-                @endforeach
-            </ul>
-        </li>
+        <ul class="sub-menu">
+            @foreach($global['mainRegions'] as $region)
+
+            <x-partials.page-item :item="$region" />
+
+            @endforeach
+        </ul>
+    </li>
     @endif
+    @if(!empty($global['categoryRegions']) && $global['categoryRegions']->isNotEmpty())
+    @foreach($global['categoryRegions'] as $category)
 
-    @foreach ($global['categoryRegions'] as $category)
-
-        <x-partials.category-item :category="$category" />
+    <x-partials.category-item :category="$category" />
 
     @endforeach
+    @endif
 </ul>

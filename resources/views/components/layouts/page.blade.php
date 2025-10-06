@@ -7,7 +7,7 @@
     <x-sections.side-menu />
 
 
-    <x-sections.subscribe />
+    <livewire:forms.subscription />
 
     <x-sections.pages.header />
 

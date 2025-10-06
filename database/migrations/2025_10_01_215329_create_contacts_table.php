@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subscribers', function (Blueprint $table) {
+        Schema::create('contacts', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->unique();
-            $table->string('token')->nullable()->unique();
-            $table->boolean('confirmed')->default(false);
+            $table->string('name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('number')->nullable();
+            $table->text('subject');
+            $table->text('message');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subscribers');
+        Schema::dropIfExists('contacts');
     }
 };

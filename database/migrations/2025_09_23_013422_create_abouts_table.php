@@ -13,20 +13,25 @@ return new class extends Migration
     {
         Schema::create('abouts', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 255);
-            $table->string('subtitle', 255)->nullable();
+
+            $table->string('title');
+            $table->string('subtitle')->nullable();
+
             $table->text('description')->nullable();
-            $table->longText('content')->nullable();
+            $table->text('map')->nullable();
             $table->json('image')->nullable();
-            $table->text('video')->nullable();
             $table->json('cta')->nullable();
-            $table->string('cta_background', 255)->nullable();
-            $table->string('slug', 255)->unique()->index('idx_abouts_slug');
-            $table->string('meta_title', 255)->nullable();
-            $table->text('meta_description')->nullable();
-            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('flag', 50)->default('pending');
+
+            $table->text('video_url')->nullable();
+
+            $table->json('features')->nullable();
+            $table->json('story')->nullable();
+            $table->json('counters')->nullable();
+
+            $table->json('info')->nullable();
+
+            $table->string('flag')->default('pending');
+
             $table->timestamps();
             $table->softDeletes();
         });

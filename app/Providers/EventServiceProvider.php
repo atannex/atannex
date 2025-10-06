@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Events\Users\UserCreated;
+use App\Listeners\SendContactMessage;
+use App\Events\ContactMessageCreated;
 use App\Events\Docs\DocumentCreated;
 use App\Listeners\Docs\DocumentNotification;
 use App\Listeners\Users\SendUserRegisteredNotification;
@@ -24,13 +26,14 @@ class EventServiceProvider extends ServiceProvider
         UserCreated::class => [
             SendUserRegisteredNotification::class,
         ],
+
+        ContactMessageCreated::class => [
+            SendContactMessage::class,
+        ],
     ];
 
     /**
      * Register any events for your application.
      */
-    public function boot(): void
-    {
-
-    }
+    public function boot(): void {}
 }

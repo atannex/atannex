@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Enums\Flag;
-use App\Enums\Icons;
 use App\Enums\Image;
 use App\Enums\Entity;
 use App\Enums\Binding;

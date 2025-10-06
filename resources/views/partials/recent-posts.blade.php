@@ -1,5 +1,7 @@
 <div class="widget">
-    <h3 class="widget_title">{{ __("Recent Posts") }}</h3>
+    <h3 class="widget_title">
+        {{ __("Recent Posts") }}
+    </h3>
 
     <div class="recent-post-wrap">
         @foreach ($global['recentPosts'] as $post)

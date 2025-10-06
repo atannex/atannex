@@ -21,18 +21,6 @@ class AboutsTable
                     ->searchable(),
                 TextColumn::make('subtitle')
                     ->searchable(),
-                TextColumn::make('cta_background')
-                    ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
-                TextColumn::make('meta_title')
-                    ->searchable(),
-                TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('updated_by')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('flag')
                     ->searchable(),
                 TextColumn::make('created_at')

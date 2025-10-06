@@ -2,7 +2,6 @@
 
 namespace Atannex\Views;
 
-use App\Enums\Traits\HasSocialSharing;
 use App\Models\Tags\Tag;
 use Illuminate\View\View;
 use App\Models\Pivots\PostTag;

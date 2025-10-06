@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Atannex\Contracts;
 
+use InvalidArgumentException;
+
 /**
  * Interface for generating social media share links.
  */
@@ -17,7 +19,7 @@ interface ShareInterface
      * @param array $platforms List of platforms to generate links for (e.g., ['facebook', 'twitter']).
      * @param string $linkedinSummary Optional summary text for LinkedIn shares.
      * @return array<string, string> An associative array of platform names and their corresponding share URLs.
-     * @throws \InvalidArgumentException If the URL is invalid or platforms are unsupported.
+     * @throws InvalidArgumentException If the URL is invalid or platforms are unsupported.
      */
     public function getRawShareLinks(
         string $url,

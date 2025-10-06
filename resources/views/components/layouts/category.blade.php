@@ -7,10 +7,6 @@
 
     {{ $slot }}
 
-
-
     <x-sections.category.footer />
-
-
 
 </x-layouts.app>

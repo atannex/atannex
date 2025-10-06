@@ -2,9 +2,11 @@
 
 namespace App\Models\Pivots;
 
+use App\Enums\Flag;
 use App\Models\Regions\Widget;
 use App\Models\Regions\Section;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -12,27 +14,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Class WidgetSection
  *
  * Pivot model representing the relationship between Widgets and Sections.
- * Stores additional metadata such as configuration, position, and flag status.
+ * Handles configuration, position, metadata, and publishing status.
  * Supports soft deletes for safe removal.
- *
- * @package App\Models\Pivots
  */
 class WidgetSection extends Pivot
 {
     use SoftDeletes;
 
-    /**
-     * The table associated with the pivot model.
-     *
-     * @var string
-     */
     protected $table = 'widget_section';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'section_id',
         'widget_id',
@@ -42,21 +32,32 @@ class WidgetSection extends Pivot
         'metadata',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'config' => 'array',
+        'config'   => 'array',
         'metadata' => 'array',
         'position' => 'integer',
     ];
 
     /**
-     * Get the section that this pivot belongs to.
-     *
-     * @return BelongsTo
+     * Boot model with default global scopes.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope('published', function (Builder $builder) {
+            $builder->where('flag', Flag::PUBLISHED);
+        });
+    }
+
+    /**
+     * Scope for only published pivots.
+     */
+    protected function scopePublished(Builder $query): Builder
+    {
+        return $query->where('flag', Flag::PUBLISHED);
+    }
+
+    /**
+     * Section relation.
      */
     public function section(): BelongsTo
     {
@@ -64,9 +65,7 @@ class WidgetSection extends Pivot
     }
 
     /**
-     * Get the widget that this pivot belongs to.
-     *
-     * @return BelongsTo
+     * Widget relation.
      */
     public function widget(): BelongsTo
     {
