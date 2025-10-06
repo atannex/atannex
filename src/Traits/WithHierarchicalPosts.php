@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Atannex\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Atannex\Views\Traits\CanNormalize;
 
+/**
+ * Provides functionality to fetch hierarchical models and attach their posts efficiently.
+ */
 trait WithHierarchicalPosts
 {
     use CanNormalize;
@@ -13,20 +18,17 @@ trait WithHierarchicalPosts
     /**
      * Retrieve hierarchical models along with their latest posts.
      *
-     * Fetches a collection of models with nested children and associated posts.
-     * Supports sorting, limiting, and merging posts from both parent and leaf child models.
-     *
-     * @param string $modelClass The fully qualified class name of the Eloquent model
-     * @param array $config Configuration array containing:
-     *                      - 'posts_with_id': array of model IDs to include
-     *                      - 'limit': maximum number of parent models to retrieve
-     *                      - 'relation_limit': maximum number of posts per model
-     *                      - 'leaf_relation_limit': maximum number of posts from leaf children
-     *                      - 'sort': column to sort posts/models by
-     *                      - 'order': sort direction ('asc' or 'desc')
-     * @param string $childrenRelation The name of the relationship for child models
-     * @param string $postsRelation The name of the relationship for posts
-     * @return Collection A collection of models with posts attached
+     * @param string $modelClass Fully qualified class name of the Eloquent model.
+     * @param array<string,mixed> $config Configuration array:
+     *                                   - 'posts_with_id': array<int>
+     *                                   - 'limit': int
+     *                                   - 'relation_limit': int
+     *                                   - 'leaf_relation_limit': int
+     *                                   - 'sort': string
+     *                                   - 'order': string ('asc'|'desc')
+     * @param string $childrenRelation Child relation name.
+     * @param string $postsRelation Post relation name.
+     * @return Collection<int, Model> Collection of models with merged posts.
      */
     public function getHierarchicalWithPosts(
         string $modelClass,
@@ -34,43 +36,72 @@ trait WithHierarchicalPosts
         string $childrenRelation = 'children',
         string $postsRelation = 'posts'
     ): Collection {
-        $modelIds = $this->normalizeIds($config['posts_with_id']);
-        $limit = $config['limit'];
-        $postLimit = $config['relation_limit'];
-        $leafPostLimit = $config['leaf_relation_limit'];
-        $sortField = $config['sort'];
-        $order = strtolower($config['order']);
+        $ids            = $this->normalizeIds($config['posts_with_id']);
+        $limit          = (int) $config['limit'];
+        $postLimit      = (int) $config['relation_limit'];
+        $leafPostLimit  = (int) $config['leaf_relation_limit'];
+        $sortField      = $config['sort'];
+        $order          = strtolower($config['order']);
 
-        $models = $modelClass::query()
-            ->whereIn('id', $modelIds)
-            ->with([
-                sprintf('%s:id,parent_id,name,%s', $childrenRelation, $sortField),
-                sprintf('%s.%s', $childrenRelation, $postsRelation) => fn($q) => $q->orderBy($sortField, $order)->limit($leafPostLimit),
-                $postsRelation => fn($q) => $q->orderBy($sortField, $order)->limit($postLimit),
-            ])
-            ->orderBy($sortField, $order)
-            ->limit($limit)
-            ->get();
+        $models = $this->fetchHierarchicalModels(
+            $modelClass,
+            $ids,
+            $limit,
+            $childrenRelation,
+            $postsRelation,
+            $sortField,
+            $order,
+            $leafPostLimit,
+            $postLimit,
+        );
 
         return $models->map(
-            fn(Model $model) =>
-            $this->attachPostsToModel($model, $postLimit, $leafPostLimit, $childrenRelation, $postsRelation, $sortField, $order)
+            fn(Model $model) => $this->attachPostsToModel(
+                $model,
+                $postLimit,
+                $leafPostLimit,
+                $childrenRelation,
+                $postsRelation,
+                $sortField,
+                $order,
+            )
         );
     }
 
     /**
-     * Attach posts to a model, combining its own posts with posts from leaf children.
-     *
-     * @param Model $model The model to attach posts to
-     * @param int $postLimit Maximum number of posts to attach
-     * @param int $leafPostLimit Maximum posts per leaf child
-     * @param string $childrenRelation Name of the children relationship
-     * @param string $postsRelation Name of the posts relationship
-     * @param string $sortField Column to sort by
-     * @param string $order Sort direction ('asc' or 'desc')
-     * @return Model The model with posts attached
+     * Fetch models with their children and post relationships.
      */
-    private function attachPostsToModel(
+    protected function fetchHierarchicalModels(
+        string $modelClass,
+        array $ids,
+        int $limit,
+        string $childrenRelation,
+        string $postsRelation,
+        string $sortField,
+        string $order,
+        int $leafPostLimit,
+        int $postLimit
+    ): Collection {
+        return $modelClass::query()
+            ->whereIn('id', $ids)
+            ->with([
+                sprintf('%s:id,parent_id,name,%s', $childrenRelation, $sortField),
+                sprintf('%s.%s', $childrenRelation, $postsRelation) => fn($q) => $q
+                    ->orderBy($sortField, $order)
+                    ->limit($leafPostLimit),
+                $postsRelation => fn($q) => $q
+                    ->orderBy($sortField, $order)
+                    ->limit($postLimit),
+            ])
+            ->orderBy($sortField, $order)
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Combine a model's own posts with those from its leaf descendants.
+     */
+    protected function attachPostsToModel(
         Model $model,
         int $postLimit,
         int $leafPostLimit,
@@ -79,35 +110,54 @@ trait WithHierarchicalPosts
         string $sortField,
         string $order
     ): Model {
-        $allPosts = $model->$postsRelation;
+        $combinedPosts = $this->mergeModelAndLeafPosts(
+            $model,
+            $childrenRelation,
+            $postsRelation,
+            $leafPostLimit
+        );
 
-        $leafPosts = $this->collectLeafPostsIterative($model, $childrenRelation, $postsRelation, $leafPostLimit);
+        $sortedPosts = $this->sortAndLimitPosts($combinedPosts, $sortField, $order, $postLimit);
 
-        if ($leafPosts->isNotEmpty()) {
-            $allPosts = $allPosts->merge($leafPosts);
-        }
-
-        $allPosts = $allPosts
-            ->unique('id')
-            ->sortBy([$sortField => $order === 'desc' ? SORT_DESC : SORT_ASC])
-            ->take($postLimit)
-            ->values();
-
-        $model->setRelation($postsRelation, $allPosts);
+        $model->setRelation($postsRelation, $sortedPosts);
 
         return $model;
     }
 
     /**
-     * Collect posts from all leaf child models using an iterative approach.
-     *
-     * @param Model $model The parent model
-     * @param string $childrenRelation Children relationship name
-     * @param string $postsRelation Posts relationship name
-     * @param int $leafPostLimit Maximum posts per leaf model
-     * @return Collection Collection of posts from leaf models
+     * Merge a model’s own posts with posts from its leaf nodes.
      */
-    private function collectLeafPostsIterative(
+    protected function mergeModelAndLeafPosts(
+        Model $model,
+        string $childrenRelation,
+        string $postsRelation,
+        int $leafPostLimit
+    ): Collection {
+        $ownPosts  = $model->$postsRelation;
+        $leafPosts = $this->collectLeafPostsIterative($model, $childrenRelation, $postsRelation, $leafPostLimit);
+
+        return $ownPosts->merge($leafPosts)->unique('id')->values();
+    }
+
+    /**
+     * Sort and limit posts according to the given configuration.
+     */
+    protected function sortAndLimitPosts(
+        Collection $posts,
+        string $sortField,
+        string $order,
+        int $limit
+    ): Collection {
+        return $posts
+            ->sortBy([$sortField => $order === 'desc' ? SORT_DESC : SORT_ASC])
+            ->take($limit)
+            ->values();
+    }
+
+    /**
+     * Collect posts from all leaf nodes iteratively for performance.
+     */
+    protected function collectLeafPostsIterative(
         Model $model,
         string $childrenRelation,
         string $postsRelation,
@@ -116,15 +166,18 @@ trait WithHierarchicalPosts
         $stack = [$model];
         $leafPosts = collect();
 
-        while ($stack !== []) {
+        while ($stack) {
             $current = array_pop($stack);
 
             if ($current->$childrenRelation->isEmpty()) {
-                $leafPosts = $leafPosts->merge($current->$postsRelation->take($leafPostLimit));
-            } else {
-                foreach ($current->$childrenRelation as $child) {
-                    $stack[] = $child;
-                }
+                $leafPosts = $leafPosts->merge(
+                    $current->$postsRelation->take($leafPostLimit)
+                );
+                continue;
+            }
+
+            foreach ($current->$childrenRelation as $child) {
+                $stack[] = $child;
             }
         }
 

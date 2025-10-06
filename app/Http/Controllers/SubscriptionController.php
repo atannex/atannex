@@ -2,31 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Others\Subscription;
 use Illuminate\Http\RedirectResponse;
-use App\Models\Others\Subscriber;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Subscription\Confirmation;
 
+/**
+ * Class SubscriptionController
+ *
+ * Handles subscription-related actions such as email verification.
+ */
 class SubscriptionController extends Controller
 {
-    public function confirm(string $token): RedirectResponse
+    /**
+     * Verify a subscription using the provided token.
+     *
+     * @param string $token The verification token
+     * @return RedirectResponse
+     */
+    public function verify(string $token): RedirectResponse
     {
-        $subscriber = Subscriber::where('token', $token)->first();
+        $subscription = Subscription::where('verification_token', $token)->firstOrFail();
 
-        if (!$subscriber) {
-            return redirect()
-                ->route('home')
-                ->with('error', 'Invalid or expired confirmation token.');
+        if ($subscription->markAsVerified()) {
+
+            Mail::to($subscription->email)->queue(new Confirmation($subscription));
+
+            return redirect('/')
+                ->with('success', 'Your subscription has been confirmed successfully! A confirmation email has been queued.');
         }
 
-        if ($subscriber->confirmed) {
-            return redirect()
-                ->route('home')
-                ->with('message', 'Your subscription has already been confirmed.');
-        }
-
-        $subscriber->update(['confirmed' => true]);
-
-        return redirect()
-            ->route('home')
-            ->with('message', 'Subscription confirmed! Thank you for joining us.');
+        return redirect('/')
+            ->with('error', 'Unable to verify subscription. Please try again or contact support.');
     }
 }

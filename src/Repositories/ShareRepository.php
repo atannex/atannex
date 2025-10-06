@@ -18,9 +18,9 @@ class ShareRepository implements ShareInterface
      *
      * @param string $url The URL to be shared.
      * @param string $title The title or text for the share.
-     * @param array $platforms List of platforms to generate links for.
+     * @param array<string> $platforms List of platforms to generate links for.
      * @param string $linkedinSummary Optional summary text for LinkedIn shares.
-     * @return array<string, string> An associative array of platform names and their share URLs.
+     * @return array<string, string> Associative array of platform names and their share URLs.
      */
     public function getRawShareLinks(
         string $url,
@@ -31,21 +31,50 @@ class ShareRepository implements ShareInterface
             Icon::LINKEDIN,
             Icon::WHATSAPP,
             Icon::TELEGRAM,
-            Icon::REDDIT
+            Icon::REDDIT,
         ],
         string $linkedinSummary = ''
     ): array {
-        $share = Share::page($url, $title);
+        $share = $this->initializeShareInstance($url, $title);
+        $this->applyPlatforms($share, $platforms, $linkedinSummary);
 
+        return $this->extractRawLinks($share);
+    }
+
+    /**
+     * Initialize the Share builder instance with URL and title.
+     */
+    protected function initializeShareInstance(string $url, string $title): object
+    {
+        return Share::page($url, $title);
+    }
+
+    /**
+     * Apply all requested social platforms to the Share instance.
+     */
+    protected function applyPlatforms(object $share, array $platforms, string $linkedinSummary): void
+    {
         foreach ($platforms as $platform) {
             $method = strtolower($platform);
+
+            if ($method === 'linkedin') {
+                $share->linkedin($linkedinSummary);
+                continue;
+            }
+
             if (method_exists($share, $method)) {
-                $method === 'linkedin'
-                    ? $share->linkedin($linkedinSummary)
-                    : $share->$method();
+                $share->$method();
             }
         }
+    }
 
+    /**
+     * Extract the final raw share URLs.
+     *
+     * @return array<string, string>
+     */
+    protected function extractRawLinks(object $share): array
+    {
         return $share->getRawLinks();
     }
 }

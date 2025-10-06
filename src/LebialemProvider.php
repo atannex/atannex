@@ -28,6 +28,7 @@ final class LebialemProvider extends PassPosts
         return [
             'popularTags' => $this->tagService->getPopularTags(10),
             'logo' => $this->getGalleryImage(Image::LOGO()),
+            'subscription' => $this->getGalleryImage(Image::SUBSCRIPTION()),
             'banner' => $this->getGalleryImage(Image::BANNER()),
             'favicon' => $this->getGalleryImage(Image::FAVICON()),
             'global_icons' => $this->getSocialMediaIcons(),

@@ -2,46 +2,59 @@
 
 namespace App\Models\Others;
 
-use App\Enums\Flag;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class About extends Model
 {
     use SoftDeletes;
 
+    /**
+     * The table associated with the model.
+     *
+     * (Optional if you follow Laravel's naming convention)
+     */
+    protected $table = 'abouts';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * Helps prevent mass assignment vulnerabilities.
+     */
     protected $fillable = [
         'title',
         'subtitle',
         'description',
-        'content',
         'image',
-        'video',
-        'cta',
-        'cta_background',
-        'slug',
-        'meta_title',
-        'meta_description',
-        'created_by',
-        'updated_by',
+        'video_url',
+        'map',
+        'features',
+        'story',
+        'counters',
         'flag',
+        'info',
+        'item',
+        'cta'
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * Ensures proper handling of JSON and arrays.
+     */
     protected $casts = [
-        'image' => 'array',
-        'cta' => 'array',
-        'flag' => Flag::class,
+        'image'     => 'array',
+        'features'  => 'array',
+        'story'     => 'array',
+        'counters'  => 'array',
+        'cta'       => 'array',
+        'info'      => 'array',
     ];
 
-    public function creator(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function editor(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'updated_by');
-    }
+    /**
+     * The attributes that should be mutated to dates.
+     */
+    protected $dates = [
+        'deleted_at',
+    ];
 }

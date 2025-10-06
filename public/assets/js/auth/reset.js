@@ -178,3 +178,63 @@ function initialize() {
 
 // Initialize when DOM is fully loaded
 document.addEventListener("DOMContentLoaded", initialize);
+
+function popupSubscribe(alreadySubscribed) {
+    return {
+        open: false,
+        alreadySubscribed: alreadySubscribed,
+        HIDE_DURATION: 7 * 24 * 60 * 60 * 1000,
+        SHOW_DELAY: 10000,
+        SCROLL_THRESHOLD: 0.5,
+
+        init() {
+            const hideUntil = localStorage.getItem("hideSubscribePopup");
+            const now = Date.now();
+
+            if (
+                this.alreadySubscribed ||
+                hideUntil === "permanent" ||
+                (hideUntil && now < Number(hideUntil))
+            ) {
+                return;
+            }
+
+            let isTriggered = false;
+
+            const showPopup = () => {
+                if (isTriggered) return;
+                this.open = true;
+                isTriggered = true;
+                window.removeEventListener("scroll", handleScroll);
+            };
+
+            const handleScroll = () => {
+                const scrollPosition = window.scrollY + window.innerHeight;
+                const pageHeight = document.documentElement.scrollHeight;
+                if (scrollPosition / pageHeight >= this.SCROLL_THRESHOLD)
+                    showPopup();
+            };
+
+            setTimeout(showPopup, this.SHOW_DELAY);
+            window.addEventListener("scroll", handleScroll);
+
+            window.addEventListener("subscription-success", () => {
+                this.closePopup();
+                localStorage.setItem(
+                    "hideSubscribePopup",
+                    now + this.HIDE_DURATION
+                );
+            });
+        },
+
+        closePopup() {
+            this.open = false;
+            localStorage.setItem("hideSubscribePopup", Date.now());
+        },
+
+        permanentlyHide() {
+            this.open = false;
+            localStorage.setItem("hideSubscribePopup", "permanent");
+        },
+    };
+}

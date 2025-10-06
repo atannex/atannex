@@ -97,4 +97,9 @@
         max-width: 1224px !important;
         height: 100px !important;
     }
+
+    .subscription {
+        width: 404px !important;
+        height: 350px !important;
+    }
 }

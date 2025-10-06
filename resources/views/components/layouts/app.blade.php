@@ -7,11 +7,9 @@
     <x-sections.side-menu />
 
 
-    <x-sections.subscribe />
+    <livewire:forms.subscription />
 
 
     {{ $slot }}
-
-
 
 </x-layouts.base>

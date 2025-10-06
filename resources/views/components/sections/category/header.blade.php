@@ -24,7 +24,6 @@
                         <a href="{{ $media['url'] }}" target="_blank" rel="noopener" class="d-inline-flex align-items-center justify-content-center rounded-circle me-1 social-icon" style="width: 2.5rem; height: 2.5rem; background-color: {{ $media['color'] }};">
                             <i class="{{ $media['icon'] }} text-white"></i>
                         </a>
-
                         @endforeach
                     </div>
                 </div>

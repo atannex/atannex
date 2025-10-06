@@ -4,12 +4,12 @@ namespace Atannex\Relations;
 
 use App\Models\Tags\Tag;
 use App\Models\Regions\Category;
-use App\Models\Pivots\PostTag;
 use App\Models\Regions\Region;
 use App\Models\Comments\Comment;
 use App\Models\Regions\Employee;
-use App\Models\Pivots\PostRegion;
 use App\Models\Modules\PostModule;
+use App\Models\Pivots\PostTag;
+use App\Models\Pivots\PostRegion;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -20,27 +20,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * Defines all Eloquent relationships and slug handling
  * logic for the Post model.
- *
- * Assumes related data is always present — no null checks applied.
  */
 trait PostRelation
 {
     /**
      * Many-to-Many relationship with Tags.
-     *
-     * @return BelongsToMany<Tag>
      */
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class)
+        return $this->belongsToMany(Tag::class, 'post_tag')
             ->using(PostTag::class)
             ->withTimestamps();
     }
 
     /**
-     * Post belongs to a Category.
-     *
-     * @return BelongsTo<Category, self>
+     * Belongs to a Category.
      */
     public function category(): BelongsTo
     {
@@ -48,9 +42,7 @@ trait PostRelation
     }
 
     /**
-     * Post belongs to an Author (Employee).
-     *
-     * @return BelongsTo<Employee, self>
+     * Belongs to an Author (Employee).
      */
     public function author(): BelongsTo
     {
@@ -58,9 +50,7 @@ trait PostRelation
     }
 
     /**
-     * Post belongs to an Editor (Employee) who last updated it.
-     *
-     * @return BelongsTo<Employee, self>
+     * Belongs to an Editor (Employee).
      */
     public function editor(): BelongsTo
     {
@@ -70,7 +60,7 @@ trait PostRelation
     /**
      * Many-to-Many relationship with Regions.
      *
-     * @return BelongsToMany<Region>
+     * Filtering (SoftDeletes + flag) handled inside PostRegion pivot.
      */
     public function regions(): BelongsToMany
     {
@@ -81,8 +71,6 @@ trait PostRelation
 
     /**
      * One-to-One relationship with PostModule.
-     *
-     * @return HasOne<PostModule>
      */
     public function module(): HasOne
     {
@@ -90,9 +78,7 @@ trait PostRelation
     }
 
     /**
-     * Polymorphic relationship with Comments (only top-level comments).
-     *
-     * @return MorphMany<Comment>
+     * Polymorphic relationship with Comments (only top-level).
      */
     public function comments(): MorphMany
     {
@@ -108,21 +94,16 @@ trait PostRelation
      */
 
     /**
-     * Get the base string for slug generation.
-     *
-     * Always returns the related category slug path.
-     *
-     * @return string
+     * Base string for slug generation (category path).
      */
     public function getSlugBase(): string
     {
-        return $this->category->slug_path;
+        // Avoid lazy-loading errors
+        return $this->category?->slug_path ?? '';
     }
 
     /**
-     * Get the generated slug for this post.
-     *
-     * @return string
+     * Generated slug for this post.
      */
     public function getSlug(): string
     {
@@ -131,8 +112,6 @@ trait PostRelation
 
     /**
      * Rebuild this post's slug path.
-     *
-     * @return void
      */
     public function rebuildSlugPath(): void
     {
@@ -140,22 +119,32 @@ trait PostRelation
     }
 
     /**
-     * Cascade slug path updates to related tags pivot and self.
-     *
-     * @return void
+     * Cascade slug path updates to related pivots and self.
      */
     public function cascadeSlugPathUpdates(): void
     {
         $this->rebuildSlugPath();
         $this->saveQuietly();
+
+        // Placeholder for pivot propagation
+        $this->updatePivotSlugs();
     }
 
     /**
-     * Clear slug paths for related tags pivots.
+     * Clear slug paths for related pivots.
      *
-     * Placeholder for future logic.
+     * Future extension point.
+     */
+    public function clearRelatedSlugPaths(): void {}
+
+    /**
+     * Update pivot slug paths (tags, regions).
      *
      * @return void
      */
-    public function clearRelatedSlugPaths(): void {}
+    protected function updatePivotSlugs(): void
+    {
+        // Example: update tag pivot slugs if schema supports it
+        // $this->tags()->each(fn ($tag) => $tag->pivot->updateQuietly([...]));
+    }
 }

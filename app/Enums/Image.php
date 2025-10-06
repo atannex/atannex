@@ -36,6 +36,8 @@ final class Image extends Enum
 
     public const WATERMARK = 'watermark';
 
+    public const SUBSCRIPTION = 'subscription';
+
     /**
      * Boot method to set metadata for image types.
      */
@@ -101,6 +103,12 @@ final class Image extends Enum
                 'description' => 'Transparent watermark images',
                 'color' => 'stone',
                 'icon' => 'heroicon-o-adjustments',
+            ],
+            self::SUBSCRIPTION => [
+                'label' => 'Subscription',
+                'description' => 'Images related to subscription plans or offers',
+                'color' => 'purple',
+                'icon' => 'heroicon-o-currency-dollar',
             ],
         ]);
     }

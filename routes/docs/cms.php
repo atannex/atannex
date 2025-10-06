@@ -19,8 +19,9 @@ Route::middleware(['onboarded'])->group(function () {
     | Subscription Routes
     |--------------------------------------------------------------------------
     */
-    Route::get('/subscription/confirm/{token}', [SubscriptionController::class, 'confirm'])
-        ->name('subscription.confirm');
+
+    Route::get('/subscription/verify/{token}', [SubscriptionController::class, 'verify'])->name('subscription.verify');
+
 
     /*
     |--------------------------------------------------------------------------
