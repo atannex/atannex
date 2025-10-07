@@ -5,10 +5,8 @@ namespace App\Filament\Resources\RegionSections\Schemas;
 use App\Enums\Flag;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use App\Filament\Traits\ContentFiltering;
@@ -29,7 +27,7 @@ class RegionSectionForm
                                 ->description('Select the page and section where this widget will be displayed')
                                 ->icon('heroicon-o-document-text')
                                 ->schema([
-                                    Grid::make(1)
+                                    SchemaGrid::make(1)
                                         ->schema([
                                             Select::make('region_id')
                                                 ->relationship('region', 'name')
@@ -56,7 +54,7 @@ class RegionSectionForm
                                 ->description('Control how and when this widget appears')
                                 ->icon('heroicon-o-cog-6-tooth')
                                 ->schema([
-                                    Grid::make(1)
+                                    SchemaGrid::make(1)
                                         ->schema([
                                             TextInput::make('position')
                                                 ->label('Display Order')

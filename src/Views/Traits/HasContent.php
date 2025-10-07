@@ -89,7 +89,7 @@ trait HasContent
      */
     private function resolveTabs(array $tabsConfig): array
     {
-        if (empty($tabsConfig)) {
+        if ($tabsConfig === []) {
             return [];
         }
 

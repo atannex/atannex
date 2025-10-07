@@ -25,13 +25,13 @@ class WidgetSectionsTable
 
                 TextColumn::make('section.name')
                     ->label('Section Name')
-                    ->description(fn($record) => "slug: {$record->section->slug}")
+                    ->description(fn($record) => 'slug: ' . $record->section->slug)
                     ->tooltip(fn($record) => sprintf('Section #%s: %s', $record->section->name, $record->section->slug))
                     ->sortable(),
 
                 TextColumn::make('widget.name')
                     ->label('Widget Name')
-                    ->description(fn($record) => "slug: {$record->widget->slug}")
+                    ->description(fn($record) => 'slug: ' . $record->widget->slug)
                     ->sortable(),
 
                 TextColumn::make('created_at')

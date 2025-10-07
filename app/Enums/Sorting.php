@@ -17,10 +17,15 @@ use BenSampo\Enum\Enum;
 final class Sorting extends Enum
 {
     const PUBLISHED_AT   = 'published_at';
+
     const CREATED_AT     = 'created_at';
+
     const VIEWS          = 'views';
+
     const COMMENTS_COUNT = 'comments_count';
+
     const LIKES_COUNT    = 'likes_count';
+
     const SHARES_COUNT   = 'shares_count';
 
     /**
