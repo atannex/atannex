@@ -72,10 +72,6 @@ class RegionSectionForm
                                                 ->searchable()
                                                 ->required()
                                                 ->default('pending'),
-
-                                            Textarea::make('metadata')
-                                                ->default(null)
-                                                ->columnSpanFull(),
                                         ]),
                                 ])
                                 ->collapsible()

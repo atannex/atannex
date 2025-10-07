@@ -16,8 +16,12 @@ trait HasContent
      * @param Region $region
      * @return void
      */
-    protected function resolveSection(Region $region): void
+    protected function resolveSection(?Region $region): void
     {
+        if (!$region || empty($region->sections)) {
+            return;
+        }
+
         foreach ($region->sections as $section) {
             $this->resolveSectionEntity($section);
         }
@@ -26,28 +30,38 @@ trait HasContent
     /**
      * Resolve a section entity and its widgets.
      *
-     * @param object $section
+     * @param object|null $section
      * @return void
      */
-    protected function resolveSectionEntity(object $section): void
+    protected function resolveSectionEntity(?object $section): void
     {
-        $sectionConfig = $section->pivot->config;
+        if (!$section || !isset($section->pivot)) {
+            return;
+        }
+
+        $sectionConfig = $section->pivot->config ?? [];
         $this->resolveEntityContent($section, $sectionConfig);
 
-        foreach ($section->widgets as $widget) {
-            $this->resolveWidgetEntity($widget);
+        if (!empty($section->widgets)) {
+            foreach ($section->widgets as $widget) {
+                $this->resolveWidgetEntity($widget);
+            }
         }
     }
 
     /**
      * Resolve a widget entity.
      *
-     * @param object $widget
+     * @param object|null $widget
      * @return void
      */
-    protected function resolveWidgetEntity(object $widget): void
+    protected function resolveWidgetEntity(?object $widget): void
     {
-        $this->resolveEntityContent($widget, $widget->pivot->config);
+        if (!$widget || !isset($widget->pivot)) {
+            return;
+        }
+
+        $this->resolveEntityContent($widget, $widget->pivot->config ?? []);
     }
 
     /**
@@ -59,36 +73,65 @@ trait HasContent
      */
     private function resolveEntityContent(object $entity, ?array $config): void
     {
-        $entity->tabs = empty($config['tabs']) ? [] : $this->resolveTabs($config['tabs']);
+        if (!is_object($entity)) {
+            return;
+        }
+
+        $tabsConfig = $config['tabs'] ?? [];
+        $entity->tabs = empty($tabsConfig) ? [] : $this->resolveTabs($tabsConfig);
     }
 
     /**
-     * Resolve tabs configuration.
+     * Resolve tabs configuration with null-safe, fail-soft mapping.
      *
      * @param array $tabsConfig
      * @return array
      */
     private function resolveTabs(array $tabsConfig): array
     {
-        $component = $this->getComponent;
+        if (empty($tabsConfig)) {
+            return [];
+        }
+
+        $component = $this->getComponent ?? null;
+        if (!$component) {
+            return [];
+        }
+
         $mappingsCache = [];
 
         foreach ($tabsConfig as &$tab) {
-            $type = $tab['type'];
+            $type = $tab['type'] ?? null;
+            if (!$type) {
+                $tab['entities'] = [];
+                continue;
+            }
+
             $mapping = $mappingsCache[$type] ??= $this->getMapping($type);
+            if (empty($mapping)) {
+                $tab['entities'] = [];
+                continue;
+            }
 
-            $method = $mapping['method'];
-            $args = $this->requiresIdKey($type)
-                ? [$mapping['idKey'] => $this->normalizeIds((array) $tab[$mapping['idKey']])]
-                : $tab;
+            $method = $mapping['method'] ?? null;
+            if (!$method || !method_exists($component, $method)) {
+                $tab['entities'] = [];
+                continue;
+            }
 
-            $args['limit'] = $tab['limit'];
-            $args['relation_limit'] = $tab['relation_limit'];
-            $args['leaf_relation_limit'] = $tab['leaf_relation_limit'];
-            $args['sort'] = $tab['sort'];
-            $args['order'] = $tab['order'];
+            $args = $this->requiresIdKey($type) && !empty($mapping['idKey'])
+                ? [$mapping['idKey'] => $this->normalizeIds((array)($tab[$mapping['idKey']] ?? []))]
+                : (array)$tab;
 
-            $entities = $component->$method($args);
+            $args = array_merge([
+                'limit'              => $tab['limit'] ?? 10,
+                'relation_limit'     => $tab['relation_limit'] ?? 10,
+                'leaf_relation_limit' => $tab['leaf_relation_limit'] ?? 10,
+                'sort'               => $tab['sort'] ?? 'id',
+                'order'              => $tab['order'] ?? 'desc',
+            ], $args);
+
+            $entities = $component->$method($args) ?? [];
 
             if (is_array($entities) && count($entities) > $args['limit']) {
                 $entities = array_slice($entities, 0, $args['limit']);

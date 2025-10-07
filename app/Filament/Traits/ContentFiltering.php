@@ -28,42 +28,41 @@ class ContentFiltering
                         ->searchable()
                         ->preload()
                         ->placeholder('Choose content type')
-                        ->helperText('Determines how posts are fetched')
-                        ->required(),
+                        ->helperText('Determines how posts are fetched'),
 
                     Select::make('region_id')
                         ->label('Filter by Region')
-                        ->options(fn () => self::region())
+                        ->options(fn() => self::region())
                         ->searchable()
                         ->multiple()
                         ->placeholder('Select Region')
                         ->helperText('Show only posts with this Region')
                         ->preload()
-                        ->visible(fn (Get $get) => $get('type') === Entity::POST_BY_REGION),
+                        ->visible(fn(Get $get) => $get('type') === Entity::POST_BY_REGION),
 
                     Select::make('tag_id')
                         ->label('Filter by Tag')
-                        ->options(fn () => self::tags())
+                        ->options(fn() => self::tags())
                         ->searchable()
                         ->multiple()
                         ->placeholder('Select Tags')
                         ->helperText('Show only posts with this Tag')
                         ->preload()
-                        ->visible(fn (Get $get) => $get('type') === Entity::POST_BY_TAG),
+                        ->visible(fn(Get $get) => $get('type') === Entity::POST_BY_TAG),
 
                     Select::make('category_id')
                         ->label('Filter by Category')
-                        ->options(fn () => self::categories())
+                        ->options(fn() => self::categories())
                         ->searchable()
                         ->multiple()
                         ->placeholder('Select Categories')
                         ->helperText('Show only posts from this Category')
                         ->preload()
-                        ->visible(fn (Get $get) => $get('type') === Entity::POST_BY_CATEGORY),
+                        ->visible(fn(Get $get) => $get('type') === Entity::POST_BY_CATEGORY),
 
                     Select::make('posts_with_id')
                         ->label('Select Entity')
-                        ->options(fn (Get $get) => match ($get('type')) {
+                        ->options(fn(Get $get) => match ($get('type')) {
                             Entity::GET_TAG_WITH_POSTS => self::tags(),
                             Entity::GET_REGION_WITH_POSTS => self::region(),
                             Entity::GET_CATEGORY_WITH_POSTS => self::categories(),
@@ -74,7 +73,7 @@ class ContentFiltering
                         ->placeholder('Select entities')
                         ->helperText('Show posts under selected entities')
                         ->preload()
-                        ->visible(fn (Get $get) => in_array($get('type'), [
+                        ->visible(fn(Get $get) => in_array($get('type'), [
                             Entity::GET_TAG_WITH_POSTS,
                             Entity::GET_REGION_WITH_POSTS,
                             Entity::GET_CATEGORY_WITH_POSTS,

@@ -2,11 +2,8 @@
 
 namespace App\Models\Pivots;
 
-use App\Enums\Flag;
 use App\Models\Posts\Post;
 use App\Models\Regions\Region;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -19,8 +16,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class PostRegion extends Pivot
 {
-    use SoftDeletes;
-
     protected $table = 'post_region';
 
     protected $fillable = [
@@ -33,24 +28,6 @@ class PostRegion extends Pivot
     protected $casts = [
         'slug_path' => 'string',
     ];
-
-    /**
-     * Apply a global scope to only return published pivot rows.
-     */
-    protected static function booted(): void
-    {
-        static::addGlobalScope('published', function (Builder $builder) {
-            $builder->where('flag', Flag::PUBLISHED);
-        });
-    }
-
-    /**
-     * Scope for only published pivots.
-     */
-    protected function scopePublished(Builder $query): Builder
-    {
-        return $query->where('flag', Flag::PUBLISHED);
-    }
 
     /**
      * Get the post associated with this pivot record.
