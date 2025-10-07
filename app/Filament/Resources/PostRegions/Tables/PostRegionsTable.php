@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\PostRegions\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\{
+    BulkActionGroup,
+    DeleteBulkAction,
+    EditAction
+};
 
 class PostRegionsTable
 {
@@ -15,18 +17,28 @@ class PostRegionsTable
         return $table
             ->columns([
                 TextColumn::make('post.title')
-                    ->searchable(),
-                TextColumn::make('region.name')
-                    ->searchable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Post Title')
+                    ->searchable()
                     ->sortable(),
+
+                TextColumn::make('region.name')
+                    ->label('Region Name')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('created_at')
+                    ->label('Created')
+                    ->formatStateUsing(fn($state) => $state?->diffForHumans() ?? 'N/A')
+                    ->tooltip(fn($state) => $state?->format('M d, Y h:i A') ?? 'N/A')
+                    ->sortable(),
+
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Updated')
+                    ->formatStateUsing(fn($state) => $state?->diffForHumans() ?? 'N/A')
+                    ->tooltip(fn($state) => $state?->format('M d, Y h:i A') ?? 'N/A')
                     ->sortable(),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),

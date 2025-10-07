@@ -4,22 +4,18 @@ declare(strict_types=1);
 
 namespace App\Enums\Traits;
 
-use OutOfBoundsException;
 use App\Enums\Entity;
 
 /**
  * Trait HasEntityMapping
  *
  * Provides a mapping mechanism for entities to their respective methods and ID keys.
- * This trait centralizes configuration for entity-to-method mappings, enabling
- * dynamic resolution of methods and ID key requirements based on entity types.
+ * Returns empty values when data is not available instead of throwing exceptions.
  */
 trait HasEntityMapping
 {
     /**
-     * @var array<string, array<string, string>> $MAPPINGS
-     *
-     * Maps entity constants to configuration arrays.
+     * @var array<string, array<string, mixed>> $MAPPINGS
      */
     private static array $MAPPINGS = [
         Entity::POST_BY_CATEGORY => [
@@ -59,36 +55,36 @@ trait HasEntityMapping
     ];
 
     /**
-     * Retrieves the mapping configuration for a given entity.
+     * Retrieve the mapping configuration for a given entity.
      *
-     * @param string|null $entity The entity type to retrieve the mapping for.
-     * @return array|null The mapping configuration, or null if not found or invalid.
+     * @param string|null $entity
+     * @return array<string, mixed> Returns an empty array if entity not found.
      */
-    public static function getMapping(?string $entity): ?array
+    public static function getMapping(?string $entity): array
     {
         if ($entity === null || !isset(self::$MAPPINGS[$entity])) {
-            return null;
+            return [];
         }
 
         return self::$MAPPINGS[$entity];
     }
 
     /**
-     * Resolves the method name associated with a given entity.
+     * Resolve the method name for a given entity.
      *
-     * @param string|null $entity The entity type to resolve the method for.
-     * @return string|null The method name, or null if entity is invalid.
+     * @param string|null $entity
+     * @return string Returns an empty string if method not found.
      */
-    public static function resolveMethod(?string $entity): ?string
+    public static function resolveMethod(?string $entity): string
     {
-        return self::$MAPPINGS[$entity]['method'] ?? null;
+        return self::$MAPPINGS[$entity]['method'] ?? '';
     }
 
     /**
-     * Checks if the given entity requires an ID key in its mapping.
+     * Check if the given entity requires an ID key in its mapping.
      *
-     * @param string|null $entity The entity type to check.
-     * @return bool True if the entity requires an ID key, false otherwise.
+     * @param string|null $entity
+     * @return bool Returns false if entity is null or not mapped.
      */
     public static function requiresIdKey(?string $entity): bool
     {

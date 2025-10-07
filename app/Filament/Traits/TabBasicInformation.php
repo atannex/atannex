@@ -2,23 +2,20 @@
 
 namespace App\Filament\Traits;
 
+use App\Enums\Sorting;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 
 /**
- * Class TabBasicInformation
- *
- * Provides the schema definition for the "Basic Information" tab
- * used in page sections within the Filament admin panel.
+ * Defines the schema for the "Basic Information" tab
+ * in Filament admin panels.
  */
 class TabBasicInformation
 {
     /**
-     * Creates the schema for the Basic Information tab.
-     *
-     * @return Section
+     * Build the Basic Information section schema.
      */
     public static function make(): Section
     {
@@ -30,7 +27,8 @@ class TabBasicInformation
                             ->label('Tab Title')
                             ->placeholder('e.g., Breaking News, Latest Updates')
                             ->helperText('The display name of this tab in the interface.')
-                            ->maxLength(50),
+                            ->maxLength(50)
+                            ->required(),
 
                         TextInput::make('limit')
                             ->label('Max number of categories')
@@ -39,7 +37,8 @@ class TabBasicInformation
                             ->minValue(1)
                             ->maxValue(50)
                             ->suffix('posts')
-                            ->helperText('Maximum number of posts to display in this tab.'),
+                            ->helperText('Maximum number of posts to display in this tab.')
+                            ->required(),
 
                         TextInput::make('relation_limit')
                             ->label('Posts Limit per category')
@@ -48,7 +47,8 @@ class TabBasicInformation
                             ->minValue(1)
                             ->maxValue(50)
                             ->suffix('posts')
-                            ->helperText('Maximum number of posts to display in this tab.'),
+                            ->helperText('Maximum number of posts to display in this tab.')
+                            ->required(),
 
                         TextInput::make('leaf_relation_limit')
                             ->label('Posts per leaf category')
@@ -57,21 +57,15 @@ class TabBasicInformation
                             ->minValue(1)
                             ->maxValue(50)
                             ->suffix('posts')
-                            ->helperText('Maximum number of posts to display for each child element.'),
+                            ->helperText('Maximum number of posts to display for each child element.')
+                            ->required(),
 
                         Select::make('sort')
                             ->label('Sort By')
-                            ->options([
-                                'published_at' => 'Published Date',
-                                'created_at' => 'Creation Date',
-                                'title' => 'Title',
-                                'name' => 'Name',
-                                'views' => 'Views',
-                                'comments_count' => 'Comments Count',
-                                'likes_count' => 'Likes Count',
-                                'shares_count' => 'Shares Count',
-                            ])
-                            ->default('created_at')
+                            ->options(Sorting::options())
+                            ->default(Sorting::CREATED_AT)
+                            ->preload()
+                            ->searchable()
                             ->helperText('Select the field by which content should be sorted.'),
 
                         Select::make('order')
