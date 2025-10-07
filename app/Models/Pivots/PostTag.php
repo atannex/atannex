@@ -2,11 +2,9 @@
 
 namespace App\Models\Pivots;
 
-use App\Enums\Flag;
 use App\Models\Posts\Post;
 use App\Models\Tags\Tag;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 

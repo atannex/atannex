@@ -2,11 +2,9 @@
 
 namespace App\Models\Pivots;
 
-use App\Enums\Flag;
 use App\Models\Regions\Widget;
 use App\Models\Regions\Section;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
