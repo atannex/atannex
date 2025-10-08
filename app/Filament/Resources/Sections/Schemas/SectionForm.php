@@ -2,8 +2,9 @@
 
 namespace App\Filament\Resources\Sections\Schemas;
 
+use App\Enums\Flag;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 
 class SectionForm
@@ -13,15 +14,16 @@ class SectionForm
         return $schema
             ->components([
                 TextInput::make('slug')
+                    ->disabled()
                     ->readOnly(),
                 TextInput::make('name')
                     ->required(),
-                Textarea::make('description')
-                    ->default(null)
-                    ->columnSpanFull(),
-                Textarea::make('metadata')
-                    ->default(null)
-                    ->columnSpanFull(),
+                Select::make('flag')
+                    ->default(Flag::PENDING)
+                    ->searchable()
+                    ->preload()
+                    ->options(Flag::asSelectArray())
+                    ->required(),
             ]);
     }
 }

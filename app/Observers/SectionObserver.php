@@ -7,19 +7,25 @@ use Atannex\Adapters\SectionAdapter;
 
 class SectionObserver
 {
+    protected readonly SectionAdapter $viewService;
+
     /**
      * Create a new observer instance.
      *
      * @param SectionAdapter $viewService The manager for handling section view operations
      */
-    public function __construct(protected readonly SectionAdapter $viewService) {}
+    public function __construct(SectionAdapter $viewService)
+    {
+
+        $this->viewService = $viewService;
+    }
 
     /**
      * Handle the Section "created" event.
      *
      * @param Section $section The section model instance
      */
-    public function created(SectionAdapter $section): void
+    public function created(Section $section): void
     {
         $this->viewService->createView($section);
     }
@@ -29,7 +35,7 @@ class SectionObserver
      *
      * @param Section $section The section model instance
      */
-    public function updated(SectionAdapter $section): void
+    public function updated(Section $section): void
     {
         if ($section->wasChanged('slug')) {
             $originalSlug = $section->getOriginal('slug');
@@ -44,7 +50,7 @@ class SectionObserver
      *
      * @param Section $section The section model instance
      */
-    public function deleted(SectionAdapter $section): void
+    public function deleted(Section $section): void
     {
         $this->viewService->deleteView($section->slug);
     }
@@ -54,7 +60,7 @@ class SectionObserver
      *
      * @param Section $section The section model instance
      */
-    public function forceDeleted(SectionAdapter $section): void
+    public function forceDeleted(Section $section): void
     {
         $this->viewService->deleteView($section->slug);
     }
