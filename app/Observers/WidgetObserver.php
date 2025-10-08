@@ -5,56 +5,77 @@ namespace App\Observers;
 use App\Models\Regions\Widget;
 use Atannex\Adapters\WidgetAdapter;
 
+/**
+ * Class WidgetObserver
+ *
+ * Handles lifecycle events for the Widget model.
+ * Automatically manages view file creation, updates, and deletion
+ * via the WidgetAdapter (which uses the ViewFileManager trait).
+ */
 class WidgetObserver
 {
     /**
-     * Create a new observer instance.
+     * The view service responsible for managing widget view files.
      *
-     * @param WidgetAdapter $viewService The manager for handling widget view operations
+     * @var WidgetAdapter
      */
-    public function __construct(protected readonly WidgetAdapter $viewService) {}
+    protected readonly WidgetAdapter $viewService;
 
     /**
-     * Handle the Widget "created" event.
+     * Inject the WidgetAdapter instance.
      *
-     * @param Widget $widget The widget model instance
+     * @param  WidgetAdapter  $viewService
      */
-    public function created(WidgetAdapter $widget): void
+    public function __construct(WidgetAdapter $viewService)
+    {
+        $this->viewService = $viewService;
+    }
+
+    /**
+     * Handle the "created" event.
+     *
+     * @param  Widget  $widget
+     * @return void
+     */
+    public function created(Widget $widget): void
     {
         $this->viewService->createView($widget);
     }
 
     /**
-     * Handle the Widget "updated" event.
+     * Handle the "updated" event.
      *
-     * @param Widget $widget The widget model instance
+     * @param  Widget  $widget
+     * @return void
      */
-    public function updated(WidgetAdapter $widget): void
+    public function updated(Widget $widget): void
     {
         if ($widget->wasChanged('slug')) {
             $originalSlug = $widget->getOriginal('slug');
             $this->viewService->updateView($widget, $originalSlug);
         } else {
-            $this->viewService->createView($widget);
+            $this->viewService->createView($widget, true);
         }
     }
 
     /**
-     * Handle the Widget "deleted" event.
+     * Handle the "deleted" event.
      *
-     * @param Widget $widget The widget model instance
+     * @param  Widget  $widget
+     * @return void
      */
-    public function deleted(WidgetAdapter $widget): void
+    public function deleted(Widget $widget): void
     {
         $this->viewService->deleteView($widget->slug);
     }
 
     /**
-     * Handle the Widget "force deleted" event.
+     * Handle the "forceDeleted" event.
      *
-     * @param Widget $widget The widget model instance
+     * @param  Widget  $widget
+     * @return void
      */
-    public function forceDeleted(WidgetAdapter $widget): void
+    public function forceDeleted(Widget $widget): void
     {
         $this->viewService->deleteView($widget->slug);
     }
