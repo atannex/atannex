@@ -127,7 +127,7 @@ trait HasContent
                 'limit'              => $tab['limit'] ?? 10,
                 'relation_limit'     => $tab['relation_limit'] ?? 10,
                 'leaf_relation_limit' => $tab['leaf_relation_limit'] ?? 10,
-                'sort'               => $tab['sort'] ?? 'id',
+                'sort'               => $tab['sort'] ?? 'created_at',
                 'order'              => $tab['order'] ?? 'desc',
             ], $args);
 
