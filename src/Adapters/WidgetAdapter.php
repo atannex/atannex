@@ -2,18 +2,49 @@
 
 namespace Atannex\Adapters;
 
-use Atannex\Filters\GetCreation;
+use Atannex\Filters\ViewFileManager;
+use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class WidgetAdapter
+ *
+ * Acts as an adapter for widget-related view management.
+ * Utilizes the ViewFileManager trait to handle the creation,
+ * updating, and deletion of associated Blade view files.
+ */
 final class WidgetAdapter
 {
-    use GetCreation;
+    use ViewFileManager;
 
     /**
-     * Constructor to optionally set custom view path and file extension.
+     * Initialize the adapter with custom view directory and file extension.
      */
     public function __construct()
     {
-        $this->setViewPath('views/widgets');
-        $this->setFileExtension('.blade.php');
+        $this->setViewDirectory('views/widgets');
+        $this->setViewExtension('.blade.php');
+    }
+
+    /**
+     * Example: Create or update a widget view for a model.
+     *
+     * @param  Model  $widget
+     * @param  bool   $force
+     * @return void
+     */
+    public function generateWidgetView(Model $widget, bool $force = false): void
+    {
+        $this->createView($widget, $force);
+    }
+
+    /**
+     * Example: Remove a widget view file.
+     *
+     * @param  string  $slug
+     * @return void
+     */
+    public function removeWidgetView(string $slug): void
+    {
+        $this->deleteView($slug);
     }
 }
