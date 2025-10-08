@@ -5,12 +5,16 @@
             <div class="col-xl-9">
                 <div class="row align-items-center">
                     <div class="col">
-                        <h2 class="sec-title has-line">{{ $tab['title'] }}</h2>
+                        <h2 class="sec-title has-line">
+                            {{ $tab['title'] }}
+                        </h2>
                     </div>
                     <div class="col-auto">
                         <div class="sec-btn">
                             <div class="filter-menu filter-menu-active">
-                                <button data-filter="*" class="tab-btn active" type="button">ALL</button>
+                                <button data-filter="*" class="tab-btn active" type="button">
+                                    {{ __('ALL') }}
+                                </button>
                                 @foreach ($tab['entities'] as $region)
                                 <button data-filter=".cat-region-{{ $region['id'] }}" class="tab-btn" type="button">
                                     {{ $region['name'] }}

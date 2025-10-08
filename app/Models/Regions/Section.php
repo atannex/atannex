@@ -20,15 +20,7 @@ class Section extends Model
     protected $fillable = [
         'slug',
         'name',
-        'description',
-        'metadata',
-        'position',
         'flag',
-    ];
-
-    protected $casts = [
-        'metadata' => 'array',
-        'position' => 'integer',
     ];
 
     protected function getDomIdAttribute(): string

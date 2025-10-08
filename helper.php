@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
-use App\Models\Users\UserLogs;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 if (!function_exists('seo_title')) {
@@ -41,5 +41,24 @@ if (!function_exists('seo_title')) {
         }, $parts);
 
         return implode(' | ', $titleParts);
+    }
+}
+
+if (!function_exists('get_posts_from_tabs')) {
+    /**
+     * Retrieves posts from an array of tabs.
+     *
+     * @param array $tabs Array of tab configurations containing content or entities.
+     * @return \Illuminate\Support\Collection Collection of posts.
+     */
+    function get_posts_from_tabs(array $tabs): Collection
+    {
+        return collect($tabs)->flatMap(function ($tab) {
+            if (!empty($tab['content'])) {
+                return $tab['content'];
+            }
+
+            return collect($tab['entities'])->flatMap(fn($region) => $region['posts']);
+        });
     }
 }

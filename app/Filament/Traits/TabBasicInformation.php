@@ -30,6 +30,13 @@ class TabBasicInformation
                             ->maxLength(50)
                             ->required(),
 
+                        TextInput::make('sub_title')
+                            ->label('Sub Title Tab')
+                            ->placeholder('e.g., Breaking News, Latest Updates')
+                            ->helperText('The display name of this tab in the interface.')
+                            ->maxLength(50)
+                            ->required(),
+
                         TextInput::make('limit')
                             ->label('Max number of categories')
                             ->numeric()
