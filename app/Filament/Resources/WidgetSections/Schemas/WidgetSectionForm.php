@@ -65,12 +65,13 @@ class WidgetSectionForm
                                             ->step(1)
                                             ->placeholder('0')
                                             ->helperText('Lower numbers appear first (0 = top position)'),
-                                            Select::make('flag')
-                                                ->options(Flag::labels())
-                                                ->preload()
-                                                ->searchable()
-                                                ->required()
-                                                ->default('pending'),
+
+                                        Select::make('flag')
+                                            ->options(Flag::asSelectArray())
+                                            ->preload()
+                                            ->searchable()
+                                            ->required()
+                                            ->default(Flag::PENDING),
                                     ]),
                             ]),
                     ])
