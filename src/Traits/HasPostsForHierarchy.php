@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Atannex\Traits;
 
-use App\Enums\Flag;
 use App\Enums\Sorting;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
@@ -119,7 +118,7 @@ trait HasPostsForHierarchy
             ->when(
                 !$foreignKey,
                 fn(Builder $q) =>
-                $q->whereHas($relationName, fn(Builder $b) => $b->whereIn("{$relationName}.id", $leafIds))
+                $q->whereHas($relationName, fn(Builder $b) => $b->whereIn($relationName . '.id', $leafIds))
             );
 
         return $this->applySortingAndThresholds($query, $sortBy, $sortDir);
@@ -199,7 +198,7 @@ trait HasPostsForHierarchy
                 break;
 
             case Sorting::EDITOR_PICK:
-                $query->orderByDesc('flag', Flag::EDITORIAL_PICK);
+                $query->orderByDesc('flag');
                 break;
 
             case Sorting::SOURCE_CREDIBILITY:
