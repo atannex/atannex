@@ -35,26 +35,47 @@ use BenSampo\Enum\Enum;
 final class Sorting extends Enum
 {
     const PUBLISHED_AT       = 'published_at';
+
     const CREATED_AT         = 'created_at';
+
     const UPDATED_AT         = 'updated_at';
+
     const VIEWS              = 'views';
+
     const COMMENTS           = 'comments';
+
     const LIKES              = 'likes';
+
     const SHARES             = 'shares';
+
     const RATING             = 'rating';
+
     const TITLE              = 'title';
+
     const AUTHOR             = 'author';
+
     const POPULARITY         = 'popularity';
+
     const RANDOM             = 'random';
+
     const RELEVANCE          = 'relevance';
+
     const TRENDING           = 'trending';
+
     const FEATURED           = 'featured';
+
     const CATEGORY           = 'category';
+
     const READING_TIME       = 'reading_time';
+
     const BREAKING_PRIORITY  = 'breaking_priority';
+
     const EDITOR_PICK        = 'editor_pick';
+
     const SOURCE_CREDIBILITY = 'source_credibility';
+
     const REGION             = 'region';
+
     const HEADLINE_LENGTH    = 'headline_length';
 
     /**
