@@ -53,12 +53,16 @@ if (!function_exists('get_posts_from_tabs')) {
      */
     function get_posts_from_tabs(array $tabs): Collection
     {
-        return collect($tabs)->flatMap(function ($tab) {
-            if (!empty($tab['content'])) {
-                return $tab['content'];
-            }
+        return collect($tabs)
+            ->flatMap(function ($tab) {
+                if (!empty($tab['content'])) {
+                    return $tab['content'];
+                }
 
-            return collect($tab['entities'])->flatMap(fn($region) => $region['posts']);
-        });
+                return collect($tab['entities'])
+                    ->flatMap(fn($region) => $region['posts']);
+            })
+            ->unique('id')
+            ->values();
     }
 }
