@@ -1,4 +1,4 @@
-<div class="space dark-theme bg-title-dark" data-bg-src="{{ asset('assets/img/bg/blog_bg_1.jpg') }}">
+<div class="space dark-theme" data-bg-src="{{ asset('assets/img/bg/blog_bg_1.jpg') }}">
     <div class="container">
         @foreach ($section->tabs as $tab)
         <h2 class="text-center sec-title has-line">{{ $tab['title'] }}</h2>
