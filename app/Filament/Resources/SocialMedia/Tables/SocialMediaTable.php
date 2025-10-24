@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\SocialMedia\Tables;
 
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use App\Enums\Icon;
 use App\Enums\Flag;
 use App\Enums\Binding;
@@ -159,11 +159,11 @@ class SocialMediaTable
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['created_from'] ?? null) {
-                            $indicators['created_from'] = 'Created from ' . Carbon::parse($data['created_from'])->toFormattedDateString();
+                            $indicators['created_from'] = 'Created from ' . Date::parse($data['created_from'])->toFormattedDateString();
                         }
 
                         if ($data['created_until'] ?? null) {
-                            $indicators['created_until'] = 'Created until ' . Carbon::parse($data['created_until'])->toFormattedDateString();
+                            $indicators['created_until'] = 'Created until ' . Date::parse($data['created_until'])->toFormattedDateString();
                         }
 
                         return $indicators;

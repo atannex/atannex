@@ -1,9 +1,12 @@
 <div class="mb-10 col-xl-4 mt-35 mt-xl-0 sidebar-wrap">
     <div class="sidebar-area">
+
         @foreach($widget->tabs as $tab)
         <div class="mb-5 widget">
 
-            <h2 class="sec-title fs-20 has-line">{{ $tab['title'] }}</h2>
+            <h2 class="sec-title fs-20 has-line">
+                {{ $tab['title'] }}
+            </h2>
 
             <div class="row gy-4">
 

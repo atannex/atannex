@@ -12,6 +12,6 @@ class DocumentNotification
     public function handle(DocumentCreated $event): void
     {
         Log::info('DocumentNotification listener fired for document ID: ' . $event->document->id);
-        DocumentJob::dispatch($event->document);
+        dispatch(new DocumentJob($event->document));
     }
 }

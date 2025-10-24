@@ -18,7 +18,7 @@ class CheckNameComplete
         $user = Auth::user();
 
         if (!$user) {
-            return redirect()->route('login')->with('error', 'Authentication required.');
+            return to_route('login')->with('error', 'Authentication required.');
         }
 
         $token = UserNameToken::where('user_id', $user->id)
@@ -26,7 +26,7 @@ class CheckNameComplete
             ->first();
 
         if (empty($user->name) && $token) {
-            return redirect()->route('name.index', ['token' => $token->token])
+            return to_route('name.index', ['token' => $token->token])
                 ->with('info', 'Please complete your profile by providing a name.');
         }
 

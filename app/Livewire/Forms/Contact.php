@@ -57,7 +57,7 @@ class Contact extends Component
             'message' => $this->message,
         ]);
 
-        ContactMessageCreated::dispatch($contact);
+        event(new ContactMessageCreated($contact));
 
         session()->flash('success', 'Message sent successfully!');
 

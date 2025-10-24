@@ -2,6 +2,7 @@
 
 namespace Atannex\Traits;
 
+use Illuminate\Support\Facades\Date;
 use BadMethodCallException;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -27,7 +28,7 @@ trait HasMetrics
      */
     private function getDefaultDateRange(): array
     {
-        $end = Carbon::now();
+        $end = Date::now();
         return [
             'start' => $end->copy()->subWeek(),
             'end' => $end,
@@ -42,10 +43,10 @@ trait HasMetrics
      */
     private function getPeriodRange(string $period): array
     {
-        $now = Carbon::now();
+        $now = Date::now();
 
         return match ($period) {
-            'day' => [Carbon::today(), Carbon::today()->endOfDay()],
+            'day' => [Date::today(), Date::today()->endOfDay()],
             'week' => [$now->startOfWeek(), $now->endOfWeek()],
             'month' => [$now->startOfMonth(), $now->endOfMonth()],
             'year' => [$now->startOfYear(), $now->endOfYear()],

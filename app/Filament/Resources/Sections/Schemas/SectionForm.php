@@ -127,7 +127,7 @@ class SectionForm
                                 TextEntry::make('preview_url')
                                     ->label('Preview URL')
                                     ->state(fn($record): string => $record?->slug
-                                        ? "/sections/{$record->slug}"
+                                        ? '/sections/' . $record->slug
                                         : 'Not available')
                                     ->visible(fn($record) => $record !== null)
                                     ->helperText('Frontend section URL'),

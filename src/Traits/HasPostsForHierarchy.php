@@ -295,6 +295,6 @@ trait HasPostsForHierarchy
     {
         return $foreignKey
             ? $post->{$foreignKey}
-            : optional($post->{$relationName}->first())->id;
+            : $post->{$relationName}->first()?->id;
     }
 }

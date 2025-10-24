@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Widgets\Schemas;
 
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use App\Enums\Flag;
 use Filament\Schemas\Schema;
 
 class WidgetForm
@@ -15,6 +17,12 @@ class WidgetForm
                     ->disabled(),
                 TextInput::make('name')
                     ->required(),
+                Select::make('flag')
+                    ->options(Flag::labels())
+                    ->preload()
+                    ->searchable()
+                    ->required()
+                    ->default(Flag::PENDING),
             ]);
     }
 }

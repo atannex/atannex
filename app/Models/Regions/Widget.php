@@ -3,9 +3,8 @@
 namespace App\Models\Regions;
 
 use Atannex\Enables\HasSlug;
-use App\Models\Pivots\WidgetSection;
-use Atannex\Relations\SectionRelation;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Pivots\RegionSectionWidget;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -50,26 +49,10 @@ class Widget extends Model
         'metadata' => 'array',
     ];
 
-    /**
-     * Get the sections that this widget belongs to in a many-to-many relationship.
-     *
-     * @return BelongsToMany<SectionRelation>
-     */
     public function sections(): BelongsToMany
     {
-        return $this->belongsToMany(Section::class, 'widget_section')
-            ->using(WidgetSection::class)
-            ->withPivot([
-                'config',
-                'position',
-                'flag',
-                'metadata',
-                'created_at',
-                'updated_at',
-                'deleted_at',
-            ])
-            ->withTimestamps()
-            ->wherePivot('deleted_at')
-            ->orderByPivot('position');
+        return $this->belongsToMany(Section::class, 'region_section_widgets')
+            ->using(RegionSectionWidget::class)
+            ->withPivot(['region_id', 'config', 'flag', 'metadata']);
     }
 }

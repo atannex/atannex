@@ -11,9 +11,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -66,7 +64,7 @@ class RegionForm
                             ->collapsible()
                             ->columnSpan(['lg' => 2]),
                         Section::make('Classification & Hierarchy')
-                            ->description('Define the region\'s status and relationships')
+                            ->description("Define the region's status and relationships")
                             ->icon('heroicon-o-tag')
                             ->schema([
                                 Grid::make(2)

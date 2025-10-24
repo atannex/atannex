@@ -12,6 +12,6 @@ class SendContactMessage
      */
     public function handle(ContactMessageCreated $event)
     {
-        SendContactEmail::dispatch($event->contact);
+        dispatch(new SendContactEmail($event->contact));
     }
 }

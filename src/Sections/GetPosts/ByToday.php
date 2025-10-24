@@ -2,7 +2,7 @@
 
 namespace Atannex\Sections\GetPosts;
 
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -18,8 +18,8 @@ trait ByToday
 
         $timezone = $user->timezone ?? config('app.timezone', 'UTC');
 
-        $startOfDay = Carbon::now($timezone)->startOfDay()->setTimezone('UTC');
-        $endOfDay   = Carbon::now($timezone)->endOfDay()->setTimezone('UTC');
+        $startOfDay = Date::now($timezone)->startOfDay()->setTimezone('UTC');
+        $endOfDay   = Date::now($timezone)->endOfDay()->setTimezone('UTC');
 
         $query = Post::query()
             ->published()

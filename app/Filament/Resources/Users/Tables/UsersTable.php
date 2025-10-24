@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -101,7 +101,7 @@ class UsersTable
                     ->sortable()
                     ->description(function ($record) {
                         if ($record->date_of_birth) {
-                            $age = Carbon::parse($record->date_of_birth)->age;
+                            $age = Date::parse($record->date_of_birth)->age;
                             return $age . ' years old';
                         }
 

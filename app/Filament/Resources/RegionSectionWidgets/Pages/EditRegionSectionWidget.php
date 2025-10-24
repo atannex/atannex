@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Filament\Resources\RegionSections\Pages;
+namespace App\Filament\Resources\RegionSectionWidgets\Pages;
 
-use App\Filament\Resources\RegionSections\RegionSectionResource;
+use App\Filament\Resources\RegionSectionWidgets\RegionSectionWidgetResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
 
-class EditRegionSection extends EditRecord
+class EditRegionSectionWidget extends EditRecord
 {
-    protected static string $resource = RegionSectionResource::class;
+    protected static string $resource = RegionSectionWidgetResource::class;
 
     protected function getHeaderActions(): array
     {
