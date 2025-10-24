@@ -7,28 +7,70 @@ namespace Atannex\Views\Traits;
 trait CanNormalize
 {
     /**
-     * Normalizes input IDs into an array of integers or strings.
+     * Normalize a single ID or iterable of IDs into a flat array.
      *
      * @param int|string|iterable<int|string>|null $ids
      * @return array<int|string>
      */
     private function normalizeIds(int|string|iterable|null $ids): array
     {
-        if ($ids === null) {
-            return [];
+        return is_iterable($ids) ? iterator_to_array($ids) : [$ids];
+    }
+
+    /**
+     * Resolve all tabs by enriching them with their respective entities.
+     *
+     * @param array $tabsConfig
+     * @return array
+     */
+    private function resolveTabs(array $tabsConfig): array
+    {
+        $component = $this->getComponent;
+
+        foreach ($tabsConfig as &$tab) {
+            $tab = $this->resolveSingleTab($tab, $component);
         }
 
-        if (is_iterable($ids)) {
-            $result = [];
-            foreach ($ids as $id) {
-                if (is_int($id) || is_string($id)) {
-                    $result[] = $id;
-                }
-            }
+        unset($tab);
+        return $tabsConfig;
+    }
 
-            return $result;
-        }
+    /**
+     * Resolve a single tab’s content using its mapping definition.
+     *
+     * @param array $tab
+     * @param object $component
+     * @return array
+     */
+    private function resolveSingleTab(array $tab, object $component): array
+    {
+        $mapping = $this->getMapping($tab['type']);
+        $args = $this->buildTabArguments($tab, $mapping);
 
-        return [$ids];
+        $entities = $component->{$mapping['method']}($args)->take($args['limit']);
+        $tab['entities'] = $tab['content'] = $entities;
+
+        return $tab;
+    }
+
+    /**
+     * Build arguments for a tab resolver method based on its mapping.
+     *
+     * @param array $tab
+     * @param array $mapping
+     * @return array
+     */
+    private function buildTabArguments(array $tab, array $mapping): array
+    {
+        $key = $mapping['idKey'];
+
+        return [
+            $key => $this->normalizeIds($tab[$key]),
+            'limit' => $tab['limit'],
+            'relation_limit' => $tab['relation_limit'],
+            'leaf_relation_limit' => $tab['leaf_relation_limit'],
+            'sort' => $tab['sort'],
+            'order' => $tab['order'],
+        ];
     }
 }

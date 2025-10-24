@@ -36,11 +36,13 @@ class Region extends Model implements Sluggable
         'logo',
         'description',
         'slug_path',
+        'metadata',
         'parent_id',
     ];
 
     protected $casts = [
         'flag' => Flag::class,
+        'metadata' => 'array',
     ];
 
     /**

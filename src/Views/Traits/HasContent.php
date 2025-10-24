@@ -5,142 +5,65 @@ namespace Atannex\Views\Traits;
 use App\Models\Regions\Region;
 use App\Enums\Traits\HasEntityMapping;
 
+/**
+ * Trait HasContent
+ *
+ * Dynamically resolves region, section, and widget content,
+ * ensuring widgets display only in their assigned region.
+ */
 trait HasContent
 {
     use CanNormalize;
     use HasEntityMapping;
 
     /**
-     * Resolve sections for a region.
+     * Resolve all sections for a specific region.
      *
      * @param Region $region
      * @return void
      */
-    protected function resolveSection(?Region $region): void
+    protected function resolveSection(Region $region): void
     {
-        if (!$region || empty($region->sections)) {
-            return;
-        }
-
         foreach ($region->sections as $section) {
-            $this->resolveSectionEntity($section);
+            $this->resolveEntityWithWidgets($section, $region);
         }
     }
 
     /**
-     * Resolve a section entity and its widgets.
-     *
-     * @param object|null $section
-     * @return void
-     */
-    protected function resolveSectionEntity(?object $section): void
-    {
-        if (!$section || !isset($section->pivot)) {
-            return;
-        }
-
-        $sectionConfig = $section->pivot->config ?? [];
-        $this->resolveEntityContent($section, $sectionConfig);
-
-        if (!empty($section->widgets)) {
-            foreach ($section->widgets as $widget) {
-                $this->resolveWidgetEntity($widget);
-            }
-        }
-    }
-
-    /**
-     * Resolve a widget entity.
-     *
-     * @param object|null $widget
-     * @return void
-     */
-    protected function resolveWidgetEntity(?object $widget): void
-    {
-        if (!$widget || !isset($widget->pivot)) {
-            return;
-        }
-
-        $this->resolveEntityContent($widget, $widget->pivot->config ?? []);
-    }
-
-    /**
-     * Resolve entity content.
+     * Resolve a section and its widgets scoped to the given region.
      *
      * @param object $entity
-     * @param array|null $config
+     * @param Region $region
      * @return void
      */
-    private function resolveEntityContent(object $entity, ?array $config): void
+    protected function resolveEntityWithWidgets(object $entity, Region $region): void
     {
-        if (!is_object($entity)) {
-            return;
+        $config = $entity->pivot->config;
+
+        $this->resolveEntityContent($entity, $config, 'section_tab');
+
+        $regionWidgets = $entity->widgets
+            ->filter(fn($widget) => $widget->pivot->region_id === $region->id)
+            ->values();
+
+        foreach ($regionWidgets as $widget) {
+            $widgetConfig = $widget->pivot->config;
+            $this->resolveEntityContent($widget, $widgetConfig, 'widget_tab');
         }
 
-        $tabsConfig = $config['tabs'] ?? [];
-        $entity->tabs = empty($tabsConfig) ? [] : $this->resolveTabs($tabsConfig);
+        $entity->setRelation('widgets', $regionWidgets);
     }
 
     /**
-     * Resolve tabs configuration with null-safe, fail-soft mapping.
+     * Resolve tab content for a given entity using its configuration.
      *
-     * @param array $tabsConfig
-     * @return array
+     * @param object $entity
+     * @param array $config
+     * @param string $tabKey
+     * @return void
      */
-    private function resolveTabs(array $tabsConfig): array
+    private function resolveEntityContent(object $entity, array $config, string $tabKey): void
     {
-        if ($tabsConfig === []) {
-            return [];
-        }
-
-        $component = $this->getComponent ?? null;
-        if (!$component) {
-            return [];
-        }
-
-        $mappingsCache = [];
-
-        foreach ($tabsConfig as &$tab) {
-            $type = $tab['type'] ?? null;
-            if (!$type) {
-                $tab['entities'] = [];
-                continue;
-            }
-
-            $mapping = $mappingsCache[$type] ??= $this->getMapping($type);
-            if (empty($mapping)) {
-                $tab['entities'] = [];
-                continue;
-            }
-
-            $method = $mapping['method'] ?? null;
-            if (!$method || !method_exists($component, $method)) {
-                $tab['entities'] = [];
-                continue;
-            }
-
-            $args = $this->requiresIdKey($type) && !empty($mapping['idKey'])
-                ? [$mapping['idKey'] => $this->normalizeIds((array)($tab[$mapping['idKey']] ?? []))]
-                : (array)$tab;
-
-            $args = array_merge([
-                'limit'              => $tab['limit'] ?? 10,
-                'relation_limit'     => $tab['relation_limit'] ?? 10,
-                'leaf_relation_limit' => $tab['leaf_relation_limit'] ?? 10,
-                'sort'               => $tab['sort'] ?? 'created_at',
-                'order'              => $tab['order'] ?? 'desc',
-            ], $args);
-
-            $entities = $component->$method($args) ?? [];
-
-            if (is_array($entities) && count($entities) > $args['limit']) {
-                $entities = array_slice($entities, 0, $args['limit']);
-            }
-
-            $tab['entities'] = $tab['content'] = $entities;
-        }
-
-        unset($tab);
-        return $tabsConfig;
+        $entity->tabs = $this->resolveTabs($config[$tabKey]);
     }
 }

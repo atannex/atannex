@@ -2,38 +2,27 @@
 
 namespace Atannex\Relations;
 
+use App\Models\Regions\Region;
 use App\Models\Regions\Widget;
 use App\Models\Regions\Category;
-use App\Models\Regions\Region;
-use App\Models\Pivots\RegionSection;
-use App\Models\Pivots\WidgetSection;
 use App\Models\Pivots\CategorySection;
+use App\Models\Pivots\RegionSectionWidget;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 trait SectionRelation
 {
-    /**
-     * Regions attached via region_section pivot.
-     */
-    public function regions(): BelongsToMany
+    public function region(): BelongsToMany
     {
-        return $this->belongsToMany(Region::class, 'region_section')
-            ->using(RegionSection::class)
-            ->withPivot(['config', 'position', 'flag', 'metadata'])
-            ->orderByPivot('position')
-            ->withTimestamps();
+        return $this->belongsToMany(Region::class, 'region_section_widgets')
+            ->using(RegionSectionWidget::class)
+            ->withPivot(['widget_id', 'config', 'flag', 'metadata']);
     }
 
-    /**
-     * Widgets attached via widget_section pivot.
-     */
     public function widgets(): BelongsToMany
     {
-        return $this->belongsToMany(Widget::class, 'widget_section')
-            ->using(WidgetSection::class)
-            ->withPivot(['config', 'position', 'flag', 'metadata'])
-            ->orderByPivot('position')
-            ->withTimestamps();
+        return $this->belongsToMany(Widget::class, 'region_section_widgets')
+            ->using(RegionSectionWidget::class)
+            ->withPivot(['region_id', 'config', 'flag', 'metadata']);
     }
 
     /**

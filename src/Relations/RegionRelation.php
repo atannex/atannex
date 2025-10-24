@@ -6,9 +6,10 @@ use App\Enums\Flag;
 use App\Models\Posts\Post;
 use App\Models\Regions\Ruler;
 use App\Models\Regions\Region;
+use App\Models\Regions\Widget;
 use App\Models\Regions\Section;
 use App\Models\Pivots\PostRegion;
-use App\Models\Pivots\RegionSection;
+use App\Models\Pivots\RegionSectionWidget;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -59,17 +60,19 @@ trait RegionRelation
             ->withTimestamps();
     }
 
-    /**
-     * Sections attached to this region (many-to-many).
-     */
+    public function widgets(): BelongsToMany
+    {
+        return $this->belongsToMany(Widget::class, 'region_section_widgets')
+            ->using(RegionSectionWidget::class)
+            ->withPivot(['section_id', 'config', 'flag', 'metadata'])
+            ->wherePivotNull('deleted_at');
+    }
+
     public function sections(): BelongsToMany
     {
-        return $this->belongsToMany(Section::class, 'region_section')
-            ->using(RegionSection::class)
-            ->withPivot(['config', 'deleted_at', 'flag', 'metadata', 'position'])
-            ->wherePivot('deleted_at', null)
-            ->wherePivot('flag', Flag::PUBLISHED)
-            ->orderBy('region_section.position')
-            ->withTimestamps();
+        return $this->belongsToMany(Section::class, 'region_section_widgets')
+            ->using(RegionSectionWidget::class)
+            ->withPivot(['widget_id', 'config', 'flag', 'metadata'])
+            ->wherePivotNull('deleted_at');
     }
 }

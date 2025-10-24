@@ -2,8 +2,8 @@
 
 namespace Atannex\Sections\GetPosts;
 
+use Illuminate\Support\Facades\Date;
 use App\Models\Posts\Post;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 /**
@@ -22,7 +22,7 @@ trait ByRecent
     {
         return Post::query()
             ->published()
-            ->whereDate('published_at', '<', Carbon::today())
+            ->whereDate('published_at', '<', Date::today())
             ->latest('published_at')
             ->limit($limit)
             ->get();

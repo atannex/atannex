@@ -68,8 +68,7 @@ class ProfileController extends Controller
 
         $tokenRecord->delete();
 
-        return redirect()
-            ->route(self::REDIRECT_HOME)
+        return to_route(self::REDIRECT_HOME)
             ->with('success', 'Profile completed successfully!');
     }
 }

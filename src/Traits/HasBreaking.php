@@ -2,7 +2,7 @@
 
 namespace Atannex\Traits;
 
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Database\Eloquent\Builder;
 
 trait HasBreaking
@@ -19,7 +19,7 @@ trait HasBreaking
      */
     protected function scopeActiveBreaking(Builder $query, ?string $timezone = null): Builder
     {
-        $now = Carbon::now($timezone ?? config('app.timezone'));
+        $now = Date::now($timezone ?? config('app.timezone'));
 
         return $query->published()
             ->where('breaking_until', '>=', $now)

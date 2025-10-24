@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Pages\Dashboard;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Filament\Navigation\NavigationGroup;
@@ -37,9 +38,9 @@ use App\Filament\Resources\Documents\DocumentResource;
 use App\Filament\Resources\Employees\EmployeeResource;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Resources\Categories\CategoryResource;
+
 use App\Filament\Resources\JobBatches\JobBatchResource;
 use App\Filament\Resources\CacheLocks\CacheLockResource;
-
 use App\Filament\Resources\FailedJobs\FailedJobResource;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use App\Filament\Resources\Departments\DepartmentResource;
@@ -50,13 +51,11 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use App\Filament\Resources\SocialMedia\SocialMediaResource;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use App\Filament\Resources\RegionSections\RegionSectionResource;
-use App\Filament\Resources\WidgetSections\WidgetSectionResource;
 use App\Filament\Resources\DocumentModules\DocumentModuleResource;
 use App\Filament\Resources\CategorySections\CategorySectionResource;
 use App\Filament\Resources\EmployeeDepartments\EmployeeDepartmentResource;
 use App\Filament\Resources\PasswordResetTokens\PasswordResetTokenResource;
-use Filament\Pages\Dashboard;
+use App\Filament\Resources\RegionSectionWidgets\RegionSectionWidgetResource;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -102,9 +101,8 @@ class AdminPanelProvider extends PanelProvider
                         ->items([
                             ...RegionResource::getNavigationItems(),
                             ...SectionResource::getNavigationItems(),
-                            ...RegionSectionResource::getNavigationItems(),
                             ...WidgetResource::getNavigationItems(),
-                            ...WidgetSectionResource::getNavigationItems(),
+                            ...RegionSectionWidgetResource::getNavigationItems(),
                         ]),
 
                     NavigationGroup::make('Categories & Modules')

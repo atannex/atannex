@@ -13,7 +13,6 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
@@ -45,7 +44,7 @@ class RegionsTable
 
                 TextColumn::make('flag')
                     ->label('Flag')
-                    ->formatStateUsing(fn ($state) => $state ? "🏴 $state" : '-')
+                    ->formatStateUsing(fn ($state) => $state ? '🏴 ' . $state : '-')
                     ->alignCenter()
                     ->toggleable(),
 

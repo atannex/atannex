@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('region_section', function (Blueprint $table) {
+        Schema::create('region_section_widgets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('region_id')->constrained('regions')->cascadeOnDelete();
-            $table->foreignId('section_id')->nullable()->constrained('sections')->nullOnDelete();
-            $table->json('config');
-            $table->unsignedInteger('position')->default(0);
+            $table->foreignId('section_id')->constrained('sections')->cascadeOnDelete();
+            $table->foreignId('widget_id')->nullable()->constrained('widgets')->cascadeOnDelete();
+            $table->json('config')->nullable();
             $table->string('flag')->default('pending');
             $table->timestamps();
             $table->softDeletes();
+            $table->unsignedInteger('position')->default(0);
             $table->json('metadata')->nullable();
         });
     }
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('region_section');
+        Schema::dropIfExists('region_section_widgets');
     }
 };

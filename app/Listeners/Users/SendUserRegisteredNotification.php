@@ -12,6 +12,6 @@ class SendUserRegisteredNotification
      */
     public function handle(UserCreated $event): void
     {
-        RegisteredJob::dispatch($event->user);
+        dispatch(new RegisteredJob($event->user));
     }
 }

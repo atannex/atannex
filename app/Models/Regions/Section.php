@@ -18,9 +18,14 @@ class Section extends Model
     protected string $slugSource = 'name';
 
     protected $fillable = [
-        'slug',
         'name',
+        'slug',
         'flag',
+        'metadata',
+    ];
+
+    protected $casts = [
+        'metadata' => 'array',
     ];
 
     protected function getDomIdAttribute(): string

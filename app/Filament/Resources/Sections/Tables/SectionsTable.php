@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Sections\Tables;
 
+use App\Enums\Flag;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -17,7 +18,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class SectionsTable
 {
@@ -44,7 +44,7 @@ class SectionsTable
                     ->fontFamily('mono')
                     ->size('sm')
                     ->color('gray')
-                    ->tooltip(fn($state) => "Path: /{$state}")
+                    ->tooltip(fn($state) => 'Path: /' . $state)
                     ->prefix('/')
                     ->badge()
                     ->toggleable(),
@@ -108,7 +108,7 @@ class SectionsTable
 
                 SelectFilter::make('flag')
                     ->label('Filter by Status')
-                    ->options(fn() => \App\Enums\Flag::labels())
+                    ->options(fn() => Flag::labels())
                     ->native(false)
                     ->multiple()
                     ->placeholder('All Statuses'),

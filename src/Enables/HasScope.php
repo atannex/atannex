@@ -2,6 +2,7 @@
 
 namespace Atannex\Enables;
 
+use Illuminate\Support\Facades\Date;
 use Carbon\Carbon;
 use App\Enums\Flag;
 use Illuminate\Database\Eloquent\Builder;
@@ -100,6 +101,6 @@ trait HasScope
      */
     protected function applyDateComparison(Builder $query, string $column, string $operator): Builder
     {
-        return $query->where($column, $operator, Carbon::now());
+        return $query->where($column, $operator, Date::now());
     }
 }
