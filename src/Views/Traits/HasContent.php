@@ -24,6 +24,10 @@ trait HasContent
      */
     protected function resolveSection(Region $region): void
     {
+        $region->load([
+            'sections.widgets' => fn($query) => $query->wherePivot('region_id', $region->id),
+        ]);
+
         foreach ($region->sections as $section) {
             $this->resolveEntityWithWidgets($section, $region);
         }
@@ -36,22 +40,15 @@ trait HasContent
      * @param Region $region
      * @return void
      */
-    protected function resolveEntityWithWidgets(object $entity, Region $region): void
+    protected function resolveEntityWithWidgets(object $entity): void
     {
         $config = $entity->pivot->config;
 
         $this->resolveEntityContent($entity, $config, 'section_tab');
 
-        $regionWidgets = $entity->widgets
-            ->filter(fn($widget) => $widget->pivot->region_id === $region->id)
-            ->values();
-
-        foreach ($regionWidgets as $widget) {
-            $widgetConfig = $widget->pivot->config;
-            $this->resolveEntityContent($widget, $widgetConfig, 'widget_tab');
+        foreach ($entity->widgets as $widget) {
+            $this->resolveEntityContent($widget, $widget->pivot->config, 'widget_tab');
         }
-
-        $entity->setRelation('widgets', $regionWidgets);
     }
 
     /**

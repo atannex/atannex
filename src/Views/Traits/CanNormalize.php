@@ -4,17 +4,23 @@ declare(strict_types=1);
 
 namespace Atannex\Views\Traits;
 
+/**
+ * Trait CanNormalize
+ *
+ * Provides normalization and tab resolution logic
+ * for entities with deterministic, pre-validated data.
+ */
 trait CanNormalize
 {
     /**
      * Normalize a single ID or iterable of IDs into a flat array.
      *
-     * @param int|string|iterable<int|string>|null $ids
+     * @param int|string|iterable<int|string> $ids
      * @return array<int|string>
      */
-    private function normalizeIds(int|string|iterable|null $ids): array
+    private function normalizeIds(int|string|iterable $ids): array
     {
-        return is_iterable($ids) ? iterator_to_array($ids) : [$ids];
+        return is_iterable($ids) ? iterator_to_array($ids, false) : [$ids];
     }
 
     /**
@@ -47,8 +53,8 @@ trait CanNormalize
         $mapping = $this->getMapping($tab['type']);
         $args = $this->buildTabArguments($tab, $mapping);
 
-        $entities = $component->{$mapping['method']}($args)->take($args['limit']);
-        $tab['entities'] = $tab['content'] = $entities;
+        $tab['entities'] = $tab['content'] = $component->{$mapping['method']}($args)
+            ->take($args['limit']);
 
         return $tab;
     }
