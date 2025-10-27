@@ -2,8 +2,8 @@
 
 namespace App\Models\Regions;
 
-use App\Contracts\Sluggable;
 use App\Enums\Flag;
+use App\Contracts\Sluggable;
 use Atannex\Enables\HasSlug;
 use Atannex\Traits\HasCleaning;
 use Atannex\Traits\HasResolver;

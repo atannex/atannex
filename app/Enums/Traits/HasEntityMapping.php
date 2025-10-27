@@ -10,7 +10,7 @@ use App\Enums\Entity;
  * Trait HasEntityMapping
  *
  * Provides a mapping mechanism for entities to their respective methods and ID keys.
- * Returns empty values when data is not available instead of throwing exceptions.
+ * Assumes all data is available and valid.
  */
 trait HasEntityMapping
 {
@@ -57,36 +57,32 @@ trait HasEntityMapping
     /**
      * Retrieve the mapping configuration for a given entity.
      *
-     * @param string|null $entity
-     * @return array<string, mixed> Returns an empty array if entity not found.
+     * @param string $entity
+     * @return array<string, mixed>
      */
-    public static function getMapping(?string $entity): array
+    public static function getMapping(string $entity): array
     {
-        if ($entity === null || !isset(self::$MAPPINGS[$entity])) {
-            return [];
-        }
-
         return self::$MAPPINGS[$entity];
     }
 
     /**
      * Resolve the method name for a given entity.
      *
-     * @param string|null $entity
-     * @return string Returns an empty string if method not found.
+     * @param string $entity
+     * @return string
      */
-    public static function resolveMethod(?string $entity): string
+    public static function resolveMethod(string $entity): string
     {
-        return self::$MAPPINGS[$entity]['method'] ?? '';
+        return self::$MAPPINGS[$entity]['method'];
     }
 
     /**
      * Check if the given entity requires an ID key in its mapping.
      *
-     * @param string|null $entity
-     * @return bool Returns false if entity is null or not mapped.
+     * @param string $entity
+     * @return bool
      */
-    public static function requiresIdKey(?string $entity): bool
+    public static function requiresIdKey(string $entity): bool
     {
         return isset(self::$MAPPINGS[$entity]['idKey']);
     }

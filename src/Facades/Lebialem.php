@@ -1,6 +1,6 @@
 <?php
 
-namespace Atannex;
+namespace Atannex\Facades;
 
 use Atannex\Binders\PassPosts;
 use App\Enums\Image;
@@ -8,7 +8,7 @@ use Atannex\Services\RegionService;
 use Atannex\Helpers\HasMedia;
 use Atannex\Services\TagService;
 
-final class LebialemProvider extends PassPosts
+final class Lebialem extends PassPosts
 {
     use HasMedia;
 
