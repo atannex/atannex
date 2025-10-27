@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
  * Trait HasViews
  * Provides view rendering methods for various region types
  */
-trait HasViews
+trait Views
 {
     use CanRender;
     use HasContent;

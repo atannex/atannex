@@ -2,20 +2,20 @@
 
 namespace Atannex\Facades;
 
-use Atannex\Binders\PassPosts;
+use Atannex\Binders\HasPost;
 use App\Enums\Image;
 use Atannex\Services\RegionService;
 use Atannex\Helpers\HasMedia;
 use Atannex\Services\TagService;
 
-final class Lebialem extends PassPosts
+final class Lebialem extends HasPost
 {
     use HasMedia;
 
     public function __construct(
         protected readonly RegionService $regionService,
         protected readonly TagService $tagService,
-        protected readonly PassPosts $passPosts,
+        protected readonly HasPost $passPosts,
     ) {}
 
     /**

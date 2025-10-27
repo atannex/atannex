@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tags\Tag;
 use Illuminate\View\View;
 use App\Models\Posts\Post;
-use Atannex\Binders\PassView;
+use Atannex\Binders\HasView;
 use App\Models\Regions\Region;
 use Atannex\Traits\HasResolver;
 use App\Models\Regions\Category;
@@ -28,11 +28,11 @@ class RegionController extends Controller
      * PageController constructor.
      *
      * @param PageService $pageService Service to handle page-related business logic.
-     * @param PassView $getView Service to render views dynamically.
+     * @param HasView $getView Service to render views dynamically.
      */
     public function __construct(
         protected readonly RegionService $regionService,
-        protected readonly PassView $getView,
+        protected readonly HasView $getView,
     ) {
 
         $this->middleware(['auth', 'verified', 'password.confirm']);
@@ -51,27 +51,21 @@ class RegionController extends Controller
         if ($this->regionService->getMainRegion($slug) instanceof Region) {
 
             return $this->getView->renderRegionPageView($slug);
-
         } elseif (($category = $this->resolveCategory($slug)) instanceof Category) {
 
             return $this->getView->renderCategoryView($category);
-
         } elseif (($tag = $this->resolveTag($slug)) instanceof Tag) {
 
             return $this->getView->renderTagView($tag);
-
         } elseif (($author = $this->resolveAuthor($slug)) instanceof Employee) {
 
             return $this->getView->renderAuthorView($author);
-
         } elseif (($post = $this->resolvePost($slug)) instanceof Post) {
 
             return $this->getView->renderPostShow($post->category, $slug);
-
         } elseif (($region = $this->resolveRegion($slug)) instanceof Region) {
 
             return $this->getView->renderRegionView($region);
-
         } else {
 
             foreach (['month', 'year'] as $part) {
@@ -79,7 +73,6 @@ class RegionController extends Controller
                 if ($date = $this->resolvePostByDatePart($slug, $part)) {
 
                     return $this->getView->renderDateView($date['value'], $date['type']);
-
                 }
             }
         }

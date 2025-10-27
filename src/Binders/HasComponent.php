@@ -16,7 +16,7 @@ use Atannex\Components\GetEngagementsPosts\ByShared;
 use Atannex\Components\GetEngagementsPosts\ByViewed;
 use Atannex\Components\GetEngagementsPosts\ByCommented;
 
-class Components
+class HasComponent
 {
     use ByEditorPick;
     use WithCategory;
