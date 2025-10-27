@@ -2,7 +2,7 @@
 
 namespace Atannex\Binders;
 
-use Atannex\Views\HasViews;
+use Atannex\Views\Views;
 use Atannex\Facades\Atannex;
 use Atannex\Services\TagService;
 use Atannex\Services\ShareService;
@@ -20,7 +20,7 @@ use Atannex\Services\CategoryService;
  *
  * @package Atannex\Binders
  */
-class PassView
+class HasView
 {
     /**
      * Constructor
@@ -31,16 +31,16 @@ class PassView
      * @param Atannex $atannex Core provider for application-wide utilities.
      * @param TagService $tagService Service for tag-related operations.
      * @param CategoryService $categoryService Service for category-related operations.
-     * @param PassPosts $getPost Helper for fetching and preparing post data.
-     * @param Components $getComponent Helper for fetching reusable components.
+     * @param HasPost $getPost Helper for fetching and preparing post data.
+     * @param HasComponent $getComponent Helper for fetching reusable components.
      */
     public function __construct(
         protected readonly RegionService $pageService,
         protected readonly Atannex $atannex,
         protected readonly TagService $tagService,
         protected readonly CategoryService $categoryService,
-        protected readonly PassPosts $getPost,
-        protected readonly Components $getComponent,
+        protected readonly HasPost $getPost,
+        protected readonly HasComponent $getComponent,
         protected readonly ShareService $shareService,
     ) {}
 
@@ -49,5 +49,5 @@ class PassView
      * Each trait contains methods for rendering or preparing specific view types.
      */
 
-    use HasViews;
+    use Views;
 }

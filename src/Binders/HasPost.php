@@ -26,7 +26,7 @@ use Atannex\Sections\GetPosts\ByToday;
  *
  * @package Atannex\Binders
  */
-class PassPosts
+class HasPost
 {
     use ByRecent;
     use ByNavigation;

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\HasAbout;
 use App\Http\Traits\HasContact;
-use Atannex\Binders\PassPosts;
+use Atannex\Binders\HasPost;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
@@ -23,7 +23,7 @@ class HomeController extends Controller
      * @param PassPosts $postService Service for retrieving post data.
      */
     public function __construct(
-        protected readonly PassPosts $postService
+        protected readonly HasPost $postService
     ) {}
 
     /**
