@@ -2,12 +2,12 @@
 
 namespace Atannex\Binders;
 
-use Atannex\AtannexProvider;
 use Atannex\Views\HasViews;
+use Atannex\Facades\Atannex;
 use Atannex\Services\TagService;
+use Atannex\Services\ShareService;
 use Atannex\Services\RegionService;
 use Atannex\Services\CategoryService;
-use Atannex\Services\ShareService;
 
 /**
  * Class GetView
@@ -28,7 +28,7 @@ class PassView
      * Injects the services and binders required for view rendering.
      *
      * @param PageService $pageService Service for page-related operations.
-     * @param AtannexProvider $atannex Core provider for application-wide utilities.
+     * @param Atannex $atannex Core provider for application-wide utilities.
      * @param TagService $tagService Service for tag-related operations.
      * @param CategoryService $categoryService Service for category-related operations.
      * @param PassPosts $getPost Helper for fetching and preparing post data.
@@ -36,7 +36,7 @@ class PassView
      */
     public function __construct(
         protected readonly RegionService $pageService,
-        protected readonly AtannexProvider $atannex,
+        protected readonly Atannex $atannex,
         protected readonly TagService $tagService,
         protected readonly CategoryService $categoryService,
         protected readonly PassPosts $getPost,

@@ -1,6 +1,6 @@
 <?php
 
-namespace Atannex;
+namespace Atannex\Facades;
 
 use BadMethodCallException;
 use App\Enums\Traits\HasEntityMapping;
@@ -16,7 +16,7 @@ use Illuminate\Support\Collection;
  *
  * @package Atannex
  */
-final class AtannexProvider extends Components
+final class Atannex extends Components
 {
     use HasEntityMapping;
 
