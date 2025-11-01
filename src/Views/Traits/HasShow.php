@@ -8,38 +8,24 @@ use App\Enums\Icon;
 use Illuminate\View\View;
 use App\Models\Regions\Category;
 use App\Models\Modules\PostModule;
+use Atannex\Traits\HasPlatforms;
 
-/**
- * Provides functionality to render post views with related data and social media share links.
- */
 trait HasShow
 {
-    /**
-     * Render a single post view with its module, related entities, and social media share links.
-     */
+    use HasPlatforms;
+
     public function renderPostShow(Category $category, string $slug): View
     {
         $module = $this->fetchPostModule($slug);
-        $post   = $module->post;
+        $post = $module->post;
 
-        $shareData = $this->prepareShareData($post->title, $post->description, $post->slug_path);
-
-        return $this->renderView('shows.index', [
-            'module'            => $module,
-            'popularTags'       => $this->tagService->getPopularTags(),
-            'relatedTags'       => $this->tagService->getTagsForPost($post->id),
-            'navigation'        => $this->getPost->getPostNavigation($post),
-            'relatedCategories' => $this->categoryService->getRelatedCategoriesForCategory($category),
-            'recentPosts'       => $this->categoryService->getRecentPosts($post),
-            'relatedPosts'      => $this->getPost->getRelatedPosts($post),
-            'medias'            => $this->categoryService->getPublishedEmployeeSocialMedia($post->author),
-            'shares'            => $shareData,
-        ], seo_title($post->title));
+        return $this->renderView(
+            'shows.index',
+            $this->buildPostShowData($category, $post, $module),
+            seo_title($post->title)
+        );
     }
 
-    /**
-     * Retrieve the post module with its relationships.
-     */
     protected function fetchPostModule(string $slug): PostModule
     {
         return PostModule::with([
@@ -51,37 +37,37 @@ trait HasShow
             ->firstOrFail();
     }
 
-    /**
-     * Prepare social media share link data.
-     */
-    protected function prepareShareData(string $title, string $description, string $slugPath): array
+    protected function buildPostShowData(Category $category, $post, PostModule $module): array
     {
-        $postUrl         = route('page.index', ['slug' => $slugPath]);
-        $linkedinSummary = mb_substr(strip_tags($description), 0, 150);
-
-        $shares = $this->shareService->getRawShareLinks(
-            $postUrl,
-            $title,
-            Icon::getValues(),
-            $linkedinSummary
-        );
-
-        return $this->formatShareData($shares);
+        return [
+            'module'            => $module,
+            'popularTags'       => $this->tagService->getPopularTags(),
+            'relatedTags'       => $this->tagService->getTagsForPost($post->id),
+            'navigation'        => $this->getPost->getPostNavigation($post),
+            'relatedCategories' => $this->categoryService->getRelatedCategoriesForCategory($category),
+            'recentPosts'       => $this->categoryService->getRecentPosts($post),
+            'relatedPosts'      => $this->getPost->getRelatedPosts($post),
+            'medias'            => $this->categoryService->getPublishedEmployeeSocialMedia($post->author),
+            'icons'            => $this->getAllShareIcons(),
+        ];
     }
 
     /**
-     * Convert raw share links into display-ready data.
+     * Return all social platform metadata from Icon enum.
+     *
+     * @return array<int, array{label:string,icon:string,color:string,platform:string}>
      */
-    protected function formatShareData(array $shares): array
+    /**
+     * Return only supported social platform icon metadata.
+     *
+     * @return array<string, array{label:string,icon:string,color:string}>
+     */
+    protected function getAllShareIcons(): array
     {
-        return collect($shares)
-            ->map(fn(string $url, string $platform) => [
-                'label' => Icon::getData($platform)['label'],
-                'icon'  => Icon::getData($platform)['icon'],
-                'color' => Icon::getData($platform)['color'],
-                'url'   => $url,
+        return collect(self::SUPPORTED_PLATFORMS)
+            ->mapWithKeys(fn(string $platform) => [
+                $platform => Icon::getData($platform)
             ])
-            ->values()
             ->all();
     }
 }

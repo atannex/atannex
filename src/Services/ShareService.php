@@ -5,49 +5,75 @@ declare(strict_types=1);
 namespace Atannex\Services;
 
 use App\Enums\Icon;
-use Atannex\Contracts\ShareInterface;
+use App\Models\Interactions\Share;
+use Atannex\Traits\HasPlatforms;
+use Illuminate\Support\Facades\Auth;
+use Jorenvh\Share\ShareFacade;
 
-/**
- * Service for generating social media share links.
- */
 class ShareService
 {
-    /**
-     * Constructor for ShareService.
-     *
-     * @param ShareInterface $shareRepository The repository for generating share links.
-     */
-    public function __construct(
-        protected readonly ShareInterface $shareRepository
-    ) {}
+    use HasPlatforms;
 
-    /**
-     * Generates raw social media share links without HTML markup.
-     *
-     * @param string $url The URL to be shared.
-     * @param string $title The title or text for the share.
-     * @param array $platforms List of platforms to generate links for.
-     * @param string $linkedinSummary Optional summary text for LinkedIn shares.
-     * @return array<string, string> An associative array of platform names and their share URLs.
-     */
-    public function getRawShareLinks(
-        string $url,
-        string $title,
-        array $platforms = [
-            Icon::FACEBOOK,
-            Icon::TWITTER,
-            Icon::LINKEDIN,
-            Icon::WHATSAPP,
-            Icon::TELEGRAM,
-            Icon::REDDIT
-        ],
-        string $linkedinSummary = ''
-    ): array {
-        return $this->shareRepository->getRawShareLinks(
-            $url,
-            $title,
-            $platforms,
-            $linkedinSummary
-        );
+    public function generate(string $url, string $title): array
+    {
+        $baseLinks = ShareFacade::page($url, $title)
+            ->facebook()
+            ->twitter()
+            ->linkedin()
+            ->whatsapp()
+            ->telegram()
+            ->getRawLinks();
+
+        $links = [];
+
+        foreach (self::SUPPORTED_PLATFORMS as $platform) {
+            $links[$platform] = match ($platform) {
+                Icon::FACEBOOK,
+                Icon::TWITTER,
+                Icon::LINKEDIN,
+                Icon::WHATSAPP,
+                Icon::TELEGRAM
+                => $baseLinks[$platform],
+
+                Icon::PINTEREST
+                => "https://pinterest.com/pin/create/button/?" . http_build_query([
+                    'url' => $url,
+                    'description' => $title,
+                ]),
+
+                Icon::EMAIL
+                => "mailto:?subject=" . rawurlencode($title)
+                    . "&body=" . rawurlencode($url),
+            };
+        }
+
+        return $links;
+    }
+
+    public function recordShare(object $model, string $platform): Share
+    {
+        $userId = Auth::id();
+
+        $share = Share::query()
+            ->where('shareable_id', $model->id)
+            ->where('shareable_type', get_class($model))
+            ->where('platform', $platform)
+            ->where('user_id', $userId)
+            ->first();
+
+        if ($share) {
+            $share->increment('share_count');
+        } else {
+            $share = Share::create([
+                'shareable_id'   => $model->id,
+                'shareable_type' => get_class($model),
+                'user_id'        => $userId,
+                'platform'       => $platform,
+                'share_count'    => 1,
+                'shared_at'      => now(),
+            ]);
+        }
+
+        return $share;
     }
 }
