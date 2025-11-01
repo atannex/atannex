@@ -2,58 +2,58 @@
 
 namespace Atannex\Traits;
 
-use Exception;
-use Illuminate\Database\Eloquent\Collection;
-use App\Models\Controls\Session;
 use App\Models\User;
+use GeoIp2\Database\Reader;
+use App\Models\Controls\Session;
 use App\Models\Users\UserActivity;
 use Illuminate\Support\Facades\Auth;
-use GeoIp2\Database\Reader;
 
 trait HasUserTracking
 {
-    /**
-     * Track user activity.
-     *
-     * @param string $eventType
-     * @param array $metadata
-     * @return UserActivity|null
-     */
-    public function trackActivity(string $eventType, array $metadata = []): ?UserActivity
+    public function trackActivity(string $eventType, array $metadata = []): UserActivity
     {
-        $user = Auth::user() ?? $this;
-        if (!$user) {
-            return null;
-        }
+        $user = Auth::user();
 
-        $sessionId = session()->getId();
         $session = Session::updateOrCreate(
-            ['id' => $sessionId, 'user_id' => $user->id],
+            ['id' => session()->getId(), 'user_id' => $user->id],
             [
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'last_activity' => now()->timestamp,
+                'ip_address'     => request()->ip(),
+                'user_agent'     => request()->userAgent(),
+                'last_activity'  => now()->timestamp,
             ]
         );
 
-        // Get user location via GeoIP
         $location = $this->getGeoLocation($session->ip_address);
 
-        return UserActivity::create([
-            'user_id' => $user->id,
-            'session_id' => $sessionId,
-            'event_type' => $eventType,
-            'metadata' => $metadata,
-            'geo' => $location,
+        $activity = UserActivity::firstOrCreate(
+            [
+                'session_id' => $session->id,
+                'event_type' => $eventType,
+                'user_id'    => $user->id,
+            ],
+            [
+                'metadata' => [
+                    'click_count'      => 0,
+                    'first_event'      => $metadata,
+                    'first_clicked_at' => now(),
+                ],
+                'geo' => $location,
+            ]
+        );
+
+        $meta = $activity->metadata;
+        $meta['click_count']++;
+        $meta['last_event'] = $metadata;
+        $meta['last_clicked_at'] = now();
+
+        $activity->update([
+            'metadata' => $meta,
+            'geo'      => $location,
         ]);
+
+        return $activity;
     }
 
-    /**
-     * Get active sessions for the user.
-     *
-     * @param int $timeoutSeconds
-     * @return Collection
-     */
     public function activeSessions(int $timeoutSeconds = 300)
     {
         return $this->sessions()
@@ -61,23 +61,11 @@ trait HasUserTracking
             ->get();
     }
 
-    /**
-     * Check if the user is online.
-     *
-     * @param int $timeoutSeconds
-     * @return bool
-     */
     public function isOnline(int $timeoutSeconds = 300): bool
     {
         return $this->activeSessions($timeoutSeconds)->isNotEmpty();
     }
 
-    /**
-     * Count all active users.
-     *
-     * @param int $timeoutSeconds
-     * @return int
-     */
     public static function countActiveUsers(int $timeoutSeconds = 300): int
     {
         return User::whereHas('sessions', function ($query) use ($timeoutSeconds) {
@@ -85,25 +73,19 @@ trait HasUserTracking
         })->count();
     }
 
-    /**
-     * Get GeoIP location from IP address.
-     *
-     * @param string $ip
-     * @return string
-     */
     protected function getGeoLocation(string $ip): string
     {
-        $location = 'Unknown Location';
-        try {
-            $reader = new Reader(storage_path('app/GeoLite2/GeoLite2-City.mmdb'));
-            $record = $reader->city($ip);
-            $city = $record->city->name ?? '';
-            $country = $record->country->name ?? '';
-            $location = trim(sprintf('%s, %s', $city, $country)) ?: 'Unknown Location';
-            $reader->close();
-        } catch (Exception) {
+        if (app()->environment('local')) {
+            return 'Local Machine, Development';
         }
 
-        return $location;
+        if ($ip === '127.0.0.1' || $ip === '::1') {
+            return 'Local Machine, Internal Network';
+        }
+
+        $reader = new Reader(storage_path('app/GeoLite2/GeoLite2-City.mmdb'));
+        $record = $reader->city($ip);
+
+        return trim($record->city->name . ', ' . $record->country->name);
     }
 }

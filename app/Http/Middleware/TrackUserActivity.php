@@ -12,7 +12,7 @@ class TrackUserActivity
     use HasUserTracking;
 
     /**
-     * Handle an incoming request and track user activity if authenticated.
+     * Handle an incoming request and track the user's activity if authenticated.
      *
      * @param  Request  $request
      * @param  Closure  $next
@@ -21,12 +21,14 @@ class TrackUserActivity
     public function handle(Request $request, Closure $next)
     {
         if (Auth::check()) {
+            $user = $request->user();
+
             $metadata = [
-                'route_name' => $request->route()->getName(),
-                'url' => $request->fullUrl(),
-                'method' => $request->method(),
-                'timestamp' => now()->toDateTimeString(),
-                'timezone' => $request->user()->timezone,
+                'route_name' => $request->route()?->getName(),
+                'url'        => $request->fullUrl(),
+                'method'     => $request->method(),
+                'timestamp'  => now()->toDateTimeString(),
+                'timezone'   => $user?->timezone,
             ];
 
             $this->trackActivity('route_access', $metadata);
