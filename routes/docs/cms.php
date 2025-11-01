@@ -15,6 +15,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['onboarded'])->group(function () {
 
+    /*
+    |--------------------------------------------------------------------------
+    | Social Media Sharing Routes
+    |--------------------------------------------------------------------------
+    */
     Route::get('/share/{platform:platform}/{post:slug}', [ShareController::class, 'share'])->name('share');
 
     /*
