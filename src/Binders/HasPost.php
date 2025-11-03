@@ -11,6 +11,7 @@ use Atannex\Sections\GetPosts\ByRelated;
 use Atannex\Sections\GetPosts\ByNavigation;
 use Atannex\Sections\GetPosts\ByPopular;
 use Atannex\Sections\GetPosts\ByRegion;
+use Atannex\Sections\GetPosts\ModuleBySlug;
 use Atannex\Sections\GetPosts\ByToday;
 
 /**
@@ -38,4 +39,5 @@ class HasPost
     use ByMostRead;
     use ByPopular;
     use ByBreaking;
+    use ModuleBySlug;
 }

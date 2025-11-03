@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
-    @livewireStyles()
 
-    @include('components.layouts.files.header')
+    <x-layouts.files.header :title="$title" />
 
-    @include('components.layouts.files.googletagmanager')
+    @livewireStyles
+
+    <x-layouts.files.googletagmanager />
+
+    @stack('styles')
 
 </head>
+
 <body>
 
     {{ $slot }}
 
-    @livewireScripts()
+    @livewireScripts
 
-    @include('components.layouts.files.footer')
+    <x-layouts.files.footer />
+
+    @stack('scripts')
 
 </body>
+
 </html>
