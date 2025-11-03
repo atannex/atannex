@@ -10,12 +10,13 @@ use Atannex\Traits\HasBootable;
 use Atannex\Traits\HasBreaking;
 use Atannex\Traits\HasCleaning;
 use App\Models\Regions\Employee;
+use Atannex\Interactions\HasLikes;
+use Atannex\Interactions\HasViews;
+use Atannex\Interactions\HasShares;
 use Atannex\Relations\PostRelation;
-use App\Livewire\Interactions\HasLikes;
-use App\Livewire\Interactions\HasViews;
+use Atannex\Interactions\HasRatings;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-use App\Livewire\Interactions\HasShares;
-use App\Livewire\Interactions\HasRatings;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -133,5 +134,13 @@ class Post extends Model implements Commentable, Sluggable
                 $q->whereNull('breaking_until')
                     ->orWhere('breaking_until', '>=', now());
             });
+    }
+
+    /**
+     * Check if the user is authenticated.
+     */
+    protected function isUserAuthenticated(): bool
+    {
+        return Auth::check();
     }
 }

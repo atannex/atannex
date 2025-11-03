@@ -4,6 +4,7 @@ namespace Atannex\Facades;
 
 use Atannex\Binders\HasPost;
 use App\Enums\Image;
+use App\Models\Posts\Post;
 use Atannex\Services\RegionService;
 use Atannex\Helpers\HasMedia;
 use Atannex\Services\TagService;
@@ -15,7 +16,7 @@ final class Lebialem extends HasPost
     public function __construct(
         protected readonly RegionService $regionService,
         protected readonly TagService $tagService,
-        protected readonly HasPost $passPosts,
+        protected readonly HasPost $hasPost,
     ) {}
 
     /**
@@ -23,9 +24,10 @@ final class Lebialem extends HasPost
      *
      * @return array<string, mixed> The navigation data array
      */
-    public function getGlobalData(): array
+    public function getGlobalData(?Post $post = null): array
     {
         return [
+            'globalPost' => $post instanceof Post ? $this->hasPost->getModulePostBySlug($post->slug) : null,
             'popularTags' => $this->tagService->getPopularTags(10),
             'logo' => $this->getGalleryImage(Image::LOGO()),
             'subscription' => $this->getGalleryImage(Image::SUBSCRIPTION()),
@@ -35,7 +37,7 @@ final class Lebialem extends HasPost
             'mainRegions' => $this->regionService->getAllMainRegions(),
             'categoryRegions' => $this->regionService->getAllCategoryRegions(),
             'recentPosts' => $this->getRecentPosts(2),
-            'breaking' => $this->passPosts->getBreakingPosts(),
+            'breaking' => $this->hasPost->getBreakingPosts(),
         ];
     }
 }

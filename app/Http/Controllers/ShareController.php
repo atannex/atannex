@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\Modules\PostModule;
+use Atannex\Binders\HasPost;
 use Atannex\Services\ShareService;
 use Illuminate\Http\RedirectResponse;
 use Atannex\Traits\HasUserTracking;
@@ -15,17 +15,12 @@ class ShareController extends Controller
 
     public function __construct(
         protected readonly ShareService $shareService,
+        protected readonly HasPost $hasPost,
     ) {}
 
     public function share(string $platform, string $slug): RedirectResponse
     {
-        $module = PostModule::whereHas('post', function ($query) use ($slug) {
-            $query->where('slug', $slug);
-        })
-            ->with('post')
-            ->first();
-
-        $post = $module->post;
+        $post = $this->hasPost->getModulePostBySlug($slug);
 
         $urls = $this->shareService->generate(
             url($post->slug),

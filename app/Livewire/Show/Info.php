@@ -1,141 +1,113 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Show;
 
-use Illuminate\View\View;
-use Livewire\Component;
 use App\Models\Posts\Post;
+use Atannex\Interactions\Components\{
+    CanLike,
+    CanRate,
+    CanShare,
+    CanView
+};
+use Livewire\Attributes\Locked;
+use Livewire\Attributes\On;
+use Livewire\Component;
+use Illuminate\View\View;
 
+/**
+ * Livewire Component: Post Interaction Card
+ *
+ * Renders a post with real-time interaction counters:
+ * - Likes (toggle + count)
+ * - Ratings (1–5 stars + average)
+ * - Shares (display-only total)
+ * - Views (auto-recorded)
+ *
+ * All state is synchronized on mount, hydration, and via Laravel Echo broadcasts.
+ *
+ * @property-read Post $post The shareable post model instance.
+ */
 class Info extends Component
 {
-    public $post;
-
-    public $isLiked;
-
-    public $likesCount;
-
-    public $likedAt;
-
-    public $viewsCount;
-
-    public $viewedAt;
-
-    public $isRated;
-
-    public $ratingCount;
-
-    public $averageRating;
-
-    public $userRating;
-
-    public $ratedAt;
-
-    public $isShared;
-
-    public $sharesCount;
-
-    public $sharedAt;
-
-    public $ratingClicks = 0;
+    use CanLike;
+    use CanRate;
+    use CanShare;
+    use CanView;
 
     /**
-     * Mount the component with the given Post instance.
+     * The post being displayed and interacted with.
+     *
+     * Locked to prevent client-side tampering.
      */
-    public function mount(Post $post)
+    #[Locked]
+    public Post $post;
+
+    /**
+     * Total number of shares across all users and platforms.
+     *
+     * Synchronized via `syncShareState()` from the `CanShare` trait.
+     */
+    public int $sharesCount = 0;
+
+    /**
+     * Mount the component with the given post.
+     *
+     * Records a view and initializes all interaction states.
+     *
+     * @param Post $post The post model instance.
+     */
+    public function mount(Post $post): void
     {
         $this->post = $post;
-        $this->post->recordView();
-        $this->updateInteractionData();
-        $this->ratingClicks = $this->userRating ?? 0;
+
+        $this->recordView();
+        $this->refreshInteractionState();
     }
 
     /**
-     * Handle the like action.
+     * Refresh all interaction counters from the database.
+     *
+     * Called on mount, hydration, and real-time updates.
      */
-    public function like()
+    protected function refreshInteractionState(): void
     {
-        if ($this->post->like()) {
-            $this->updateInteractionData();
-        }
+        $this->syncLikeState();
+        $this->syncRatingState();
+        $this->syncShareState();
+        $this->syncViewState();
     }
 
     /**
-     * Handle the unlike action.
+     * Re-sync interaction state when the component rehydrates.
+     *
+     * Ensures UI reflects latest data after browser tab restore or network reconnect.
      */
-    public function unlike()
+    public function hydrate(): void
     {
-        if ($this->post->unlike()) {
-            $this->updateInteractionData();
-        }
+        $this->refreshInteractionState();
     }
 
     /**
-     * Handle the rate action based on click count.
+     * Listen for real-time interaction updates via Laravel Echo.
+     *
+     * Refreshes all counters when another user interacts with the same post.
+     *
+     * @listens echo:interactions,InteractionUpdated
      */
-    public function toggleRate()
+    #[On('echo:interactions,InteractionUpdated')]
+    public function refreshOnBroadcast(): void
     {
-        $this->ratingClicks++;
-
-        if ($this->ratingClicks > 5) {
-            $this->post->unrate();
-            $this->ratingClicks = 0;
-        } else {
-            $this->post->rate($this->ratingClicks);
-        }
-
-        $this->updateInteractionData();
+        $this->refreshInteractionState();
     }
 
     /**
-     * Handle the share action.
-     */
-    public function share()
-    {
-        if ($this->post->share()) {
-            $this->updateInteractionData();
-        }
-    }
-
-    /**
-     * Handle the unshare action.
-     */
-    public function unshare()
-    {
-        if ($this->post->unshare()) {
-            $this->updateInteractionData();
-        }
-    }
-
-    /**
-     * Update all interaction data.
-     */
-    protected function updateInteractionData()
-    {
-        $this->isLiked = $this->post->isLikedByUser();
-        $this->likesCount = $this->post->likesCount();
-        $this->likedAt = $this->post->likedAt();
-
-        $this->viewsCount = $this->post->viewsCount();
-        $this->viewedAt = $this->post->viewedAt();
-
-        $this->isRated = $this->post->isRatedByUser();
-        $this->ratingCount = $this->post->ratingCount();
-        $this->averageRating = $this->post->averageRating() ?? 0;
-        $this->userRating = $this->post->userRating();
-        $this->ratedAt = $this->post->ratedAt();
-        $this->ratingClicks = $this->userRating ?? 0;
-
-        // $this->isShared = $this->post->isSharedByUser();
-        // $this->sharesCount = $this->post->sharesCount();
-        // $this->sharedAt = $this->post->sharedAt();
-    }
-
-    /**
-     * Render the component.
+     * Render the Blade view for this component.
      *
      * @return View
      */
-    public function render()
+    public function render(): View
     {
         return view('livewire.show.info');
     }
