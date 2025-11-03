@@ -14,10 +14,10 @@
         </div>
 
         <!-- Shares -->
-        <button type="button" wire:click="share" wire:loading.attr="disabled" class="gap-1 blog-info share-btn d-flex align-items-center" aria-label="Share this article">
+        <div class="gap-1 blog-info d-flex align-items-center" aria-label="Shares">
             <span class="fw-medium">{{ number_format($sharesCount) }}</span>
             <i class="fas fa-share-nodes"></i>
-        </button>
+        </div>
 
         <!-- Rating -->
         <div class="gap-2 blog-info rating d-flex align-items-center" aria-label="Article rating">
