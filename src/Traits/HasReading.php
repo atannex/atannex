@@ -11,32 +11,25 @@ trait HasReading
      */
     public function readingTime(): int
     {
-        $content = $this->module_content ?? [];
-
-        if (is_string($content)) {
-            $content = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
-        }
-
         $extractText = function (array $items) use (&$extractText): string {
             $text = '';
 
             foreach ($items as $item) {
                 if (is_array($item)) {
-                    $text .= match (true) {
-                        isset($item['value']) => ' ' . $item['value'],
-                        isset($item['title']) => ' ' . $item['title'],
-                        isset($item['heading']) => ' ' . $item['heading'],
-                        isset($item['paragraph']) => ' ' . $item['paragraph'],
-                        isset($item['quote']) => ' ' . $item['quote'],
-                        default => ' ' . $extractText($item),
-                    };
+                    foreach (['value', 'title', 'heading', 'paragraph', 'quote'] as $key) {
+                        if (isset($item[$key])) {
+                            $text .= ' ' . $item[$key];
+                        }
+                    }
+
+                    $text .= $extractText($item);
                 }
             }
 
             return $text;
         };
 
-        $allText = $extractText($content);
+        $allText = $extractText($this->content);
         $wordCount = str_word_count($allText);
 
         return (int) ceil($wordCount / 200);

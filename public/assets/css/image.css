@@ -45,6 +45,11 @@
         height: 625px !important;
     }
 
+    .image-show {
+        width: 1224px !important;
+        height: 600px !important;
+    }
+
     .category-3-column,
     .large-carousel-image,
     .primary-news-section-widget {

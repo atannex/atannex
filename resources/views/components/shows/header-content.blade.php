@@ -2,7 +2,9 @@
     {{ $module->post->category->name }}
 </a>
 
-<h2 class="blog-title">{{ $module->post->title }}</h2>
+<h2 class="blog-title">
+    {{ $module->post->title }}
+</h2>
 
 <div class="blog-meta">
     <a class="author" href="{{ route('page.index', $module->post->author->user->slug) }}">
@@ -12,8 +14,15 @@
 
     <a href="javascript:void(0)">
         <i class="fal fa-calendar-days"></i>
-        {{ $module->post->created_at->format('d F, Y') }}
+        {{ $module->created_at->diffForHumans() }}
     </a>
+
+    @if($module->updated_at && $module->updated_at->gt($module->created_at))
+    <a href="javascript:void(0)">
+        <i class="fal fa-calendar-days"></i>
+        Updated {{ $module->updated_at->diffForHumans() }}
+    </a>
+    @endif
 
     <a href="javascript:void(0)">
         <i class="far fa-comments"></i>
@@ -28,5 +37,5 @@
 </div>
 
 <div class="mb-40 blog-img">
-    <img src="{{ asset('storage/' . $module->post->image) }}" alt="{{ $module->post->title }}">
+    <img class="img-fluid image-show" src="{{ asset('storage/' . $module->post->image) }}" alt="{{ config('app.name') }}">
 </div>
