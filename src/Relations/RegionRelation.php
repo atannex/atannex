@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 trait RegionRelation
 {
     /**
-     * Parent region (self-referential).
+     * Get the parent region.
      */
     public function parent(): BelongsTo
     {
@@ -26,7 +26,7 @@ trait RegionRelation
     }
 
     /**
-     * Direct published children.
+     * Get published child regions.
      */
     public function children(): HasMany
     {
@@ -35,7 +35,7 @@ trait RegionRelation
     }
 
     /**
-     * Recursive children relationship (all descendants).
+     * Get child regions recursively (with nested published children).
      */
     public function childrenRecursive(): HasMany
     {
@@ -43,7 +43,7 @@ trait RegionRelation
     }
 
     /**
-     * Ruler associated with this region.
+     * Get the ruler of this region.
      */
     public function ruler(): HasOne
     {
@@ -51,28 +51,42 @@ trait RegionRelation
     }
 
     /**
-     * Posts related to this region (many-to-many pivot).
+     * Get published posts associated with this region.
      */
     public function posts(): BelongsToMany
     {
-        return $this->belongsToMany(Post::class, 'post_region')
+        return $this->belongsToMany(Post::class)
             ->using(PostRegion::class)
             ->withTimestamps();
     }
 
-    public function widgets(): BelongsToMany
-    {
-        return $this->belongsToMany(Widget::class, 'region_section_widgets')
-            ->using(RegionSectionWidget::class)
-            ->withPivot(['section_id', 'config', 'flag', 'metadata'])
-            ->wherePivotNull('deleted_at');
-    }
-
+    /**
+     * Get published sections in this region, ordered by position.
+     */
     public function sections(): BelongsToMany
     {
-        return $this->belongsToMany(Section::class, 'region_section_widgets')
+        $relation = $this->belongsToMany(Section::class, 'region_section_widgets')
             ->using(RegionSectionWidget::class)
-            ->withPivot(['widget_id', 'config', 'flag', 'metadata'])
+            ->as('pivot')
+            ->withPivot(['widget_id', 'position', 'config', 'flag', 'metadata'])
+            ->wherePivot('flag', Flag::PUBLISHED)
             ->wherePivotNull('deleted_at');
+
+        return $relation->orderByPivot('position');
+    }
+
+    /**
+     * Get published widgets in this region, ordered by position.
+     */
+    public function widgets(): BelongsToMany
+    {
+        $relation = $this->belongsToMany(Widget::class, 'region_section_widgets')
+            ->using(RegionSectionWidget::class)
+            ->as('pivot')
+            ->withPivot(['section_id', 'position', 'config', 'flag', 'metadata'])
+            ->wherePivot('flag', Flag::PUBLISHED)
+            ->wherePivotNull('deleted_at');
+
+        return $relation->orderByPivot('position');
     }
 }

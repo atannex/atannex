@@ -46,27 +46,16 @@ class RegionRepository implements RegionInterface
 
     /**
      * Retrieve a single published region by slug,
-     * including only published sections and active widgets.
-     *
-     * @param  string  $slug  The slug of the region.
-     * @return Region|null
+     * including only published sections and widgets.
      */
     public function getMainRegion(string $slug): ?Region
     {
         return Region::query()
-            ->where('regions.flag', Flag::PUBLISHED)
-            ->where('regions.slug', $slug)
+            ->where('flag', Flag::PUBLISHED)
+            ->where('slug', $slug)
             ->with([
-                'sections' => function ($query) {
-                    $query->where('region_section_widgets.flag', Flag::PUBLISHED)
-                        ->whereNull('region_section_widgets.deleted_at')
-                        ->orderBy('region_section_widgets.position');
-                },
-                'sections.widgets' => function ($query) {
-                    $query->where('region_section_widgets.flag', Flag::PUBLISHED)
-                        ->whereNull('region_section_widgets.deleted_at')
-                        ->orderBy('region_section_widgets.position');
-                },
+                'sections',
+                'sections.widgets',
             ])
             ->first();
     }
