@@ -17,7 +17,8 @@
 
     <a href="javascript:void(0)">
         <i class="far fa-comments"></i>
-        ({{ __("Comments ") . $module->post->comments->count() ?? 0 }})
+        ({{ Str::plural('Comment', $module->post->comments->count()) }}
+        {{ format_count($module->post->comments->count()) }})
     </a>
 
     <span>
