@@ -2,7 +2,9 @@
     {{ $module->post->category->name }}
 </a>
 
-<h2 class="blog-title">{{ $module->post->title }}</h2>
+<h2 class="blog-title">
+    {{ $module->post->title }}
+</h2>
 
 <div class="blog-meta">
     <a class="author" href="{{ route('page.index', $module->post->author->user->slug) }}">
@@ -28,5 +30,5 @@
 </div>
 
 <div class="mb-40 blog-img">
-    <img src="{{ asset('storage/' . $module->post->image) }}" alt="{{ $module->post->title }}">
+    <img class="img-fluid image-show" src="{{ asset('storage/' . $module->post->image) }}" alt="{{ config('app.name') }}">
 </div>
