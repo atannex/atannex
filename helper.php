@@ -69,57 +69,72 @@ if (!function_exists('get_posts_from_tabs')) {
 
 if (!function_exists('format_count')) {
     /**
-     * Format large numbers into short form: 1.1k, 2.5M, 3B, 4T.
+     * Formats a large number into a human-readable short form.
      *
-     * @param int|float|string $number
-     * @param int $decimals               Number of decimals for abbreviated values (default: 1)
-     * @param bool $trimTrailingZeros     Remove trailing .0 (e.g., 1.0k -> 1k)
-     * @return string
+     * Examples:
+     *   1500     → 1.5k
+     *   1234567  → 1.2M
+     *   999600   → 1.0M
+     *   -5000    → -5k
+     *   1000     → 1k (not 1.0k if trimTrailingZeros is true)
+     *
+     * @param int|float|string $number            The number to format
+     * @param int                   $decimals     Number of decimal places (default: 1)
+     * @param bool                  $trimZeros    Remove trailing zeros and decimal point
+     * @return string                              Formatted number with suffix (k, M, B, T)
      */
-    function format_count($number, int $decimals = 1, bool $trimTrailingZeros = true): string
-    {
+    function format_count(
+        int|float|string $number,
+        int $decimals = 1,
+        bool $trimZeros = true
+    ): string {
+
         if (!is_numeric($number)) {
-            $number = 0;
+            return '0';
         }
+
         $num = (float) $number;
         $sign = $num < 0 ? '-' : '';
-        $n = abs($num);
+        $value = abs($num);
 
-        if ($n < 1000) {
-            return $sign . number_format((int) $n);
+
+        if ($value < 1000) {
+            $formatted = number_format((int) $value);
+            return $sign . $formatted;
         }
 
-        $units = [
+        $suffixes = [
             12 => 'T',
             9  => 'B',
             6  => 'M',
             3  => 'k',
         ];
 
-        foreach ($units as $power => $suffix) {
-            $threshold = 10 ** $power;
-            if ($n >= $threshold) {
+        foreach ($suffixes as $exponent => $suffix) {
+            $threshold = 10 ** $exponent;
 
-                $scaled = $n / $threshold;
+            if ($value >= $threshold) {
+                $scaled = $value / $threshold;
+                $formatted = number_format($scaled, $decimals, '.', '');
 
-                $rounded = round($scaled, $decimals);
-
-                if ($rounded >= 1000 && $power < 12) {
-                    $nextPower = $power + 3;
-                    $nextScaled = $n / (10 ** $nextPower);
-                    $rounded = round($nextScaled, $decimals);
-                    $suffix = $units[$nextPower] ?? $suffix;
+                if ($scaled >= 1000 && $exponent < 12) {
+                    $nextExponent = $exponent + 3;
+                    $nextScaled = $value / (10 ** $nextExponent);
+                    $formatted = number_format($nextScaled, $decimals, '.', '');
+                    $suffix = $suffixes[$nextExponent] ?? $suffix;
                 }
 
-                $numeric = number_format($rounded, $decimals, '.', '');
-                if ($trimTrailingZeros && $decimals > 0) {
-                    $numeric = rtrim(rtrim($numeric, '0'), '.');
+                if ($trimZeros && $decimals > 0) {
+                    $formatted = rtrim(rtrim($formatted, '0'), '.');
+                    if ($formatted === '') {
+                        $formatted = '0';
+                    }
                 }
 
-                return $sign . $numeric . $suffix;
+                return $sign . $formatted . $suffix;
             }
         }
 
-        return $sign . number_format((int) $n);
+        return $sign . number_format((int) $value);
     }
 }
