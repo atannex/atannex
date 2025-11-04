@@ -66,3 +66,60 @@ if (!function_exists('get_posts_from_tabs')) {
             ->values();
     }
 }
+
+if (!function_exists('format_count')) {
+    /**
+     * Format large numbers into short form: 1.1k, 2.5M, 3B, 4T.
+     *
+     * @param int|float|string $number
+     * @param int $decimals               Number of decimals for abbreviated values (default: 1)
+     * @param bool $trimTrailingZeros     Remove trailing .0 (e.g., 1.0k -> 1k)
+     * @return string
+     */
+    function format_count($number, int $decimals = 1, bool $trimTrailingZeros = true): string
+    {
+        if (!is_numeric($number)) {
+            $number = 0;
+        }
+        $num = (float) $number;
+        $sign = $num < 0 ? '-' : '';
+        $n = abs($num);
+
+        if ($n < 1000) {
+            return $sign . number_format((int) $n);
+        }
+
+        $units = [
+            12 => 'T',
+            9  => 'B',
+            6  => 'M',
+            3  => 'k',
+        ];
+
+        foreach ($units as $power => $suffix) {
+            $threshold = 10 ** $power;
+            if ($n >= $threshold) {
+
+                $scaled = $n / $threshold;
+
+                $rounded = round($scaled, $decimals);
+
+                if ($rounded >= 1000 && $power < 12) {
+                    $nextPower = $power + 3;
+                    $nextScaled = $n / (10 ** $nextPower);
+                    $rounded = round($nextScaled, $decimals);
+                    $suffix = $units[$nextPower] ?? $suffix;
+                }
+
+                $numeric = number_format($rounded, $decimals, '.', '');
+                if ($trimTrailingZeros && $decimals > 0) {
+                    $numeric = rtrim(rtrim($numeric, '0'), '.');
+                }
+
+                return $sign . $numeric . $suffix;
+            }
+        }
+
+        return $sign . number_format((int) $n);
+    }
+}
