@@ -2,22 +2,28 @@
 
 namespace Atannex\Repositories\Traits;
 
+use App\Enums\Flag;
 use App\Models\Others\SocialMedia;
 use App\Models\Regions\Employee;
 use App\Models\Regions\Category;
+use Atannex\Helpers\HasMedia;
 use Illuminate\Support\Collection;
+use Atannex\Traits\HasTree;
 
 trait CategoryTree
 {
+    use HasTree;
+    use HasMedia;
+
     /**
-     * Global limit applied everywhere in the category tree system.
+     * Global max results for consistent UX across category queries.
      */
     protected const CATEGORY_LIMIT = 12;
 
     /**
-     * Get globally published employee social profiles.
+     * Get formatted social profiles for an employee.
      *
-     * @param Employee $employee
+     * @param  Employee $employee
      * @return Collection
      */
     public function employeeSocial(Employee $employee): Collection
@@ -32,15 +38,19 @@ trait CategoryTree
     }
 
     /**
-     * Always use the global category limit.
+     * Get related categories from the same tree,
+     * excluding the current category.
      *
-     * @param Category $category
+     * @param  Category $category
+     * @param  int      $limit
      * @return Collection
      */
-    public function relatedCategories(Category $category, $limit = self::CATEGORY_LIMIT): Collection
+    public function relatedCategories(Category $category, int $limit = self::CATEGORY_LIMIT): Collection
     {
-        return $this->leafCategories(
-            $this->root($category),
+        return $this->getLeafNodes(
+            $this->getRoot($category),
+            'posts',
+            Flag::PUBLISHED,
             $category->id,
             $limit
         );

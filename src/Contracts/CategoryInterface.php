@@ -12,20 +12,38 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 interface CategoryInterface
 {
+    // Interface constants must be public
+    public const PAGINATION_DEFAULT_LISTING = 15;  // category, region, date, author
+
+    public const PAGINATION_RECENT_POSTS    = 5;   // recent posts widget
+
+    public const PAGINATION_POPULAR_TAGS    = 12;  // popular tags
+
+    public const PAGINATION_POSTS_BY_TAG    = 20;  // posts by tag
+
     /**
      * Paginate posts within the category and its children.
      */
-    public function postsByCategory(Category $category, int $limit = 15): LengthAwarePaginator;
+    public function postsByCategory(
+        Category $category,
+        int $limit = self::PAGINATION_DEFAULT_LISTING
+    ): LengthAwarePaginator;
 
     /**
      * Paginate posts filtered by region.
      */
-    public function postsByRegion(Region $region, int $limit = 15): LengthAwarePaginator;
+    public function postsByRegion(
+        Region $region,
+        int $limit = self::PAGINATION_DEFAULT_LISTING
+    ): LengthAwarePaginator;
 
     /**
      * Paginate posts filtered by year/month.
      */
-    public function postsByDate(string $yearMonth, int $limit = 15): LengthAwarePaginator;
+    public function postsByDate(
+        string $yearMonth,
+        int $limit = self::PAGINATION_DEFAULT_LISTING
+    ): LengthAwarePaginator;
 
     /**
      * Get related categories in the same hierarchy.
@@ -35,17 +53,26 @@ interface CategoryInterface
     /**
      * Get recent posts excluding the given post.
      */
-    public function recentPosts(Post $post, int $limit = 5): Collection;
+    public function recentPosts(
+        Post $post,
+        int $limit = self::PAGINATION_RECENT_POSTS
+    ): Collection;
 
     /**
      * Get popular tags used within the post’s category tree.
      */
-    public function popularTags(Tag $tag, int $limit = 12): Collection;
+    public function popularTags(
+        Tag $tag,
+        int $limit = self::PAGINATION_POPULAR_TAGS
+    ): Collection;
 
     /**
      * Paginate posts filtered by tag.
      */
-    public function postsByTag(Tag $tag, int $limit = 20): LengthAwarePaginator;
+    public function postsByTag(
+        Tag $tag,
+        int $limit = self::PAGINATION_POSTS_BY_TAG
+    ): LengthAwarePaginator;
 
     /**
      * Get category suggestions related to a tag context.
@@ -60,5 +87,8 @@ interface CategoryInterface
     /**
      * Paginate posts filtered by author slug.
      */
-    public function postsByAuthor(string $slug, int $limit = 15): LengthAwarePaginator;
+    public function postsByAuthor(
+        string $slug,
+        int $limit = self::PAGINATION_DEFAULT_LISTING
+    ): LengthAwarePaginator;
 }

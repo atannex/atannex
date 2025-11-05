@@ -1,4 +1,4 @@
-<section class="">
+<section class="mb-4">
     <div class="container">
         @foreach ($section->tabs as $tab)
         @php
