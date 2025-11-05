@@ -3,16 +3,14 @@
 namespace App\Filament\Resources\Galleries\Schemas;
 
 use App\Enums\Flag;
+use Filament\Forms\Components\Select;
 use App\Enums\Image;
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
-use App\Filament\Traits\HasEnumColumnAndField;
 
 class GalleryForm
 {
-    use HasEnumColumnAndField;
 
     public static function configure(Schema $schema): Schema
     {
@@ -21,9 +19,13 @@ class GalleryForm
                 TextInput::make('original_name')
                     ->default(null),
 
-                self::makeEnumField('type', Image::class, default: Image::LOGO)
+                Select::make('type')
+                    ->options(Image::asSelectArray())
+                    ->label('Choose Your Image Type')
+                    ->searchable()
                     ->required()
-                    ->label('Choose Your Image Type'),
+                    ->preload()
+                    ->default(Image::LOGO),
 
                 FileUpload::make('image')
                     ->label('Featured Image')
@@ -44,12 +46,15 @@ class GalleryForm
                     ->uploadingMessage('Uploading your image...')
                     ->columnSpanFull(),
 
-                Textarea::make('description')
-                    ->default(null)
-                    ->columnSpanFull(),
-                self::makeEnumField('flag', Flag::class, default: Flag::PENDING)
+                Select::make('flag')
                     ->label('Status Flag')
                     ->helperText('Current status of this account')
+                    ->options(Flag::asSelectArray())
+                    ->searchable()
+                    ->required()
+                    ->preload()
+                    ->columnSpan(['default' => 12, 'md' => 4, 'lg' => 3])
+                    ->default(Flag::PENDING),
             ]);
     }
 }

@@ -40,7 +40,7 @@ trait HasDate
             : 'Posts for the year ' . $value;
 
         return $this->renderView('date', [
-            'posts' => $this->categoryService->getPostsByDate($yearMonth),
+            'posts' => $this->categoryService->postsByDate($yearMonth),
         ], seo_title($seoTitle));
     }
 }

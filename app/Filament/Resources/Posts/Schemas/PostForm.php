@@ -16,11 +16,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\DateTimePicker;
-use App\Filament\Traits\HasEnumColumnAndField;
 
 class PostForm
 {
-    use HasEnumColumnAndField;
 
     public static function configure(Schema $schema): Schema
     {
@@ -47,9 +45,15 @@ class PostForm
                                                 }
                                             }),
 
-                                        self::makeEnumField('flag', Flag::class)
+                                        Select::make('flag')
+                                            ->label('Status Flag')
+                                            ->helperText('Current status of this account')
+                                            ->options(Flag::asSelectArray())
+                                            ->searchable()
+                                            ->required()
+                                            ->preload()
                                             ->columnSpan(['default' => 12, 'md' => 4, 'lg' => 3])
-                                            ->native(false),
+                                            ->default(Flag::PENDING),
                                     ]),
                                 Grid::make(12)
                                     ->schema([
@@ -115,17 +119,11 @@ class PostForm
                                                     ->native(false)
                                                     ->helperText('Choose the main category for this post'),
 
-                                                self::makeRelationshipField(
-                                                    name: 'author_id',
-                                                    relationship: 'author',
-                                                    displayColumn: 'name',
-                                                    nullable: false,
-                                                    queryCallback: fn($query) => $query->with('user'),
-                                                    getLabel: fn($record) => $record->user?->name ?? 'Unknown User',
-                                                    helperText: 'Employee who created this post'
-                                                ),
-
-
+                                                Select::make('author_id')
+                                                    ->relationship('author', 'name')
+                                                    ->searchable()
+                                                    ->required()
+                                                    ->preload(),
                                             ]),
                                     ])
                                     ->compact()

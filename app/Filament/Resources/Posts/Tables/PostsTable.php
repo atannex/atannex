@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\Posts\Tables;
 
-use App\Enums\Flag;
-use App\Filament\Traits\HasEnumColumnAndField;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Actions\EditAction;
@@ -22,13 +20,13 @@ use Filament\Actions\ForceDeleteBulkAction;
 
 class PostsTable
 {
-    use HasEnumColumnAndField;
 
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
                 TextColumn::make('id'),
+
                 ImageColumn::make('image')
                     ->label('Featured Image')
                     ->disk('public')
@@ -48,7 +46,12 @@ class PostsTable
                     ->description(fn($record) => $record->description ? Str::limit($record->description, 60) : null)
                     ->wrap(),
 
-                self::makeEnumColumn('flag', Flag::class, true),
+                TextColumn::make('flag')
+                    ->label('Flag')
+                    ->badge()
+                    ->color('primary')
+                    ->sortable()
+                    ->searchable(),
 
                 TextColumn::make('category.name')
                     ->label('Category')
