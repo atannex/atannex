@@ -15,19 +15,19 @@
                 </div>
 
                 @auth
-                @if(auth()->id() === $comment->user_id)
                 <div class="gap-2 comment-actions d-flex align-items-center">
+                    @if(auth()->id() === $comment->user_id)
                     <a wire:click="$dispatch('edit-comment', { commentId: {{ $comment->id }} })" class="text-muted" title="Edit">
                         <i class="fas fa-edit"></i>
-                    </a>
-                    <a wire:click="$dispatch('reply-to-comment', { commentId: {{ $comment->id }}, username: '{{ $comment->user->name }}' })" class="text-primary" title="Reply">
-                        <i class="fas fa-reply"></i>
                     </a>
                     <a wire:click="$dispatch('delete-comment', { commentId: {{ $comment->id }} })" class="text-danger" title="Delete" onclick="return confirm('{{ __('Are you sure you want to delete this comment?') }}')">
                         <i class="fas fa-trash"></i>
                     </a>
+                    @endif
+                    <a wire:click="$dispatch('reply-to-comment', { commentId: {{ $comment->id }}, username: '{{ $comment->user->name }}' })" class="text-primary" title="Reply">
+                        <i class="fas fa-reply"></i>
+                    </a>
                 </div>
-                @endif
                 @endauth
             </div>
 

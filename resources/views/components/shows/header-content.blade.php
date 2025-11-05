@@ -14,20 +14,20 @@
 
     <a href="javascript:void(0)">
         <i class="fal fa-calendar-days"></i>
-        {{ $module->created_at->diffForHumans() }}
+        {{ __(' Published: ') . $module->created_at->diffForHumans() }}
     </a>
 
     @if($module->updated_at && $module->updated_at->gt($module->created_at))
     <a href="javascript:void(0)">
         <i class="fal fa-calendar-days"></i>
-        Updated {{ $module->updated_at->diffForHumans() }}
+        {{ __(' Updated: ') . $module->updated_at->diffForHumans() }}
     </a>
     @endif
 
     <a href="javascript:void(0)">
         <i class="far fa-comments"></i>
-        ({{ Str::plural('Comment', $module->post->comments->count()) }}
-        {{ format_count($module->post->comments->count()) }})
+        ({{ format_count($module->post->comments->count()) }}
+        {{ Str::plural('Comment', $module->post->comments->count()) }})
     </a>
 
     <span>

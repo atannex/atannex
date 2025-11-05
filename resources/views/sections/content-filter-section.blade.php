@@ -33,25 +33,23 @@
                 <div class="mb-4 col-xl-6 mb-xl-0">
                     <article class="blog-style1 style-big">
                         <div class="blog-img">
-                            <img src="{{ asset('storage/' . $featuredPost->image) }}" alt="{{ $featuredPost->title }}" class="img-fluid content-filter-section" loading="lazy" />
-                            <a data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" href="{{ route('page.index', $featuredPost->category->slug_path) }}" class="category" aria-label="{{ __('View :category posts', ['category' => $featuredPost->category->name]) }}">
-                                {{ $featuredPost->category->name }}
-                            </a>
+
+                            @include('partials.image', [ 'post' => $featuredPost, 'class'=> 'content-filter-section' ])
+
+                            @include('partials.category', [ 'post' => $featuredPost ])
+
                         </div>
                         <h3 class="box-title-30">
-                            <a class="hover-line" href="{{ $featuredPost->slug_path }}" title="{{ $featuredPost->title }}">
-                                {{ Str::limit($featuredPost->title, 60) }}
-                            </a>
+
+                            @include('partials.title', [ 'post' => $featuredPost ])
+
                         </h3>
                         <div class="blog-meta">
-                            <a href="{{ route('page.index', $featuredPost->author->user->slug ) }}" title="{{ __('View posts by :author', ['author' => $featuredPost->author->user->name]) }}">
-                                <i class="far fa-user" aria-hidden="true"></i>
-                                {{ __("By - ") . $featuredPost->author->user->name }}
-                            </a>
-                            <time datetime="{{ $featuredPost->published_at->format('Y/m') }}">
-                                <i class="fal fa-calendar-days" aria-hidden="true"></i>
-                                {{ $featuredPost->published_at->format('d M, Y') }}
-                            </time>
+
+                            @include('partials.author', [ 'post' => $featuredPost ])
+
+                            @include('partials.date', [ 'post' => $featuredPost ])
+
                         </div>
                     </article>
                 </div>
@@ -79,10 +77,8 @@
 
                                     @include('partials.author')
 
-                                    <time datetime="{{ $post->published_at->format('Y/m') }}">
-                                        <i class="fal fa-calendar-days" aria-hidden="true"></i>
-                                        {{ $post->published_at->format('d M, Y') }}
-                                    </time>
+                                    @include('partials.date')
+
                                 </div>
                             </article>
                         </div>

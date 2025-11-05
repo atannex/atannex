@@ -49,7 +49,7 @@ class CategoryRepository implements CategoryInterface
      */
     private function defaultRelations(): array
     {
-        return ['category', 'tags', 'author'];
+        return ['category', 'tags', 'author.user'];
     }
 
     /**

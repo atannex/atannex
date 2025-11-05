@@ -17,22 +17,52 @@
                         <div class="flex flex-wrap gap-3 blog-meta">
 
                             @include('partials.author')
-
                             @include('partials.date')
 
-                            <a href="#">
+                            @php
+                            $commentsCount = $post->comments->count();
+                            $likesCount = $post->likesCount();
+                            $ratingCount = $post->ratingCount();
+                            $viewCount = $post->viewsCount();
+                            @endphp
+
+                            <span class="meta-item disabled-link">
                                 <i class="far fa-comments"></i>
-                                {{ trans_choice(':count Comment|:count Comments', $post->comment_count ?? 0, ['count' => $post->comment_count ?? 0]) }}
-                            </a>
-                            <a href="#">
+                                {{ trans_choice(
+            ':count Comment|:count Comments',
+            $commentsCount,
+            ['count' => format_count($commentsCount)]
+        ) }}
+                            </span>
+
+                            <span class="meta-item disabled-link like-btn">
                                 <i class="far fa-thumbs-up"></i>
-                                {{ trans_choice(':count Like|:count Likes', $post->like_count ?? 0, ['count' => $post->like_count ?? 0]) }}
-                            </a>
-                            <a href="{{ route('page.index', $post->published_at->format('Y/m'))}}">
-                                <i class="far fa-star"></i>
-                                {{ number_format($post->average_rating ?? 0, 1) }} / 5
-                            </a>
+                                {{ trans_choice(
+            ':count Like|:count Likes',
+            $likesCount,
+            ['count' => format_count($likesCount)]
+        ) }}
+                            </span>
+
+                            <span class="meta-item disabled-link like-btn">
+                                <i class="far fa-eye"></i>
+                                {{ trans_choice(
+            ':count View|:count Views',
+            $viewCount,
+            ['count' => format_count($viewCount)]
+        ) }}
+                            </span>
+
+                            <span class="meta-item post-rating">
+                                <i class="fas fa-star"></i>
+                                <span class="rating-score">
+                                    {{ number_format($post->averageRating(), 1) }}/5
+                                    ({{ format_count($ratingCount, 1) }})
+                                </span>
+                            </span>
+
                         </div>
+
 
                         <h3 class="box-title-24">
 
