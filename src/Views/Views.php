@@ -4,7 +4,6 @@ namespace Atannex\Views;
 
 use App\Models\Tags\Tag;
 use Illuminate\View\View;
-use App\Models\Pivots\PostTag;
 use App\Models\Regions\Region;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
@@ -12,11 +11,9 @@ use Atannex\Views\Traits\CanRender;
 use Atannex\Views\Traits\HasContent;
 use Atannex\Views\Traits\HasDate;
 use Atannex\Views\Traits\HasShow;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Trait HasViews
- * Provides view rendering methods for various region types
+ * Render views for content regions using CategoryService orchestration.
  */
 trait Views
 {
@@ -26,11 +23,7 @@ trait Views
     use HasDate;
 
     /**
-     * Render a tag view with related posts and metadata.
-     *
-     * @param PostTag $postTag
-     * @return View
-     * @throws ModelNotFoundException
+     * Render tag page with posts and related data.
      */
     public function renderTagView(Tag $tag): View
     {
@@ -38,32 +31,26 @@ trait Views
 
         return $this->renderView('tag', [
             'tag'               => $tag,
-            'posts'             => $this->categoryService->getPostsByTag($tag),
-            'relatedCategories' => $this->categoryService->getRelatedCategoriesForTag($tag),
-            'recentPosts'       => $this->categoryService->getRecentPosts($first, 6),
-            'popularTags'       => $this->tagService->getPopularTags(8),
+            'posts'             => $this->categoryService->postsByTag($tag),
+            'relatedCategories' => $this->categoryService->relatedCategoriesByTag($tag),
+            'recentPosts'       => $first ? $this->categoryService->recentPosts($first, 6) : collect(),
+            'popularTags'       => $this->categoryService->popularTags($tag, 8),
         ], seo_title($tag->name));
     }
 
     /**
-     * Render a region view with associated posts.
-     *
-     * @param Region $region
-     * @return View
+     * Render region page.
      */
     public function renderRegionView(Region $region): View
     {
         return $this->renderView('region', [
             'region' => $region,
-            'posts'  => $this->categoryService->getPostsByRegion($region),
+            'posts'  => $this->categoryService->postsByRegion($region),
         ], seo_title($region->name));
     }
 
     /**
-     * Render a region page.
-     *
-     * @param string $slug
-     * @return View
+     * Render region page by slug.
      */
     public function renderRegionPageView(string $slug): View
     {
@@ -71,41 +58,37 @@ trait Views
 
         $this->resolveSection($region);
 
-        return $this->renderView('region-page', ['region' => $region], seo_title($region->title));
+        return $this->renderView('region-page', [
+            'region' => $region
+        ], seo_title($region->title));
     }
 
     /**
-     * Render an author profile view with their posts and social media.
-     *
-     * @param Employee $author
-     * @return View
+     * Render author profile.
      */
     public function renderAuthorView(Employee $author): View
     {
         return $this->renderView('author', [
             'author'      => $author,
-            'posts'       => $this->categoryService->getPostsByAuthor($author->user->slug),
-            'user_medias' => $this->categoryService->getPublishedEmployeeSocialMedia($author),
+            'posts'       => $this->categoryService->postsByAuthor($author->user->slug),
+            'user_medias' => $this->categoryService->employeeSocial($author),
         ], seo_title($author->name));
     }
 
     /**
-     * Render a category view with its posts.
-     *
-     * @param Category $category
-     * @return View
+     * Render category page with related elements.
      */
     public function renderCategoryView(Category $category): View
     {
-        $posts = $this->categoryService->getPostsByCategory($category);
-        $firstPost = $posts->first();
+        $posts = $this->categoryService->postsByCategory($category);
+        $first = $posts->first();
 
         return $this->renderView('category', [
             'category'          => $category,
             'posts'             => $posts,
-            'popularTags'       => $this->tagService->getPopularTags(),
-            'recentPosts'       => $this->categoryService->getRecentPosts($firstPost, 6),
-            'relatedCategories' => $this->categoryService->getRelatedCategoriesForCategory($category),
+            'popularTags'       => $first ? $this->categoryService->popularTags($first->tags->first(), 8) : collect(),
+            'recentPosts'       => $first ? $this->categoryService->recentPosts($first, 6) : collect(),
+            'relatedCategories' => $this->categoryService->relatedCategories($category),
         ], seo_title($category->name));
     }
 }

@@ -23,12 +23,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Actions\ForceDeleteBulkAction;
-use App\Filament\Traits\HasEnumColumnAndField;
 
 class SocialMediaTable
 {
-    use HasEnumColumnAndField;
-
     public static function configure(Table $table): Table
     {
         return $table
@@ -43,19 +40,18 @@ class SocialMediaTable
                     ->description(fn($record) => $record->url ? parse_url($record->url, PHP_URL_HOST) : null)
                     ->wrap(),
 
-                HasEnumColumnAndField::makeEnumColumn(
-                    name: 'owner_type',
-                    enumClass: Binding::class,
-                    withIcon: true
-                )
-                    ->label('Owner Type'),
+                TextColumn::make('owner_type')
+                    ->label('Owner Type')
+                    ->color('primary')
+                    ->sortable()
+                    ->searchable(),
 
-                HasEnumColumnAndField::makeEnumColumn(
-                    name: 'platform',
-                    enumClass: Icon::class,
-                    withIcon: false
-                )
-                    ->label('Platform Type'),
+                TextColumn::make('platform')
+                    ->label('Platform Type')
+                    ->badge()
+                    ->color('primary')
+                    ->sortable()
+                    ->searchable(),
 
                 TextColumn::make('url')
                     ->label('Profile URL')
@@ -71,11 +67,12 @@ class SocialMediaTable
                     ->placeholder('No URL provided')
                     ->formatStateUsing(fn($state) => $state ? str_replace(['https://', 'http://'], '', $state) : null),
 
-                HasEnumColumnAndField::makeEnumColumn(
-                    name: 'flag',
-                    enumClass: Flag::class
-                )
-                    ->label('Flag'),
+                TextColumn::make('flag')
+                    ->label('Flag')
+                    ->badge()
+                    ->color('primary')
+                    ->sortable()
+                    ->searchable(),
 
                 TextColumn::make('order')
                     ->label('Order')

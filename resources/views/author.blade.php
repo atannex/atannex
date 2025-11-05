@@ -24,6 +24,9 @@
                                         @include('partials.title')
 
                                     </h3>
+                                    <p class="blog-text">
+                                        {!! Str::limit($post->description, 200) !!}
+                                    </p>
                                     <div class="blog-meta">
 
                                         @include('partials.author')
@@ -116,7 +119,7 @@
                                     <h4 class="box-title-18">{{ __("Social Media") }}</h4>
                                     <div class="th-social">
                                         @foreach($user_medias as $media)
-                                        <a href="{{ $media['url'] }}" target="_blank" rel="noopener" class="d-inline-flex align-items-center justify-content-center rounded-circle me-1" style="width: 2.5rem; height: 2.5rem; background-color: var(--bs-{{ $media['color'] }});">
+                                        <a href="{{ $media['url'] }}" target="_blank" rel="noopener" class="d-inline-flex align-items-center justify-content-center rounded-circle me-1 social-icon" style="width: 2.5rem; height: 2.5rem; background-color: {{ $media['color'] }};">
                                             <i class="{{ $media['icon'] }} text-white"></i>
                                         </a>
                                         @endforeach
