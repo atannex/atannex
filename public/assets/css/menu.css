@@ -74,3 +74,42 @@
     object-fit: cover;
     flex-shrink: 0;
 }
+.blog-info .fa {
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+}
+
+.blog-info button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.blog-info button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.share-btn:hover i,
+.like-btn:hover i {
+    transform: scale(1.1);
+}
+
+/* Rating Stars */
+.rating .fa-star {
+    opacity: 0.35;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.rating .fa-star:hover,
+.rating .fa-star.active {
+    opacity: 1;
+    transform: scale(1.1);
+    color: #ffc107;
+}
+
+/* Active Like Color */
+.active-like {
+    color: #0d6efd;
+}
