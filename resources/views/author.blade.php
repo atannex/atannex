@@ -24,6 +24,9 @@
                                         @include('partials.title')
 
                                     </h3>
+                                    <p class="blog-text">
+                                        {!! Str::limit($post->description, 200) !!}
+                                    </p>
                                     <div class="blog-meta">
 
                                         @include('partials.author')
