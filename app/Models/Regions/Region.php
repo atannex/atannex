@@ -48,19 +48,15 @@ class Region extends Model implements Sluggable
     /**
      * Sluggable interface: return base for pivot slug.
      */
-    public function getSlugBase(): ?string
+    public function getSlugBase(): string
     {
-        if ($this->parent) {
-            return $this->parent->buildDynamicSlugPath();
-        }
-
-        return null;
+        return $this->parent->buildDynamicSlugPath();
     }
 
     /**
      * Sluggable interface: return own slug segment.
      */
-    public function getSlug(): ?string
+    public function getSlug(): string
     {
         return $this->slug;
     }
@@ -78,7 +74,7 @@ class Region extends Model implements Sluggable
     }
 
     /**
-     * Clear related slug paths (if needed on delete).
+     * Clear related slug paths (on delete or reset).
      */
     public function clearRelatedSlugPaths(): void
     {

@@ -18,4 +18,23 @@ trait HasPlatforms
         Icon::PINTEREST,
         Icon::EMAIL,
     ];
+
+    /**
+     * Return all social platform metadata from Icon enum.
+     *
+     * @return array<int, array{label:string,icon:string,color:string,platform:string}>
+     */
+    /**
+     * Return only supported social platform icon metadata.
+     *
+     * @return array<string, array{label:string,icon:string,color:string}>
+     */
+    protected function getAllShareIcons(): array
+    {
+        return collect(self::SUPPORTED_PLATFORMS)
+            ->mapWithKeys(fn(string $platform) => [
+                $platform => Icon::getData($platform)
+            ])
+            ->all();
+    }
 }

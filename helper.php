@@ -4,6 +4,31 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+if (!function_exists('displayData')) {
+    /**
+     * Generate category display data (label + background image)
+     *
+     * @param  \App\Models\Category  $category
+     * @return array
+     */
+    function displayData($category): array
+    {
+        $firstPost = $category->posts->first();
+        $root = $category->getAncestors()->last() ?? $category;
+        $rootName = strtolower($root->name);
+
+        $label = ($rootName === 'ruler' || $rootName === 'rulers')
+            ? ($category->parent ? "{$category->parent->name} → {$category->name}" : $category->name)
+            : $category->name;
+
+        $bgSrc = $firstPost?->image
+            ? asset("storage/{$firstPost->image}")
+            : '';
+
+        return compact('label', 'bgSrc');
+    }
+}
+
 if (!function_exists('seo_title')) {
     /**
      * Generate an SEO-friendly title for pages.

@@ -2,6 +2,7 @@
 
 namespace Atannex\Repositories\Traits;
 
+use App\Enums\Flag;
 use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
 use App\Models\Regions\Category;
@@ -54,11 +55,11 @@ trait TagQuery
     public function relatedCategoriesByTag(Tag $tag, int $limit = self::PAGINATION_LIMIT): Collection
     {
         return $this->getLeafNodes(
-            node: $this->getRoot($this->resolveTagCategory($tag)),
-            countRelation: 'posts',
-            countFilter: 'published',
-            excludeId: null,
-            limit: $limit
+            $this->getRoot($this->resolveTagCategory($tag)),
+            'posts',
+            Flag::PUBLISHED,
+            null,
+            $limit
         );
     }
 

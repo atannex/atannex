@@ -15,7 +15,7 @@
                         <div class="blog-style3">
                             <div class="blog-img">
 
-                                @include('partials.image')
+                                @include('partials.image',['post' => $post])
 
                             </div>
 
@@ -50,7 +50,7 @@
                     <div class="blog-style3">
                         <div class="blog-img">
 
-                            @include('partials.image')
+                            @include('partials.image',['post' => $latestPost])
 
                         </div>
 

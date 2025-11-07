@@ -4,22 +4,23 @@
         @livewire('search.post')
 
     </div>
+
     <div class="widget widget_categories">
-        <h3 class="widget_title">{{ __("Categories") }}</h3>
+        <h3 class="widget_title">
+            {{ __('Categories') }}
+        </h3>
         <ul>
             @foreach ($relatedCategories as $category)
-            @php
-            $firstPost = $category->posts->first();
-            @endphp
+            @php($data = displayData($category))
             <li>
-                <a data-bg-src="{{ $firstPost ? asset('storage/' . $firstPost->image) : '' }}" href="{{ route('page.index', $category->slug_path) }}">
-                    {{ $category->name }}
+                <a href="{{ route('page.index', $category->slug_path) }}" @if($data['bgSrc']) data-bg-src="{{ $data['bgSrc'] }}" @endif>
+                    {{ $data['label'] }}
                 </a>
             </li>
             @endforeach
-
         </ul>
     </div>
+
     <div class="widget">
         <h3 class="widget_title">{{ __("Recent Posts") }}</h3>
         <div class="recent-post-wrap">

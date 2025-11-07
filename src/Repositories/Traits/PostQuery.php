@@ -38,7 +38,8 @@ trait PostQuery
     public function postsByRegion(Region $region, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
     {
         return $this->paginate(
-            Post::published()
+            Post::query()
+                ->published()
                 ->whereHas('category', fn($q) => $q->doesntHave('children'))
                 ->whereHas(
                     'regions',

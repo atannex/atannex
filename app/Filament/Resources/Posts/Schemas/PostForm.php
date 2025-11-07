@@ -7,6 +7,7 @@ use App\Models\Tags\Tag;
 use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
 use App\Models\Regions\Region;
+use App\Models\Regions\Category;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
@@ -101,26 +102,54 @@ class PostForm
                                             ->schema([
                                                 Select::make('category_id')
                                                     ->label('Category')
-                                                    ->relationship('category', 'name')
                                                     ->required()
                                                     ->searchable()
                                                     ->preload()
+                                                    ->options(function () {
+                                                        return Category::with('parent')
+                                                            ->get()
+                                                            ->mapWithKeys(function ($category) {
+                                                                $label = $category->parent
+                                                                    ? sprintf('%s → %s', $category->parent->name, $category->name)
+                                                                    : $category->name;
+
+                                                                return [$category->id => $label];
+                                                            })
+                                                            ->toArray();
+                                                    })
                                                     ->createOptionForm([
-                                                        Section::make()
+                                                        Section::make('Create Category')
                                                             ->schema([
                                                                 TextInput::make('name')
                                                                     ->label('Category Name')
                                                                     ->required()
                                                                     ->maxLength(255)
                                                                     ->placeholder('Enter category name'),
+
+                                                                Select::make('parent_id')
+                                                                    ->label('Parent Category (optional)')
+                                                                    ->options(
+                                                                        Category::pluck('name', 'id')->toArray()
+                                                                    )
+                                                                    ->searchable()
+                                                                    ->preload()
+                                                                    ->placeholder('Select parent category'),
                                                             ]),
                                                     ])
                                                     ->createOptionModalHeading('Create New Category')
+                                                    ->createOptionAction(
+                                                        fn($action) => $action
+                                                            ->modalHeading('Create Category')
+                                                            ->modalDescription('Add a new category or subcategory.')
+                                                            ->modalSubmitActionLabel('Save Category')
+                                                            ->modalWidth('lg')
+                                                    )
+                                                    ->helperText('Choose or create a category. Parent → Child structure is shown.')
                                                     ->native(false)
-                                                    ->helperText('Choose the main category for this post'),
+                                                    ->prefixIcon('heroicon-o-folder'),
 
                                                 Select::make('author_id')
-                                                    ->relationship('author', 'name')
+                                                    ->relationship('author.user', 'name')
                                                     ->searchable()
                                                     ->required()
                                                     ->preload(),

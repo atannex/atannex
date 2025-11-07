@@ -44,6 +44,8 @@ trait HasSlug
     {
         return SlugOptions::create()
             ->generateSlugsFrom($this->getSlugSource())
-            ->saveSlugsTo($this->getSlugDestination());
+            ->saveSlugsTo($this->getSlugDestination())
+            ->allowDuplicateSlugs()
+            ->usingSeparator('_');
     }
 }

@@ -4,17 +4,18 @@ namespace App\Providers;
 
 use App\Enums\Flag;
 use App\Enums\Image;
-use App\Enums\Entity;
-use App\Enums\Binding;
-use App\Enums\Classification;
-use App\Enums\Status;
-use App\Enums\Territories;
 use App\Enums\Title;
+use App\Enums\Entity;
+use App\Enums\Status;
+use App\Enums\Binding;
+use App\Enums\Territories;
 use App\Models\Posts\Post;
+use App\Enums\Classification;
 use App\Models\Regions\Region;
 use App\Models\Regions\Widget;
 use App\Models\Regions\Section;
 use App\Models\Regions\Category;
+use App\Observers\RegionObserver;
 use App\Observers\WidgetObserver;
 use App\Observers\SectionObserver;
 use Ngangagah\Handlers\Navigation;
@@ -57,6 +58,7 @@ class AppServiceProvider extends ServiceProvider
         Category::observe(SluggableObserver::class);
         Region::observe(SluggableObserver::class);
         Post::observe(SluggableObserver::class);
+        Region::observe(RegionObserver::class);
     }
 
     /**

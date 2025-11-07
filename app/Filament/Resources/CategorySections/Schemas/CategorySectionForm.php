@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CategorySections\Schemas;
 
 use Filament\Schemas\Schema;
+use App\Models\Regions\Category;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Section;
 
@@ -15,14 +16,28 @@ class CategorySectionForm
                 Section::make('Basic Information')
                     ->description('Configure the category and section relationship')
                     ->schema([
+
                         Select::make('category_id')
                             ->label('Category')
-                            ->relationship('category', 'name')
+                            ->required()
                             ->searchable()
                             ->preload()
-                            ->required()
+                            ->options(function () {
+                                return Category::with('parent')
+                                    ->get()
+                                    ->mapWithKeys(function ($category) {
+                                        $label = $category->parent
+                                            ? sprintf('%s → %s', $category->parent->name, $category->name)
+                                            : $category->name;
+
+                                        return [$category->id => $label];
+                                    })
+                                    ->toArray();
+                            })
                             ->placeholder('Select a category')
-                            ->helperText('Choose the parent category for this section'),
+                            ->helperText('Choose the parent category for this section (hierarchical display)')
+                            ->native(false)
+                            ->prefixIcon('heroicon-o-folder'),
 
                         Select::make('section_id')
                             ->label('Section')
@@ -31,9 +46,11 @@ class CategorySectionForm
                             ->preload()
                             ->nullable()
                             ->placeholder('Select a section (optional)')
-                            ->helperText('Associate with a specific section if needed'),
+                            ->helperText('Associate with a specific section if needed')
+                            ->native(false)
+                            ->prefixIcon('heroicon-o-rectangle-stack'),
                     ])
-                    ->columns(2),
+                    ->columnSpanFull(),
             ]);
     }
 }
