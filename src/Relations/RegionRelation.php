@@ -55,8 +55,9 @@ trait RegionRelation
      */
     public function posts(): BelongsToMany
     {
-        return $this->belongsToMany(Post::class)
+        return $this->belongsToMany(Post::class, 'post_region')
             ->using(PostRegion::class)
+            ->withPivot(['region_id', 'post_id'])
             ->withTimestamps();
     }
 

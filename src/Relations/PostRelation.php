@@ -18,8 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 /**
  * Trait PostRelation
  *
- * Defines all Eloquent relationships and slug handling
- * logic for the Post model.
+ * Defines all Eloquent relationships and slug logic for the Post model.
  */
 trait PostRelation
 {
@@ -59,13 +58,12 @@ trait PostRelation
 
     /**
      * Many-to-Many relationship with Regions.
-     *
-     * Filtering (SoftDeletes + flag) handled inside PostRegion pivot.
      */
     public function regions(): BelongsToMany
     {
         return $this->belongsToMany(Region::class, 'post_region')
             ->using(PostRegion::class)
+            ->withPivot(['region_id', 'post_id'])
             ->withTimestamps();
     }
 
@@ -98,8 +96,7 @@ trait PostRelation
      */
     public function getSlugBase(): string
     {
-        // Avoid lazy-loading errors
-        return $this->category?->slug_path ?? '';
+        return $this->category->slug_path;
     }
 
     /**
@@ -125,26 +122,16 @@ trait PostRelation
     {
         $this->rebuildSlugPath();
         $this->saveQuietly();
-
-        // Placeholder for pivot propagation
         $this->updatePivotSlugs();
     }
 
     /**
      * Clear slug paths for related pivots.
-     *
-     * Future extension point.
      */
     public function clearRelatedSlugPaths(): void {}
 
     /**
      * Update pivot slug paths (tags, regions).
-     *
-     * @return void
      */
-    protected function updatePivotSlugs(): void
-    {
-        // Example: update tag pivot slugs if schema supports it
-        // $this->tags()->each(fn ($tag) => $tag->pivot->updateQuietly([...]));
-    }
+    protected function updatePivotSlugs(): void {}
 }

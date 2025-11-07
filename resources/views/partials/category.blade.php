@@ -1,5 +1,6 @@
 @if($post->category)
+@php($data = displayData($post->category))
 <a href="{{ route('page.index', $post->category->slug_path) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
-    {{ $post->category->name }}
+    {{ $data['label'] }}
 </a>
 @endif

@@ -3,17 +3,20 @@
 namespace App\Filament\Resources\Categories\Schemas;
 
 use App\Enums\Flag;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Schemas\Components\Tabs\Tab;
-use Filament\Forms\Components\FileUpload;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Tabs;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\FileUpload;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 
 class CategoryForm
 {
@@ -24,53 +27,56 @@ class CategoryForm
     {
         return $schema
             ->components([
-                Tabs::make('Category Details')
-                    ->tabs([
-                        Tab::make('Basic Information')
-                            ->icon('heroicon-m-information-circle')
+                Group::make()
+                    ->schema([
+                        Section::make('Category Details')
+                            ->description('Essential information about the category')
+                            ->icon('heroicon-m-tag')
                             ->schema([
-                                Section::make('Category Details')
-                                    ->description('Basic information about the category')
-                                    ->icon('heroicon-m-tag')
+                                Grid::make(2)
                                     ->schema([
-                                        Grid::make(2)
-                                            ->schema([
-                                                TextInput::make('name')
-                                                    ->label('Category Name')
-                                                    ->required()
-                                                    ->maxLength(255)
-                                                    ->live(onBlur: true)
-                                                    ->afterStateUpdated(function (string $operation, $state, $set) {
-                                                        if ($operation !== 'create') {
-                                                            return;
-                                                        }
+                                        TextInput::make('name')
+                                            ->label('Category Name')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->live(onBlur: true)
+                                            ->afterStateUpdated(function (Get $get, Set $set, ?string $state): void {
+                                                if (! $get('id') && filled($state)) {
+                                                    $set('slug', Str::slug($state));
+                                                }
+                                            })
+                                            ->helperText('Enter a clear, descriptive name for the category')
+                                            ->placeholder('e.g., Electronics, Home & Garden, Fashion')
+                                            ->prefixIcon('heroicon-m-tag')
+                                            ->autocomplete(false),
 
-                                                        $set('slug', Str::slug($state));
-                                                    })
-                                                    ->helperText('Enter a descriptive name for the category')
-                                                    ->placeholder('e.g., Electronics, Clothing, Books'),
-
-                                                TextInput::make('slug')
-                                                    ->label('URL Slug')
-                                                    ->disabled()
-                                                    ->dehydrated()
-                                                    ->maxLength(255)
-                                                    ->unique(ignoreRecord: true)
-                                                    ->helperText('Auto-generated from the category name')
-                                                    ->prefixIcon('heroicon-m-link'),
-                                            ]),
-
-                                        Textarea::make('description')
-                                            ->label('Description')
-                                            ->placeholder('Provide a detailed description of this category...')
-                                            ->helperText('This description may be used for SEO and category listings')
-                                            ->rows(4)
-                                            ->columnSpanFull(),
+                                        TextInput::make('slug')
+                                            ->label('URL Slug')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->unique(ignoreRecord: true)
+                                            ->helperText('Auto-generated from category name (editable)')
+                                            ->prefixIcon('heroicon-m-link')
+                                            ->rules(['alpha_dash'])
+                                            ->placeholder('auto-generated-slug'),
                                     ]),
 
-                                Section::make('Category Hierarchy')
-                                    ->description('Set the parent category and organization')
-                                    ->icon('heroicon-m-squares-plus')
+                                Textarea::make('description')
+                                    ->label('Category Description')
+                                    ->placeholder('Write a comprehensive description of this category...')
+                                    ->helperText('Used for SEO and category pages (recommended: 150-300 characters)')
+                                    ->rows(4)
+                                    ->maxLength(1000)
+                                    ->columnSpanFull(),
+                            ])
+                            ->collapsible()
+                            ->persistCollapsed(),
+
+                        Section::make('Category Hierarchy & Organization')
+                            ->description('Organize categories with parent-child relationships')
+                            ->icon('heroicon-m-squares-plus')
+                            ->schema([
+                                Grid::make(2)
                                     ->schema([
                                         Select::make('parent_id')
                                             ->label('Parent Category')
@@ -79,97 +85,156 @@ class CategoryForm
                                             ->preload()
                                             ->nullable()
                                             ->placeholder('Select a parent category (optional)')
-                                            ->helperText('Leave empty to create a root category')
+                                            ->helperText('Leave empty to create a root-level category')
+                                            ->prefixIcon('heroicon-m-folder-open')
+                                            ->native(false)
                                             ->createOptionForm([
                                                 TextInput::make('name')
+                                                    ->label('Category Name')
                                                     ->required()
+                                                    ->maxLength(255)
                                                     ->live(onBlur: true)
-                                                    ->afterStateUpdated(fn (string $operation, $state, $set) =>
-                                                        $operation === 'create' ? $set('slug', Str::slug($state)) : null
-                                                    ),
+                                                    ->afterStateUpdated(function (string $operation, ?string $state, Set $set): void {
+                                                        if ($operation === 'create' && filled($state)) {
+                                                            $set('slug', Str::slug($state));
+                                                        }
+                                                    })
+                                                    ->placeholder('Enter parent category name'),
+
                                                 TextInput::make('slug')
+                                                    ->label('URL Slug')
                                                     ->required()
-                                                    ->unique(),
+                                                    ->unique()
+                                                    ->maxLength(255)
+                                                    ->placeholder('auto-generated-slug'),
                                             ])
-                                            ->createOptionAction(function ($action) {
-                                                return $action
+                                            ->createOptionAction(
+                                                fn($action) => $action
                                                     ->modalHeading('Create New Parent Category')
-                                                    ->modalSubmitActionLabel('Create Category');
-                                            }),
-                                    ]),
-                            ]),
+                                                    ->modalDescription('Add a new parent category for hierarchical organization')
+                                                    ->modalSubmitActionLabel('Create Category')
+                                                    ->modalWidth('lg')
+                                            ),
 
-                        Tab::make('Media & Status')
-                            ->icon('heroicon-m-photo')
+                                        TextInput::make('order')
+                                            ->label('Display Order')
+                                            ->numeric()
+                                            ->default(0)
+                                            ->minValue(0)
+                                            ->step(1)
+                                            ->helperText('Lower numbers appear first (0 = highest priority)')
+                                            ->placeholder('0')
+                                            ->prefixIcon('heroicon-m-arrows-up-down'),
+                                    ]),
+                            ])
+                            ->collapsible()
+                            ->persistCollapsed(),
+
+                        Section::make('Category Image')
+                            ->description('Upload a visual representation for this category')
+                            ->icon('heroicon-m-camera')
                             ->schema([
-                                Section::make('Category Image')
-                                    ->description('Upload an image to represent this category')
-                                    ->icon('heroicon-m-camera')
-                                    ->schema([
-                                        FileUpload::make('image')
-                                            ->label('Category Image')
-                                            ->directory(fn($record) => $record?->getImageDirectory())
-                                            ->image()
-                                            ->imageEditor()
-                                            ->imageEditorAspectRatios([
-                                                '16:9',
-                                                '4:3',
-                                                '1:1',
-                                            ])
-                                            ->maxSize(2048)
-                                            ->acceptedFileTypes(['image/png', 'image/jpg', 'image/jpeg', 'image/webp'])
-                                            ->helperText('Recommended size: 800x600px. Max file size: 2MB')
-                                            ->imagePreviewHeight('250')
-                                            ->loadingIndicatorPosition('left')
-                                            ->panelAspectRatio('2:1')
-                                            ->panelLayout('integrated')
-                                            ->removeUploadedFileButtonPosition('right')
-                                            ->uploadButtonPosition('left')
-                                            ->uploadProgressIndicatorPosition('left'),
-                                    ]),
+                                FileUpload::make('image')
+                                    ->label('Category Image')
+                                    ->directory(fn($record) => $record?->getImageDirectory())
+                                    ->image()
+                                    ->imageEditor()
+                                    ->imageEditorAspectRatios([
+                                        '16:9' => '16:9 (Landscape)',
+                                        '4:3' => '4:3 (Standard)',
+                                        '1:1' => '1:1 (Square)',
+                                        '9:16' => '9:16 (Portrait)',
+                                    ])
+                                    ->maxSize(5120)
+                                    ->acceptedFileTypes(['image/png', 'image/jpg', 'image/jpeg', 'image/webp', 'image/svg+xml'])
+                                    ->helperText('Recommended: 1200x800px or larger. Max 5MB. Formats: PNG, JPG, WEBP, SVG')
+                                    ->imagePreviewHeight('300')
+                                    ->loadingIndicatorPosition('center')
+                                    ->panelAspectRatio('16:9')
+                                    ->panelLayout('integrated')
+                                    ->removeUploadedFileButtonPosition('top-right')
+                                    ->uploadButtonPosition('left')
+                                    ->uploadProgressIndicatorPosition('center')
+                                    ->columnSpanFull(),
+                            ])
+                            ->collapsible()
+                            ->persistCollapsed(),
+                    ])
+                    ->columnSpan(['lg' => 2]),
 
-                                Section::make('Status & Publishing')
-                                    ->description('Control category visibility and status')
-                                    ->icon('heroicon-m-eye')
-                                    ->schema([
-                                        Grid::make(2)
-                                            ->schema([
-                                                Select::make('flag')
-                                                    ->label('Status Flag')
-                                                    ->required()
-                                                    ->default('pending')
-                                                    ->options(Flag::labels())
-                                                    ->searchable()
-                                                    ->helperText('Select the current status of this category'),
+                Group::make()
+                    ->schema([
+                        Section::make('Status & Publishing')
+                            ->description('Control category visibility')
+                            ->icon('heroicon-m-eye')
+                            ->schema([
+                                Select::make('flag')
+                                    ->label('Status Flag')
+                                    ->required()
+                                    ->default('pending')
+                                    ->options(Flag::labels())
+                                    ->native(false)
+                                    ->searchable()
+                                    ->helperText('Current publication status')
+                                    ->prefixIcon('heroicon-m-flag'),
 
-                                                DateTimePicker::make('published_at')
-                                                    ->label('Publication Date')
-                                                    ->placeholder('Select publication date')
-                                                    ->helperText('Leave empty to keep as draft')
-                                                    ->displayFormat('M j, Y g:i A')
-                                                    ->native(false)
-                                                    ->suffixIcon('heroicon-m-calendar-days')
-                                                    ->closeOnDateSelection()
-                                                    ->default(now()),
-                                            ])
-                                    ]),
-                            ]),
+                                DateTimePicker::make('published_at')
+                                    ->label('Publication Date')
+                                    ->placeholder('Select date and time')
+                                    ->helperText('Schedule for future or leave empty for draft')
+                                    ->displayFormat('M j, Y g:i A')
+                                    ->native(false)
+                                    ->suffixIcon('heroicon-m-calendar-days')
+                                    ->closeOnDateSelection()
+                                    ->seconds(false)
+                                    ->default(now()),
 
-                        Tab::make('SEO & Meta')
+                                Toggle::make('is_featured')
+                                    ->label('Featured Category')
+                                    ->helperText('Highlight on homepage')
+                                    ->inline(false)
+                                    ->default(false),
+                            ])
+                            ->collapsible()
+                            ->persistCollapsed(),
+
+                        Section::make('Social Media Preview')
+                            ->description('Control social sharing appearance')
+                            ->icon('heroicon-m-share')
+                            ->schema([
+                                TextInput::make('og_title')
+                                    ->label('Social Title')
+                                    ->maxLength(95)
+                                    ->helperText('Title for social sharing')
+                                    ->placeholder('Defaults to meta title')
+                                    ->prefixIcon('heroicon-m-share'),
+
+                                Textarea::make('og_description')
+                                    ->label('Social Description')
+                                    ->maxLength(200)
+                                    ->helperText('Description for social sharing')
+                                    ->placeholder('Defaults to meta description')
+                                    ->rows(3),
+                            ])
+                            ->collapsible()
+                            ->collapsed()
+                            ->persistCollapsed(),
+
+                        Section::make('Search Engine Optimization')
+                            ->description('Optimize your category for search engines and social media')
                             ->icon('heroicon-m-magnifying-glass')
                             ->schema([
-                                Section::make('Search Engine Optimization')
-                                    ->description('Improve search engine visibility')
-                                    ->icon('heroicon-m-globe-alt')
+                                Grid::make(1)
                                     ->schema([
                                         TextInput::make('meta_title')
                                             ->label('Meta Title')
                                             ->maxLength(60)
-                                            ->helperText('Recommended: 50-60 characters')
-                                            ->placeholder('SEO-friendly title for search engines')
-                                            ->live()
-                                            ->afterStateUpdated(function ($state, $set, $get) {
-                                                if (!$get('meta_title') && $get('name')) {
+                                            ->helperText('Recommended: 50-60 characters for optimal search results')
+                                            ->placeholder('Enter SEO-optimized title (defaults to category name)')
+                                            ->prefixIcon('heroicon-m-document-text')
+                                            ->live(debounce: 500)
+                                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                                if (empty($state) && $get('name')) {
                                                     $set('meta_title', $get('name'));
                                                 }
                                             }),
@@ -177,19 +242,39 @@ class CategoryForm
                                         Textarea::make('meta_description')
                                             ->label('Meta Description')
                                             ->maxLength(160)
-                                            ->helperText('Recommended: 150-160 characters')
-                                            ->placeholder('Brief description for search engine results')
+                                            ->helperText('Recommended: 150-160 characters for search snippets')
+                                            ->placeholder('Write a compelling description for search results...')
                                             ->rows(3),
 
                                         TextInput::make('meta_keywords')
                                             ->label('Meta Keywords')
-                                            ->helperText('Comma-separated keywords (optional)')
-                                            ->placeholder('electronics, gadgets, technology'),
+                                            ->helperText('Comma-separated keywords (e.g., electronics, gadgets, tech)')
+                                            ->placeholder('keyword1, keyword2, keyword3')
+                                            ->prefixIcon('heroicon-m-hashtag'),
                                     ]),
-                            ]),
+                            ])
+                            ->collapsible()
+                            ->collapsed()
+                            ->persistCollapsed(),
+
+                        Section::make('Timestamps')
+                            ->description('Record creation and update history')
+                            ->icon('heroicon-m-clock')
+                            ->schema([
+                                TextEntry::make('created_at')
+                                    ->label('Created')
+                                    ->state(fn($record) => $record?->created_at?->format('M j, Y g:i A') ?? 'Not yet created'),
+
+                                TextEntry::make('updated_at')
+                                    ->label('Last Updated')
+                                    ->state(fn($record) => $record?->updated_at?->format('M j, Y g:i A') ?? 'Not yet updated'),
+                            ])
+                            ->collapsible()
+                            ->collapsed()
+                            ->persistCollapsed(),
                     ])
-                    ->columnSpanFull()
-                    ->persistTabInQueryString(),
-            ]);
+                    ->columnSpan(['lg' => 1]),
+            ])
+            ->columns(3);
     }
 }

@@ -4,7 +4,6 @@ namespace App\Models\Pivots;
 
 use App\Models\Posts\Post;
 use App\Models\Tags\Tag;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -15,8 +14,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class PostTag extends Pivot
 {
-    use SoftDeletes;
-
     protected $table = 'post_tag';
 
     protected $fillable = [

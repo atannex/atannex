@@ -17,6 +17,17 @@
                           @include('partials.title')
 
                       </h3>
+
+                      @php
+                      $categoryName = strtolower($post->category->name);
+                      @endphp
+
+                      @if(in_array($categoryName, ['fons', 'fon']))
+                      <p class="blog-text">
+                          {!! Str::limit($post->description, 200) !!}
+                      </p>
+                      @endif
+
                       <div class="blog-meta">
 
                           @include('partials.author')

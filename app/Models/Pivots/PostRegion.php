@@ -21,12 +21,6 @@ class PostRegion extends Pivot
     protected $fillable = [
         'post_id',
         'region_id',
-        'slug_path',
-        'flag',
-    ];
-
-    protected $casts = [
-        'slug_path' => 'string',
     ];
 
     /**

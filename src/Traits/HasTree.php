@@ -27,7 +27,9 @@ trait HasTree
     protected function getRoot(Model $node): Model
     {
         $ancestors = $node->getAncestors();
-        return $ancestors->isNotEmpty() ? $ancestors->last() : $node;
+        return $ancestors->isNotEmpty()
+            ? $ancestors->last()
+            : $node;
     }
 
     /**
@@ -39,24 +41,23 @@ trait HasTree
         $ids = $node->getDescendants()
             ->pluck($node->getKeyName())
             ->push($node->getKey())
-            ->unique()
-            ->values();
+            ->unique();
 
         return $excludeId
             ? $ids->reject(fn($id) => $id === $excludeId)->values()
-            : $ids;
+            : $ids->values();
     }
 
     /**
-     * Get leaf nodes (no children) ordered by custom count field.
+     * Get leaf nodes (no children), optionally sorted by related count.
      *
-     * @param string|null $countRelation  e.g. "posts" or null if no relation
-     * @param string|null $countFilter    closure name on relation (optional)
+     * @param string|null $countRelation  e.g. "posts"
+     * @param string|null $filterScope    local scope name on relation
      */
     protected function getLeafNodes(
         Model $node,
         ?string $countRelation = null,
-        ?string $countFilter = null,
+        ?string $filterScope = null,
         ?int $excludeId = null,
         int $limit = 12
     ): Collection {
@@ -68,7 +69,11 @@ trait HasTree
         if ($countRelation) {
             $query->withCount([
                 $countRelation . ' as total_count' =>
-                $countFilter ? fn($q) => $q->{$countFilter}() : fn() => null
+                function ($q) use ($filterScope) {
+                    if ($filterScope && method_exists($q->getModel(), $filterScope)) {
+                        $q->{$filterScope}();
+                    }
+                }
             ])->orderByDesc('total_count');
         }
 

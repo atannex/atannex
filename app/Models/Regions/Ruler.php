@@ -53,42 +53,10 @@ class Ruler extends Model
     ];
 
     /**
-     * Scope: Filter by classification
-     */
-    protected function scopeClassification($query, $classification)
-    {
-        return $query->where('classification', $classification);
-    }
-
-    /**
      * Get the region associated with the Fon.
      */
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
-    }
-
-    /**
-     * Scope for filtering by region.
-     */
-    protected function scopeOfRegion($query, int $regionId)
-    {
-        return $query->where('region_id', $regionId);
-    }
-
-    /**
-     * Scope to filter active reigns (no end date).
-     */
-    protected function scopeCurrentlyReigning($query)
-    {
-        return $query->whereNull('reign_end');
-    }
-
-    /**
-     * Get full title including traditional title and name.
-     */
-    protected function getFullTitleAttribute(): string
-    {
-        return trim(sprintf('%s %s', $this->title, $this->name));
     }
 }

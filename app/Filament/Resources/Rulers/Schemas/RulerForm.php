@@ -33,6 +33,8 @@ class RulerForm
                 DatePicker::make('reign_end'),
                 Select::make('region_id')
                     ->relationship('region', 'name')
+                    ->preload()
+                    ->searchable()
                     ->required(),
                 TextInput::make('phone')
                     ->tel()

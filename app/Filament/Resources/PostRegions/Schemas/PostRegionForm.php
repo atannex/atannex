@@ -13,9 +13,13 @@ class PostRegionForm
             ->components([
                 Select::make('post_id')
                     ->relationship('post', 'title')
+                    ->searchable()
+                    ->preload()
                     ->default(null),
                 Select::make('region_id')
                     ->relationship('region', 'name')
+                    ->preload()
+                    ->searchable()
                     ->default(null),
             ]);
     }
