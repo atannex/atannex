@@ -8,8 +8,8 @@ use App\Enums\Traits\HasEntityMapping;
 /**
  * Trait HasContent
  *
- * Dynamically resolves region, section, and widget content,
- * ensuring widgets display only in their assigned region.
+ * Efficiently resolves region, section, and widget content
+ * with minimal queries and scoped limits.
  */
 trait HasContent
 {
@@ -20,16 +20,25 @@ trait HasContent
      * Resolve all sections for a specific region.
      *
      * @param Region $region
+     * @param int $sectionLimit
+     * @param int $widgetLimit
      * @return void
      */
-    protected function resolveSection(Region $region): void
+    protected function resolveSection(Region $region, int $sectionLimit = 6, int $widgetLimit = 3): void
     {
         $region->load([
-            'sections.widgets' => fn($query) => $query->wherePivot('region_id', $region->id),
+            'sections' => function ($query) use ($region, $sectionLimit, $widgetLimit) {
+                $query->when($sectionLimit, fn($q) => $q->limit($sectionLimit))
+                    ->with([
+                        'widgets' => fn($q) =>
+                        $q->wherePivot('region_id', $region->id)
+                            ->when($widgetLimit, fn($w) => $w->limit($widgetLimit)),
+                    ]);
+            },
         ]);
 
         foreach ($region->sections as $section) {
-            $this->resolveEntityWithWidgets($section, $region);
+            $this->resolveEntityWithWidgets($section);
         }
     }
 
@@ -37,14 +46,11 @@ trait HasContent
      * Resolve a section and its widgets scoped to the given region.
      *
      * @param object $entity
-     * @param Region $region
      * @return void
      */
     protected function resolveEntityWithWidgets(object $entity): void
     {
-        $config = $entity->pivot->config;
-
-        $this->resolveEntityContent($entity, $config, 'section_tab');
+        $this->resolveEntityContent($entity, $entity->pivot->config, 'section_tab');
 
         foreach ($entity->widgets as $widget) {
             $this->resolveEntityContent($widget, $widget->pivot->config, 'widget_tab');

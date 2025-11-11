@@ -33,6 +33,21 @@ trait PostQuery
     }
 
     /**
+     * Recent posts from within same tree — excluding the current post.
+     */
+    public function recentPosts(Post $post, int $limit = self::RECENT_LIMIT): Collection
+    {
+        return Post::published()
+            ->whereIn('category_id', $this->getTreeIds($this->getRoot($post->category)))
+            ->where('id', '!=', $post->id)
+            ->with($this->postRelations())
+            ->latest('published_at')
+            ->limit($this->sanitizeLimit($limit))
+            ->get();
+    }
+
+
+    /**
      * Paginate posts under a Region tree (leaf-category filtering).
      */
     public function postsByRegion(Region $region, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
@@ -65,19 +80,6 @@ trait PostQuery
                 ->with($this->postRelations()),
             $limit
         );
-    }
-
-    /**
-     * Recent posts from within same tree — excluding the current post.
-     */
-    public function recentPosts(Post $post, int $limit = self::RECENT_LIMIT): Collection
-    {
-        return Post::published()
-            ->whereIn('category_id', $this->getTreeIds($this->getRoot($post->category), $post->id))
-            ->with($this->postRelations())
-            ->latest('published_at')
-            ->limit($this->sanitizeLimit($limit))
-            ->get();
     }
 
     /**

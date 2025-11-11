@@ -7,24 +7,25 @@ namespace Atannex\Views\Traits;
 /**
  * Trait CanNormalize
  *
- * Provides normalization and tab resolution logic
- * for entities with deterministic, pre-validated data.
+ * Efficiently normalizes IDs and resolves tab data
+ * with pre-validated, deterministic input.
+ * Ensures minimal queries and predictable entity hydration.
  */
 trait CanNormalize
 {
     /**
-     * Normalize a single ID or iterable of IDs into a flat array.
+     * Normalize any scalar or iterable of IDs into a flat array.
      *
      * @param int|string|iterable<int|string> $ids
      * @return array<int|string>
      */
     private function normalizeIds(int|string|iterable $ids): array
     {
-        return is_iterable($ids) ? iterator_to_array($ids, false) : [$ids];
+        return is_iterable($ids) ? array_values(is_array($ids) ? $ids : iterator_to_array($ids, false)) : [$ids];
     }
 
     /**
-     * Resolve all tabs by enriching them with their respective entities.
+     * Resolve all tabs by hydrating them with their corresponding entities.
      *
      * @param array $tabsConfig
      * @return array
@@ -42,7 +43,7 @@ trait CanNormalize
     }
 
     /**
-     * Resolve a single tab’s content using its mapping definition.
+     * Resolve a single tab’s data using its mapping definition.
      *
      * @param array $tab
      * @param object $component
@@ -53,30 +54,32 @@ trait CanNormalize
         $mapping = $this->getMapping($tab['type']);
         $args = $this->buildTabArguments($tab, $mapping);
 
-        $tab['entities'] = $tab['content'] = $component->{$mapping['method']}($args)
-            ->take($args['limit']);
+        $entities = $component->{$mapping['method']}($args);
+
+        $tab['entities'] = $entities->take($args['limit']);
+        $tab['content']  = $tab['entities'];
 
         return $tab;
     }
 
     /**
-     * Build arguments for a tab resolver method based on its mapping.
+     * Build argument array for tab resolver methods.
      *
      * @param array $tab
      * @param array $mapping
-     * @return array
+     * @return array<string, mixed>
      */
     private function buildTabArguments(array $tab, array $mapping): array
     {
         $key = $mapping['idKey'];
 
         return [
-            $key => $this->normalizeIds($tab[$key]),
-            'limit' => $tab['limit'],
-            'relation_limit' => $tab['relation_limit'],
+            $key                  => $this->normalizeIds($tab[$key]),
+            'limit'               => $tab['limit'],
+            'relation_limit'      => $tab['relation_limit'],
             'leaf_relation_limit' => $tab['leaf_relation_limit'],
-            'sort' => $tab['sort'],
-            'order' => $tab['order'],
+            'sort'                => $tab['sort'],
+            'order'               => $tab['order'],
         ];
     }
 }
