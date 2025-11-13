@@ -7,7 +7,6 @@ use Illuminate\Support\Collection;
 
 trait ByPopular
 {
-
     public function getPopularPosts(int $limit = 5): Collection
     {
         return Post::query()

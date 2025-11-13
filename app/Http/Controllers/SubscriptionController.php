@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Subscription\Confirmation;
 use App\Models\Others\Subscription;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\Subscription\Confirmation;
 
 /**
  * Class SubscriptionController
@@ -17,8 +17,7 @@ class SubscriptionController extends Controller
     /**
      * Verify a subscription using the provided token.
      *
-     * @param string $token The verification token
-     * @return RedirectResponse
+     * @param  string  $token  The verification token
      */
     public function verify(string $token): RedirectResponse
     {

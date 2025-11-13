@@ -2,20 +2,20 @@
 
 namespace App\Models\Docs;
 
-use Atannex\Enables\HasSlug;
-use Atannex\Enables\HasScope;
-use App\Models\Regions\Employee;
 use App\Models\Modules\DocumentModule;
+use App\Models\Regions\Employee;
+use Atannex\Enables\Scoping;
+use Atannex\Enables\Slugging;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Document extends Model
 {
+    use Scoping;
+    use Slugging;
     use SoftDeletes;
-    use HasSlug;
-    use HasScope;
 
     /**
      * The attribute used to generate the slug
@@ -34,7 +34,7 @@ class Document extends Model
         'description',
         'author_id',
         'flag',
-        'image'
+        'image',
     ];
 
     /**

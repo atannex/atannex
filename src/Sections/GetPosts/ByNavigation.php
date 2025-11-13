@@ -16,14 +16,14 @@ trait ByNavigation
     {
         return [
             'previous' => $this->getAdjacentPost($post, 'previous'),
-            'next'     => $this->getAdjacentPost($post, 'next'),
+            'next' => $this->getAdjacentPost($post, 'next'),
         ];
     }
 
     /**
      * Get adjacent post (previous or next) without caching.
      *
-     * @param string $direction Either 'previous' or 'next'
+     * @param  string  $direction  Either 'previous' or 'next'
      */
     public function getAdjacentPost(Post $post, string $direction): ?Post
     {

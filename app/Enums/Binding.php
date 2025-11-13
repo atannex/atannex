@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
-use Atannex\Filters\GetEnum;
 use App\Models\Regions\Employee;
+use Atannex\Filters\GetEnum;
+use BenSampo\Enum\Enum;
 
 /**
  * Enum representing media scopes, with UI metadata (label, color, icon).
@@ -29,7 +29,7 @@ final class Binding extends Enum
             self::EMPLOYEE => [
                 'label' => 'Employee',
                 'color' => 'success',
-                'icon'  => 'heroicon-o-user-circle'
+                'icon' => 'heroicon-o-user-circle',
             ],
         ]);
     }

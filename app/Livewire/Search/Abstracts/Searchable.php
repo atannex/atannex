@@ -99,7 +99,7 @@ abstract class Searchable extends Component
             return $queryBuilder;
         }
 
-        $search = '%' . $this->sanitizeSearch($searchQuery) . '%';
+        $search = '%'.$this->sanitizeSearch($searchQuery).'%';
 
         return $queryBuilder->where(function (Builder $query) use ($search) {
             foreach ($this->searchableFields() as $field) {
@@ -118,6 +118,7 @@ abstract class Searchable extends Component
 
         if (count($parts) === 1) {
             $query->orWhere($parts[0], 'like', $search);
+
             return;
         }
 
@@ -173,6 +174,7 @@ abstract class Searchable extends Component
     protected function sanitizePerPage(mixed $perPage): int
     {
         $perPage = (int) $perPage;
+
         return $perPage > 0 ? $perPage : self::DEFAULT_PER_PAGE;
     }
 }

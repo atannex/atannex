@@ -4,11 +4,11 @@ namespace App\Mail\Docs;
 
 use App\Models\Docs\Document;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\SerializesModels;
 
 class DocumentCreatedMail extends Mailable implements ShouldQueue
 {
@@ -31,10 +31,9 @@ class DocumentCreatedMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New Document Created: ' . $this->document->title,
+            subject: 'New Document Created: '.$this->document->title,
         );
     }
-
 
     /**
      * Get the message content definition.

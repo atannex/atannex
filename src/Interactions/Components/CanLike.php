@@ -12,22 +12,16 @@ trait CanLike
 {
     /**
      * Indicates whether the current user has liked the model.
-     *
-     * @var bool
      */
     public bool $isLiked = false;
 
     /**
      * Total number of likes for the model.
-     *
-     * @var int
      */
     public int $likesCount = 0;
 
     /**
      * Initialize the like state on component mount.
-     *
-     * @return void
      */
     public function mountCanLike(): void
     {
@@ -36,8 +30,6 @@ trait CanLike
 
     /**
      * Handle a like action and update the UI state.
-     *
-     * @return void
      */
     public function like(): void
     {
@@ -47,8 +39,6 @@ trait CanLike
 
     /**
      * Handle an unlike action and update the UI state.
-     *
-     * @return void
      */
     public function unlike(): void
     {
@@ -58,8 +48,6 @@ trait CanLike
 
     /**
      * Sync the component's state with the model's like status and count.
-     *
-     * @return void
      */
     protected function syncLikeState(): void
     {

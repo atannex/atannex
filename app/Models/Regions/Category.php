@@ -1,53 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Regions;
 
-use App\Enums\Flag;
 use App\Contracts\Sluggable;
-use Atannex\Enables\HasSlug;
+use App\Enums\Flag;
+use Atannex\Enables\Slugging;
+use Atannex\Filters\GetHierarchy;
+use Atannex\Relations\CategoryRelation;
 use Atannex\Traits\HasCleaning;
 use Atannex\Traits\HasResolver;
-use Atannex\Filters\GetHierarchy;
-use Atannex\Builders\CategoryBuilder;
-use Atannex\Relations\CategoryRelation;
+use Atannex\Traits\HasSlugPath;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Category
  *
- * Represents a category model with slug management and hierarchical relationships.
+ * Represents a hierarchical category with slug path generation,
+ * soft deletes, media cleanup, and advanced relationship resolution.
  */
 class Category extends Model implements Sluggable
 {
-    use SoftDeletes;
-    use HasSlug;
+    // Handles automatic slug generation
     use CategoryRelation;
-    use GetHierarchy;
-    use HasResolver;
-    use HasCleaning;
-    use CategoryBuilder;
+    // Defines category-specific parent/child relations
+    use GetHierarchy;           // Enables key-based lookup resolution
+    use HasCleaning;  // Adds utilities for nested category hierarchies
+    use HasResolver;      // Handles media cleanup for image attributes
+    use HasSlugPath;
+    use Slugging;
+    use SoftDeletes;       // Automatically maintains hierarchical slug paths
 
     /**
-     * Image attribute used by HasCleaning trait.
+     * The database table used by the model.
      */
-    public function getImageAttributeName(): string
-    {
-        return 'image';
-    }
+    protected $table = 'categories';
 
     /**
-     * Directory used by HasCleaning trait.
-     */
-    public function getImageDirectory(): string
-    {
-        return 'category';
-    }
-
-    /**
-     * Mass assignable attributes.
-     *
-     * @var array<string>
+     * Attributes that can be mass-assigned.
      */
     protected $fillable = [
         'name',
@@ -60,18 +52,40 @@ class Category extends Model implements Sluggable
     ];
 
     /**
-     * Attribute casting.
-     *
-     * @var array<string, string>
+     * Type casting for model attributes.
      */
     protected $casts = [
-        'flag' => Flag::class
+        'flag' => Flag::class,
     ];
 
     /**
-     * Source attribute for slug generation.
-     *
-     * @var string
+     * Source attribute used to generate the slug (via HasSlug).
      */
     protected string $slugSource = 'name';
+
+    /**
+     * Get the name of the image attribute for cleanup handling.
+     */
+    public function getImageAttributeName(): string
+    {
+        return 'image';
+    }
+
+    /**
+     * Get the directory name where the model's image is stored.
+     */
+    public function getImageDirectory(): string
+    {
+        return 'category';
+    }
+
+    /**
+     * Model boot logic.
+     *
+     * Ensures HasSlugPath trait's observers are registered.
+     */
+    protected static function booted(): void
+    {
+        static::bootHasSlugPath();
+    }
 }

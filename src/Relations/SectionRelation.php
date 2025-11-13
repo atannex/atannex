@@ -2,11 +2,11 @@
 
 namespace Atannex\Relations;
 
-use App\Models\Regions\Region;
-use App\Models\Regions\Widget;
-use App\Models\Regions\Category;
 use App\Models\Pivots\CategorySection;
 use App\Models\Pivots\RegionSectionWidget;
+use App\Models\Regions\Category;
+use App\Models\Regions\Region;
+use App\Models\Regions\Widget;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 trait SectionRelation

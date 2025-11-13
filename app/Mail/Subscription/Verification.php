@@ -2,8 +2,8 @@
 
 namespace App\Mail\Subscription;
 
-use Illuminate\Mail\Mailable;
 use App\Models\Others\Subscription;
+use Illuminate\Mail\Mailable;
 
 class Verification extends Mailable
 {

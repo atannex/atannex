@@ -2,9 +2,9 @@
 
 namespace App\Rules\Auth;
 
-use Closure;
 use App\Enums\Auth\AllowedDomain;
 use App\Enums\Auth\RestrictedDomain;
+use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class StrongEmail implements ValidationRule
@@ -34,6 +34,7 @@ class StrongEmail implements ValidationRule
     protected function generateDefaultMessage(): string
     {
         $allowedDomainsString = implode(', ', $this->allowedDomains);
+
         return sprintf('The :attribute must be an email address that ends with one of the following domains: %s. Administrative emails are restricted to specific domains.', $allowedDomainsString);
     }
 
@@ -64,6 +65,7 @@ class StrongEmail implements ValidationRule
         // Ensure email has exactly one '@' symbol.
         if (count($emailParts) !== 2) {
             $fail(sprintf('The %s must be a valid email address.', $attribute));
+
             return;
         }
 
@@ -88,16 +90,19 @@ class StrongEmail implements ValidationRule
     {
         if ($this->isRestrictedDomain($domain)) {
             $fail(sprintf('Emails from %s are not allowed.', $domain));
+
             return true;
         }
 
-        if (!$this->isAllowedDomain($domain)) {
+        if (! $this->isAllowedDomain($domain)) {
             $fail($this->message);
+
             return true;
         }
 
         if ($this->isAdminDomain($domain)) {
             $fail(sprintf('Emails ending with %s are for administrative use only.', $domain));
+
             return true;
         }
 

@@ -2,16 +2,16 @@
 
 namespace App\Jobs\Docs;
 
-use App\Models\User;
-use App\Models\Docs\Document;
-use Illuminate\Bus\Queueable;
 use App\Mail\Docs\DocumentCreatedMail;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Models\Docs\Document;
+use App\Models\User;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class DocumentJob implements ShouldQueue
 {
@@ -19,6 +19,7 @@ class DocumentJob implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
+
     public Document $document;
 
     public function __construct(Document $document)
@@ -34,6 +35,6 @@ class DocumentJob implements ShouldQueue
             }
         });
 
-        Log::info('SendPostNotificationJob executed for post ID: ' . $this->document->id);
+        Log::info('SendPostNotificationJob executed for post ID: '.$this->document->id);
     }
 }

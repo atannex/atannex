@@ -12,8 +12,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Class View
  *
  * Represents a view interaction on a viewable entity (e.g., post, page) in the application.
- *
- * @package App\Models\Interactions
  */
 class View extends Model
 {

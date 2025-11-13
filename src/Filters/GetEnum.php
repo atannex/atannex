@@ -13,11 +13,12 @@ trait GetEnum
     /**
      * Retrieve metadata for the current enum value or a specific field.
      *
-     * @param string|null $field The metadata key to retrieve, or null for full metadata
+     * @param  string|null  $field  The metadata key to retrieve, or null for full metadata
      */
     public function getMetadata(?string $field = null)
     {
         $metadata = static::$metadata[$this->value];
+
         return $field !== null ? $metadata[$field] : $metadata;
     }
 
@@ -83,11 +84,10 @@ trait GetEnum
         return $pairs;
     }
 
-
     /**
      * Set metadata for all enum cases at once.
      *
-     * @param array $metadata Array of metadata keyed by enum values
+     * @param  array  $metadata  Array of metadata keyed by enum values
      */
     public static function setMetadata(array $metadata): void
     {
@@ -97,8 +97,8 @@ trait GetEnum
     /**
      * Add or update metadata for a specific enum value.
      *
-     * @param string $value Enum value
-     * @param array $metadata Metadata to assign
+     * @param  string  $value  Enum value
+     * @param  array  $metadata  Metadata to assign
      */
     public static function addMetadata(string $value, array $metadata): void
     {

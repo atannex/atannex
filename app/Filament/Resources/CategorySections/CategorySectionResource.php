@@ -9,19 +9,19 @@ use App\Filament\Resources\CategorySections\Schemas\CategorySectionForm;
 use App\Filament\Resources\CategorySections\Tables\CategorySectionsTable;
 use App\Models\Pivots\CategorySection;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use UnitEnum;
 
 class CategorySectionResource extends Resource
 {
     protected static ?string $model = CategorySection::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Pivots';
+    protected static string|UnitEnum|null $navigationGroup = 'Pivots';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

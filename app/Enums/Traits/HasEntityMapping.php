@@ -15,38 +15,38 @@ use App\Enums\Entity;
 trait HasEntityMapping
 {
     /**
-     * @var array<string, array<string, mixed>> $MAPPINGS
+     * @var array<string, array<string, mixed>>
      */
     private static array $MAPPINGS = [
         Entity::POST_BY_CATEGORY => [
             'entity' => Entity::POST_BY_CATEGORY,
             'method' => 'getPostsForCategory',
-            'idKey'  => 'category_id',
+            'idKey' => 'category_id',
         ],
         Entity::POST_BY_REGION => [
             'entity' => Entity::POST_BY_REGION,
             'method' => 'getPostsForRegion',
-            'idKey'  => 'region_id',
+            'idKey' => 'region_id',
         ],
         Entity::POST_BY_TAG => [
             'entity' => Entity::POST_BY_TAG,
             'method' => 'getPostsByTag',
-            'idKey'  => 'tag_id',
+            'idKey' => 'tag_id',
         ],
         Entity::GET_CATEGORY_WITH_POSTS => [
             'entity' => Entity::GET_CATEGORY_WITH_POSTS,
             'method' => 'getCategoryWithPosts',
-            'idKey'  => 'posts_with_id',
+            'idKey' => 'posts_with_id',
         ],
         Entity::GET_REGION_WITH_POSTS => [
             'entity' => Entity::GET_REGION_WITH_POSTS,
             'method' => 'getRegionWithPosts',
-            'idKey'  => 'posts_with_id',
+            'idKey' => 'posts_with_id',
         ],
         Entity::GET_TAG_WITH_POSTS => [
             'entity' => Entity::GET_TAG_WITH_POSTS,
             'method' => 'getTagWithPosts',
-            'idKey'  => 'posts_with_id',
+            'idKey' => 'posts_with_id',
         ],
         Entity::BREAKING_POSTS => [
             'entity' => Entity::BREAKING_POSTS,
@@ -57,7 +57,6 @@ trait HasEntityMapping
     /**
      * Retrieve the mapping configuration for a given entity.
      *
-     * @param string $entity
      * @return array<string, mixed>
      */
     public static function getMapping(string $entity): array
@@ -67,9 +66,6 @@ trait HasEntityMapping
 
     /**
      * Resolve the method name for a given entity.
-     *
-     * @param string $entity
-     * @return string
      */
     public static function resolveMethod(string $entity): string
     {
@@ -78,9 +74,6 @@ trait HasEntityMapping
 
     /**
      * Check if the given entity requires an ID key in its mapping.
-     *
-     * @param string $entity
-     * @return bool
      */
     public static function requiresIdKey(string $entity): bool
     {

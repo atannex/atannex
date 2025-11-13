@@ -2,14 +2,13 @@
 
 namespace App\Models\Users;
 
-use Illuminate\Support\Str;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\User;
+use Illuminate\Support\Str;
 
 class UserNameToken extends Model
 {
-
     protected $table = 'user_name_tokens';
 
     protected $fillable = [
@@ -28,8 +27,6 @@ class UserNameToken extends Model
 
     /**
      * Get the user that owns the token
-     *
-     * @return BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -39,8 +36,6 @@ class UserNameToken extends Model
 
     /**
      * Check if the token has expired
-     *
-     * @return bool
      */
     public function isExpired(): bool
     {
@@ -50,8 +45,7 @@ class UserNameToken extends Model
     /**
      * Generate a unique random token
      *
-     * @param int $length The length of the token to generate
-     * @return string
+     * @param  int  $length  The length of the token to generate
      */
     public static function generateToken(int $length = 64): string
     {

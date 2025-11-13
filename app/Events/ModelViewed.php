@@ -3,8 +3,8 @@
 namespace App\Events;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class ModelViewed
 {
@@ -28,8 +28,7 @@ class ModelViewed
     /**
      * Create a new event instance.
      *
-     * @param Model $model
-     * @param string|null $ip
+     * @param  Model  $model
      */
     public function __construct($model, ?string $ip = null)
     {

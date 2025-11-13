@@ -2,15 +2,15 @@
 
 namespace App\Filament\Resources\Departments\Schemas;
 
-use Illuminate\Support\Str;
-use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Str;
 
 class DepartmentForm
 {
@@ -33,7 +33,6 @@ class DepartmentForm
                             })
                             ->placeholder('Enter department name')
                             ->helperText('The official name of the department'),
-
 
                         TextInput::make('slug')
                             ->label('URL Slug')
@@ -102,7 +101,7 @@ class DepartmentForm
                             ->searchable()
                             ->preload()
                             ->nullable()
-                            ->getOptionLabelFromRecordUsing(fn($record) => sprintf('%s (%s)', $record->name, $record->email))
+                            ->getOptionLabelFromRecordUsing(fn ($record) => sprintf('%s (%s)', $record->name, $record->email))
                             ->placeholder('Select department manager (optional)')
                             ->helperText('Assign a manager to oversee this department')
                             ->suffixIcon('heroicon-m-user'),

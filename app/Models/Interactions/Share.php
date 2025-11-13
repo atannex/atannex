@@ -12,8 +12,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Class Share
  *
  * Represents a share interaction on a shareable entity (e.g., post, article) in the application.
- *
- * @package App\Models\Interactions
  */
 class Share extends Model
 {

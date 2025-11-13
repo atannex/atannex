@@ -2,9 +2,9 @@
 
 namespace App\Http\Traits;
 
-use App\Models\Others\About;
 use App\Enums\Flag;
 use App\Enums\Subject;
+use App\Models\Others\About;
 
 trait HasContact
 {
@@ -18,11 +18,11 @@ trait HasContact
 
         $infos = collect($contact->info)->map(function ($info) {
             return [
-                'icon'  => $info['icon'],
+                'icon' => $info['icon'],
                 'title' => $info['title'],
                 'items' => collect($info['details'])->map(function ($detail) {
                     return [
-                        'type'  => strtolower($detail['type']),
+                        'type' => strtolower($detail['type']),
                         'value' => $detail['value'],
                         'label' => $detail['value'],
                     ];

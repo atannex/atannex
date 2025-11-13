@@ -15,7 +15,7 @@ class PasswordResetToken extends Model
     protected $fillable = [
         'email',
         'token',
-        'created_at'
+        'created_at',
     ];
 
     public $timestamps = false;

@@ -4,17 +4,17 @@ namespace Atannex\Repositories;
 
 use App\Enums\Flag;
 use App\Models\Docs\Document;
-use Illuminate\Support\Collection;
 use App\Models\Modules\DocumentModule;
 use Atannex\Contracts\DocumentInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class DocumentRepository implements DocumentInterface
 {
     /**
      * Retrieve published documents of a specific type.
      *
-     * @param string $type The document type to filter by
+     * @param  string  $type  The document type to filter by
      * @return Collection<Document>
      */
     public function getPublishedDocumentsByType(string $type): Collection
@@ -31,10 +31,6 @@ class DocumentRepository implements DocumentInterface
 
     /**
      * Find a document module by type and slug.
-     *
-     * @param string $type
-     * @param string $slug
-     * @return DocumentModule|null
      */
     public function findModuleByTypeAndSlug(string $type, string $slug): ?DocumentModule
     {
@@ -68,7 +64,7 @@ class DocumentRepository implements DocumentInterface
     /**
      * Apply published document constraints to the query.
      *
-     * @param Builder<Document> $query
+     * @param  Builder<Document>  $query
      */
     private function addPublishedDocumentConstraints(Builder $query): void
     {

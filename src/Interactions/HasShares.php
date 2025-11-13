@@ -46,7 +46,7 @@ trait HasShares
             ['user_id' => $userId, 'platform' => $platform],
             [
                 'share_count' => DB::raw('COALESCE(share_count, 0) + 1'),
-                'shared_at'   => now(),
+                'shared_at' => now(),
             ]
         );
     }
@@ -63,6 +63,7 @@ trait HasShares
     protected function getAuthUserId(): int
     {
         $user = Auth::user();
+
         return (int) $user->getAuthIdentifier();
     }
 

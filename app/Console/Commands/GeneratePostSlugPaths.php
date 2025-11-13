@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Posts\Post;
+use Illuminate\Console\Command;
 
 class GeneratePostSlugPaths extends Command
 {
@@ -31,7 +31,7 @@ class GeneratePostSlugPaths extends Command
         Post::with('category', 'tags')->chunk(50, function ($posts) {
             foreach ($posts as $post) {
                 $base = $post->getSlugBase() ?? '';
-                $newSlugPath = trim($base . '/' . $post->slug, '/');
+                $newSlugPath = trim($base.'/'.$post->slug, '/');
 
                 // Force update by checking uniqueness and appending counter if needed
                 $post->slug_path = $this->generateUniqueSlugPath($post, $newSlugPath);
@@ -58,7 +58,7 @@ class GeneratePostSlugPaths extends Command
             ->where('id', '!=', $post->id)
             ->exists()
         ) {
-            $slugPath = $original . '-' . $counter;
+            $slugPath = $original.'-'.$counter;
             $counter++;
         }
 

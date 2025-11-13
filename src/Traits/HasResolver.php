@@ -4,11 +4,11 @@ namespace Atannex\Traits;
 
 use App\Enums\Flag;
 use App\Enums\Status;
-use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
 use App\Models\Regions\Category;
-use App\Models\Regions\Region;
 use App\Models\Regions\Employee;
+use App\Models\Regions\Region;
+use App\Models\Tags\Tag;
 
 /**
  * Trait Resolver
@@ -20,7 +20,7 @@ trait HasResolver
     /**
      * Resolve an employee author by their user slug.
      *
-     * @param string $slug The unique slug of the user
+     * @param  string  $slug  The unique slug of the user
      * @return Employee|null The matching Employee instance or null if not found
      */
     protected function resolveAuthor(string $slug): ?Employee
@@ -37,7 +37,7 @@ trait HasResolver
     /**
      * Resolve a category by its slug path.
      *
-     * @param string $slug The unique slug path of the category
+     * @param  string  $slug  The unique slug path of the category
      * @return Category The matching Category instance or null if not found
      */
     protected function resolveCategory(string $slug): ?Category
@@ -51,7 +51,7 @@ trait HasResolver
     /**
      * Resolve a post tag by its slug path.
      *
-     * @param string $slug The unique slug path of the post tag
+     * @param  string  $slug  The unique slug path of the post tag
      * @return Tag|null The matching PostTag instance or null if not found
      */
     protected function resolveTag(string $slug): ?Tag
@@ -64,7 +64,7 @@ trait HasResolver
     /**
      * Resolve a post by its slug path.
      *
-     * @param string $slug The unique slug path of the post
+     * @param  string  $slug  The unique slug path of the post
      * @return Post|null The matching Post instance or null if not found
      */
     protected function resolvePost(string $slug): ?Post
@@ -80,7 +80,7 @@ trait HasResolver
      * This method queries the database for a Region record matching the provided slug.
      * It returns the first matching record or null if no match is found.
      *
-     * @param string $slug The slug identifier of the region.
+     * @param  string  $slug  The slug identifier of the region.
      * @return Region|null The matching Region instance, or null if not found.
      */
     protected function resolveRegion(string $slug): ?Region
@@ -109,8 +109,8 @@ trait HasResolver
      * matching post is found, it returns an array with the date part type and its formatted
      * value. If no post is found or the required date component is missing, it returns null.
      *
-     * @param string $slug The date slug (e.g., '2023' or '2023-10') to parse for year and/or month.
-     * @param string $part The date part to resolve, either 'year' or 'month'.
+     * @param  string  $slug  The date slug (e.g., '2023' or '2023-10') to parse for year and/or month.
+     * @param  string  $part  The date part to resolve, either 'year' or 'month'.
      * @return array|null An array containing the date part type and its formatted value (e.g., ['type' => 'year', 'value' => '2023']),
      *                    or null if no post is found or the slug is invalid for the specified part.
      */
@@ -118,11 +118,11 @@ trait HasResolver
     {
         ['year' => $year, 'month' => $month] = $this->parseDateSlug($slug);
 
-        if (!$year && $part === 'year') {
+        if (! $year && $part === 'year') {
             return null;
         }
 
-        if (!$month && $part === 'month') {
+        if (! $month && $part === 'month') {
             return null;
         }
 
@@ -142,8 +142,8 @@ trait HasResolver
         $post = $query->first();
 
         return $post ? [
-            'type'  => $part,
-            'value' => $post->published_at->format($part === 'month' ? 'm' : 'Y')
+            'type' => $part,
+            'value' => $post->published_at->format($part === 'month' ? 'm' : 'Y'),
         ] : null;
     }
 }

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Atannex\Services;
 
-use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
 use App\Models\Regions\Category;
-use App\Models\Regions\Region;
 use App\Models\Regions\Employee;
-use Illuminate\Support\Collection;
+use App\Models\Regions\Region;
+use App\Models\Tags\Tag;
 use Atannex\Contracts\CategoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 /**
  * Domain layer for category-related operations.

@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Users\UserNameToken;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\Users\UserNameToken;
 
 /**
  * Middleware to ensure users complete their profile using a token.
@@ -17,7 +17,7 @@ class CheckNameComplete
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return to_route('login')->with('error', 'Authentication required.');
         }
 

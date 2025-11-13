@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\CategorySections\Schemas;
 
-use Filament\Schemas\Schema;
 use App\Models\Regions\Category;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class CategorySectionForm
 {

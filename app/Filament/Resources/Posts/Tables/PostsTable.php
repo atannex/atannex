@@ -2,25 +2,24 @@
 
 namespace App\Filament\Resources\Posts\Tables;
 
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Actions\EditAction;
-use Filament\Tables\Filters\Filter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Support\Enums\FontWeight;
-use Filament\Actions\RestoreBulkAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Filters\TrashedFilter;
+use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class PostsTable
 {
-
     public static function configure(Table $table): Table
     {
         return $table
@@ -42,8 +41,8 @@ class PostsTable
                     ->sortable()
                     ->weight(FontWeight::Medium)
                     ->limit(50)
-                    ->tooltip(fn($record) => $record->title)
-                    ->description(fn($record) => $record->description ? Str::limit($record->description, 60) : null)
+                    ->tooltip(fn ($record) => $record->title)
+                    ->description(fn ($record) => $record->description ? Str::limit($record->description, 60) : null)
                     ->wrap(),
 
                 TextColumn::make('flag')
@@ -90,7 +89,7 @@ class PostsTable
                     ->icon('heroicon-o-calendar')
                     ->iconColor('success')
                     ->since()
-                    ->tooltip(fn($record) => $record->published_at?->format('F j, Y \a\t g:i A')),
+                    ->tooltip(fn ($record) => $record->published_at?->format('F j, Y \a\t g:i A')),
 
                 TextColumn::make('views_count')
                     ->label('Views')
@@ -98,7 +97,7 @@ class PostsTable
                     ->sortable()
                     ->icon('heroicon-o-eye')
                     ->iconColor('primary')
-                    ->formatStateUsing(fn($state) => number_format($state ?: 0))
+                    ->formatStateUsing(fn ($state) => number_format($state ?: 0))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_by')
@@ -114,7 +113,7 @@ class PostsTable
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn($record) => $record->created_at->format('F j, Y \a\t g:i A'))
+                    ->tooltip(fn ($record) => $record->created_at->format('F j, Y \a\t g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
@@ -122,7 +121,7 @@ class PostsTable
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn($record) => $record->updated_at->format('F j, Y \a\t g:i A'))
+                    ->tooltip(fn ($record) => $record->updated_at->format('F j, Y \a\t g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('deleted_at')
@@ -164,7 +163,7 @@ class PostsTable
 
                 Filter::make('published_recently')
                     ->label('Published This Month')
-                    ->query(fn(Builder $query): Builder => $query->where('published_at', '>=', now()->startOfMonth()))
+                    ->query(fn (Builder $query): Builder => $query->where('published_at', '>=', now()->startOfMonth()))
                     ->toggle(),
             ])
             ->filtersFormColumns(3)

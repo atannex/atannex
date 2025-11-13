@@ -2,20 +2,18 @@
 
 namespace App\Models\Regions;
 
-use App\Models\User;
 use App\Enums\Status;
-use App\Models\Posts\Post;
 use App\Models\Others\SocialMedia;
 use App\Models\Pivots\EmployeeDepartment;
+use App\Models\Posts\Post;
+use App\Models\User;
 use Atannex\Traits\GeneratesEmployeeCode;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\{
-    BelongsTo,
-    MorphMany,
-    BelongsToMany,
-    HasMany
-};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Employee extends Model
 {
@@ -29,7 +27,7 @@ class Employee extends Model
     ];
 
     protected $casts = [
-        'status'    => Status::class,
+        'status' => Status::class,
     ];
 
     /** --------------------------------
@@ -77,7 +75,6 @@ class Employee extends Model
     /** --------------------------------
      * Scopes
      * -------------------------------- */
-
     protected function scopeActive(Builder $query): Builder
     {
         return $query->where('status', Status::ACTIVE);
@@ -85,7 +82,7 @@ class Employee extends Model
 
     protected function scopeByDepartment(Builder $query, int $departmentId): Builder
     {
-        return $query->whereHas('departments', fn($q) => $q->where('departments.id', $departmentId));
+        return $query->whereHas('departments', fn ($q) => $q->where('departments.id', $departmentId));
     }
 
     protected function scopeManagers(Builder $query): Builder

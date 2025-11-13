@@ -4,16 +4,16 @@ namespace App\Models\Others;
 
 use App\Enums\Flag;
 use App\Enums\Image;
-use Atannex\Enables\HasScope;
+use Atannex\Enables\Scoping;
 use Atannex\Traits\HasCleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Gallery extends Model
 {
-    use SoftDeletes;
-    use HasScope;
     use HasCleaning;
+    use Scoping;
+    use SoftDeletes;
 
     protected $fillable = [
         'original_name',

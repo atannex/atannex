@@ -3,8 +3,8 @@
 namespace Atannex\Components\GetPosts;
 
 use App\Models\Regions\Region;
-use Illuminate\Support\Collection;
 use Atannex\Traits\HasPostsForHierarchy;
+use Illuminate\Support\Collection;
 
 trait ByRegion
 {
@@ -20,11 +20,11 @@ trait ByRegion
             Region::class,
             'regions',
             null,
-            fn($region) => $region->getDescendants()
-                ->filter(fn($r) => $r->children->isEmpty())
+            fn ($region) => $region->getDescendants()
+                ->filter(fn ($r) => $r->children->isEmpty())
                 ->pluck('id')
                 ->all(),
-            fn($post) => $post->regions->first()->id
+            fn ($post) => $post->regions->first()->id
         );
     }
 }

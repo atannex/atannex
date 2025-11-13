@@ -2,8 +2,8 @@
 
 namespace App\Models\Controls;
 
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * Class FailedJob

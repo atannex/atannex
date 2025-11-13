@@ -2,17 +2,17 @@
 
 namespace App\Models\Tags;
 
-use App\Models\Posts\Post;
-use Atannex\Enables\HasSlug;
 use App\Models\Pivots\PostTag;
+use App\Models\Posts\Post;
+use Atannex\Enables\Slugging;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tag extends Model
 {
+    use Slugging;
     use SoftDeletes;
-    use HasSlug;
 
     /**
      * Source field for slug generation.

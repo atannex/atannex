@@ -2,10 +2,10 @@
 
 namespace Atannex\Interactions;
 
-use Illuminate\Database\Eloquent\Builder;
 use App\Models\Interactions\Rating;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Trait HasRatings
@@ -21,8 +21,6 @@ trait HasRatings
 
     /**
      * Define a polymorphic one-to-many relationship with the Rating model.
-     *
-     * @return MorphMany
      */
     public function ratings(): MorphMany
     {
@@ -42,8 +40,6 @@ trait HasRatings
     /**
      * Retrieve the rating record for the current user.
      * Assumes the record always exists.
-     *
-     * @return Rating
      */
     protected function userRatingRecord(): ?Rating
     {
@@ -53,9 +49,6 @@ trait HasRatings
     /**
      * Create or update the rating for the current user.
      * Restores the rating if it was soft-deleted.
-     *
-     * @param int $value
-     * @return bool
      */
     public function rate(int $value): bool
     {
@@ -71,6 +64,7 @@ trait HasRatings
                 'rating' => $value,
                 'rated_at' => now(),
             ]);
+
             return true;
         }
 
@@ -88,22 +82,19 @@ trait HasRatings
     /**
      * Soft-delete the current user's rating.
      * Assumes the rating is not already trashed.
-     *
-     * @return bool
      */
     public function unrate(): bool
     {
         $rating = $this->userRatingRecord();
 
         $rating->delete();
+
         return true;
     }
 
     /**
      * Calculate the average rating (excluding soft-deleted entries).
      * Returns rounded float to two decimal places.
-     *
-     * @return float
      */
     public function averageRating(): float
     {
@@ -117,8 +108,6 @@ trait HasRatings
 
     /**
      * Count the number of active (non-deleted) ratings.
-     *
-     * @return int
      */
     public function ratingCount(): int
     {
@@ -129,8 +118,6 @@ trait HasRatings
 
     /**
      * Get the current user's rating value.
-     *
-     * @return int
      */
     public function userRating(): int
     {

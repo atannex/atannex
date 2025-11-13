@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tags\Tag;
-use Illuminate\View\View;
 use App\Models\Posts\Post;
-use Atannex\Binders\HasView;
-use App\Models\Regions\Region;
-use Atannex\Traits\HasResolver;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
+use App\Models\Regions\Region;
+use App\Models\Tags\Tag;
+use Atannex\Binders\HasView;
 use Atannex\Services\RegionService;
+use Atannex\Traits\HasResolver;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\View\View;
 
 /**
  * RegionController
@@ -27,8 +27,8 @@ class RegionController extends Controller
     /**
      * PageController constructor.
      *
-     * @param PageService $pageService Service to handle page-related business logic.
-     * @param HasView $getView Service to render views dynamically.
+     * @param  PageService  $pageService  Service to handle page-related business logic.
+     * @param  HasView  $getView  Service to render views dynamically.
      */
     public function __construct(
         protected readonly RegionService $regionService,
@@ -41,8 +41,7 @@ class RegionController extends Controller
     /**
      * Resolve a slug to the correct resource and render its view.
      *
-     * @param string $slug The slug to resolve (e.g., page URL segment).
-     * @return View
+     * @param  string  $slug  The slug to resolve (e.g., page URL segment).
      *
      * @throws HttpResponseException Throws 404 if resource is not found.
      */

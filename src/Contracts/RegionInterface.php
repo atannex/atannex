@@ -15,7 +15,7 @@ interface RegionInterface
     /**
      * Retrieve a main region by its slug path.
      *
-     * @param string $slug_path The unique slug identifier for the region.
+     * @param  string  $slug_path  The unique slug identifier for the region.
      * @return Region|null The matching Region instance or null if not found.
      */
     public function getMainRegion(string $slug_path): ?Region;

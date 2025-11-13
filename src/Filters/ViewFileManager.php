@@ -2,9 +2,9 @@
 
 namespace Atannex\Filters;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 /**
  * Trait ViewFileManager
@@ -16,24 +16,18 @@ trait ViewFileManager
 {
     /**
      * Base directory where view files are stored (e.g., 'views/widgets').
-     *
-     * @var string
      */
     protected string $viewDirectory = 'views/widgets';
 
     /**
      * File extension for generated view files (e.g., '.blade.php').
-     *
-     * @var string
      */
     protected string $viewExtension = '.blade.php';
 
     /**
      * Create a view file for the specified model.
      *
-     * @param  Model  $model
-     * @param  bool   $force  Overwrite if file already exists.
-     * @return void
+     * @param  bool  $force  Overwrite if file already exists.
      */
     public function createView(Model $model, bool $force = false): void
     {
@@ -41,17 +35,13 @@ trait ViewFileManager
 
         $path = $this->getViewFilePath($model->slug);
 
-        if (!File::exists($path) || $force) {
+        if (! File::exists($path) || $force) {
             File::put($path, $this->generateViewContent($model));
         }
     }
 
     /**
      * Update the view file when the model's slug changes.
-     *
-     * @param  Model   $model
-     * @param  string  $oldSlug
-     * @return void
      */
     public function updateView(Model $model, string $oldSlug): void
     {
@@ -68,9 +58,6 @@ trait ViewFileManager
 
     /**
      * Delete the view file for a given slug.
-     *
-     * @param  string  $slug
-     * @return void
      */
     public function deleteView(string $slug): void
     {
@@ -83,23 +70,18 @@ trait ViewFileManager
 
     /**
      * Ensure the directory for view files exists, creating it if necessary.
-     *
-     * @return void
      */
     protected function ensureDirectoryExists(): void
     {
         $directory = resource_path($this->viewDirectory);
 
-        if (!File::exists($directory)) {
+        if (! File::exists($directory)) {
             File::makeDirectory($directory, 0755, true);
         }
     }
 
     /**
      * Get the full file path for the given slug.
-     *
-     * @param  string  $slug
-     * @return string
      */
     protected function getViewFilePath(string $slug): string
     {
@@ -111,9 +93,6 @@ trait ViewFileManager
     /**
      * Generate the content for the view file.
      * Can be overridden in consuming classes for custom templates.
-     *
-     * @param  Model  $model
-     * @return string
      */
     protected function generateViewContent(Model $model): string
     {
@@ -122,9 +101,6 @@ trait ViewFileManager
 
     /**
      * Set a custom directory path for storing view files.
-     *
-     * @param  string  $directory
-     * @return void
      */
     public function setViewDirectory(string $directory): void
     {
@@ -133,13 +109,10 @@ trait ViewFileManager
 
     /**
      * Set a custom file extension for the view files.
-     *
-     * @param  string  $extension
-     * @return void
      */
     public function setViewExtension(string $extension): void
     {
         $this->viewExtension = ltrim($extension, '.');
-        $this->viewExtension = '.' . $this->viewExtension;
+        $this->viewExtension = '.'.$this->viewExtension;
     }
 }

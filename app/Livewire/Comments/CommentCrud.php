@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Comments;
 
-use Livewire\Attributes\On;
 use App\Models\Comments\Comment as CommentModel;
+use Livewire\Attributes\On;
 
 trait CommentCrud
 {

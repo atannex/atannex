@@ -2,18 +2,16 @@
 
 namespace App\Models\Pivots;
 
-use App\Models\Regions\Employee;
 use App\Models\Regions\Department;
-use Illuminate\Database\Eloquent\Relations\Pivot;
+use App\Models\Regions\Employee;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * Class EmployeeDepartment
  *
  * Pivot model representing the many-to-many relationship between Employees and Departments.
  * Allows tracking which employees belong to which departments.
- *
- * @package App\Models\Pivots
  */
 class EmployeeDepartment extends Pivot
 {
@@ -36,8 +34,6 @@ class EmployeeDepartment extends Pivot
 
     /**
      * Get the employee that belongs to this pivot.
-     *
-     * @return BelongsTo
      */
     public function employee(): BelongsTo
     {
@@ -46,8 +42,6 @@ class EmployeeDepartment extends Pivot
 
     /**
      * Get the department that belongs to this pivot.
-     *
-     * @return BelongsTo
      */
     public function department(): BelongsTo
     {

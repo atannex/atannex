@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Widgets\Schemas;
 
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
 use App\Enums\Flag;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class WidgetForm

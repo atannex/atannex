@@ -10,9 +10,6 @@ trait ByFeatured
 {
     /**
      * Get featured posts with optional limit.
-     *
-     * @param int $limit
-     * @return Collection
      */
     public function getFeaturedPosts(int $limit = 5): Collection
     {

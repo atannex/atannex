@@ -12,8 +12,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Class Rating
  *
  * Represents a rating interaction on a rateable entity (e.g., post, product) in the application.
- *
- * @package App\Models\Interactions
  */
 class Rating extends Model
 {

@@ -3,20 +3,20 @@
 namespace App\Filament\Resources\Categories\Schemas;
 
 use App\Enums\Flag;
-use Illuminate\Support\Str;
-use Filament\Schemas\Schema;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class CategoryForm
 {
@@ -37,14 +37,7 @@ class CategoryForm
                                     ->schema([
                                         TextInput::make('name')
                                             ->label('Category Name')
-                                            ->required()
                                             ->maxLength(255)
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(function (Get $get, Set $set, ?string $state): void {
-                                                if (! $get('id') && filled($state)) {
-                                                    $set('slug', Str::slug($state));
-                                                }
-                                            })
                                             ->helperText('Enter a clear, descriptive name for the category')
                                             ->placeholder('e.g., Electronics, Home & Garden, Fashion')
                                             ->prefixIcon('heroicon-m-tag')
@@ -52,7 +45,7 @@ class CategoryForm
 
                                         TextInput::make('slug')
                                             ->label('URL Slug')
-                                            ->required()
+                                            ->disabled()
                                             ->maxLength(255)
                                             ->unique(ignoreRecord: true)
                                             ->helperText('Auto-generated from category name (editable)')
@@ -109,7 +102,7 @@ class CategoryForm
                                                     ->placeholder('auto-generated-slug'),
                                             ])
                                             ->createOptionAction(
-                                                fn($action) => $action
+                                                fn ($action) => $action
                                                     ->modalHeading('Create New Parent Category')
                                                     ->modalDescription('Add a new parent category for hierarchical organization')
                                                     ->modalSubmitActionLabel('Create Category')
@@ -136,7 +129,7 @@ class CategoryForm
                             ->schema([
                                 FileUpload::make('image')
                                     ->label('Category Image')
-                                    ->directory(fn($record) => $record?->getImageDirectory())
+                                    ->directory(fn ($record) => $record?->getImageDirectory())
                                     ->image()
                                     ->imageEditor()
                                     ->imageEditorAspectRatios([
@@ -263,11 +256,11 @@ class CategoryForm
                             ->schema([
                                 TextEntry::make('created_at')
                                     ->label('Created')
-                                    ->state(fn($record) => $record?->created_at?->format('M j, Y g:i A') ?? 'Not yet created'),
+                                    ->state(fn ($record) => $record?->created_at?->format('M j, Y g:i A') ?? 'Not yet created'),
 
                                 TextEntry::make('updated_at')
                                     ->label('Last Updated')
-                                    ->state(fn($record) => $record?->updated_at?->format('M j, Y g:i A') ?? 'Not yet updated'),
+                                    ->state(fn ($record) => $record?->updated_at?->format('M j, Y g:i A') ?? 'Not yet updated'),
                             ])
                             ->collapsible()
                             ->collapsed()

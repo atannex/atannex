@@ -24,8 +24,8 @@ class PostTag extends Pivot
     ];
 
     protected $casts = [
-        'post_id'   => 'integer',
-        'tag_id'    => 'integer',
+        'post_id' => 'integer',
+        'tag_id' => 'integer',
         'slug_path' => 'string',
     ];
 

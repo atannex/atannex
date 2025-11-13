@@ -28,7 +28,7 @@ class JobBatch extends Model
 
     public $incrementing = false;
 
-     // non-incrementing string primary key
+    // non-incrementing string primary key
     protected $keyType = 'string';
 
     public $timestamps = false;
@@ -62,7 +62,7 @@ class JobBatch extends Model
      */
     public function isCancelled(): bool
     {
-        return !is_null($this->cancelled_at);
+        return ! is_null($this->cancelled_at);
     }
 
     /**
@@ -70,6 +70,6 @@ class JobBatch extends Model
      */
     public function isFinished(): bool
     {
-        return !is_null($this->finished_at);
+        return ! is_null($this->finished_at);
     }
 }

@@ -2,37 +2,14 @@
 
 namespace Atannex\Relations;
 
-use App\Enums\Flag;
+use App\Models\Pivots\CategorySection;
 use App\Models\Posts\Post;
 use App\Models\Regions\Section;
-use App\Models\Regions\Category;
-use App\Models\Pivots\CategorySection;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait CategoryRelation
 {
-    /**
-     * Parent category relation.
-     * Each category can belong to one parent category.
-     */
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(Category::class, 'parent_id');
-    }
-
-    /**
-     * Children categories relation.
-     * A category can have multiple child categories.
-     */
-    public function children(): HasMany
-    {
-        return $this->hasMany(Category::class, 'parent_id')
-            ->where('flag', Flag::PUBLISHED)
-            ->with('children');
-    }
-
     /**
      * Posts under this category.
      * Standard one-to-many relationship.
@@ -46,7 +23,6 @@ trait CategoryRelation
      * Sections associated with this category via the pivot table `category_section`.
      * Includes pivot fields `config` and `flag`.
      * Uses timestamps on the pivot table and a custom pivot model `CategorySection`.
-     *
      */
     public function sections(): BelongsToMany
     {

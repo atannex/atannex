@@ -2,16 +2,13 @@
 
 namespace Atannex\Sections\GetPosts;
 
-use App\Models\Posts\Post;
 use App\Models\Modules\PostModule;
+use App\Models\Posts\Post;
 
 trait ModuleBySlug
 {
     /**
      * Get the first post by its slug.
-     *
-     * @param string $slug
-     * @return Post
      */
     public function getModulePostBySlug(string $slug): Post
     {

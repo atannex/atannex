@@ -34,7 +34,7 @@ class DepartmentsTable
                     ->searchable()
                     ->sortable()
                     ->weight('semibold')
-                    ->description(fn($record) => $record->slug)
+                    ->description(fn ($record) => $record->slug)
                     ->wrap(),
 
                 TextColumn::make('parent.name')
@@ -79,7 +79,7 @@ class DepartmentsTable
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn($record) => $record->created_at->format('F j, Y g:i A'))
+                    ->tooltip(fn ($record) => $record->created_at->format('F j, Y g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
@@ -87,7 +87,7 @@ class DepartmentsTable
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn($record) => $record->updated_at->format('F j, Y g:i A'))
+                    ->tooltip(fn ($record) => $record->updated_at->format('F j, Y g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('deleted_at')
@@ -95,7 +95,7 @@ class DepartmentsTable
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn($record) => $record->deleted_at?->format('F j, Y g:i A'))
+                    ->tooltip(fn ($record) => $record->deleted_at?->format('F j, Y g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->placeholder('—'),
             ])
@@ -122,17 +122,17 @@ class DepartmentsTable
 
                 Filter::make('has_manager')
                     ->label('Has Manager')
-                    ->query(fn(Builder $query): Builder => $query->whereNotNull('manager_id'))
+                    ->query(fn (Builder $query): Builder => $query->whereNotNull('manager_id'))
                     ->toggle(),
 
                 Filter::make('no_employees')
                     ->label('Empty Departments')
-                    ->query(fn(Builder $query): Builder => $query->doesntHave('employees'))
+                    ->query(fn (Builder $query): Builder => $query->doesntHave('employees'))
                     ->toggle(),
 
                 Filter::make('created_this_month')
                     ->label('Created This Month')
-                    ->query(fn(Builder $query): Builder => $query->whereMonth('created_at', now()->month))
+                    ->query(fn (Builder $query): Builder => $query->whereMonth('created_at', now()->month))
                     ->toggle(),
             ])
             ->recordActions([

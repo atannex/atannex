@@ -2,18 +2,18 @@
 
 namespace App\Filament\Resources\CategorySections\Tables;
 
-use Filament\Tables\Table;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\ReplicateAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\ReplicateAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
-use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Tables\Table;
 
 class CategorySectionsTable
 {
@@ -102,11 +102,11 @@ class CategorySectionsTable
                         ->excludeAttributes(['created_at', 'updated_at'])
                         ->color('success'),
                 ])
-                ->label('Actions')
-                ->icon('heroicon-m-ellipsis-vertical')
-                ->size('sm')
-                ->color('gray')
-                ->tooltip('More actions'),
+                    ->label('Actions')
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->size('sm')
+                    ->color('gray')
+                    ->tooltip('More actions'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -121,7 +121,7 @@ class CategorySectionsTable
                     RestoreBulkAction::make()
                         ->deselectRecordsAfterCompletion(),
                 ])
-                ->label('Bulk Actions'),
+                    ->label('Bulk Actions'),
             ])
             ->striped()
             ->paginated([10, 25, 50, 100])

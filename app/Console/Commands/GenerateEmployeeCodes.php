@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Regions\Employee;
+use Illuminate\Console\Command;
 
 class GenerateEmployeeCodes extends Command
 {
@@ -20,6 +20,7 @@ class GenerateEmployeeCodes extends Command
 
         if ($employees->isEmpty()) {
             $this->info('No employees found.');
+
             return 0;
         }
 
@@ -36,6 +37,7 @@ class GenerateEmployeeCodes extends Command
         $bar->finish();
 
         $this->info("\nEmployee code generation completed successfully!");
+
         return 0;
     }
 }

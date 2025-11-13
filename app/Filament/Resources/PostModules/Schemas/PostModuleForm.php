@@ -2,18 +2,18 @@
 
 namespace App\Filament\Resources\PostModules\Schemas;
 
-use Filament\Forms\Components\Builder\Block;
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\Builder;
-use Filament\Schemas\Components\Group;
+use Filament\Forms\Components\Builder\Block;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
+use Filament\Schemas\Schema;
 
 class PostModuleForm
 {
@@ -36,7 +36,7 @@ class PostModuleForm
                                         ->placeholder('Select a post...')
                                         ->default(null)
                                         ->columnSpan(2),
-                                ])
+                                ]),
                         ])
                         ->collapsible()
                         ->collapsed(false),
@@ -74,10 +74,10 @@ class PostModuleForm
                                                                                 ->collapsible()
                                                                                 ->cloneable()
                                                                                 ->columnSpanFull(),
-                                                                        ])
+                                                                        ]),
                                                                 ])
                                                                 ->compact(),
-                                                        ])
+                                                        ]),
                                                 ]),
 
                                             Block::make('heading')
@@ -95,10 +95,10 @@ class PostModuleForm
                                                                                 ->required()
                                                                                 ->placeholder('Enter heading text...')
                                                                                 ->columnSpanFull(),
-                                                                        ])
+                                                                        ]),
                                                                 ])
                                                                 ->compact(),
-                                                        ])
+                                                        ]),
                                                 ]),
 
                                             Block::make('image')
@@ -124,10 +124,10 @@ class PostModuleForm
                                                                                 ->helperText('Recommended formats: JPG, PNG, WebP. Max size: 5MB')
                                                                                 ->required()
                                                                                 ->columnSpanFull(),
-                                                                        ])
+                                                                        ]),
                                                                 ])
                                                                 ->compact(),
-                                                        ])
+                                                        ]),
                                                 ]),
 
                                             Block::make('ad-banner')
@@ -146,7 +146,7 @@ class PostModuleForm
                                                                                 ->placeholder('https://example.com')
                                                                                 ->helperText('Where should this banner link to?')
                                                                                 ->columnSpanFull(),
-                                                                        ])
+                                                                        ]),
                                                                 ])
                                                                 ->compact(),
 
@@ -178,13 +178,13 @@ class PostModuleForm
                                                                                         ->columnSpanFull(),
                                                                                 ])
                                                                                 ->addActionLabel('Add Theme Variant')
-                                                                                ->itemLabel(fn(array $state): ?string => 'Banner Image')
+                                                                                ->itemLabel(fn (array $state): ?string => 'Banner Image')
                                                                                 ->collapsible()
                                                                                 ->columnSpanFull(),
-                                                                        ])
+                                                                        ]),
                                                                 ])
                                                                 ->compact(),
-                                                        ])
+                                                        ]),
                                                 ]),
 
                                             Block::make('blockquote')
@@ -208,10 +208,10 @@ class PostModuleForm
                                                                                 ->label('Quote Author')
                                                                                 ->placeholder('Author name (optional)')
                                                                                 ->columnSpanFull(),
-                                                                        ])
+                                                                        ]),
                                                                 ])
                                                                 ->compact(),
-                                                        ])
+                                                        ]),
                                                 ]),
 
                                             Block::make('side-by-side')
@@ -252,7 +252,7 @@ class PostModuleForm
                                                                                         ->columnSpanFull(),
                                                                                 ])
                                                                                 ->columnSpan(1),
-                                                                        ])
+                                                                        ]),
                                                                 ])
                                                                 ->compact(),
 
@@ -268,15 +268,15 @@ class PostModuleForm
                                                                                         ->placeholder('Enter bullet point...')
                                                                                         ->columnSpanFull(),
                                                                                 ])
-                                                                                ->itemLabel(fn(array $state): ?string => '• ' . str($state['value'] ?? '')->limit(40))
+                                                                                ->itemLabel(fn (array $state): ?string => '• '.str($state['value'] ?? '')->limit(40))
                                                                                 ->addActionLabel('Add Bullet Point')
                                                                                 ->collapsible()
                                                                                 ->columnSpanFull(),
-                                                                        ])
+                                                                        ]),
                                                                 ])
                                                                 ->compact()
                                                                 ->collapsible(),
-                                                        ])
+                                                        ]),
                                                 ]),
                                         ])
                                         ->blockNumbers(false)
@@ -284,7 +284,7 @@ class PostModuleForm
                                         ->collapsible()
                                         ->cloneable()
                                         ->columnSpanFull(),
-                                ])
+                                ]),
                         ])
                         ->collapsible()
                         ->persistCollapsed(),

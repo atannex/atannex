@@ -5,27 +5,27 @@ declare(strict_types=1);
 namespace App\Enums;
 
 use BenSampo\Enum\Enum;
-use Atannex\Filters\GetEnum;
 
 final class Territories extends Enum
 {
-    use GetEnum;
+    public const FONDOM = 'fondom';
 
-    public const FONDOM       = 'fondom';
+    public const CHIEFDOM = 'chiefdom';
 
-    public const CHIEFDOM     = 'chiefdom';
+    public const VILLAGE = 'village';
 
-    public const VILLAGE      = 'village';
+    public const QUARTER = 'quarter';
 
-    public const QUARTER      = 'quarter';
-
-    public const DIVISION     = 'division';
+    public const DIVISION = 'division';
 
     public const SUB_DIVISION = 'sub_division';
 
-    public static function boot(): void
+    /**
+     * Provide a static map of enum metadata.
+     */
+    public static function meta(): array
     {
-        self::setMetadata([
+        return [
             self::FONDOM => [
                 'label' => 'Fondom',
                 'description' => 'Traditional territory led by a Fon',
@@ -62,6 +62,6 @@ final class Territories extends Enum
                 'color' => 'secondary',
                 'icon' => 'heroicon-o-collection',
             ],
-        ]);
+        ];
     }
 }

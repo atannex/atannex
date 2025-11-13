@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Users\UserNameToken;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Rules\Auth\StrongName;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 /**
  * Controller for handling user profile operations.
@@ -35,7 +35,7 @@ class ProfileController extends Controller
             ->where('expires_at', '>', now())
             ->first();
 
-        if (!$tokenRecord) {
+        if (! $tokenRecord) {
             abort(403, 'Unauthorized access or token expired.');
         }
 
@@ -55,7 +55,7 @@ class ProfileController extends Controller
             ->where('expires_at', '>', now())
             ->first();
 
-        if (!$tokenRecord) {
+        if (! $tokenRecord) {
             abort(403, 'Unauthorized access or token expired.');
         }
 

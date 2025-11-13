@@ -3,12 +3,12 @@
 namespace Atannex\Repositories\Traits;
 
 use App\Enums\Flag;
-use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
 use App\Models\Regions\Category;
+use App\Models\Tags\Tag;
 use Atannex\Traits\HasTree;
-use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 trait TagQuery
 {
@@ -25,7 +25,7 @@ trait TagQuery
     {
         return $this->paginate(
             Post::published()
-                ->whereHas('tags', fn($q) => $q->whereKey($tag->id))
+                ->whereHas('tags', fn ($q) => $q->whereKey($tag->id))
                 ->with($this->postRelations()),
             $limit
         );
@@ -40,9 +40,9 @@ trait TagQuery
         $treeIds = $this->getTreeIds($root);
 
         return Tag::query()
-            ->whereHas('posts', fn($q) => $q->whereIn('category_id', $treeIds))
+            ->whereHas('posts', fn ($q) => $q->whereIn('category_id', $treeIds))
             ->withCount([
-                'posts' => fn($q) => $q->whereIn('category_id', $treeIds)
+                'posts' => fn ($q) => $q->whereIn('category_id', $treeIds),
             ])
             ->orderByDesc('posts_count')
             ->limit($this->sanitizeLimit($limit))

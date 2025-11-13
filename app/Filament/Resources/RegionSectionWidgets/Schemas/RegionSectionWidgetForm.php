@@ -3,17 +3,17 @@
 namespace App\Filament\Resources\RegionSectionWidgets\Schemas;
 
 use App\Enums\Flag;
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Group;
+use App\Filament\Traits\ContentFiltering;
+use App\Filament\Traits\EngagementWeightsSection;
+use App\Filament\Traits\TabBasicInformation;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Section;
-use App\Filament\Traits\ContentFiltering;
-use App\Filament\Traits\TabBasicInformation;
-use App\Filament\Traits\EngagementWeightsSection;
 use Filament\Schemas\Components\Grid as SchemaGrid;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class RegionSectionWidgetForm
 {
@@ -122,7 +122,7 @@ class RegionSectionWidgetForm
             ->schema([
                 self::tabRepeater('config.widget_tab', 'widget'),
             ])
-            ->visible(fn($get) => filled($get('widget_id')))
+            ->visible(fn ($get) => filled($get('widget_id')))
             ->collapsible()
             ->collapsed()
             ->persistCollapsed();
@@ -153,7 +153,7 @@ class RegionSectionWidgetForm
             ->required()
             ->searchable()
             ->preload()
-            ->getOptionLabelFromRecordUsing(fn($record) => sprintf(
+            ->getOptionLabelFromRecordUsing(fn ($record) => sprintf(
                 '#%s: %s',
                 $record->slug,
                 $record->name
@@ -172,7 +172,7 @@ class RegionSectionWidgetForm
             ->searchable()
             ->preload()
             ->reactive()
-            ->afterStateUpdated(fn($state, callable $set) => $set('selected_widget', $state))
+            ->afterStateUpdated(fn ($state, callable $set) => $set('selected_widget', $state))
             ->helperText('Select the widget to load its specific configuration');
     }
 
@@ -219,8 +219,8 @@ class RegionSectionWidgetForm
     /**
      * Reusable Tab Repeater Component
      *
-     * @param string $name The field name
-     * @param string $type The tab type (section or widget)
+     * @param  string  $name  The field name
+     * @param  string  $type  The tab type (section or widget)
      */
     protected static function tabRepeater(string $name, string $type): Repeater
     {
@@ -237,7 +237,7 @@ class RegionSectionWidgetForm
                     EngagementWeightsSection::make(),
                 ])
                 ->columns(1)
-                ->itemLabel(fn(array $state): ?string => $state['title'] ?? 'Untitled Tab')
+                ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Untitled Tab')
                 ->addActionLabel('Add New Tab')
                 ->reorderable()
                 ->cloneable()

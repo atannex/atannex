@@ -2,9 +2,9 @@
 
 namespace App\Models\Others;
 
-use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
@@ -69,9 +69,6 @@ class Subscription extends Model
 
     /**
      * Scope a query to only include verified subscriptions.
-     *
-     * @param Builder $query
-     * @return Builder
      */
     protected function scopeVerified(Builder $query): Builder
     {

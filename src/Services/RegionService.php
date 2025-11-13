@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Atannex\Services;
 
 use App\Models\Regions\Region;
-use Illuminate\Support\Collection;
 use Atannex\Contracts\RegionInterface;
+use Illuminate\Support\Collection;
 
 /**
  * Service layer for handling region-related operations.
@@ -20,9 +20,7 @@ final class RegionService
     /**
      * Retrieve a specific active main region by slug.
      *
-     * @param string $slug
      * @return Region The matching Region instance.
-     *
      */
     public function getMainRegion(string $slug): ?Region
     {

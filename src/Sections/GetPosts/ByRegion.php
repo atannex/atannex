@@ -10,7 +10,7 @@ trait ByRegion
     /**
      * Retrieve top-level regions along with their posts and posts from all leaf descendants.
      *
-     * @param int $limit Number of posts to include per region (default: 5)
+     * @param  int  $limit  Number of posts to include per region (default: 5)
      * @return Collection<int, Region>
      */
     public function getRegionWithPost(int $limit = 5): Collection
@@ -23,10 +23,10 @@ trait ByRegion
 
             $descendants = $region->getDescendants();
 
-            $leafRegions = $descendants->filter(fn(Region $descendant) => $descendant->children->isEmpty());
+            $leafRegions = $descendants->filter(fn (Region $descendant) => $descendant->children->isEmpty());
 
             $allPosts = $region->posts->merge(
-                $leafRegions->flatMap(fn(Region $leaf) => $leaf->posts)
+                $leafRegions->flatMap(fn (Region $leaf) => $leaf->posts)
             );
 
             $region->allPosts = $allPosts->take($limit);

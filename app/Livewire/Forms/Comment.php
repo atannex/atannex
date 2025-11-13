@@ -2,15 +2,15 @@
 
 namespace App\Livewire\Forms;
 
-use Livewire\Component;
-use Livewire\Attributes\Rule;
 use App\Contracts\Commentable;
-use App\Livewire\Comments\CommentCrud;
-use App\Livewire\Comments\CommentReply;
-use App\Livewire\Comments\CommentPagination;
-use App\Livewire\Comments\CommentSubmission;
 use App\Livewire\Comments\CommentAuthorization;
+use App\Livewire\Comments\CommentCrud;
+use App\Livewire\Comments\CommentPagination;
+use App\Livewire\Comments\CommentReply;
+use App\Livewire\Comments\CommentSubmission;
 use App\Models\Comments\Comment as CommentModel;
+use Livewire\Attributes\Rule;
+use Livewire\Component;
 
 class Comment extends Component
 {
@@ -49,7 +49,7 @@ class Comment extends Component
             'shownRepliesCount' => $this->shownRepliesCount,
             'replyingTo' => $this->parentId ? [
                 'commentId' => $this->parentId,
-                'username' => CommentModel::find($this->parentId)?->user->name ?? ''
+                'username' => CommentModel::find($this->parentId)?->user->name ?? '',
             ] : null,
         ]);
     }

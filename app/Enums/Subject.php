@@ -33,45 +33,45 @@ use BenSampo\Enum\Enum;
  */
 final class Subject extends Enum
 {
-    const WritingArticle         = 'Writing Article';
+    const WritingArticle = 'Writing Article';
 
-    const BecomeAuthor           = 'Become Author';
+    const BecomeAuthor = 'Become Author';
 
-    const GuestPosting           = 'Guest Posting';
+    const GuestPosting = 'Guest Posting';
 
-    const PersonalQuestion       = 'Personal Question';
+    const PersonalQuestion = 'Personal Question';
 
-    const CollaborationRequest   = 'Collaboration Request';
+    const CollaborationRequest = 'Collaboration Request';
 
-    const Feedback               = 'Feedback';
+    const Feedback = 'Feedback';
 
-    const TechnicalSupport       = 'Technical Support';
+    const TechnicalSupport = 'Technical Support';
 
-    const PartnershipInquiry     = 'Partnership Inquiry';
+    const PartnershipInquiry = 'Partnership Inquiry';
 
-    const SponsorshipRequest     = 'Sponsorship Request';
+    const SponsorshipRequest = 'Sponsorship Request';
 
-    const ContentSubmission      = 'Content Submission';
+    const ContentSubmission = 'Content Submission';
 
-    const MediaInquiry           = 'Media Inquiry';
+    const MediaInquiry = 'Media Inquiry';
 
-    const EventInvitation        = 'Event Invitation';
+    const EventInvitation = 'Event Invitation';
 
-    const AdvertisingInquiry     = 'Advertising Inquiry';
+    const AdvertisingInquiry = 'Advertising Inquiry';
 
-    const JobApplication         = 'Job Application';
+    const JobApplication = 'Job Application';
 
-    const InternshipApplication  = 'Internship Application';
+    const InternshipApplication = 'Internship Application';
 
-    const PressRelease           = 'Press Release';
+    const PressRelease = 'Press Release';
 
-    const ProductInquiry         = 'Product Inquiry';
+    const ProductInquiry = 'Product Inquiry';
 
-    const Complaint              = 'Complaint';
+    const Complaint = 'Complaint';
 
-    const Suggestion             = 'Suggestion';
+    const Suggestion = 'Suggestion';
 
-    const Testimonial            = 'Testimonial';
+    const Testimonial = 'Testimonial';
 
-    const Other                  = 'Other';
+    const Other = 'Other';
 }

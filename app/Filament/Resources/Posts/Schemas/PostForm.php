@@ -3,24 +3,23 @@
 namespace App\Filament\Resources\Posts\Schemas;
 
 use App\Enums\Flag;
-use App\Models\Tags\Tag;
-use Illuminate\Support\Str;
-use Filament\Schemas\Schema;
-use App\Models\Regions\Region;
 use App\Models\Regions\Category;
+use App\Models\Regions\Region;
+use App\Models\Tags\Tag;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class PostForm
 {
-
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -138,7 +137,7 @@ class PostForm
                                                     ])
                                                     ->createOptionModalHeading('Create New Category')
                                                     ->createOptionAction(
-                                                        fn($action) => $action
+                                                        fn ($action) => $action
                                                             ->modalHeading('Create Category')
                                                             ->modalDescription('Add a new category or subcategory.')
                                                             ->modalSubmitActionLabel('Save Category')
@@ -190,9 +189,8 @@ class PostForm
                                                     ->placeholder('Select date and time')
                                                     ->displayFormat('M d, Y - H:i')
                                                     ->native(false)
-                                                    ->visible(fn($get) => $get('is_breaking'))
-                                                    ->required(fn($get) => $get('is_breaking')),
-
+                                                    ->visible(fn ($get) => $get('is_breaking'))
+                                                    ->required(fn ($get) => $get('is_breaking')),
 
                                             ])->columns(2),
                                     ])
@@ -227,7 +225,7 @@ class PostForm
                                             ->createOptionUsing(function (array $data) {
                                                 return Region::create($data)->id;
                                             })
-                                            ->createOptionAction(fn($action) => $action->label('Add New Region')),
+                                            ->createOptionAction(fn ($action) => $action->label('Add New Region')),
 
                                         Select::make('tags')
                                             ->relationship('tags', 'name')
@@ -247,7 +245,7 @@ class PostForm
                                             ->createOptionUsing(function (array $data) {
                                                 return Tag::create($data)->id;
                                             })
-                                            ->createOptionAction(fn($action) => $action->label('Add New Tag')),
+                                            ->createOptionAction(fn ($action) => $action->label('Add New Tag')),
                                     ])
                                     ->collapsible()
                                     ->compact(),
@@ -259,7 +257,7 @@ class PostForm
                                             ->label('Featured Image')
                                             ->disk('public')
                                             ->visibility('public')
-                                            ->directory(fn($record) => $record?->getImageDirectory())
+                                            ->directory(fn ($record) => $record?->getImageDirectory())
                                             ->image()
                                             ->imageEditor()
                                             ->imageEditorAspectRatios([

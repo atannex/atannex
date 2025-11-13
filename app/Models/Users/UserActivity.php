@@ -2,8 +2,8 @@
 
 namespace App\Models\Users;
 
-use App\Models\User;
 use App\Models\Controls\Session;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

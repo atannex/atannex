@@ -6,13 +6,13 @@ use Atannex\Sections\GetPosts\ByBreaking;
 use Atannex\Sections\GetPosts\ByEditorPick;
 use Atannex\Sections\GetPosts\ByFeatured;
 use Atannex\Sections\GetPosts\ByMostRead;
-use Atannex\Sections\GetPosts\ByRecent;
-use Atannex\Sections\GetPosts\ByRelated;
 use Atannex\Sections\GetPosts\ByNavigation;
 use Atannex\Sections\GetPosts\ByPopular;
+use Atannex\Sections\GetPosts\ByRecent;
 use Atannex\Sections\GetPosts\ByRegion;
-use Atannex\Sections\GetPosts\ModuleBySlug;
+use Atannex\Sections\GetPosts\ByRelated;
 use Atannex\Sections\GetPosts\ByToday;
+use Atannex\Sections\GetPosts\ModuleBySlug;
 
 /**
  * Class GetPost
@@ -24,20 +24,18 @@ use Atannex\Sections\GetPosts\ByToday;
  *
  * This class acts as a unified entry point to fetch and prepare post data
  * for different sections of the application.
- *
- * @package Atannex\Binders
  */
 class HasPost
 {
-    use ByRecent;
-    use ByNavigation;
-    use ByRelated;
-    use ByToday;
-    use ByRegion;
+    use ByBreaking;
     use ByEditorPick;
     use ByFeatured;
     use ByMostRead;
+    use ByNavigation;
     use ByPopular;
-    use ByBreaking;
+    use ByRecent;
+    use ByRegion;
+    use ByRelated;
+    use ByToday;
     use ModuleBySlug;
 }

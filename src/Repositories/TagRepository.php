@@ -2,10 +2,10 @@
 
 namespace Atannex\Repositories;
 
-use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
-use Illuminate\Support\Collection;
+use App\Models\Tags\Tag;
 use Atannex\Contracts\TagInterface;
+use Illuminate\Support\Collection;
 
 class TagRepository implements TagInterface
 {
@@ -25,6 +25,7 @@ class TagRepository implements TagInterface
     public function getTagsForPost(int $postId): Collection
     {
         $post = $this->findPost($postId);
+
         return $post->tags()->orderBy('name')->get();
     }
 
@@ -36,6 +37,7 @@ class TagRepository implements TagInterface
     public function getPostsForTag(string $tagSlug): Collection
     {
         $tag = $this->getTagBySlug($tagSlug);
+
         return $tag->posts()->published()->orderByDesc('published_at')->get();
     }
 
@@ -47,7 +49,7 @@ class TagRepository implements TagInterface
     public function searchTags(string $searchTerm): Collection
     {
         return $this->queryTag()
-            ->where('name', 'like', '%' . $searchTerm . '%')
+            ->where('name', 'like', '%'.$searchTerm.'%')
             ->orderBy('name')
             ->get();
     }
@@ -55,14 +57,13 @@ class TagRepository implements TagInterface
     /**
      * Retrieves the most popular tags based on the number of associated published posts.
      *
-     * @param int $limit
      * @return Collection<Tag>
      */
     public function getPopularTags(int $limit = 10): Collection
     {
         return $this->queryTag()
-            ->whereHas('posts', fn($q) => $q->published())
-            ->withCount(['posts' => fn($q) => $q->published()])
+            ->whereHas('posts', fn ($q) => $q->published())
+            ->withCount(['posts' => fn ($q) => $q->published()])
             ->orderByDesc('posts_count')
             ->having('posts_count', '>=', 2)
             ->take($limit)

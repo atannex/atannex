@@ -2,18 +2,18 @@
 
 namespace Atannex\Relations;
 
-use App\Models\Tags\Tag;
-use App\Models\Regions\Category;
-use App\Models\Regions\Region;
 use App\Models\Comments\Comment;
-use App\Models\Regions\Employee;
 use App\Models\Modules\PostModule;
-use App\Models\Pivots\PostTag;
 use App\Models\Pivots\PostRegion;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Pivots\PostTag;
+use App\Models\Regions\Category;
+use App\Models\Regions\Employee;
+use App\Models\Regions\Region;
+use App\Models\Tags\Tag;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * Trait PostRelation
@@ -84,54 +84,4 @@ trait PostRelation
             ->whereNull('parent_id')
             ->latest();
     }
-
-    /**
-     * ---------------------------
-     * Sluggable Implementation
-     * ---------------------------
-     */
-
-    /**
-     * Base string for slug generation (category path).
-     */
-    public function getSlugBase(): string
-    {
-        return $this->category->slug_path;
-    }
-
-    /**
-     * Generated slug for this post.
-     */
-    public function getSlug(): string
-    {
-        return $this->slug;
-    }
-
-    /**
-     * Rebuild this post's slug path.
-     */
-    public function rebuildSlugPath(): void
-    {
-        $this->slug_path = $this->buildDynamicSlugPath();
-    }
-
-    /**
-     * Cascade slug path updates to related pivots and self.
-     */
-    public function cascadeSlugPathUpdates(): void
-    {
-        $this->rebuildSlugPath();
-        $this->saveQuietly();
-        $this->updatePivotSlugs();
-    }
-
-    /**
-     * Clear slug paths for related pivots.
-     */
-    public function clearRelatedSlugPaths(): void {}
-
-    /**
-     * Update pivot slug paths (tags, regions).
-     */
-    protected function updatePivotSlugs(): void {}
 }

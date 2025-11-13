@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Regions\Tables;
 
 use Filament\Actions\ActionGroup;
-use App\Models\Regions\Region;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -44,7 +43,7 @@ class RegionsTable
 
                 TextColumn::make('flag')
                     ->label('Flag')
-                    ->formatStateUsing(fn ($state) => $state ? '🏴 ' . $state : '-')
+                    ->formatStateUsing(fn ($state) => $state ? '🏴 '.$state : '-')
                     ->alignCenter()
                     ->toggleable(),
 
@@ -98,11 +97,11 @@ class RegionsTable
                     ->native(false)
                     ->placeholder('All Regions'),
 
-                SelectFilter::make('territory')
-                    ->label('Filter by Territory')
-                    ->options(fn () => Region::distinct()->pluck('territory', 'territory'))
-                    ->searchable()
-                    ->native(false),
+                // SelectFilter::make('territory')
+                //     ->label('Filter by Territory')
+                //     ->options(fn () => Region::distinct()->pluck('territory', 'territory'))
+                //     ->searchable()
+                //     ->native(false),
             ])
             ->recordActions([
                 ActionGroup::make([
@@ -114,8 +113,8 @@ class RegionsTable
                     RestoreAction::make(),
                     ForceDeleteAction::make(),
                 ])
-                ->icon('heroicon-m-ellipsis-vertical')
-                ->tooltip('Actions'),
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->tooltip('Actions'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -123,7 +122,7 @@ class RegionsTable
                     RestoreBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                 ])
-                ->label('Bulk Actions'),
+                    ->label('Bulk Actions'),
             ])
             ->defaultSort('name', 'asc')
             ->striped()

@@ -2,10 +2,10 @@
 
 namespace App\Livewire\Comments;
 
-use Throwable;
 use App\Models\Comments\Comment as CommentModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 trait CommentSubmission
 {
@@ -20,8 +20,9 @@ trait CommentSubmission
     {
         $this->validate();
 
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             session()->flash('error', __('You must be logged in to post a comment.'));
+
             return;
         }
 
@@ -33,11 +34,11 @@ trait CommentSubmission
             }
 
             CommentModel::create([
-                'user_id'          => Auth::id(),
+                'user_id' => Auth::id(),
                 'commentable_type' => get_class($this->commentable),
-                'commentable_id'   => $this->commentable->id,
-                'parent_id'        => $parentId,
-                'comment'          => $this->sanitizeComment($this->comment),
+                'commentable_id' => $this->commentable->id,
+                'parent_id' => $parentId,
+                'comment' => $this->sanitizeComment($this->comment),
             ]);
 
             session()->flash('message', __('Comment posted successfully!'));
@@ -45,7 +46,7 @@ trait CommentSubmission
             $this->resetPage();
             $this->resetCommentState();
         } catch (Throwable $throwable) {
-            Log::error('Comment submission failed: ' . $throwable->getMessage());
+            Log::error('Comment submission failed: '.$throwable->getMessage());
             session()->flash('error', __('Failed to post comment. Please try again.'));
         }
     }

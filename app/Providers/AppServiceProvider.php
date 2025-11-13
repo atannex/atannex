@@ -2,26 +2,21 @@
 
 namespace App\Providers;
 
+use App\Enums\Binding;
+use App\Enums\Classification;
+use App\Enums\Entity;
 use App\Enums\Flag;
 use App\Enums\Image;
-use App\Enums\Title;
-use App\Enums\Entity;
 use App\Enums\Status;
-use App\Enums\Binding;
-use App\Enums\Territories;
-use App\Models\Posts\Post;
-use App\Enums\Classification;
-use App\Models\Regions\Region;
-use App\Models\Regions\Widget;
+use App\Enums\Title;
 use App\Models\Regions\Section;
-use App\Models\Regions\Category;
-use App\Observers\WidgetObserver;
+use App\Models\Regions\Widget;
 use App\Observers\SectionObserver;
-use Ngangagah\Handlers\Navigation;
-use Atannex\Adapters\WidgetAdapter;
-use App\Observers\SluggableObserver;
+use App\Observers\WidgetObserver;
 use Atannex\Adapters\SectionAdapter;
+use Atannex\Adapters\WidgetAdapter;
 use Illuminate\Support\ServiceProvider;
+use Ngangagah\Handlers\Navigation;
 
 /**
  * Class AppServiceProvider
@@ -38,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * Registers model observers, boots enums, and shares navigation data with all views.
      *
-     * @param Navigation $navigation Navigation handler for shared navigation data
+     * @param  Navigation  $navigation  Navigation handler for shared navigation data
      */
     public function boot(): void
     {
@@ -51,12 +46,8 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function registerObservers(): void
     {
-        Section::observe(new SectionObserver(new SectionAdapter()));
-        Widget::observe(new WidgetObserver(new WidgetAdapter()));
-
-        Category::observe(SluggableObserver::class);
-        Region::observe(SluggableObserver::class);
-        Post::observe(SluggableObserver::class);
+        Section::observe(new SectionObserver(new SectionAdapter));
+        Widget::observe(new WidgetObserver(new WidgetAdapter));
     }
 
     /**
@@ -67,7 +58,6 @@ class AppServiceProvider extends ServiceProvider
         Flag::boot();
         Entity::boot();
         Image::boot();
-        Territories::boot();
         Binding::boot();
         Status::boot();
         Title::boot();

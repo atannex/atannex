@@ -30,7 +30,7 @@ class SectionsTable
                     ->searchable()
                     ->sortable()
                     ->weight('semibold')
-                    ->description(fn($record) => $record->slug)
+                    ->description(fn ($record) => $record->slug)
                     ->copyable()
                     ->copyMessage('Section name copied')
                     ->icon('heroicon-o-squares-2x2')
@@ -44,7 +44,7 @@ class SectionsTable
                     ->fontFamily('mono')
                     ->size('sm')
                     ->color('gray')
-                    ->tooltip(fn($state) => 'Path: /' . $state)
+                    ->tooltip(fn ($state) => 'Path: /'.$state)
                     ->prefix('/')
                     ->badge()
                     ->toggleable(),
@@ -52,14 +52,14 @@ class SectionsTable
                 TextColumn::make('flag')
                     ->label('Status')
                     ->badge()
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn (string $state): string => match ($state) {
                         'active' => 'success',
                         'pending' => 'warning',
                         'inactive' => 'danger',
                         'draft' => 'gray',
                         default => 'info',
                     })
-                    ->icon(fn(string $state): string => match ($state) {
+                    ->icon(fn (string $state): string => match ($state) {
                         'active' => 'heroicon-o-check-circle',
                         'pending' => 'heroicon-o-clock',
                         'inactive' => 'heroicon-o-x-circle',
@@ -77,8 +77,8 @@ class SectionsTable
                     ->trueColor('danger')
                     ->falseColor('success')
                     ->alignCenter()
-                    ->tooltip(fn($record) => $record->deleted_at ?
-                        'Deleted: ' . $record->deleted_at->diffForHumans() : 'Active'),
+                    ->tooltip(fn ($record) => $record->deleted_at ?
+                        'Deleted: '.$record->deleted_at->diffForHumans() : 'Active'),
 
                 TextColumn::make('created_at')
                     ->label('Created')
@@ -86,7 +86,7 @@ class SectionsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->since()
-                    ->description(fn($record) => $record->created_at->format('g:i A'))
+                    ->description(fn ($record) => $record->created_at->format('g:i A'))
                     ->icon('heroicon-o-plus-circle'),
 
                 TextColumn::make('updated_at')
@@ -95,7 +95,7 @@ class SectionsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->since()
-                    ->description(fn($record) => $record->updated_at->format('g:i A'))
+                    ->description(fn ($record) => $record->updated_at->format('g:i A'))
                     ->icon('heroicon-o-pencil-square'),
             ])
             ->filters([
@@ -108,7 +108,7 @@ class SectionsTable
 
                 SelectFilter::make('flag')
                     ->label('Filter by Status')
-                    ->options(fn() => Flag::labels())
+                    ->options(fn () => Flag::labels())
                     ->native(false)
                     ->multiple()
                     ->placeholder('All Statuses'),

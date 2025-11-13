@@ -2,22 +2,20 @@
 
 namespace App\Models\Posts;
 
-use App\Contracts\Sluggable;
-use Atannex\Enables\HasSlug;
-use Atannex\Enables\HasScope;
 use App\Contracts\Commentable;
-use Atannex\Traits\HasBootable;
+use App\Models\Regions\Employee;
+use Atannex\Enables\Scoping;
+use Atannex\Enables\Slugging;
+use Atannex\Interactions\HasLikes;
+use Atannex\Interactions\HasRatings;
+use Atannex\Interactions\HasShares;
+use Atannex\Interactions\HasViews;
+use Atannex\Relations\PostRelation;
 use Atannex\Traits\HasBreaking;
 use Atannex\Traits\HasCleaning;
-use App\Models\Regions\Employee;
-use Atannex\Interactions\HasLikes;
-use Atannex\Interactions\HasViews;
-use Atannex\Interactions\HasShares;
-use Atannex\Relations\PostRelation;
-use Atannex\Interactions\HasRatings;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class Post
@@ -25,19 +23,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Represents a post with hierarchical slug management,
  * commenting, and interaction features.
  */
-class Post extends Model implements Commentable, Sluggable
+class Post extends Model implements Commentable
 {
-    use SoftDeletes;
-    use HasSlug;
-    use HasScope;
-    use PostRelation;
+    use HasBreaking;
     use HasCleaning;
-    use HasBootable;
     use HasLikes;
     use HasRatings;
     use HasShares;
     use HasViews;
-    use HasBreaking;
+    use PostRelation;
+    use Scoping;
+    use Slugging;
+    use SoftDeletes;
 
     /**
      * Source attribute for slug generation.
@@ -72,11 +69,11 @@ class Post extends Model implements Commentable, Sluggable
      * @var array<string, string>
      */
     protected $casts = [
-        'published_at'   => 'datetime',
+        'published_at' => 'datetime',
         'breaking_until' => 'datetime',
-        'feature_until'  => 'datetime',
-        'metadata'       => 'array',
-        'is_breaking'    => 'boolean',
+        'feature_until' => 'datetime',
+        'metadata' => 'array',
+        'is_breaking' => 'boolean',
     ];
 
     /**
@@ -113,27 +110,6 @@ class Post extends Model implements Commentable, Sluggable
     public function updatedBy()
     {
         return $this->belongsTo(Employee::class, 'updated_by');
-    }
-
-    /**
-     * Scope a query to only include published posts.
-     */
-    protected function scopePublished($query)
-    {
-        return $query->where('flag', 'published')
-            ->where('published_at', '<=', now());
-    }
-
-    /**
-     * Scope a query to include only breaking news.
-     */
-    protected function scopeBreaking($query)
-    {
-        return $query->where('is_breaking', true)
-            ->where(function ($q) {
-                $q->whereNull('breaking_until')
-                    ->orWhere('breaking_until', '>=', now());
-            });
     }
 
     /**

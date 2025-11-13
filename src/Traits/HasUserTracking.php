@@ -2,10 +2,10 @@
 
 namespace Atannex\Traits;
 
-use App\Models\User;
-use GeoIp2\Database\Reader;
 use App\Models\Controls\Session;
+use App\Models\User;
 use App\Models\Users\UserActivity;
+use GeoIp2\Database\Reader;
 use Illuminate\Support\Facades\Auth;
 
 trait HasUserTracking
@@ -17,9 +17,9 @@ trait HasUserTracking
         $session = Session::updateOrCreate(
             ['id' => session()->getId(), 'user_id' => $user->id],
             [
-                'ip_address'     => request()->ip(),
-                'user_agent'     => request()->userAgent(),
-                'last_activity'  => now()->timestamp,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'last_activity' => now()->timestamp,
             ]
         );
 
@@ -29,12 +29,12 @@ trait HasUserTracking
             [
                 'session_id' => $session->id,
                 'event_type' => $eventType,
-                'user_id'    => $user->id,
+                'user_id' => $user->id,
             ],
             [
                 'metadata' => [
-                    'click_count'      => 0,
-                    'first_event'      => $metadata,
+                    'click_count' => 0,
+                    'first_event' => $metadata,
                     'first_clicked_at' => now(),
                 ],
                 'geo' => $location,
@@ -48,7 +48,7 @@ trait HasUserTracking
 
         $activity->update([
             'metadata' => $meta,
-            'geo'      => $location,
+            'geo' => $location,
         ]);
 
         return $activity;
@@ -86,6 +86,6 @@ trait HasUserTracking
         $reader = new Reader(storage_path('app/GeoLite2/GeoLite2-City.mmdb'));
         $record = $reader->city($ip);
 
-        return trim($record->city->name . ', ' . $record->country->name);
+        return trim($record->city->name.', '.$record->country->name);
     }
 }

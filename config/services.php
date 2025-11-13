@@ -2,7 +2,7 @@
 
 return [
 
-      'webhook' => [
+    'webhook' => [
         'post_published' => env('WEBHOOK_POST_PUBLISHED_URL', null),
     ],
 

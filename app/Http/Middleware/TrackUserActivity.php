@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use Atannex\Traits\HasUserTracking;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Atannex\Traits\HasUserTracking;
 
 class TrackUserActivity
 {
@@ -14,8 +14,6 @@ class TrackUserActivity
     /**
      * Handle an incoming request and track the user's activity if authenticated.
      *
-     * @param  Request  $request
-     * @param  Closure  $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
@@ -25,10 +23,10 @@ class TrackUserActivity
 
             $metadata = [
                 'route_name' => $request->route()?->getName(),
-                'url'        => $request->fullUrl(),
-                'method'     => $request->method(),
-                'timestamp'  => now()->toDateTimeString(),
-                'timezone'   => $user?->timezone,
+                'url' => $request->fullUrl(),
+                'method' => $request->method(),
+                'timestamp' => now()->toDateTimeString(),
+                'timezone' => $user?->timezone,
             ];
 
             $this->trackActivity('route_access', $metadata);

@@ -2,10 +2,10 @@
 
 namespace Atannex\Sections\GetPosts;
 
-use Illuminate\Support\Facades\Date;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 
 trait ByToday
 {
@@ -19,7 +19,7 @@ trait ByToday
         $timezone = $user->timezone ?? config('app.timezone', 'UTC');
 
         $startOfDay = Date::now($timezone)->startOfDay()->setTimezone('UTC');
-        $endOfDay   = Date::now($timezone)->endOfDay()->setTimezone('UTC');
+        $endOfDay = Date::now($timezone)->endOfDay()->setTimezone('UTC');
 
         $query = Post::query()
             ->published()

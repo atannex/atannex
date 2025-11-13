@@ -2,11 +2,11 @@
 
 namespace App\Livewire\Forms;
 
-use Livewire\Component;
-use App\Events\ContactMessageCreated;
 use App\Enums\Subject;
+use App\Events\ContactMessageCreated;
 use App\Models\Others\Contact as ContactMessage;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class Contact extends Component
 {
@@ -28,7 +28,7 @@ class Contact extends Component
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'number' => Auth::check() ? 'nullable|string|max:20' : 'required|string|max:20',
-            'subject' => 'required|in:' . implode(',', Subject::getValues()),
+            'subject' => 'required|in:'.implode(',', Subject::getValues()),
             'message' => 'required|string|max:2000',
         ];
     }

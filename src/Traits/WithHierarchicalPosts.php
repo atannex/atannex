@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Atannex\Traits;
 
+use Atannex\Views\Traits\CanNormalize;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Atannex\Views\Traits\CanNormalize;
 
 /**
  * Provides functionality to fetch hierarchical models and attach their posts efficiently.
@@ -18,16 +18,16 @@ trait WithHierarchicalPosts
     /**
      * Retrieve hierarchical models along with their latest posts.
      *
-     * @param string $modelClass Fully qualified class name of the Eloquent model.
-     * @param array<string,mixed> $config Configuration array:
-     *                                   - 'posts_with_id': array<int>
-     *                                   - 'limit': int
-     *                                   - 'relation_limit': int
-     *                                   - 'leaf_relation_limit': int
-     *                                   - 'sort': string
-     *                                   - 'order': string ('asc'|'desc')
-     * @param string $childrenRelation Child relation name.
-     * @param string $postsRelation Post relation name.
+     * @param  string  $modelClass  Fully qualified class name of the Eloquent model.
+     * @param  array<string,mixed>  $config  Configuration array:
+     *                                       - 'posts_with_id': array<int>
+     *                                       - 'limit': int
+     *                                       - 'relation_limit': int
+     *                                       - 'leaf_relation_limit': int
+     *                                       - 'sort': string
+     *                                       - 'order': string ('asc'|'desc')
+     * @param  string  $childrenRelation  Child relation name.
+     * @param  string  $postsRelation  Post relation name.
      * @return Collection<int, Model> Collection of models with merged posts.
      */
     public function getHierarchicalWithPosts(
@@ -36,12 +36,12 @@ trait WithHierarchicalPosts
         string $childrenRelation = 'children',
         string $postsRelation = 'posts'
     ): Collection {
-        $ids            = $this->normalizeIds($config['posts_with_id']);
-        $limit          = (int) $config['limit'];
-        $postLimit      = (int) $config['relation_limit'];
-        $leafPostLimit  = (int) $config['leaf_relation_limit'];
-        $sortField      = $config['sort'];
-        $order          = strtolower($config['order']);
+        $ids = $this->normalizeIds($config['posts_with_id']);
+        $limit = (int) $config['limit'];
+        $postLimit = (int) $config['relation_limit'];
+        $leafPostLimit = (int) $config['leaf_relation_limit'];
+        $sortField = $config['sort'];
+        $order = strtolower($config['order']);
 
         $models = $this->fetchHierarchicalModels(
             $modelClass,
@@ -56,7 +56,7 @@ trait WithHierarchicalPosts
         );
 
         return $models->map(
-            fn(Model $model) => $this->attachPostsToModel(
+            fn (Model $model) => $this->attachPostsToModel(
                 $model,
                 $postLimit,
                 $leafPostLimit,
@@ -86,10 +86,10 @@ trait WithHierarchicalPosts
             ->whereIn('id', $ids)
             ->with([
                 sprintf('%s:id,parent_id,name,%s', $childrenRelation, $sortField),
-                sprintf('%s.%s', $childrenRelation, $postsRelation) => fn($q) => $q
+                sprintf('%s.%s', $childrenRelation, $postsRelation) => fn ($q) => $q
                     ->orderBy($sortField, $order)
                     ->limit($leafPostLimit),
-                $postsRelation => fn($q) => $q
+                $postsRelation => fn ($q) => $q
                     ->orderBy($sortField, $order)
                     ->limit($postLimit),
             ])
@@ -133,7 +133,7 @@ trait WithHierarchicalPosts
         string $postsRelation,
         int $leafPostLimit
     ): Collection {
-        $ownPosts  = $model->$postsRelation;
+        $ownPosts = $model->$postsRelation;
         $leafPosts = $this->collectLeafPostsIterative($model, $childrenRelation, $postsRelation, $leafPostLimit);
 
         return $ownPosts->merge($leafPosts)->unique('id')->values();
@@ -173,6 +173,7 @@ trait WithHierarchicalPosts
                 $leafPosts = $leafPosts->merge(
                     $current->$postsRelation->take($leafPostLimit)
                 );
+
                 continue;
             }
 

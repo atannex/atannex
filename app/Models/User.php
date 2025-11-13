@@ -3,41 +3,38 @@
 namespace App\Models;
 
 use App\Enums\Gender;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Enums\Status;
 use App\Models\Controls\Session;
 use App\Models\Users\UserActivity;
-use App\Enums\Status;
-use Atannex\Enables\HasSlug;
+use Atannex\Enables\Slugging;
 use Atannex\Relations\UserRelation;
 use Atannex\Traits\HasCleaning;
 use Atannex\Traits\HasUserTracking;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements MustVerifyEmail, FilamentUser
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
-    use Notifiable;
-    use HasSlug;
-    use HasRoles;
-    use SoftDeletes;
     use HasCleaning;
+    use HasRoles;
     use HasUserTracking;
+    use Notifiable;
+    use Slugging;
+    use SoftDeletes;
     use UserRelation;
 
     /**
      * The attribute used as the slug source.
      *
      * Used by EnableSlug trait to generate human-readable slugs.
-     *
-     * @var string
      */
     protected string $slugSource = 'name';
-
 
     protected $fillable = [
         'name',

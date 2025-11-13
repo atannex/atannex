@@ -3,16 +3,16 @@
 namespace App\Events\Users;
 
 use App\Models\User;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class UserCreated
 {
     use Dispatchable;
+    use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
-    use Dispatchable;
     use SerializesModels;
 
     public User $user;
