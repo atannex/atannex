@@ -11,7 +11,7 @@ use Atannex\Interactions\HasRatings;
 use Atannex\Interactions\HasShares;
 use Atannex\Interactions\HasViews;
 use Atannex\Relations\PostRelation;
-use Atannex\Traits\HasBreaking;
+use Atannex\Concerns\HasBreaking;
 use Atannex\Traits\HasCleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

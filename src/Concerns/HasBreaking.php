@@ -1,6 +1,6 @@
 <?php
 
-namespace Atannex\Traits;
+namespace Atannex\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Date;

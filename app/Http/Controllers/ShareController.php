@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use Atannex\Binders\HasPost;
 use Atannex\Services\ShareService;
-use Atannex\Traits\HasUserTracking;
+use Atannex\Concerns\HasUserTracking;
 use Illuminate\Http\RedirectResponse;
 
 class ShareController extends Controller

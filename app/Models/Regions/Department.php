@@ -6,14 +6,14 @@ use App\Enums\Status;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Relations\DepartmentRelation;
-use Atannex\Traits\GeneratesDepartmentCode;
+use Atannex\Concerns\DepartmentCode;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Department extends Model
 {
     use DepartmentRelation;
-    use GeneratesDepartmentCode;
+    use DepartmentCode;
     use Scoping;
     use Slugging;
     use SoftDeletes;

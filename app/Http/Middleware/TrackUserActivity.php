@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use Atannex\Traits\HasUserTracking;
+use Atannex\Concerns\HasUserTracking;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

@@ -8,7 +8,7 @@ use App\Enums\Flag;
 use App\Contracts\Sluggable;
 use Atannex\Enables\Slugging;
 use Atannex\Traits\HasCleaning;
-use Atannex\Traits\HasResolver;
+use Atannex\Concerns\HasResolver;
 use Atannex\Traits\HasSlugPath;
 use Atannex\Filters\GetHierarchy;
 use Atannex\Relations\CategoryRelation;

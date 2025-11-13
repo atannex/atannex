@@ -9,7 +9,7 @@ use App\Models\Users\UserActivity;
 use Atannex\Enables\Slugging;
 use Atannex\Relations\UserRelation;
 use Atannex\Traits\HasCleaning;
-use Atannex\Traits\HasUserTracking;
+use Atannex\Concerns\HasUserTracking;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;

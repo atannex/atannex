@@ -6,7 +6,7 @@ namespace Atannex\Services;
 
 use App\Enums\Icon;
 use App\Models\Interactions\Share;
-use Atannex\Traits\HasPlatforms;
+use Atannex\Concerns\HasPlatforms;
 use Illuminate\Support\Facades\Auth;
 use Jorenvh\Share\ShareFacade;
 

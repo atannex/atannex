@@ -3,7 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\User;
-use Atannex\Traits\HasUserTracking;
+use Atannex\Concerns\HasUserTracking;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Atannex\Traits;
+namespace Atannex\Concerns;
 
 use App\Enums\Flag;
 use App\Enums\Status;

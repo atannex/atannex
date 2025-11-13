@@ -9,7 +9,7 @@ use App\Models\Regions\Region;
 use App\Models\Tags\Tag;
 use Atannex\Binders\HasView;
 use Atannex\Services\RegionService;
-use Atannex\Traits\HasResolver;
+use Atannex\Concerns\HasResolver;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\View\View;
 
