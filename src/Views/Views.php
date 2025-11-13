@@ -14,7 +14,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait Views
 {
-    use HasContent, HasDate, HasShow;
+    use HasContent;
+    use HasDate;
+    use HasShow;
 
     /**
      * Render tag page.
