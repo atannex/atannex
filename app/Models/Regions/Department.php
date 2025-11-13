@@ -3,17 +3,17 @@
 namespace App\Models\Regions;
 
 use App\Enums\Status;
+use Atannex\Concerns\DepartmentCode;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Relations\DepartmentRelation;
-use Atannex\Concerns\DepartmentCode;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Department extends Model
 {
-    use DepartmentRelation;
     use DepartmentCode;
+    use DepartmentRelation;
     use Scoping;
     use Slugging;
     use SoftDeletes;

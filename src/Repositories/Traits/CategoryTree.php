@@ -26,7 +26,7 @@ trait CategoryTree
     public function employeeSocial(Employee $employee): Collection
     {
         return $employee->socialMedia()
-            ->published('non-global')
+            ->nonGlobal()
             ->ordered()
             ->get()
             ->map(fn (SocialMedia $media) => $this->mapSocialMedia($media))

@@ -7,12 +7,12 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Common query scopes for content models.
+ * Reusable query scopes for content-driven Eloquent models.
  */
 trait Scoping
 {
     /**
-     * Only published posts (general).
+     * Scope: Only posts that have been published.
      */
     protected function scopePublished(Builder $query): Builder
     {
@@ -21,25 +21,34 @@ trait Scoping
     }
 
     /**
-     * Only global posts (published + global flag).
+     * Scope: Only posts that have been created (sanity check for timestamps).
+     */
+    protected function scopeCreated(Builder $query): Builder
+    {
+        return $query->whereNotNull('created_at')
+            ->where('created_at', '<=', now());
+    }
+
+    /**
+     * Scope: Posts marked as global and already created.
      */
     protected function scopeGlobal(Builder $query): Builder
     {
-        return $query->published()
+        return $query->created()
             ->where('is_global', true);
     }
 
     /**
-     * Only non-global posts (published + non-global flag).
+     * Scope: Posts not marked as global.
      */
     protected function scopeNonGlobal(Builder $query): Builder
     {
-        return $query->published()
+        return $query->created()
             ->where('is_global', false);
     }
 
     /**
-     * Breaking news posts (active breaking status).
+     * Scope: Breaking news posts with an active breaking status.
      */
     protected function scopeBreaking(Builder $query): Builder
     {
@@ -51,7 +60,7 @@ trait Scoping
     }
 
     /**
-     * Editor pick posts.
+     * Scope: Editor’s pick posts.
      */
     protected function scopeEditorPick(Builder $query): Builder
     {
@@ -60,9 +69,9 @@ trait Scoping
     }
 
     /**
-     * Ordered posts (by `order` column).
+     * Scope: Order posts by a specified direction.
      *
-     * @param  string  $direction  'asc' or 'desc'
+     * @param  string  $direction  Sort direction: 'asc' or 'desc'
      */
     protected function scopeOrdered(Builder $query, string $direction = 'asc'): Builder
     {
@@ -70,30 +79,30 @@ trait Scoping
     }
 
     /**
-     * Filter posts between two dates (inclusive).
+     * Scope: Filter posts between two dates (inclusive).
      */
     protected function scopeBetweenDates(Builder $query, ?Carbon $start = null, ?Carbon $end = null): Builder
     {
         if ($start && $end) {
             return $query->whereBetween('published_at', [
-                $start->startOfDay(),
-                $end->endOfDay(),
+                $start->copy()->startOfDay(),
+                $end->copy()->endOfDay(),
             ]);
         }
 
         if ($start instanceof Carbon) {
-            return $query->where('published_at', '>=', $start->startOfDay());
+            return $query->where('published_at', '>=', $start->copy()->startOfDay());
         }
 
         if ($end instanceof Carbon) {
-            return $query->where('published_at', '<=', $end->endOfDay());
+            return $query->where('published_at', '<=', $end->copy()->endOfDay());
         }
 
         return $query;
     }
 
     /**
-     * Filter by enum-based flag.
+     * Scope: Filter based on enum flags.
      */
     protected function scopeFlagged(Builder $query, Flag $flag): Builder
     {
@@ -101,7 +110,7 @@ trait Scoping
     }
 
     /**
-     * Active posts.
+     * Scope: Only active posts.
      */
     protected function scopeActive(Builder $query): Builder
     {
@@ -109,9 +118,9 @@ trait Scoping
     }
 
     /**
-     * Posts scheduled for the future.
+     * Scope: Posts scheduled for the future.
      *
-     * @param  string  $column  Column to check (default: 'scheduled_at')
+     * @param  string  $column  Schedule date column (default: 'scheduled_at')
      */
     protected function scopeFuture(Builder $query, string $column = 'scheduled_at'): Builder
     {
@@ -119,9 +128,9 @@ trait Scoping
     }
 
     /**
-     * Posts scheduled in the past or right now.
+     * Scope: Posts scheduled for the past or the present.
      *
-     * @param  string  $column  Column to check (default: 'scheduled_at')
+     * @param  string  $column  Schedule date column (default: 'scheduled_at')
      */
     protected function scopePast(Builder $query, string $column = 'scheduled_at'): Builder
     {

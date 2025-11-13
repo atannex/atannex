@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models\Regions;
 
-use App\Enums\Flag;
 use App\Contracts\Sluggable;
-use Atannex\Enables\Slugging;
-use Atannex\Traits\HasCleaning;
+use App\Enums\Flag;
 use Atannex\Concerns\HasResolver;
-use Atannex\Traits\HasSlugPath;
+use Atannex\Enables\Slugging;
 use Atannex\Filters\GetHierarchy;
 use Atannex\Relations\CategoryRelation;
+use Atannex\Traits\HasCleaning;
+use Atannex\Traits\HasSlugPath;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 

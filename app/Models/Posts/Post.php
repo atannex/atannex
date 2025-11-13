@@ -4,6 +4,7 @@ namespace App\Models\Posts;
 
 use App\Contracts\Commentable;
 use App\Models\Regions\Employee;
+use Atannex\Concerns\HasBreaking;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Interactions\HasLikes;
@@ -11,7 +12,6 @@ use Atannex\Interactions\HasRatings;
 use Atannex\Interactions\HasShares;
 use Atannex\Interactions\HasViews;
 use Atannex\Relations\PostRelation;
-use Atannex\Concerns\HasBreaking;
 use Atannex\Traits\HasCleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -50,11 +50,11 @@ class Post extends Model implements Commentable
     ];
 
     protected $casts = [
-        'published_at'    => 'datetime',
-        'breaking_until'  => 'datetime',
-        'feature_until'   => 'datetime',
-        'metadata'        => 'array',
-        'is_breaking'     => 'boolean',
+        'published_at' => 'datetime',
+        'breaking_until' => 'datetime',
+        'feature_until' => 'datetime',
+        'metadata' => 'array',
+        'is_breaking' => 'boolean',
     ];
 
     protected $dates = [
@@ -93,7 +93,7 @@ class Post extends Model implements Commentable
             ->select(['id', 'slug_path'])
             ->first();
 
-        $this->slug_path = trim($category->slug_path . '/' . $this->slug, '/');
+        $this->slug_path = trim($category->slug_path.'/'.$this->slug, '/');
     }
 
     /**

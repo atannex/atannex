@@ -17,7 +17,7 @@ trait GeneratesUniqueCode
         $tries = 0;
         do {
             $randomNumber = mt_rand(1000, 9999);
-            $code = 'ATA' . $year . $abbreviation . $randomNumber;
+            $code = 'ATA'.$year.$abbreviation.$randomNumber;
 
             $exists = self::where($field, $code)->exists();
             $tries++;
@@ -34,7 +34,7 @@ trait GeneratesUniqueCode
         $clean = preg_replace('/[^A-Za-z0-9 ]/', '', $text);
 
         return collect(explode(' ', $clean))
-            ->map(fn($w) => Str::substr($w, 0, 1))
+            ->map(fn ($w) => Str::substr($w, 0, 1))
             ->implode('');
     }
 }
