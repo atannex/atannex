@@ -16,7 +16,7 @@ trait CanNormalize
     /**
      * Normalize any scalar or iterable of IDs into a flat array.
      *
-     * @param int|string|iterable<int|string> $ids
+     * @param  int|string|iterable<int|string>  $ids
      * @return array<int|string>
      */
     private function normalizeIds(int|string|iterable $ids): array
@@ -26,9 +26,6 @@ trait CanNormalize
 
     /**
      * Resolve all tabs by hydrating them with their corresponding entities.
-     *
-     * @param array $tabsConfig
-     * @return array
      */
     private function resolveTabs(array $tabsConfig): array
     {
@@ -39,15 +36,12 @@ trait CanNormalize
         }
 
         unset($tab);
+
         return $tabsConfig;
     }
 
     /**
      * Resolve a single tab’s data using its mapping definition.
-     *
-     * @param array $tab
-     * @param object $component
-     * @return array
      */
     private function resolveSingleTab(array $tab, object $component): array
     {
@@ -57,7 +51,7 @@ trait CanNormalize
         $entities = $component->{$mapping['method']}($args);
 
         $tab['entities'] = $entities->take($args['limit']);
-        $tab['content']  = $tab['entities'];
+        $tab['content'] = $tab['entities'];
 
         return $tab;
     }
@@ -65,8 +59,6 @@ trait CanNormalize
     /**
      * Build argument array for tab resolver methods.
      *
-     * @param array $tab
-     * @param array $mapping
      * @return array<string, mixed>
      */
     private function buildTabArguments(array $tab, array $mapping): array
@@ -74,12 +66,12 @@ trait CanNormalize
         $key = $mapping['idKey'];
 
         return [
-            $key                  => $this->normalizeIds($tab[$key]),
-            'limit'               => $tab['limit'],
-            'relation_limit'      => $tab['relation_limit'],
+            $key => $this->normalizeIds($tab[$key]),
+            'limit' => $tab['limit'],
+            'relation_limit' => $tab['relation_limit'],
             'leaf_relation_limit' => $tab['leaf_relation_limit'],
-            'sort'                => $tab['sort'],
-            'order'               => $tab['order'],
+            'sort' => $tab['sort'],
+            'order' => $tab['order'],
         ];
     }
 }

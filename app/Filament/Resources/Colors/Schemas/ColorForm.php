@@ -2,12 +2,12 @@
 
 namespace App\Filament\Resources\Colors\Schemas;
 
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ColorPicker;
-use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
-use Filament\Forms\Components\Placeholder;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class ColorForm
@@ -65,7 +65,7 @@ class ColorForm
                                     ->schema([
                                         ColorPicker::make('preview_color')
                                             ->label('Color Picker')
-                                            ->formatStateUsing(fn ($get) => $get('hex') ? '#' . ltrim($get('hex'), '#') : '#000000')
+                                            ->formatStateUsing(fn ($get) => $get('hex') ? '#'.ltrim($get('hex'), '#') : '#000000')
                                             ->live()
                                             ->afterStateUpdated(function ($state, callable $set) {
                                                 $hex = ltrim($state, '#');
@@ -94,6 +94,7 @@ class ColorForm
                                                     $r = hexdec(substr($hex, 0, 2));
                                                     $g = hexdec(substr($hex, 2, 2));
                                                     $b = hexdec(substr($hex, 4, 2));
+
                                                     return sprintf('rgb(%s, %s, %s)', $r, $g, $b);
                                                 }
 

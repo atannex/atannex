@@ -2,24 +2,24 @@
 
 namespace Atannex\Contracts;
 
-use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
-use App\Models\Regions\Region;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
-use Illuminate\Support\Collection;
+use App\Models\Regions\Region;
+use App\Models\Tags\Tag;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 interface CategoryInterface
 {
     // Interface constants must be public
     public const PAGINATION_DEFAULT_LISTING = 15;  // category, region, date, author
 
-    public const PAGINATION_RECENT_POSTS    = 5;   // recent posts widget
+    public const PAGINATION_RECENT_POSTS = 5;   // recent posts widget
 
-    public const PAGINATION_POPULAR_TAGS    = 12;  // popular tags
+    public const PAGINATION_POPULAR_TAGS = 12;  // popular tags
 
-    public const PAGINATION_POSTS_BY_TAG    = 20;  // posts by tag
+    public const PAGINATION_POSTS_BY_TAG = 20;  // posts by tag
 
     /**
      * Paginate posts within the category and its children.

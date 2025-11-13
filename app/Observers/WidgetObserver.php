@@ -16,15 +16,11 @@ class WidgetObserver
 {
     /**
      * The view service responsible for managing widget view files.
-     *
-     * @var WidgetAdapter
      */
     protected readonly WidgetAdapter $viewService;
 
     /**
      * Inject the WidgetAdapter instance.
-     *
-     * @param  WidgetAdapter  $viewService
      */
     public function __construct(WidgetAdapter $viewService)
     {
@@ -33,9 +29,6 @@ class WidgetObserver
 
     /**
      * Handle the "created" event.
-     *
-     * @param  Widget  $widget
-     * @return void
      */
     public function created(Widget $widget): void
     {
@@ -44,9 +37,6 @@ class WidgetObserver
 
     /**
      * Handle the "updated" event.
-     *
-     * @param  Widget  $widget
-     * @return void
      */
     public function updated(Widget $widget): void
     {
@@ -60,9 +50,6 @@ class WidgetObserver
 
     /**
      * Handle the "deleted" event.
-     *
-     * @param  Widget  $widget
-     * @return void
      */
     public function deleted(Widget $widget): void
     {
@@ -71,9 +58,6 @@ class WidgetObserver
 
     /**
      * Handle the "forceDeleted" event.
-     *
-     * @param  Widget  $widget
-     * @return void
      */
     public function forceDeleted(Widget $widget): void
     {

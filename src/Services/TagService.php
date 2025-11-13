@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Atannex\Services;
 
 use App\Models\Tags\Tag;
-use Illuminate\Support\Collection;
 use Atannex\Contracts\TagInterface;
+use Illuminate\Support\Collection;
 
 /**
  * Service class for managing tag-related operations.
@@ -21,7 +21,7 @@ class TagService
     /**
      * Create a new service instance.
      *
-     * @param TagInterface $repository The tag repository implementation.
+     * @param  TagInterface  $repository  The tag repository implementation.
      */
     public function __construct(TagInterface $repository)
     {
@@ -31,7 +31,7 @@ class TagService
     /**
      * Retrieves a tag by its slug.
      *
-     * @param string $slug The unique slug of the tag.
+     * @param  string  $slug  The unique slug of the tag.
      * @return Tag|null The tag model if found, null otherwise.
      */
     public function getTagBySlug(string $slug): ?Tag
@@ -42,7 +42,7 @@ class TagService
     /**
      * Retrieves all tags associated with a specific blog post.
      *
-     * @param int $postId The unique identifier of the blog post.
+     * @param  int  $postId  The unique identifier of the blog post.
      * @return Collection A collection of tags associated with the post.
      */
     public function getTagsForPost(int $postId): Collection
@@ -53,7 +53,7 @@ class TagService
     /**
      * Retrieves all blog posts associated with a specific tag.
      *
-     * @param string $tagId The unique identifier of the tag.
+     * @param  string  $tagId  The unique identifier of the tag.
      * @return Collection A collection of posts associated with the tag.
      */
     public function getPostsForTag(string $tagId): Collection
@@ -64,7 +64,7 @@ class TagService
     /**
      * Retrieves popular tags limited by the specified count.
      *
-     * @param int $limit Maximum number of tags to retrieve (default: 10).
+     * @param  int  $limit  Maximum number of tags to retrieve (default: 10).
      * @return Collection A collection of popular tags.
      */
     public function getPopularTags(int $limit = 10): Collection

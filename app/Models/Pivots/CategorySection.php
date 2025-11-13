@@ -2,11 +2,11 @@
 
 namespace App\Models\Pivots;
 
-use App\Models\Regions\Section;
 use App\Models\Regions\Category;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\Pivot;
+use App\Models\Regions\Section;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Pivot model representing the many-to-many relationship between Categories and Sections.

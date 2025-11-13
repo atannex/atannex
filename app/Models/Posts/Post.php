@@ -2,53 +2,36 @@
 
 namespace App\Models\Posts;
 
-use App\Contracts\Sluggable;
-use Atannex\Enables\HasSlug;
-use Atannex\Enables\HasScope;
 use App\Contracts\Commentable;
-use Atannex\Traits\HasBootable;
+use App\Models\Regions\Employee;
+use Atannex\Enables\Scoping;
+use Atannex\Enables\Slugging;
+use Atannex\Interactions\HasLikes;
+use Atannex\Interactions\HasRatings;
+use Atannex\Interactions\HasShares;
+use Atannex\Interactions\HasViews;
+use Atannex\Relations\PostRelation;
 use Atannex\Traits\HasBreaking;
 use Atannex\Traits\HasCleaning;
-use App\Models\Regions\Employee;
-use Atannex\Interactions\HasLikes;
-use Atannex\Interactions\HasViews;
-use Atannex\Interactions\HasShares;
-use Atannex\Relations\PostRelation;
-use Atannex\Interactions\HasRatings;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
-/**
- * Class Post
- *
- * Represents a post with hierarchical slug management,
- * commenting, and interaction features.
- */
-class Post extends Model implements Commentable, Sluggable
+class Post extends Model implements Commentable
 {
-    use SoftDeletes;
-    use HasSlug;
-    use HasScope;
-    use PostRelation;
+    use HasBreaking;
     use HasCleaning;
-    use HasBootable;
     use HasLikes;
     use HasRatings;
     use HasShares;
     use HasViews;
-    use HasBreaking;
+    use PostRelation;
+    use Scoping;
+    use Slugging;
+    use SoftDeletes;
 
-    /**
-     * Source attribute for slug generation.
-     */
     protected string $slugSource = 'title';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'title',
         'slug',
@@ -66,81 +49,74 @@ class Post extends Model implements Commentable, Sluggable
         'feature_until',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'published_at'   => 'datetime',
-        'breaking_until' => 'datetime',
-        'feature_until'  => 'datetime',
-        'metadata'       => 'array',
-        'is_breaking'    => 'boolean',
+        'published_at'    => 'datetime',
+        'breaking_until'  => 'datetime',
+        'feature_until'   => 'datetime',
+        'metadata'        => 'array',
+        'is_breaking'     => 'boolean',
     ];
 
-    /**
-     * The attributes that should be mutated to dates.
-     * (SoftDeletes and timestamps)
-     *
-     * @var array<string>
-     */
     protected $dates = [
         'deleted_at',
         'created_at',
         'updated_at',
     ];
 
-    /**
-     * Image attribute used by HasCleaning trait.
-     */
     public function getImageAttributeName(): string
     {
         return 'image';
     }
 
-    /**
-     * Directory used by HasCleaning trait.
-     */
     public function getImageDirectory(): string
     {
         return 'posts';
     }
 
-    /**
-     * Get the employee who last updated the post.
-     */
     public function updatedBy()
     {
         return $this->belongsTo(Employee::class, 'updated_by');
     }
 
-    /**
-     * Scope a query to only include published posts.
-     */
-    protected function scopePublished($query)
-    {
-        return $query->where('flag', 'published')
-            ->where('published_at', '<=', now());
-    }
-
-    /**
-     * Scope a query to include only breaking news.
-     */
-    protected function scopeBreaking($query)
-    {
-        return $query->where('is_breaking', true)
-            ->where(function ($q) {
-                $q->whereNull('breaking_until')
-                    ->orWhere('breaking_until', '>=', now());
-            });
-    }
-
-    /**
-     * Check if the user is authenticated.
-     */
     protected function isUserAuthenticated(): bool
     {
         return Auth::check();
+    }
+
+    /**
+     * Rebuild slug_path based on the category's slug_path + post slug.
+     */
+    public function refreshSlugPath(): void
+    {
+        $category = $this->category()
+            ->withoutGlobalScopes()
+            ->select(['id', 'slug_path'])
+            ->first();
+
+        $this->slug_path = trim($category->slug_path . '/' . $this->slug, '/');
+    }
+
+    /**
+     * When a Post is being saved → generate slug_path from the *current* category
+     *
+     * After the post is persisted → make sure the column is in sync
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function (Post $post) {
+            if ($post->isDirty(['slug', 'category_id'])) {
+                $post->refreshSlugPath();
+                $post->slug_path = $post->slug_path;
+            }
+        });
+
+        static::saved(function (Post $post) {
+            if ($post->wasChanged(['slug', 'category_id'])) {
+                $post->refreshSlugPath();
+                $post->updateQuietly(['slug_path' => $post->slug_path]);
+            }
+        });
     }
 }

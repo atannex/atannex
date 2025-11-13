@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Tags\Schemas;
 
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class TagForm

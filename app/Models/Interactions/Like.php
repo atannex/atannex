@@ -12,8 +12,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Class Like
  *
  * Represents a like interaction on a likeable entity (e.g., post, comment) in the application.
- *
- * @package App\Models\Interactions
  */
 class Like extends Model
 {

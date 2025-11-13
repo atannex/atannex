@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Regions\Department;
+use Illuminate\Console\Command;
 
 class GenerateDepartmentCodes extends Command
 {
@@ -38,6 +38,6 @@ class GenerateDepartmentCodes extends Command
             }
         }
 
-        $this->info("🎉 Department code generation completed!");
+        $this->info('🎉 Department code generation completed!');
     }
 }

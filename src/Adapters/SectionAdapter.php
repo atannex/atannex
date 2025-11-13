@@ -27,10 +27,6 @@ final class SectionAdapter
 
     /**
      * Create or update a section view file.
-     *
-     * @param  Model  $section
-     * @param  bool   $force
-     * @return void
      */
     public function generateSectionView(Model $section, bool $force = false): void
     {
@@ -39,9 +35,6 @@ final class SectionAdapter
 
     /**
      * Delete a section view file by slug.
-     *
-     * @param  string  $slug
-     * @return void
      */
     public function removeSectionView(string $slug): void
     {

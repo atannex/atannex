@@ -2,8 +2,4 @@
 
 namespace Atannex\Traits;
 
-trait HasTabs
-{
-
-
-}
+trait HasTabs {}

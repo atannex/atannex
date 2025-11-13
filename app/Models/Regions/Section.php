@@ -2,18 +2,18 @@
 
 namespace App\Models\Regions;
 
-use Atannex\Enables\HasSlug;
-use Atannex\Enables\HasScope;
+use Atannex\Enables\Scoping;
+use Atannex\Enables\Slugging;
 use Atannex\Relations\SectionRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Section extends Model
 {
-    use SoftDeletes;
-    use HasSlug;
+    use Scoping;
     use SectionRelation;
-    use HasScope;
+    use Slugging;
+    use SoftDeletes;
 
     protected string $slugSource = 'name';
 
@@ -30,6 +30,6 @@ class Section extends Model
 
     protected function getDomIdAttribute(): string
     {
-        return 'section-' . $this->pivot->id;
+        return 'section-'.$this->pivot->id;
     }
 }

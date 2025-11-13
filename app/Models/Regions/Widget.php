@@ -2,29 +2,25 @@
 
 namespace App\Models\Regions;
 
-use Atannex\Enables\HasSlug;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Pivots\RegionSectionWidget;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Atannex\Enables\Slugging;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Widget
  *
  * Represents a Widget entity that can be associated with Sections.
  * Supports soft deletes, slugs, and stores metadata and status flags.
- *
- * @package App\Models\Pages
  */
 class Widget extends Model
 {
-    use HasSlug;
+    use Slugging;
     use SoftDeletes;
 
     /**
      * Source field for generating slug.
-     *
-     * @var string
      */
     protected string $slugSource = 'name';
 
@@ -37,7 +33,7 @@ class Widget extends Model
         'slug',
         'name',
         'flag',
-        'metadata'
+        'metadata',
     ];
 
     /**

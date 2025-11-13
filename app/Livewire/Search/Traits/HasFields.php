@@ -30,7 +30,7 @@ trait HasFields
             'tags.name',
             'regions.name',
             'category.name',
-            'author.user.name'
+            'author.user.name',
         ];
     }
 }

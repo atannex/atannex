@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use App\Events\Users\UserCreated;
-use App\Listeners\SendContactMessage;
 use App\Events\ContactMessageCreated;
 use App\Events\Docs\DocumentCreated;
+use App\Events\Users\UserCreated;
 use App\Listeners\Docs\DocumentNotification;
+use App\Listeners\SendContactMessage;
 use App\Listeners\Users\SendUserRegisteredNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 

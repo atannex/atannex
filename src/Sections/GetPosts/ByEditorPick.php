@@ -9,9 +9,6 @@ trait ByEditorPick
 {
     /**
      * Get posts marked as editor's pick.
-     *
-     * @param int $limit
-     * @return Collection
      */
     public function getEditorPick(int $limit = 5): Collection
     {

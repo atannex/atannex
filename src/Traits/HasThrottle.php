@@ -11,10 +11,6 @@ trait HasThrottle
     /**
      * Apply per-user + IP throttling.
      *
-     * @param Request $request
-     * @param int $maxAttempts
-     * @param int $decayMinutes
-     * @param callable|null $nextCallable
      * @return mixed
      */
     protected function throttle(Request $request, int $maxAttempts = 5, int $decayMinutes = 1, ?callable $nextCallable = null)
@@ -26,7 +22,7 @@ trait HasThrottle
 
         if ($limiter->tooManyAttempts($key, $maxAttempts)) {
             return response()->json([
-                'message' => 'Too many attempts. Please try again later.'
+                'message' => 'Too many attempts. Please try again later.',
             ], 429);
         }
 
@@ -41,8 +37,7 @@ trait HasThrottle
     /**
      * Generate a unique throttle key per user + IP.
      *
-     * @param Request $request
-     * @param string|null $identifier Optional identifier (like email)
+     * @param  string|null  $identifier  Optional identifier (like email)
      * @return string
      */
     protected function throttleKey(Request $request, ?string $identifier = null)

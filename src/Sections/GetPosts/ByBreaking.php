@@ -7,7 +7,6 @@ use Illuminate\Support\Collection;
 
 trait ByBreaking
 {
-
     public function getBreakingPosts(int $limit = 5): Collection
     {
         return Post::query()

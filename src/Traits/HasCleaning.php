@@ -15,23 +15,18 @@ trait HasCleaning
 {
     /**
      * Get the name of the image attribute.
-     *
-     * @return string
      */
     abstract public function getImageAttributeName(): string;
 
     /**
      * Get the storage directory for the image.
-     *
-     * @return string
      */
     abstract public function getImageDirectory(): string;
 
     /**
      * Set the image attribute, storing uploaded files and updating the attribute value.
      *
-     * @param UploadedFile|string|null $value The uploaded file or path string
-     * @return void
+     * @param  UploadedFile|string|null  $value  The uploaded file or path string
      */
     protected function setImageAttribute($value): void
     {
@@ -44,8 +39,7 @@ trait HasCleaning
     /**
      * Delete an image file from storage.
      *
-     * @param string|null $file The file path to delete (defaults to the model's current image)
-     * @return void
+     * @param  string|null  $file  The file path to delete (defaults to the model's current image)
      */
     public function deleteImage(?string $file = null): void
     {
@@ -58,8 +52,6 @@ trait HasCleaning
 
     /**
      * Boot the trait, setting up event listeners for image cleanup.
-     *
-     * @return void
      */
     protected static function bootHasCleaning(): void
     {
@@ -72,9 +64,9 @@ trait HasCleaning
         });
 
         // Clean up image on soft or force delete
-        static::deleted(fn($model) => $model->deleteImage());
+        static::deleted(fn ($model) => $model->deleteImage());
 
-        static::forceDeleted(fn($model) => $model->deleteImage());
+        static::forceDeleted(fn ($model) => $model->deleteImage());
 
     }
 }

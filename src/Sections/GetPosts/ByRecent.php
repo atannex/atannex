@@ -2,9 +2,9 @@
 
 namespace Atannex\Sections\GetPosts;
 
-use Illuminate\Support\Facades\Date;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Date;
 
 /**
  * Trait GetRecentPost
@@ -16,7 +16,7 @@ trait ByRecent
     /**
      * Retrieve the most recent published posts.
      *
-     * @param int $limit The number of posts to retrieve.
+     * @param  int  $limit  The number of posts to retrieve.
      */
     public function getRecentPosts(int $limit = 5): Collection
     {

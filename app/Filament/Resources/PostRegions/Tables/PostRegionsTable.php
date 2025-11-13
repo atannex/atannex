@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\PostRegions\Tables;
 
-use Filament\Tables\Table;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 
 class PostRegionsTable
 {
@@ -23,7 +23,7 @@ class PostRegionsTable
                     ->weight('medium')
                     ->wrap()
                     ->limit(50)
-                    ->tooltip(fn($record) => $record->post?->title),
+                    ->tooltip(fn ($record) => $record->post?->title),
 
                 TextColumn::make('region.name')
                     ->label('Region')
@@ -37,7 +37,7 @@ class PostRegionsTable
                     ->dateTime('M d, Y')
                     ->sortable()
                     ->toggleable()
-                    ->description(fn($state) => $state?->diffForHumans())
+                    ->description(fn ($state) => $state?->diffForHumans())
                     ->size('sm'),
 
                 TextColumn::make('updated_at')
@@ -45,7 +45,7 @@ class PostRegionsTable
                     ->dateTime('M d, Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
-                    ->description(fn($state) => $state?->diffForHumans())
+                    ->description(fn ($state) => $state?->diffForHumans())
                     ->size('sm'),
             ])
             ->filters([

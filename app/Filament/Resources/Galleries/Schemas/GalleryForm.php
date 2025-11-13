@@ -3,15 +3,14 @@
 namespace App\Filament\Resources\Galleries\Schemas;
 
 use App\Enums\Flag;
-use Filament\Forms\Components\Select;
 use App\Enums\Image;
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
 
 class GalleryForm
 {
-
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -31,7 +30,7 @@ class GalleryForm
                     ->label('Featured Image')
                     ->disk('public')
                     ->visibility('public')
-                    ->directory(fn($record) => $record?->getImageDirectory())
+                    ->directory(fn ($record) => $record?->getImageDirectory())
                     ->image()
                     ->imageEditor()
                     ->imageEditorAspectRatios([

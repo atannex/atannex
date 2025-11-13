@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\Users\UserCreated;
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Users\UserNameToken;
 use App\Rules\Auth\StrongEmail;
 use App\Rules\Auth\StrongPassword;
-use App\Events\Users\UserCreated;
+use Illuminate\Contracts\Validation\Validator as ValidatorContract;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Contracts\Validation\Validator as ValidatorContract;
-use App\Http\Controllers\Controller;
 
 class RegisterController extends Controller
 {

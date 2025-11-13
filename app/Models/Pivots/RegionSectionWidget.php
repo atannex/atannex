@@ -4,11 +4,11 @@ namespace App\Models\Pivots;
 
 use App\Enums\Flag;
 use App\Models\Regions\Region;
-use App\Models\Regions\Widget;
 use App\Models\Regions\Section;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Regions\Widget;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RegionSectionWidget extends Pivot
 {
@@ -44,7 +44,7 @@ class RegionSectionWidget extends Pivot
     protected $casts = [
         'config' => 'array',
         'metadata' => 'array',
-        'flag' => Flag::class
+        'flag' => Flag::class,
     ];
 
     /**

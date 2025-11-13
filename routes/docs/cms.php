@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\ShareController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,7 +28,6 @@ Route::middleware(['onboarded'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::get('/subscription/verify/{token}', [SubscriptionController::class, 'verify'])->name('subscription.verify');
-
 
     /*
     |--------------------------------------------------------------------------

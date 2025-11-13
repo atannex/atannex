@@ -2,22 +2,21 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use Spatie\Permission\Models\Permission;
-use Filament\Schemas\Schema;
-
-use Illuminate\Support\Facades\Hash;
-use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Tabs;
-use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Schemas\Components\Tabs\Tab;
-use Illuminate\Validation\Rules\Password;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
+use Spatie\Permission\Models\Permission;
 
 class UserForm
 {
@@ -44,8 +43,7 @@ class UserForm
                                                     ->autocomplete('name')
                                                     ->live(onBlur: true)
                                                     ->afterStateUpdated(
-                                                        fn(Set $set, ?string $state) =>
-                                                        $set('display_name', $state)
+                                                        fn (Set $set, ?string $state) => $set('display_name', $state)
                                                     )
                                                     ->placeholder('Enter full name')
                                                     ->helperText('This will be displayed across the platform'),
@@ -127,7 +125,7 @@ class UserForm
                                         FileUpload::make('image')
                                             ->label('Profile Picture')
                                             ->disk('public')
-                                            ->directory(fn($record) => $record?->getImageDirectory())
+                                            ->directory(fn ($record) => $record?->getImageDirectory())
                                             ->visibility('public')
                                             ->image()
                                             ->imageEditor()
@@ -150,7 +148,7 @@ class UserForm
                                             ->removeUploadedFileButtonPosition('top-right'),
                                     ])
                                     ->collapsible()
-                                    ->collapsed(fn(?string $operation) => $operation === 'create')
+                                    ->collapsed(fn (?string $operation) => $operation === 'create')
                                     ->columnSpanFull(),
                             ]),
 
@@ -167,21 +165,21 @@ class UserForm
                                                     ->label('Password')
                                                     ->password()
                                                     ->revealable()
-                                                    ->required(fn(string $operation): bool => $operation === 'create')
+                                                    ->required(fn (string $operation): bool => $operation === 'create')
                                                     ->confirmed()
                                                     ->rule(Password::default())
                                                     ->autocomplete('new-password')
                                                     ->placeholder('Enter secure password')
                                                     ->helperText('Must be at least 8 characters with mixed case, numbers, and symbols')
-                                                    ->dehydrateStateUsing(fn($state) => Hash::make($state))
-                                                    ->dehydrated(fn($state) => filled($state))
+                                                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                                                    ->dehydrated(fn ($state) => filled($state))
                                                     ->live(debounce: 500),
 
                                                 TextInput::make('password_confirmation')
                                                     ->label('Confirm Password')
                                                     ->password()
                                                     ->revealable()
-                                                    ->required(fn(Get $get): bool => filled($get('password')))
+                                                    ->required(fn (Get $get): bool => filled($get('password')))
                                                     ->same('password')
                                                     ->placeholder('Confirm password')
                                                     ->dehydrated(false),
@@ -250,8 +248,7 @@ class UserForm
                                                     ->helperText('These permissions are in addition to role permissions')
                                                     ->optionsLimit(50)
                                                     ->getSearchResultsUsing(
-                                                        fn(string $search) =>
-                                                        Permission::where('name', 'like', sprintf('%%%s%%', $search))
+                                                        fn (string $search) => Permission::where('name', 'like', sprintf('%%%s%%', $search))
                                                             ->limit(50)
                                                             ->pluck('name', 'id')
                                                     ),

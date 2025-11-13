@@ -2,20 +2,21 @@
 
 namespace App\Jobs\Users;
 
-use InvalidArgumentException;
-use Throwable;
 use App\Models\Users\UserActivity;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
+use Throwable;
 
 class LogUserActivity implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
+
     public $tries = 3;
 
     public $timeout = 30;
@@ -34,7 +35,7 @@ class LogUserActivity implements ShouldQueue
     public function handle()
     {
         try {
-            if (!isset($this->attributes['user_id']) || !is_int($this->attributes['user_id'])) {
+            if (! isset($this->attributes['user_id']) || ! is_int($this->attributes['user_id'])) {
                 throw new InvalidArgumentException(sprintf('Missing or invalid user_id for %s activity', $this->type));
             }
 
@@ -63,13 +64,13 @@ class LogUserActivity implements ShouldQueue
 
             Log::debug(sprintf('Successfully logged %s activity for user %d', $this->type, $this->attributes['user_id']));
         } catch (Throwable $throwable) {
-            Log::error(sprintf('Failed to log %s activity for user ', $this->type) . ($this->attributes['user_id'] ?? 'unknown') . (': ' . $throwable->getMessage()));
+            Log::error(sprintf('Failed to log %s activity for user ', $this->type).($this->attributes['user_id'] ?? 'unknown').(': '.$throwable->getMessage()));
             $this->fail($throwable);
         }
     }
 
     public function failed(Throwable $exception)
     {
-        Log::critical(sprintf('LogUserActivityJob (%s) failed for user ', $this->type) . ($this->attributes['user_id'] ?? 'unknown') . sprintf(' after %s attempts: %s', $this->tries, $exception->getMessage()));
+        Log::critical(sprintf('LogUserActivityJob (%s) failed for user ', $this->type).($this->attributes['user_id'] ?? 'unknown').sprintf(' after %s attempts: %s', $this->tries, $exception->getMessage()));
     }
 }

@@ -1,15 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
-if (!function_exists('displayData')) {
+if (! function_exists('displayData')) {
     /**
      * Generate category display data (label + background image)
      *
      * @param  \App\Models\Category  $category
-     * @return array
      */
     function displayData($category): array
     {
@@ -29,13 +28,13 @@ if (!function_exists('displayData')) {
     }
 }
 
-if (!function_exists('seo_title')) {
+if (! function_exists('seo_title')) {
     /**
      * Generate an SEO-friendly title for pages.
      *
-     * @param string|null $subject The main subject of the page.
-     * @param string|null $suffix Optional suffix for the title.
-     * @param int $suffixMaxLength Max length of the suffix, default 60.
+     * @param  string|null  $subject  The main subject of the page.
+     * @param  string|null  $suffix  Optional suffix for the title.
+     * @param  int  $suffixMaxLength  Max length of the suffix, default 60.
      * @return string The formatted SEO title.
      */
     function seo_title(?string $subject = null, ?string $suffix = null, int $suffixMaxLength = 60): string
@@ -69,24 +68,23 @@ if (!function_exists('seo_title')) {
     }
 }
 
-if (!function_exists('get_posts_from_tabs')) {
+if (! function_exists('get_posts_from_tabs')) {
     /**
      * Retrieves posts from an array of tabs.
      *
-     * @param array $tabs Array of tab configurations containing content or entities.
+     * @param  array  $tabs  Array of tab configurations containing content or entities.
      * @return \Illuminate\Support\Collection Collection of posts.
      */
     function get_posts_from_tabs(array $tabs): Collection
     {
         return collect($tabs)
-            ->flatMap(fn($tab) => $tab['content'] ?? collect($tab['entities'])->flatMap(fn($region) => $region['posts']))
+            ->flatMap(fn ($tab) => $tab['content'] ?? collect($tab['entities'])->flatMap(fn ($region) => $region['posts']))
             ->unique('id')
             ->values();
     }
 }
 
-
-if (!function_exists('format_count')) {
+if (! function_exists('format_count')) {
     /**
      * Formats a large number into a human-readable short form.
      *
@@ -97,10 +95,10 @@ if (!function_exists('format_count')) {
      *   -5000    → -5k
      *   1000     → 1k (not 1.0k if trimTrailingZeros is true)
      *
-     * @param int|float|string $number            The number to format
-     * @param int                   $decimals     Number of decimal places (default: 1)
-     * @param bool                  $trimZeros    Remove trailing zeros and decimal point
-     * @return string                              Formatted number with suffix (k, M, B, T)
+     * @param  int|float|string  $number  The number to format
+     * @param  int  $decimals  Number of decimal places (default: 1)
+     * @param  bool  $trimZeros  Remove trailing zeros and decimal point
+     * @return string Formatted number with suffix (k, M, B, T)
      */
     function format_count(
         int|float|string $number,
@@ -108,7 +106,7 @@ if (!function_exists('format_count')) {
         bool $trimZeros = true
     ): string {
 
-        if (!is_numeric($number)) {
+        if (! is_numeric($number)) {
             return '0';
         }
 
@@ -116,17 +114,17 @@ if (!function_exists('format_count')) {
         $sign = $num < 0 ? '-' : '';
         $value = abs($num);
 
-
         if ($value < 1000) {
             $formatted = number_format((int) $value);
-            return $sign . $formatted;
+
+            return $sign.$formatted;
         }
 
         $suffixes = [
             12 => 'T',
-            9  => 'B',
-            6  => 'M',
-            3  => 'k',
+            9 => 'B',
+            6 => 'M',
+            3 => 'k',
         ];
 
         foreach ($suffixes as $exponent => $suffix) {
@@ -150,10 +148,10 @@ if (!function_exists('format_count')) {
                     }
                 }
 
-                return $sign . $formatted . $suffix;
+                return $sign.$formatted.$suffix;
             }
         }
 
-        return $sign . number_format((int) $value);
+        return $sign.number_format((int) $value);
     }
 }

@@ -32,8 +32,8 @@ trait HasPlatforms
     protected function getAllShareIcons(): array
     {
         return collect(self::SUPPORTED_PLATFORMS)
-            ->mapWithKeys(fn(string $platform) => [
-                $platform => Icon::getData($platform)
+            ->mapWithKeys(fn (string $platform) => [
+                $platform => Icon::getData($platform),
             ])
             ->all();
     }

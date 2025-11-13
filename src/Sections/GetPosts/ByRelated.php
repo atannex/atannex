@@ -17,19 +17,20 @@ trait ByRelated
     /**
      * Retrieve related posts based on the same category or shared tags.
      *
-     * @param  Post  $post   The reference post.
-     * @param  int   $limit  Number of posts to retrieve (default: 3).
+     * @param  Post  $post  The reference post.
+     * @param  int  $limit  Number of posts to retrieve (default: 3).
      * @return Collection<Post>
      */
     public function getRelatedPosts(Post $post, int $limit = 3): Collection
     {
         $tagIds = $post->tags()->pluck('tags.id')->toArray();
+
         return Post::query()
             ->where('id', '!=', $post->id)
             ->where(function ($query) use ($post, $tagIds) {
                 $query->where('category_id', $post->category_id);
 
-                if (!empty($tagIds)) {
+                if (! empty($tagIds)) {
                     $query->orWhereHas('tags', function ($q) use ($tagIds) {
                         $q->whereIn('tags.id', $tagIds);
                     });

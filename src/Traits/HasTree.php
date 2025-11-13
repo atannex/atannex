@@ -2,10 +2,10 @@
 
 namespace Atannex\Traits;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 /**
  * Universal Tree Utilities
@@ -27,6 +27,7 @@ trait HasTree
     protected function getRoot(Model $node): Model
     {
         $ancestors = $node->getAncestors();
+
         return $ancestors->isNotEmpty()
             ? $ancestors->last()
             : $node;
@@ -44,15 +45,15 @@ trait HasTree
             ->unique();
 
         return $excludeId
-            ? $ids->reject(fn($id) => $id === $excludeId)->values()
+            ? $ids->reject(fn ($id) => $id === $excludeId)->values()
             : $ids->values();
     }
 
     /**
      * Get leaf nodes (no children), optionally sorted by related count.
      *
-     * @param string|null $countRelation  e.g. "posts"
-     * @param string|null $filterScope    local scope name on relation
+     * @param  string|null  $countRelation  e.g. "posts"
+     * @param  string|null  $filterScope  local scope name on relation
      */
     protected function getLeafNodes(
         Model $node,
@@ -68,12 +69,11 @@ trait HasTree
 
         if ($countRelation) {
             $query->withCount([
-                $countRelation . ' as total_count' =>
-                function ($q) use ($filterScope) {
+                $countRelation.' as total_count' => function ($q) use ($filterScope) {
                     if ($filterScope && method_exists($q->getModel(), $filterScope)) {
                         $q->{$filterScope}();
                     }
-                }
+                },
             ])->orderByDesc('total_count');
         }
 

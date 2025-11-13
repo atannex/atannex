@@ -4,8 +4,8 @@ namespace App\Notifications;
 
 use App\Models\Posts\Post;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class BreakingPostNotification extends Notification
 {
@@ -35,11 +35,11 @@ class BreakingPostNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('Breaking News: ' . $this->post->title)
-                    ->line('A new breaking post has been published:')
-                    ->line($this->post->title)
-                    ->action('Read Post', url('/posts/' . $this->post->id))
-                    ->line('Stay updated with the latest news.');
+            ->subject('Breaking News: '.$this->post->title)
+            ->line('A new breaking post has been published:')
+            ->line($this->post->title)
+            ->action('Read Post', url('/posts/'.$this->post->id))
+            ->line('Stay updated with the latest news.');
     }
 
     /**
@@ -49,7 +49,7 @@ class BreakingPostNotification extends Notification
     {
         return [
             'post_id' => $this->post->id,
-            'title'   => $this->post->title,
+            'title' => $this->post->title,
             'message' => 'A new breaking post has been published!',
         ];
     }

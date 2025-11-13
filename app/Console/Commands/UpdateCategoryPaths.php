@@ -38,9 +38,11 @@ class UpdateCategoryPaths extends Command
     {
         try {
             $this->initializeCommand();
+
             return $this->processCategories();
         } catch (Throwable $throwable) {
             $this->handleException($throwable);
+
             return self::FAILURE;
         }
     }
@@ -53,7 +55,7 @@ class UpdateCategoryPaths extends Command
         $this->batchSize = (int) $this->option('batch-size');
         $this->info('Starting category path update process...');
         Log::info('Starting category path update process', [
-            'batch_size' => $this->batchSize
+            'batch_size' => $this->batchSize,
         ]);
     }
 
@@ -80,7 +82,7 @@ class UpdateCategoryPaths extends Command
                         $updatedCount++;
                         Log::debug('Updated category path', [
                             'category_id' => $category->id,
-                            'new_path' => $slugPath
+                            'new_path' => $slugPath,
                         ]);
                     }
 
@@ -105,7 +107,7 @@ class UpdateCategoryPaths extends Command
     private function buildSlugPath(Category $category): string
     {
         return $category->parent
-            ? rtrim($category->parent->slug_path, '/') . '/' . $category->slug
+            ? rtrim($category->parent->slug_path, '/').'/'.$category->slug
             : $category->slug;
     }
 
@@ -124,11 +126,11 @@ class UpdateCategoryPaths extends Command
      */
     private function handleException(Throwable $e): void
     {
-        $errorMessage = 'Failed to update category paths: ' . $e->getMessage();
+        $errorMessage = 'Failed to update category paths: '.$e->getMessage();
         $this->error($errorMessage);
         Log::error($errorMessage, [
             'exception' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
+            'trace' => $e->getTraceAsString(),
         ]);
     }
 }

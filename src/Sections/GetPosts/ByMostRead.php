@@ -9,9 +9,6 @@ trait ByMostRead
 {
     /**
      * Get the most-read posts based on the number of views.
-     *
-     * @param int $limit
-     * @return Collection
      */
     public function getMostReadPosts(int $limit = 5): Collection
     {

@@ -12,7 +12,7 @@ class SectionObserver
     /**
      * Create a new observer instance.
      *
-     * @param SectionAdapter $viewService The manager for handling section view operations
+     * @param  SectionAdapter  $viewService  The manager for handling section view operations
      */
     public function __construct(SectionAdapter $viewService)
     {
@@ -23,7 +23,7 @@ class SectionObserver
     /**
      * Handle the Section "created" event.
      *
-     * @param Section $section The section model instance
+     * @param  Section  $section  The section model instance
      */
     public function created(Section $section): void
     {
@@ -33,7 +33,7 @@ class SectionObserver
     /**
      * Handle the Section "updated" event.
      *
-     * @param Section $section The section model instance
+     * @param  Section  $section  The section model instance
      */
     public function updated(Section $section): void
     {
@@ -48,7 +48,7 @@ class SectionObserver
     /**
      * Handle the Section "deleted" event.
      *
-     * @param Section $section The section model instance
+     * @param  Section  $section  The section model instance
      */
     public function deleted(Section $section): void
     {
@@ -58,7 +58,7 @@ class SectionObserver
     /**
      * Handle the Section "force deleted" event.
      *
-     * @param Section $section The section model instance
+     * @param  Section  $section  The section model instance
      */
     public function forceDeleted(Section $section): void
     {

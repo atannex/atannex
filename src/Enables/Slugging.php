@@ -11,7 +11,7 @@ use Spatie\Sluggable\SlugOptions;
  * Provides functionality to automatically generate and manage URL-friendly slugs
  * for Eloquent models using the Spatie Sluggable package.
  */
-trait HasSlug
+trait Slugging
 {
     use Slug;
 

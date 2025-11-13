@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DocumentController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('track.activity')
     ->name('document.')

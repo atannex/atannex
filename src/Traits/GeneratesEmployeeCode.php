@@ -19,14 +19,14 @@ trait GeneratesEmployeeCode
     public function generateEmployeeCode()
     {
         $userName = $this->user->name;
-        if (!$userName) {
+        if (! $userName) {
             return;
         }
 
         $year = now()->format('y');
 
         $abbreviation = collect(explode(' ', preg_replace('/[^A-Za-z0-9 ]/', '', $userName)))
-            ->map(fn($word) => Str::upper(Str::substr($word, 0, 1)))
+            ->map(fn ($word) => Str::upper(Str::substr($word, 0, 1)))
             ->implode('');
 
         $abbreviation = Str::substr($abbreviation, 0, 2);
@@ -34,7 +34,7 @@ trait GeneratesEmployeeCode
         $tries = 0;
         do {
             $randomNumber = mt_rand(1000, 9999);
-            $code = 'ATA' . $year . $abbreviation . $randomNumber;
+            $code = 'ATA'.$year.$abbreviation.$randomNumber;
             $tries++;
         } while (self::where('code', $code)->exists() && $tries < 10);
 

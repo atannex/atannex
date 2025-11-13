@@ -2,12 +2,12 @@
 
 namespace Atannex\Relations;
 
-use App\Models\Regions\Employee;
-use App\Models\Regions\Department;
 use App\Models\Pivots\EmployeeDepartment;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Regions\Department;
+use App\Models\Regions\Employee;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Trait DepartmentRelation

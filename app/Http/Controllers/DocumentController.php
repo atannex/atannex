@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
-use Illuminate\Http\Request;
 use Atannex\Services\DocumentService;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class DocumentController extends Controller
 {
@@ -31,10 +31,10 @@ class DocumentController extends Controller
         $documents = $this->documentService->getDocumentsByType($type);
 
         return view('documents.index', [
-            'documents'            => $documents,
-            'type'                 => $type,
-            'isValidDocumentType'  => $this->isSupportedType($type, $request),
-            'isTestimonialType'    => $this->isTestimonialType($type, $request),
+            'documents' => $documents,
+            'type' => $type,
+            'isValidDocumentType' => $this->isSupportedType($type, $request),
+            'isTestimonialType' => $this->isTestimonialType($type, $request),
         ]);
     }
 
@@ -44,8 +44,8 @@ class DocumentController extends Controller
     public function show(string $type, string $slug): View
     {
         return view('documents.show', [
-            'module'    => $this->documentService->getDocumentByTypeAndSlug($type, $slug),
-            'type'      => $type,
+            'module' => $this->documentService->getDocumentByTypeAndSlug($type, $slug),
+            'type' => $type,
             'documents' => $this->getRelatedDocuments($type, $slug),
         ]);
     }
@@ -73,7 +73,7 @@ class DocumentController extends Controller
     {
         return $this->documentService
             ->getDocumentsByType($type)
-            ->filter(fn($doc) => $doc->slug !== $slug)
+            ->filter(fn ($doc) => $doc->slug !== $slug)
             ->values();
     }
 }

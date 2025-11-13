@@ -3,37 +3,18 @@
 namespace Atannex\Relations;
 
 use App\Enums\Flag;
-use App\Models\Posts\Post;
-use App\Models\Regions\Ruler;
-use App\Models\Regions\Region;
-use App\Models\Regions\Widget;
-use App\Models\Regions\Section;
 use App\Models\Pivots\PostRegion;
 use App\Models\Pivots\RegionSectionWidget;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Posts\Post;
+use App\Models\Regions\Ruler;
+use App\Models\Regions\Section;
+use App\Models\Regions\Widget;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 trait RegionRelation
 {
-    /**
-     * Get the parent region.
-     */
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(Region::class, 'parent_id');
-    }
-
-    /**
-     * Get published child regions.
-     */
-    public function children(): HasMany
-    {
-        return $this->hasMany(Region::class, 'parent_id')
-            ->where('flag', Flag::PUBLISHED);
-    }
-
     /**
      * Get child regions recursively (with nested published children).
      */

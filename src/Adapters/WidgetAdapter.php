@@ -27,10 +27,6 @@ final class WidgetAdapter
 
     /**
      * Example: Create or update a widget view for a model.
-     *
-     * @param  Model  $widget
-     * @param  bool   $force
-     * @return void
      */
     public function generateWidgetView(Model $widget, bool $force = false): void
     {
@@ -39,9 +35,6 @@ final class WidgetAdapter
 
     /**
      * Example: Remove a widget view file.
-     *
-     * @param  string  $slug
-     * @return void
      */
     public function removeWidgetView(string $slug): void
     {

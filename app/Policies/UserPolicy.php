@@ -9,7 +9,7 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, string $ability): bool|null
+    public function before(User $user, string $ability): ?bool
     {
         return true;
     }
@@ -17,6 +17,7 @@ class UserPolicy
     protected function hasAccess(User $user, string $permission, array|string $roles): bool
     {
         $roles = (array) $roles;
+
         return $user->hasAnyRole($roles) && $user->hasPermissionTo($permission);
     }
 
@@ -27,10 +28,9 @@ class UserPolicy
 
     public function view(User $user, User $model): bool
     {
-        return (
+        return
             $this->hasAccess($user, 'view users', ['Admin', 'Editor', 'Auditor']) ||
-            $user->id === $model->id
-        );
+            $user->id === $model->id;
     }
 
     public function create(User $user): bool

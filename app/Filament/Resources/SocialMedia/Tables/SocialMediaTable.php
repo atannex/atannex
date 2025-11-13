@@ -2,27 +2,27 @@
 
 namespace App\Filament\Resources\SocialMedia\Tables;
 
-use Illuminate\Support\Facades\Date;
-use App\Enums\Icon;
-use App\Enums\Flag;
 use App\Enums\Binding;
-use Filament\Tables\Table;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
+use App\Enums\Flag;
+use App\Enums\Icon;
 use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
-use Filament\Tables\Filters\Filter;
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\DatePicker;
-use Filament\Tables\Columns\ToggleColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Filters\TrashedFilter;
+use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Date;
 
 class SocialMediaTable
 {
@@ -37,7 +37,7 @@ class SocialMediaTable
                     ->weight('bold')
                     ->icon('heroicon-m-identification')
                     ->iconColor('primary')
-                    ->description(fn($record) => $record->url ? parse_url($record->url, PHP_URL_HOST) : null)
+                    ->description(fn ($record) => $record->url ? parse_url($record->url, PHP_URL_HOST) : null)
                     ->wrap(),
 
                 TextColumn::make('owner_type')
@@ -57,15 +57,15 @@ class SocialMediaTable
                     ->label('Profile URL')
                     ->searchable()
                     ->limit(40)
-                    ->tooltip(fn($record) => $record->url)
+                    ->tooltip(fn ($record) => $record->url)
                     ->copyable()
                     ->copyMessage('URL copied to clipboard!')
                     ->copyMessageDuration(1500)
-                    ->url(fn($record) => $record->url, shouldOpenInNewTab: true)
+                    ->url(fn ($record) => $record->url, shouldOpenInNewTab: true)
                     ->icon('heroicon-m-link')
                     ->iconColor('gray')
                     ->placeholder('No URL provided')
-                    ->formatStateUsing(fn($state) => $state ? str_replace(['https://', 'http://'], '', $state) : null),
+                    ->formatStateUsing(fn ($state) => $state ? str_replace(['https://', 'http://'], '', $state) : null),
 
                 TextColumn::make('flag')
                     ->label('Flag')
@@ -83,7 +83,7 @@ class SocialMediaTable
                     ->color('warning')
                     ->icon('heroicon-m-bars-3')
                     ->iconPosition('before')
-                    ->formatStateUsing(fn($state) => '#' . $state),
+                    ->formatStateUsing(fn ($state) => '#'.$state),
 
                 ToggleColumn::make('is_global')->label('Global'),
 
@@ -92,7 +92,7 @@ class SocialMediaTable
                     ->dateTime('M j, Y g:i A')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn($record) => $record->created_at->format('F j, Y g:i:s A'))
+                    ->tooltip(fn ($record) => $record->created_at->format('F j, Y g:i:s A'))
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->icon('heroicon-m-calendar-days')
                     ->iconColor('gray'),
@@ -102,7 +102,7 @@ class SocialMediaTable
                     ->dateTime('M j, Y g:i A')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn($record) => $record->updated_at->format('F j, Y g:i:s A'))
+                    ->tooltip(fn ($record) => $record->updated_at->format('F j, Y g:i:s A'))
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->icon('heroicon-m-pencil-square')
                     ->iconColor('gray'),
@@ -146,21 +146,21 @@ class SocialMediaTable
                         return $query
                             ->when(
                                 $data['created_from'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
                             )
                             ->when(
                                 $data['created_until'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                             );
                     })
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['created_from'] ?? null) {
-                            $indicators['created_from'] = 'Created from ' . Date::parse($data['created_from'])->toFormattedDateString();
+                            $indicators['created_from'] = 'Created from '.Date::parse($data['created_from'])->toFormattedDateString();
                         }
 
                         if ($data['created_until'] ?? null) {
-                            $indicators['created_until'] = 'Created until ' . Date::parse($data['created_until'])->toFormattedDateString();
+                            $indicators['created_until'] = 'Created until '.Date::parse($data['created_until'])->toFormattedDateString();
                         }
 
                         return $indicators;

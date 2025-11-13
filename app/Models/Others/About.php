@@ -34,7 +34,7 @@ class About extends Model
         'flag',
         'info',
         'item',
-        'cta'
+        'cta',
     ];
 
     /**
@@ -43,12 +43,12 @@ class About extends Model
      * Ensures proper handling of JSON and arrays.
      */
     protected $casts = [
-        'image'     => 'array',
-        'features'  => 'array',
-        'story'     => 'array',
-        'counters'  => 'array',
-        'cta'       => 'array',
-        'info'      => 'array',
+        'image' => 'array',
+        'features' => 'array',
+        'story' => 'array',
+        'counters' => 'array',
+        'cta' => 'array',
+        'info' => 'array',
     ];
 
     /**

@@ -6,13 +6,13 @@ namespace App\Filament\Resources\Abouts\Schemas;
 
 use App\Enums\Flag;
 use Filament\Forms\Components\FileUpload;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
@@ -143,7 +143,7 @@ class AboutForm
                     ->reorderable()
                     ->collapsed()
                     ->itemLabel(
-                        fn(array $state): ?string => ($state['year'] ?? '') . ' - ' . ($state['title'] ?? 'New Event')
+                        fn (array $state): ?string => ($state['year'] ?? '').' - '.($state['title'] ?? 'New Event')
                     )
                     ->orderColumn('year'),
             ]);
@@ -191,8 +191,7 @@ class AboutForm
                     ->collapsed()
                     ->addActionLabel('Add New Contact')
                     ->itemLabel(
-                        fn(array $state): ?string =>
-                        $state['title'] ?? 'New Contact'
+                        fn (array $state): ?string => $state['title'] ?? 'New Contact'
                     )
                     ->reorderable()
                     ->schema([
@@ -210,7 +209,7 @@ class AboutForm
                             ->collapsible()
                             ->collapsed()
                             ->itemLabel(
-                                fn(array $state): ?string => ($state['type'] ?? 'New') . ': ' . ($state['value'] ?? 'Detail')
+                                fn (array $state): ?string => ($state['type'] ?? 'New').': '.($state['value'] ?? 'Detail')
                             )
                             ->schema([
                                 Select::make('type')
@@ -284,8 +283,7 @@ class AboutForm
                     ->reorderable()
                     ->collapsed()
                     ->itemLabel(
-                        fn(array $state): ?string =>
-                        'Image ' . ($state['path'] ? '(Uploaded)' : '(New)')
+                        fn (array $state): ?string => 'Image '.($state['path'] ? '(Uploaded)' : '(New)')
                     )
                     ->grid(1),
 
@@ -322,8 +320,7 @@ class AboutForm
                     ->reorderable()
                     ->collapsed()
                     ->itemLabel(
-                        fn(array $state): ?string =>
-                        $state['text'] ?? 'New Feature'
+                        fn (array $state): ?string => $state['text'] ?? 'New Feature'
                     )
                     ->grid(1),
             ]);
@@ -372,7 +369,7 @@ class AboutForm
                             ->numeric()
                             ->placeholder('100')
                             ->helperText('Enter the counter value')
-                            ->visible(fn(Get $get): bool => $get('type') === 'manual'),
+                            ->visible(fn (Get $get): bool => $get('type') === 'manual'),
 
                         TextInput::make('base_year')
                             ->label('Base Year')
@@ -381,14 +378,13 @@ class AboutForm
                             ->minValue(1900)
                             ->maxValue(2100)
                             ->helperText('Year when experience started')
-                            ->visible(fn(Get $get): bool => $get('type') === 'years_experience'),
+                            ->visible(fn (Get $get): bool => $get('type') === 'years_experience'),
                     ])
                     ->addActionLabel('Add Counter')
                     ->reorderable()
                     ->collapsed()
                     ->itemLabel(
-                        fn(array $state): ?string =>
-                        $state['label'] ?? 'New Counter'
+                        fn (array $state): ?string => $state['label'] ?? 'New Counter'
                     ),
             ]);
     }

@@ -6,8 +6,8 @@ namespace App\Http\Controllers;
 
 use Atannex\Binders\HasPost;
 use Atannex\Services\ShareService;
-use Illuminate\Http\RedirectResponse;
 use Atannex\Traits\HasUserTracking;
+use Illuminate\Http\RedirectResponse;
 
 class ShareController extends Controller
 {
@@ -30,9 +30,9 @@ class ShareController extends Controller
         $this->shareService->recordShare($post, $platform);
 
         $this->trackActivity('share_click', [
-            'post_id'   => $post->id,
-            'slug'      => $post->slug,
-            'platform'  => $platform,
+            'post_id' => $post->id,
+            'slug' => $post->slug,
+            'platform' => $platform,
             'clicked_at' => now()->toDateTimeString(),
         ]);
 

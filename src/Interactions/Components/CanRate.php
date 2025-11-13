@@ -12,29 +12,21 @@ trait CanRate
 {
     /**
      * Indicates whether the user has rated the model.
-     *
-     * @var bool
      */
     public bool $hasRating = false;
 
     /**
      * Total number of ratings for the model.
-     *
-     * @var int
      */
     public int $ratingCount = 0;
 
     /**
      * Average rating value for the model.
-     *
-     * @var float
      */
     public float $averageRating = 0.0;
 
     /**
      * Current user's rating value for the model.
-     *
-     * @var int|null
      */
     public ?int $userRating = null;
 
@@ -42,8 +34,7 @@ trait CanRate
      * Handle user rating input.
      * If the same rating is selected again, it will remove the rating.
      *
-     * @param int $value Rating value (1 to 5).
-     * @return void
+     * @param  int  $value  Rating value (1 to 5).
      */
     public function rate(int $value): void
     {
@@ -58,8 +49,6 @@ trait CanRate
 
     /**
      * Sync the component's rating state with the model's rating data.
-     *
-     * @return void
      */
     protected function syncRatingState(): void
     {

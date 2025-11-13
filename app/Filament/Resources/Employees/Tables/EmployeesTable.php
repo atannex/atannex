@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Employees\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\ImageColumn;
@@ -11,7 +12,6 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Actions\DeleteAction;
 
 class EmployeesTable
 {
@@ -22,7 +22,7 @@ class EmployeesTable
                 ImageColumn::make('user.image')
                     ->label('')
                     ->circular()
-                    ->defaultImageUrl(fn($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->user->name ?? 'Employee') . '&color=7F9CF5&background=EBF4FF')
+                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name='.urlencode($record->user->name ?? 'Employee').'&color=7F9CF5&background=EBF4FF')
                     ->imageSize(40)
                     ->toggleable(),
 
@@ -41,7 +41,7 @@ class EmployeesTable
                     ->searchable()
                     ->sortable()
                     ->weight('semibold')
-                    ->description(fn($record) => $record->user->email ?? 'No email')
+                    ->description(fn ($record) => $record->user->email ?? 'No email')
                     ->icon('heroicon-m-user')
                     ->iconColor('primary'),
 
@@ -110,8 +110,7 @@ class EmployeesTable
                 Filter::make('no_manager')
                     ->label('Without Manager')
                     ->query(
-                        fn(Builder $query): Builder =>
-                        $query->whereNull('manager_id')
+                        fn (Builder $query): Builder => $query->whereNull('manager_id')
                     )
                     ->toggle(),
             ])

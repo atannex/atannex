@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\RegionSectionWidgets\Tables;
 
-use Filament\Tables\Table;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
-use Filament\Actions\{
-    EditAction,
-    BulkActionGroup,
-    DeleteBulkAction,
-    ForceDeleteBulkAction,
-    RestoreBulkAction
-};
+use Filament\Tables\Table;
 
 /**
  * Class RegionSectionWidgetsTable
@@ -21,16 +19,11 @@ use Filament\Actions\{
  * Defines the Filament table configuration for Region Section Widgets.
  * Provides consistent column definitions, filters, and bulk actions
  * optimized for usability and maintainability.
- *
- * @package App\Filament\Resources\RegionSectionWidgets\Tables
  */
 class RegionSectionWidgetsTable
 {
     /**
      * Configure the Filament table for RegionSectionWidgets.
-     *
-     * @param Table $table
-     * @return Table
      */
     public static function configure(Table $table): Table
     {

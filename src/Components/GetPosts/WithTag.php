@@ -18,15 +18,13 @@ trait WithTag
     /**
      * Retrieve tags along with their hierarchical posts.
      *
-     * @param array $config Configuration options:
-     *  - 'ids' => array of tag IDs (optional)
-     *  - 'limit' => number of top-level tags (optional)
-     *  - 'relation_limit' => posts per top-level tag (optional)
-     *  - 'leaf_relation_limit' => posts per child tag (optional)
-     *  - 'sort_field' => field to sort posts by (optional)
-     *  - 'sort_direction' => sorting direction: 'asc' or 'desc' (optional)
-     *
-     * @return Collection
+     * @param  array  $config  Configuration options:
+     *                         - 'ids' => array of tag IDs (optional)
+     *                         - 'limit' => number of top-level tags (optional)
+     *                         - 'relation_limit' => posts per top-level tag (optional)
+     *                         - 'leaf_relation_limit' => posts per child tag (optional)
+     *                         - 'sort_field' => field to sort posts by (optional)
+     *                         - 'sort_direction' => sorting direction: 'asc' or 'desc' (optional)
      */
     public function getTagWithPosts(array $config): Collection
     {

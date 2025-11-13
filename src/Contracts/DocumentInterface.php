@@ -17,7 +17,7 @@ interface DocumentInterface
     /**
      * Retrieve all published documents of a given type.
      *
-     * @param string $type The document type (e.g., 'report', 'guide').
+     * @param  string  $type  The document type (e.g., 'report', 'guide').
      * @return Collection<DocumentModule> A collection of published document modules.
      */
     public function getPublishedDocumentsByType(string $type): Collection;
@@ -25,8 +25,8 @@ interface DocumentInterface
     /**
      * Find a specific document module based on its type and slug.
      *
-     * @param string $type The type/category of the document.
-     * @param string $slug The unique slug identifier of the document.
+     * @param  string  $type  The type/category of the document.
+     * @param  string  $slug  The unique slug identifier of the document.
      * @return DocumentModule|null The matched document module, or null if not found.
      */
     public function findModuleByTypeAndSlug(string $type, string $slug): ?DocumentModule;

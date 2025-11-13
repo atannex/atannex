@@ -2,11 +2,11 @@
 
 namespace App\Rules;
 
-use Closure;
-use App\Enums\LeetspeakVariants;
 use App\Enums\Auth\RestrictedNames;
-use Illuminate\Support\Facades\Log;
+use App\Enums\LeetspeakVariants;
+use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Facades\Log;
 
 class StrongContent implements ValidationRule
 {
@@ -19,43 +19,49 @@ class StrongContent implements ValidationRule
 
         if ($this->containsRestrictedContent($normalizedValue, $value)) {
             $this->logViolation($attribute, $value, 'bad language');
-            $fail(__('validation.custom.' . $attribute . '.inappropriate_language'));
+            $fail(__('validation.custom.'.$attribute.'.inappropriate_language'));
+
             return;
         }
 
         if ($this->hasExcessiveUppercase($value)) {
             $this->logViolation($attribute, $value, 'excessive uppercase');
-            $fail(__('validation.custom.' . $attribute . '.excessive_uppercase'));
+            $fail(__('validation.custom.'.$attribute.'.excessive_uppercase'));
+
             return;
         }
 
         if ($this->containsRepeatedCharacters($value)) {
             $this->logViolation($attribute, $value, 'repeated characters');
-            $fail(__('validation.custom.' . $attribute . '.repeated_characters'));
+            $fail(__('validation.custom.'.$attribute.'.repeated_characters'));
+
             return;
         }
 
         if ($this->containsExcessivePunctuation($value)) {
             $this->logViolation($attribute, $value, 'excessive punctuation');
-            $fail(__('validation.custom.' . $attribute . '.excessive_punctuation'));
+            $fail(__('validation.custom.'.$attribute.'.excessive_punctuation'));
+
             return;
         }
 
         if (strlen($value) < 10) {
             $this->logViolation($attribute, $value, 'too short content');
-            $fail(__('validation.custom.' . $attribute . '.too_short'));
+            $fail(__('validation.custom.'.$attribute.'.too_short'));
+
             return;
         }
 
         if ($this->containsHtmlOrScripts($value)) {
             $this->logViolation($attribute, $value, 'html or script content');
-            $fail(__('validation.custom.' . $attribute . '.html_or_script'));
+            $fail(__('validation.custom.'.$attribute.'.html_or_script'));
+
             return;
         }
 
         if ($this->containsUnintelligibleContent($value)) {
             $this->logViolation($attribute, $value, 'unintelligible content');
-            $fail(__('validation.custom.' . $attribute . '.unintelligible_content'));
+            $fail(__('validation.custom.'.$attribute.'.unintelligible_content'));
         }
     }
 
@@ -90,14 +96,13 @@ class StrongContent implements ValidationRule
         return preg_match(sprintf('/%s/i', $pattern), $value) > 0;
     }
 
-
-
     /**
      * Check if the content has excessive uppercase characters.
      */
     protected function hasExcessiveUppercase(string $value): bool
     {
         $uppercaseContent = preg_replace('/[^A-Z]/', '', $value);
+
         return strlen($uppercaseContent) / strlen($value) > 0.7;
     }
 

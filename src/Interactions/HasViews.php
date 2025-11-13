@@ -2,8 +2,8 @@
 
 namespace Atannex\Interactions;
 
-use Illuminate\Database\Eloquent\Builder;
 use App\Models\Interactions\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
@@ -18,8 +18,6 @@ trait HasViews
 {
     /**
      * Define a polymorphic one-to-many relationship with the View model.
-     *
-     * @return MorphMany
      */
     public function views(): MorphMany
     {
@@ -39,8 +37,6 @@ trait HasViews
     /**
      * Record a view by the currently authenticated user.
      * Updates the existing view if it exists; otherwise, creates a new one.
-     *
-     * @return void
      */
     public function recordView(): void
     {
@@ -49,21 +45,19 @@ trait HasViews
         if ($existing) {
             $existing->update([
                 'ip_address' => Request::ip(),
-                'viewed_at'  => now(),
+                'viewed_at' => now(),
             ]);
         } else {
             $this->views()->create([
-                'user_id'    => Auth::id(),
+                'user_id' => Auth::id(),
                 'ip_address' => Request::ip(),
-                'viewed_at'  => now(),
+                'viewed_at' => now(),
             ]);
         }
     }
 
     /**
      * Get the total number of views for the current model.
-     *
-     * @return int
      */
     public function viewsCount(): int
     {

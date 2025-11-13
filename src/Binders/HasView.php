@@ -2,12 +2,12 @@
 
 namespace Atannex\Binders;
 
-use Atannex\Views\Views;
 use Atannex\Facades\Atannex;
-use Atannex\Services\TagService;
-use Atannex\Services\ShareService;
-use Atannex\Services\RegionService;
 use Atannex\Services\CategoryService;
+use Atannex\Services\RegionService;
+use Atannex\Services\ShareService;
+use Atannex\Services\TagService;
+use Atannex\Views\Views;
 
 /**
  * Class GetView
@@ -17,8 +17,6 @@ use Atannex\Services\CategoryService;
  * and provides access to essential services such as PageService, TagService,
  * and CategoryService. Facilitates rendering of various views like posts,
  * pages, tags, authors, regions, and dates.
- *
- * @package Atannex\Binders
  */
 class HasView
 {
@@ -27,12 +25,12 @@ class HasView
      *
      * Injects the services and binders required for view rendering.
      *
-     * @param PageService $pageService Service for page-related operations.
-     * @param Atannex $atannex Core provider for application-wide utilities.
-     * @param TagService $tagService Service for tag-related operations.
-     * @param CategoryService $categoryService Service for category-related operations.
-     * @param HasPost $getPost Helper for fetching and preparing post data.
-     * @param HasComponent $getComponent Helper for fetching reusable components.
+     * @param  PageService  $pageService  Service for page-related operations.
+     * @param  Atannex  $atannex  Core provider for application-wide utilities.
+     * @param  TagService  $tagService  Service for tag-related operations.
+     * @param  CategoryService  $categoryService  Service for category-related operations.
+     * @param  HasPost  $getPost  Helper for fetching and preparing post data.
+     * @param  HasComponent  $getComponent  Helper for fetching reusable components.
      */
     public function __construct(
         protected readonly RegionService $pageService,
@@ -48,6 +46,5 @@ class HasView
      * Traits providing modular view logic.
      * Each trait contains methods for rendering or preparing specific view types.
      */
-
     use Views;
 }

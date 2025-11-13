@@ -2,20 +2,20 @@
 
 namespace App\Filament\Resources\Widgets;
 
-use UnitEnum;
-use BackedEnum;
-use Filament\Tables\Table;
-use App\Models\Regions\Widget;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
-use Filament\Support\Icons\Heroicon;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\Widgets\Pages\CreateWidget;
 use App\Filament\Resources\Widgets\Pages\EditWidget;
 use App\Filament\Resources\Widgets\Pages\ListWidgets;
-use App\Filament\Resources\Widgets\Pages\CreateWidget;
 use App\Filament\Resources\Widgets\Schemas\WidgetForm;
 use App\Filament\Resources\Widgets\Tables\WidgetsTable;
+use App\Models\Regions\Widget;
+use BackedEnum;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use UnitEnum;
 
 class WidgetResource extends Resource
 {
@@ -23,7 +23,7 @@ class WidgetResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings';
 
     public static function form(Schema $schema): Schema
     {

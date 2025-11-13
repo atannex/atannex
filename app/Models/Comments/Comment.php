@@ -2,13 +2,13 @@
 
 namespace App\Models\Comments;
 
-use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Builder;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 
 /**
  * Class Comment
@@ -16,8 +16,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Represents a comment in the application, supporting polymorphic relationships
  * to allow comments on multiple types of entities (e.g., posts, articles).
  * Supports nested comments through a parent-child relationship.
- *
- * @package App\Models\Comments
  */
 class Comment extends Model
 {
@@ -81,7 +79,7 @@ class Comment extends Model
     /**
      * Scope to retrieve top-level comments (comments without a parent).
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     protected function scopeTopLevel($query)

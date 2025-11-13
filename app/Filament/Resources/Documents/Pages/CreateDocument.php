@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\Documents\Pages;
 
-use Illuminate\Support\Facades\Log;
 use App\Events\Docs\DocumentCreated;
-use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\Documents\DocumentResource;
+use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Log;
 
 class CreateDocument extends CreateRecord
 {
@@ -17,6 +17,6 @@ class CreateDocument extends CreateRecord
     protected function afterCreate(): void
     {
         event(new DocumentCreated($this->record));
-        Log::info('DocumentCreated event dispatched for document ID: ' . $this->record->id);
+        Log::info('DocumentCreated event dispatched for document ID: '.$this->record->id);
     }
 }

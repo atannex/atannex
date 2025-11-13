@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
 use Atannex\Filters\GetEnum;
+use BenSampo\Enum\Enum;
 
 /**
  * ImageType Enum

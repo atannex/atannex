@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * Represents a Contact model for storing contact form submissions in the database.
  * Extends Laravel's Eloquent Model and uses soft deletion for record management.
- *
- * @package App\Models\Others
  */
 class Contact extends Model
 {
@@ -45,6 +43,6 @@ class Contact extends Model
     protected $dates = [
         'deleted_at',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 }

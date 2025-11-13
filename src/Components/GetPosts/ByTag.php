@@ -3,8 +3,8 @@
 namespace Atannex\Components\GetPosts;
 
 use App\Models\Tags\Tag;
-use Illuminate\Support\Collection;
 use Atannex\Traits\HasPostsForHierarchy;
+use Illuminate\Support\Collection;
 
 trait ByTag
 {
@@ -20,8 +20,8 @@ trait ByTag
             Tag::class,
             'tags',
             null,
-            fn($tag) => [$tag->id],
-            fn($post) => $post->tags->first()->id
+            fn ($tag) => [$tag->id],
+            fn ($post) => $post->tags->first()->id
         );
     }
 }

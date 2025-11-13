@@ -4,13 +4,10 @@ namespace Atannex\Filters;
 
 use Illuminate\Support\Collection;
 
-
 trait GetHierarchy
 {
     /**
      * Get all ancestors of this category (up to root)
-     *
-     * @return Collection
      */
     public function getAncestors(): Collection
     {
@@ -27,8 +24,6 @@ trait GetHierarchy
 
     /**
      * Get all descendants of this category (recursive)
-     *
-     * @return Collection
      */
     public function getDescendants(): Collection
     {

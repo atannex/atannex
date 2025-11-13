@@ -1,47 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Contracts;
+
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Interface Sluggable
  *
- * Defines the contract for models that support dynamic slug generation
- * and hierarchical slug paths.
+ * Contract for models that manage hierarchical slug paths.
  */
 interface Sluggable
 {
     /**
-     * Get the base string used for slug generation.
+     * Generate the complete hierarchical slug path for the model instance.
      *
-     * @return string|null
+     * Example: "parent/child/grandchild"
      */
-    public function getSlugBase(): ?string;
+    public function generateSlugPath(): string;
 
     /**
-     * Get the model's own slug segment.
+     * Recursively update the slug paths of all descendant models.
      *
-     * @return string|null
+     * Ensures child and nested records reflect updated paths.
      */
-    public function getSlug(): ?string;
+    public function updateDescendantsSlugPaths(): void;
 
     /**
-     * Build the full slug path for the model.
-     *
-     * @return string|null
+     * Update and persist slug_path if the value has changed.
      */
-    public function buildDynamicSlugPath(): ?string;
+    public function updateSlugPathIfNeeded(): void;
 
     /**
-     * Cascade slug path updates to related models.
-     *
-     * @return void
+     * Get the direct children relationship.
      */
-    public function cascadeSlugPathUpdates(): void;
+    public function children(): HasMany;
 
     /**
-     * Clear slug paths for related models.
-     *
-     * @return void
+     * Get the parent relationship.
      */
-    public function clearRelatedSlugPaths(): void;
+    public function parent(): BelongsTo;
 }

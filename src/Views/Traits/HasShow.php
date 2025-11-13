@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Atannex\Views\Traits;
 
-use Illuminate\View\View;
-use App\Models\Regions\Category;
 use App\Models\Modules\PostModule;
+use App\Models\Regions\Category;
 use Atannex\Traits\HasPlatforms;
+use Illuminate\View\View;
 
 /**
  * Trait HasShow
@@ -24,7 +24,7 @@ trait HasShow
      * Render a full post show page view.
      *
      * @param  Category  $category  The category context for the post.
-     * @param  string    $slug      The unique post slug (slug_path).
+     * @param  string  $slug  The unique post slug (slug_path).
      * @return View
      *
      * Fetches the PostModule with all required relationships,
@@ -33,7 +33,7 @@ trait HasShow
     public function renderPostShow(Category $category, string $slug): View
     {
         $module = $this->fetchPostModule($slug);
-        $post   = $module->post;
+        $post = $module->post;
 
         return $this->renderView(
             'shows.index',
@@ -58,16 +58,16 @@ trait HasShow
             'post.tags',
             'post.category',
         ])
-        ->whereHas('post', fn ($query) => $query->where('slug_path', $slug))
-        ->firstOrFail();
+            ->whereHas('post', fn ($query) => $query->where('slug_path', $slug))
+            ->firstOrFail();
     }
 
     /**
      * Construct all necessary data for the post view.
      *
-     * @param  Category    $category  The category context.
-     * @param  mixed       $post      The post model instance.
-     * @param  PostModule  $module    The loaded PostModule.
+     * @param  Category  $category  The category context.
+     * @param  mixed  $post  The post model instance.
+     * @param  PostModule  $module  The loaded PostModule.
      * @return array
      *
      * Collects all related resources including tags, navigation,
@@ -76,15 +76,15 @@ trait HasShow
     protected function buildPostShowData(Category $category, $post, PostModule $module): array
     {
         return [
-            'module'            => $module,
-            'popularTags'       => $this->tagService->getPopularTags(),
-            'relatedTags'       => $this->tagService->getTagsForPost($post->id),
-            'navigation'        => $this->getPost->getPostNavigation($post),
+            'module' => $module,
+            'popularTags' => $this->tagService->getPopularTags(),
+            'relatedTags' => $this->tagService->getTagsForPost($post->id),
+            'navigation' => $this->getPost->getPostNavigation($post),
             'relatedCategories' => $this->categoryService->relatedCategories($category),
-            'recentPosts'       => $this->categoryService->recentPosts($post),
-            'relatedPosts'      => $this->getPost->getRelatedPosts($post),
-            'medias'            => $this->categoryService->employeeSocial($post->author),
-            'icons'             => $this->getAllShareIcons(),
+            'recentPosts' => $this->categoryService->recentPosts($post),
+            'relatedPosts' => $this->getPost->getRelatedPosts($post),
+            'medias' => $this->categoryService->employeeSocial($post->author),
+            'icons' => $this->getAllShareIcons(),
         ];
     }
 }

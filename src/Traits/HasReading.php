@@ -18,7 +18,7 @@ trait HasReading
                 if (is_array($item)) {
                     foreach (['value', 'title', 'heading', 'paragraph', 'quote'] as $key) {
                         if (isset($item[$key])) {
-                            $text .= ' ' . $item[$key];
+                            $text .= ' '.$item[$key];
                         }
                     }
 

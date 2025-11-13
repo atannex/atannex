@@ -3,17 +3,17 @@
 namespace Atannex\Repositories\Traits;
 
 use App\Models\Posts\Post;
-use App\Models\Regions\Region;
 use App\Models\Regions\Category;
-use Atannex\Traits\HasTree;
+use App\Models\Regions\Region;
 use Atannex\Traits\HasResolver;
-use Illuminate\Support\Collection;
+use Atannex\Traits\HasTree;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 trait PostQuery
 {
-    use HasTree;
     use HasResolver;
+    use HasTree;
 
     protected const PAGINATION_LIMIT = 15;
 
@@ -46,7 +46,6 @@ trait PostQuery
             ->get();
     }
 
-
     /**
      * Paginate posts under a Region tree (leaf-category filtering).
      */
@@ -55,11 +54,10 @@ trait PostQuery
         return $this->paginate(
             Post::query()
                 ->published()
-                ->whereHas('category', fn($q) => $q->doesntHave('children'))
+                ->whereHas('category', fn ($q) => $q->doesntHave('children'))
                 ->whereHas(
                     'regions',
-                    fn($q) =>
-                    $q->whereIn('region_id', $this->getTreeIds($region))
+                    fn ($q) => $q->whereIn('region_id', $this->getTreeIds($region))
                 )
                 ->with($this->postRelations()),
             $limit
@@ -75,8 +73,8 @@ trait PostQuery
 
         return $this->paginate(
             Post::published()
-                ->when($date['year'], fn($q) => $q->whereYear('published_at', $date['year']))
-                ->when($date['month'], fn($q) => $q->whereMonth('published_at', $date['month']))
+                ->when($date['year'], fn ($q) => $q->whereYear('published_at', $date['year']))
+                ->when($date['month'], fn ($q) => $q->whereMonth('published_at', $date['month']))
                 ->with($this->postRelations()),
             $limit
         );

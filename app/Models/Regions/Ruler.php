@@ -2,15 +2,15 @@
 
 namespace App\Models\Regions;
 
-use Atannex\Enables\HasSlug;
+use Atannex\Enables\Slugging;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ruler extends Model
 {
+    use Slugging;
     use SoftDeletes;
-    use HasSlug;
 
     protected string $slugSource = 'name';
 

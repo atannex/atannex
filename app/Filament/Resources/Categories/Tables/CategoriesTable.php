@@ -87,28 +87,28 @@ class CategoriesTable
                     ->sortable()
                     ->placeholder('Not published')
                     ->toggleable(isToggledHiddenByDefault: true)
-                    ->tooltip(fn($record) => $record->published_at?->format('F j, Y \a\t g:i A')),
+                    ->tooltip(fn ($record) => $record->published_at?->format('F j, Y \a\t g:i A')),
 
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
-                    ->tooltip(fn($record) => $record->created_at->format('F j, Y \a\t g:i A')),
+                    ->tooltip(fn ($record) => $record->created_at->format('F j, Y \a\t g:i A')),
 
                 TextColumn::make('updated_at')
                     ->label('Updated')
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
-                    ->tooltip(fn($record) => $record->updated_at->format('F j, Y \a\t g:i A')),
+                    ->tooltip(fn ($record) => $record->updated_at->format('F j, Y \a\t g:i A')),
 
                 TextColumn::make('deleted_at')
                     ->label('Deleted')
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
-                    ->tooltip(fn($record) => $record->deleted_at?->format('F j, Y \a\t g:i A')),
+                    ->tooltip(fn ($record) => $record->deleted_at?->format('F j, Y \a\t g:i A')),
             ])
             ->defaultSort('name', 'asc')
             ->filters([
@@ -141,10 +141,10 @@ class CategoriesTable
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             in_array('published', $data),
-                            fn(Builder $query): Builder => $query->whereNotNull('published_at'),
+                            fn (Builder $query): Builder => $query->whereNotNull('published_at'),
                         )->when(
                             in_array('unpublished', $data),
-                            fn(Builder $query): Builder => $query->whereNull('published_at'),
+                            fn (Builder $query): Builder => $query->whereNull('published_at'),
                         );
                     }),
             ])

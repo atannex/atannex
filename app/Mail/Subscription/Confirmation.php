@@ -16,8 +16,6 @@ class Confirmation extends Mailable
 
     /**
      * Create a new message instance.
-     *
-     * @param Subscription $subscription
      */
     public function __construct(Subscription $subscription)
     {

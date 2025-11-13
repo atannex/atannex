@@ -15,8 +15,8 @@ trait ByEditorPick
      * only published posts are returned. Results are ordered by
      * the most recently updated posts.
      *
-     * @param array $config Optional configuration:
-     *                      - 'limit' => int Number of posts to retrieve (default 5)
+     * @param  array  $config  Optional configuration:
+     *                         - 'limit' => int Number of posts to retrieve (default 5)
      * @return Collection<int, Post>
      */
     public function getEditorPicks(array $config = []): Collection

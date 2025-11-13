@@ -3,14 +3,14 @@
 namespace App\Filament\Resources\Sections\Schemas;
 
 use App\Enums\Flag;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -34,8 +34,7 @@ class SectionForm
                                             ->maxLength(255)
                                             ->live(onBlur: true)
                                             ->afterStateUpdated(
-                                                fn($state, callable $set) =>
-                                                $set('slug', Str::slug($state))
+                                                fn ($state, callable $set) => $set('slug', Str::slug($state))
                                             )
                                             ->placeholder('e.g., Technology News')
                                             ->helperText('Enter a descriptive name for this section')
@@ -126,18 +125,18 @@ class SectionForm
                             ->schema([
                                 TextEntry::make('preview_url')
                                     ->label('Preview URL')
-                                    ->state(fn($record): string => $record?->slug
-                                        ? '/sections/' . $record->slug
+                                    ->state(fn ($record): string => $record?->slug
+                                        ? '/sections/'.$record->slug
                                         : 'Not available')
-                                    ->visible(fn($record) => $record !== null)
+                                    ->visible(fn ($record) => $record !== null)
                                     ->helperText('Frontend section URL'),
 
                                 TextEntry::make('status_badge')
                                     ->label('Current Status')
-                                    ->state(fn($record): string => $record?->flag
+                                    ->state(fn ($record): string => $record?->flag
                                         ? ucfirst($record->flag)
                                         : 'Pending')
-                                    ->visible(fn($record) => $record !== null),
+                                    ->visible(fn ($record) => $record !== null),
                             ])
                             ->collapsible(),
 
@@ -147,29 +146,29 @@ class SectionForm
                             ->schema([
                                 TextEntry::make('created_at')
                                     ->label('Created')
-                                    ->state(fn($record): string => $record?->created_at
-                                        ? $record->created_at->format('M j, Y g:i A') .
-                                        ' (' . $record->created_at->diffForHumans() . ')'
+                                    ->state(fn ($record): string => $record?->created_at
+                                        ? $record->created_at->format('M j, Y g:i A').
+                                        ' ('.$record->created_at->diffForHumans().')'
                                         : '-'),
 
                                 TextEntry::make('updated_at')
                                     ->label('Last Updated')
-                                    ->state(fn($record): string => $record?->updated_at
-                                        ? $record->updated_at->format('M j, Y g:i A') .
-                                        ' (' . $record->updated_at->diffForHumans() . ')'
+                                    ->state(fn ($record): string => $record?->updated_at
+                                        ? $record->updated_at->format('M j, Y g:i A').
+                                        ' ('.$record->updated_at->diffForHumans().')'
                                         : '-'),
 
                                 TextEntry::make('deleted_at')
                                     ->label('Deleted')
-                                    ->state(fn($record): string => $record?->deleted_at
-                                        ? $record->deleted_at->format('M j, Y g:i A') .
-                                        ' (' . $record->deleted_at->diffForHumans() . ')'
+                                    ->state(fn ($record): string => $record?->deleted_at
+                                        ? $record->deleted_at->format('M j, Y g:i A').
+                                        ' ('.$record->deleted_at->diffForHumans().')'
                                         : 'Not deleted')
-                                    ->visible(fn($record) => $record?->deleted_at !== null),
+                                    ->visible(fn ($record) => $record?->deleted_at !== null),
                             ])
                             ->collapsible()
                             ->collapsed()
-                            ->visible(fn($record) => $record !== null),
+                            ->visible(fn ($record) => $record !== null),
                     ])
                     ->columnSpan(['lg' => 1]),
             ])

@@ -19,9 +19,9 @@ trait HasMedia
         $data = Icon::getData($media->platform);
 
         return [
-            'url'   => $media->url,
+            'url' => $media->url,
             'label' => $data['label'],
-            'icon'  => $data['icon'],
+            'icon' => $data['icon'],
             'color' => $data['color'],
         ];
     }
@@ -36,7 +36,7 @@ trait HasMedia
             ->where('is_global', true)
             ->orderBy('order')
             ->get()
-            ->map(fn(SocialMedia $media) => $this->mapSocialMedia($media))
+            ->map(fn (SocialMedia $media) => $this->mapSocialMedia($media))
             ->values();
     }
 

@@ -2,13 +2,13 @@
 
 namespace App\Livewire\Forms;
 
+use App\Mail\Subscription\Verification;
+use App\Models\Others\Subscription as SubscriptionModel;
+use App\Rules\Auth\StrongEmail;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Livewire\Component;
-use App\Rules\Auth\StrongEmail;
-use App\Models\Others\Subscription as SubscriptionModel;
-use App\Mail\Subscription\Verification;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Class Subscription
@@ -46,7 +46,7 @@ class Subscription extends Component
     protected function rules(): array
     {
         return [
-            'email' => ['required', 'email', 'unique:subscriptions,email', new StrongEmail()],
+            'email' => ['required', 'email', 'unique:subscriptions,email', new StrongEmail],
         ];
     }
 
@@ -81,6 +81,7 @@ class Subscription extends Component
 
         if (SubscriptionModel::where('email', $this->email)->exists()) {
             $this->errorMessage = 'This email is already subscribed to our newsletter.';
+
             return;
         }
 

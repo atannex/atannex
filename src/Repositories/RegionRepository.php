@@ -3,10 +3,10 @@
 namespace Atannex\Repositories;
 
 use App\Enums\Flag;
-use App\Models\Regions\Region;
 use App\Models\Regions\Category;
-use Illuminate\Support\Collection;
+use App\Models\Regions\Region;
 use Atannex\Contracts\RegionInterface;
+use Illuminate\Support\Collection;
 
 /**
  * Repository handling region and category retrieval.

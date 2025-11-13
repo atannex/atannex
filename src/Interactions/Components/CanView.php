@@ -16,16 +16,13 @@ trait CanView
 {
     /**
      * Total number of views for the model.
-     *
-     * @var int
      */
     public int $viewsCount = 0;
 
     /**
      * Record a view for the current user/IP, with throttling via database.
      *
-     * @param int $ttlMinutes Minutes before another view from the same IP/user is accepted.
-     * @return void
+     * @param  int  $ttlMinutes  Minutes before another view from the same IP/user is accepted.
      */
     protected function recordView(int $ttlMinutes = 10): void
     {
@@ -45,8 +42,6 @@ trait CanView
 
     /**
      * Sync the component view count with the model's current views.
-     *
-     * @return void
      */
     protected function syncViewState(): void
     {
@@ -55,8 +50,6 @@ trait CanView
 
     /**
      * Trigger analytics logic or event dispatching after a view is recorded.
-     *
-     * @return void
      */
     protected function fireViewAnalyticsEvent(): void
     {

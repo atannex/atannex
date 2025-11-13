@@ -5,8 +5,8 @@ namespace App\Filament\Resources\Employees\Schemas;
 use App\Enums\Status;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class EmployeeForm
 {
@@ -26,7 +26,7 @@ class EmployeeForm
                             ->searchable()
                             ->preload()
                             ->required()
-                            ->getOptionLabelFromRecordUsing(fn($record) => sprintf('%s (%s)', $record->name, $record->email))
+                            ->getOptionLabelFromRecordUsing(fn ($record) => sprintf('%s (%s)', $record->name, $record->email))
                             ->placeholder('Select or search for user')
                             ->helperText('Link this employee to an existing user account')
                             ->suffixIcon('heroicon-m-user'),
@@ -61,7 +61,7 @@ class EmployeeForm
                             ->searchable()
                             ->preload()
                             ->nullable()
-                            ->getOptionLabelFromRecordUsing(fn($record) => $record->name)
+                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->placeholder('Select manager')
                             ->helperText("Employee's direct supervisor")
                             ->suffixIcon('heroicon-m-user-circle'),

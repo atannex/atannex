@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace App\Livewire\Show;
 
 use App\Models\Posts\Post;
-use Atannex\Interactions\Components\{
-    CanLike,
-    CanRate,
-    CanShare,
-    CanView
-};
+use Atannex\Interactions\Components\CanLike;
+use Atannex\Interactions\Components\CanRate;
+use Atannex\Interactions\Components\CanShare;
+use Atannex\Interactions\Components\CanView;
+use Illuminate\View\View;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Illuminate\View\View;
 
 /**
  * Livewire Component: Post Interaction Card
@@ -56,7 +54,7 @@ class Info extends Component
      *
      * Records a view and initializes all interaction states.
      *
-     * @param Post $post The post model instance.
+     * @param  Post  $post  The post model instance.
      */
     public function mount(Post $post): void
     {
@@ -104,8 +102,6 @@ class Info extends Component
 
     /**
      * Render the Blade view for this component.
-     *
-     * @return View
      */
     public function render(): View
     {

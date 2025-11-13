@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use InvalidArgumentException;
 use BenSampo\Enum\Enum;
+use InvalidArgumentException;
 
 /**
  * Enum for leetspeak variants of specific letters.
@@ -65,14 +65,15 @@ final class Variants extends Enum
 
         $escaped = [];
         foreach (self::VARIANT_MAP as $key => $variants) {
-            if (!self::hasValue($key)) {
-                throw new InvalidArgumentException('Invalid enum value: ' . $key);
+            if (! self::hasValue($key)) {
+                throw new InvalidArgumentException('Invalid enum value: '.$key);
             }
 
             $escaped[$key] = self::escapeForRegex($variants);
         }
 
         self::$cachedLeetspeakValues = $escaped;
+
         return $escaped;
     }
 
@@ -84,21 +85,21 @@ final class Variants extends Enum
     public static function getRegexPattern(string $letter): string
     {
         $variants = self::getLeetspeakValues();
-        if (!isset($variants[$letter])) {
-            throw new InvalidArgumentException('No variants found for letter: ' . $letter);
+        if (! isset($variants[$letter])) {
+            throw new InvalidArgumentException('No variants found for letter: '.$letter);
         }
 
-        return '[' . implode('', $variants[$letter]) . ']';
+        return '['.implode('', $variants[$letter]).']';
     }
 
     /**
      * Escape special characters for use in a regular expression.
      *
-     * @param array<string> $variants
+     * @param  array<string>  $variants
      * @return array<string>
      */
     private static function escapeForRegex(array $variants): array
     {
-        return array_map(fn(string $v): string => preg_quote($v, '/'), $variants);
+        return array_map(fn (string $v): string => preg_quote($v, '/'), $variants);
     }
 }

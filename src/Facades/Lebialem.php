@@ -2,11 +2,11 @@
 
 namespace Atannex\Facades;
 
-use Atannex\Binders\HasPost;
 use App\Enums\Image;
 use App\Models\Posts\Post;
-use Atannex\Services\RegionService;
+use Atannex\Binders\HasPost;
 use Atannex\Helpers\HasMedia;
+use Atannex\Services\RegionService;
 use Atannex\Services\TagService;
 
 final class Lebialem extends HasPost

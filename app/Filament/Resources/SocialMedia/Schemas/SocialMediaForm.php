@@ -4,19 +4,19 @@ namespace App\Filament\Resources\SocialMedia\Schemas;
 
 use App\Enums\Flag;
 use App\Enums\Icon;
-use Filament\Schemas\Schema;
-use Illuminate\Validation\Rule;
 use App\Models\Regions\Employee;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
-use Illuminate\Database\Eloquent\Model;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 
 class SocialMediaForm
 {
@@ -117,7 +117,7 @@ class SocialMediaForm
             ->searchable()
             ->helperText('Choose the social media platform')
             ->reactive()
-            ->rules(fn($get, ?Model $record) => self::platformValidationRules($get, $record))
+            ->rules(fn ($get, ?Model $record) => self::platformValidationRules($get, $record))
             ->validationMessages([
                 'unique' => 'This platform is already registered for the selected owner/type combination.',
             ]);
@@ -151,7 +151,7 @@ class SocialMediaForm
             ->label('Global Icon')
             ->live()
             ->afterStateUpdated(
-                fn(Set $set, $state) => $state
+                fn (Set $set, $state) => $state
                     ? [$set('owner_id', null), $set('owner_type', null)]
                     : null
             )
@@ -164,10 +164,10 @@ class SocialMediaForm
             ->label('Owner Type')
             ->options([Employee::class => 'Employee'])
             ->reactive()
-            ->required(fn(Get $get) => !$get('is_global'))
-            ->visible(fn(Get $get) => !$get('is_global'))
+            ->required(fn (Get $get) => ! $get('is_global'))
+            ->visible(fn (Get $get) => ! $get('is_global'))
             ->live()
-            ->afterStateUpdated(fn(Set $set) => $set('owner_id', null))
+            ->afterStateUpdated(fn (Set $set) => $set('owner_id', null))
             ->helperText('Select the type of owner for this account');
     }
 
@@ -175,10 +175,10 @@ class SocialMediaForm
     {
         return Select::make('owner_id')
             ->label('Employee')
-            ->options(fn(Get $get) => self::ownerOptions($get('owner_type')))
+            ->options(fn (Get $get) => self::ownerOptions($get('owner_type')))
             ->searchable()
-            ->required(fn(Get $get) => !$get('is_global') && $get('owner_type'))
-            ->visible(fn(Get $get) => !$get('is_global') && $get('owner_type'))
+            ->required(fn (Get $get) => ! $get('is_global') && $get('owner_type'))
+            ->visible(fn (Get $get) => ! $get('is_global') && $get('owner_type'))
             ->helperText('Choose the specific owner of this account');
     }
 
@@ -193,11 +193,11 @@ class SocialMediaForm
                 Rule::unique('social_media', 'platform')
                     ->whereNull('owner_id')
                     ->whereNull('owner_type')
-                    ->ignore($record?->id ?? $record)
+                    ->ignore($record?->id ?? $record),
             ];
         }
 
-        if (!$ownerId || !$ownerType) {
+        if (! $ownerId || ! $ownerType) {
             return [];
         }
 
@@ -205,7 +205,7 @@ class SocialMediaForm
             Rule::unique('social_media', 'platform')
                 ->where('owner_id', $ownerId)
                 ->where('owner_type', $ownerType)
-                ->ignore($record?->id ?? $record)
+                ->ignore($record?->id ?? $record),
         ];
     }
 

@@ -12,7 +12,7 @@ trait CommentReply
     {
         $targetComment = CommentModel::findOrFail($commentId);
         $this->parentId = $targetComment->parent_id ?: $commentId;
-        $this->comment = '@' . $username . ' ';
+        $this->comment = '@'.$username.' ';
         $this->dispatch('focus-comment-input')->self();
     }
 

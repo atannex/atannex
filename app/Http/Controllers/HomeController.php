@@ -17,10 +17,11 @@ class HomeController extends Controller
 {
     use HasAbout;
     use HasContact;
+
     /**
      * HomeController constructor.
      *
-     * @param PassPosts $postService Service for retrieving post data.
+     * @param  PassPosts  $postService  Service for retrieving post data.
      */
     public function __construct(
         protected readonly HasPost $postService
@@ -28,24 +29,22 @@ class HomeController extends Controller
 
     /**
      * Displays the application homepage with curated posts.
-     *
-     * @return View
      */
     public function index(): View
     {
         $postsData = $this->getPostsData();
 
         $viewData = [
-            'heroTitle'      => $this->getHeroTitle($postsData['todayPosts']),
-            'allPosts'       => $this->getMainPosts($postsData['todayPosts'], $postsData['recentPosts']),
-            'editorPicks'    => $postsData['editorPicks'],
-            'sideBlogs'      => $this->getSideBlogs($postsData['todayPosts']),
-            'featuredBlog'   => $this->getFeaturedBlog($postsData['todayPosts']),
-            'regions'        => $postsData['regions'],
-            'todayPosts'     => $postsData['todayPosts'],
-            'featuredPosts'  => $postsData['featuredPosts'],
-            'mostReadPosts'  => $postsData['mostReadPosts'],
-            'popularPosts'   => $postsData['popularPosts'],
+            'heroTitle' => $this->getHeroTitle($postsData['todayPosts']),
+            'allPosts' => $this->getMainPosts($postsData['todayPosts'], $postsData['recentPosts']),
+            'editorPicks' => $postsData['editorPicks'],
+            'sideBlogs' => $this->getSideBlogs($postsData['todayPosts']),
+            'featuredBlog' => $this->getFeaturedBlog($postsData['todayPosts']),
+            'regions' => $postsData['regions'],
+            'todayPosts' => $postsData['todayPosts'],
+            'featuredPosts' => $postsData['featuredPosts'],
+            'mostReadPosts' => $postsData['mostReadPosts'],
+            'popularPosts' => $postsData['popularPosts'],
         ];
 
         return view('home', $viewData);
@@ -59,13 +58,13 @@ class HomeController extends Controller
     private function getPostsData(): array
     {
         return [
-            'todayPosts'    => $this->postService->getTodayPosts(6),
-            'recentPosts'   => $this->postService->getRecentPosts(6),
-            'regions'       => $this->postService->getRegionWithPost(6),
-            'editorPicks'   => $this->postService->getEditorPick(10),
+            'todayPosts' => $this->postService->getTodayPosts(6),
+            'recentPosts' => $this->postService->getRecentPosts(6),
+            'regions' => $this->postService->getRegionWithPost(6),
+            'editorPicks' => $this->postService->getEditorPick(10),
             'featuredPosts' => $this->postService->getPopularPosts(5),
             'mostReadPosts' => $this->postService->getMostReadPosts(6),
-            'popularPosts'  => $this->postService->getPopularPosts(5),
+            'popularPosts' => $this->postService->getPopularPosts(5),
         ];
     }
 

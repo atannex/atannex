@@ -3,15 +3,15 @@
 namespace App\Filament\Resources\Regions\Schemas;
 
 use App\Enums\Flag;
-use Filament\Infolists\Components\TextEntry;
 use App\Enums\Territories;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -35,8 +35,7 @@ class RegionForm
                                             ->maxLength(255)
                                             ->live(onBlur: true)
                                             ->afterStateUpdated(
-                                                fn($state, callable $set) =>
-                                                $set('slug', Str::slug($state))
+                                                fn ($state, callable $set) => $set('slug', Str::slug($state))
                                             )
                                             ->placeholder('e.g., North America')
                                             ->helperText('This will be the primary display name')
@@ -72,7 +71,7 @@ class RegionForm
                                         Select::make('flag')
                                             ->label('Status Flag')
                                             ->required()
-                                            ->options(Flag::labels())
+                                            ->options(Flag::asSelectArray())
                                             ->searchable()
                                             ->preload()
                                             ->default('pending')
@@ -84,7 +83,8 @@ class RegionForm
 
                                         Select::make('territory')
                                             ->label('Territory Type')
-                                            ->options(Territories::labels())
+                                            ->options(Territories::asSelectArray())
+                                            ->default(Territories::QUARTER)
                                             ->searchable()
                                             ->preload()
                                             ->native(false)
@@ -138,26 +138,26 @@ class RegionForm
                             ->schema([
                                 TextEntry::make('created_at')
                                     ->label('Created At')
-                                    ->state(fn($record): string => $record?->created_at
+                                    ->state(fn ($record): string => $record?->created_at
                                         ? $record->created_at->diffForHumans()
                                         : '-')
-                                    ->visible(fn($record) => $record !== null),
+                                    ->visible(fn ($record) => $record !== null),
 
                                 TextEntry::make('updated_at')
                                     ->label('Last Updated')
-                                    ->state(fn($record): string => $record?->updated_at
+                                    ->state(fn ($record): string => $record?->updated_at
                                         ? $record->updated_at->diffForHumans()
                                         : '-')
-                                    ->visible(fn($record) => $record !== null),
+                                    ->visible(fn ($record) => $record !== null),
 
                                 TextEntry::make('slug_path')
                                     ->label('Full Path')
-                                    ->state(fn($record): string => $record?->slug_path ?? '-')
-                                    ->visible(fn($record) => $record !== null && $record->slug_path),
+                                    ->state(fn ($record): string => $record?->slug_path ?? '-')
+                                    ->visible(fn ($record) => $record !== null && $record->slug_path),
                             ])
                             ->collapsible()
                             ->collapsed()
-                            ->visible(fn($record) => $record !== null),
+                            ->visible(fn ($record) => $record !== null),
                     ])
                     ->columnSpan(['lg' => 1]),
             ])
