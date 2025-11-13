@@ -6,7 +6,7 @@ namespace Atannex\Views\Traits;
 
 use App\Models\Modules\PostModule;
 use App\Models\Regions\Category;
-use Atannex\Traits\HasPlatforms;
+use Atannex\Concerns\HasPlatforms;
 use Illuminate\View\View;
 
 /**

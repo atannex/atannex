@@ -5,7 +5,7 @@ namespace Atannex\Repositories\Traits;
 use App\Models\Posts\Post;
 use App\Models\Regions\Category;
 use App\Models\Regions\Region;
-use Atannex\Traits\HasResolver;
+use Atannex\Concerns\HasResolver;
 use Atannex\Traits\HasTree;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;

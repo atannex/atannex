@@ -7,7 +7,7 @@ use App\Models\Others\SocialMedia;
 use App\Models\Pivots\EmployeeDepartment;
 use App\Models\Posts\Post;
 use App\Models\User;
-use Atannex\Traits\GeneratesEmployeeCode;
+use Atannex\Concerns\EmployeeCode;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Employee extends Model
 {
-    use GeneratesEmployeeCode;
+    use EmployeeCode;
 
     protected $fillable = [
         'user_id',
