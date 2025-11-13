@@ -2,18 +2,19 @@
 
 namespace Atannex\Relations;
 
-use App\Models\Comments\Comment;
-use App\Models\Modules\PostModule;
-use App\Models\Pivots\PostRegion;
+use App\Models\Tags\Tag;
+use App\Models\Posts\Post;
 use App\Models\Pivots\PostTag;
+use App\Models\Regions\Region;
+use App\Models\Comments\Comment;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
-use App\Models\Regions\Region;
-use App\Models\Tags\Tag;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Pivots\PostRegion;
+use App\Models\Modules\PostModule;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Trait PostRelation

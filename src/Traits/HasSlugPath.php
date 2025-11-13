@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Atannex\Traits;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Posts\Post;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait HasSlugPath
 {
@@ -55,6 +56,14 @@ trait HasSlugPath
 
         foreach ($this->children as $child) {
             $child->updateSlugPathIfNeeded();
+
+            $child->posts()->chunk(100, function ($posts) {
+                $posts->each(function (Post $post) {
+                    $post->refreshSlugPath();
+                    $post->updateQuietly(['slug_path' => $post->slug_path]);
+                });
+            });
+
             $child->updateDescendantsSlugPaths();
         }
     }
@@ -85,8 +94,17 @@ trait HasSlugPath
         static::saved(function (Model $model) {
             if ($model->wasChanged(['slug', 'parent_id'])) {
                 DB::transaction(function () use ($model) {
+
+                    $model->refresh();
+
                     $model->updateSlugPathIfNeeded();
+
                     $model->updateDescendantsSlugPaths();
+
+                    $model->posts()->get()->each(function ($post) {
+                        $post->refreshSlugPath();
+                        $post->updateQuietly(['slug_path' => $post->slug_path]);
+                    });
                 });
             }
         });

@@ -17,12 +17,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-/**
- * Class Post
- *
- * Represents a post with hierarchical slug management,
- * commenting, and interaction features.
- */
 class Post extends Model implements Commentable
 {
     use HasBreaking;
@@ -36,16 +30,8 @@ class Post extends Model implements Commentable
     use Slugging;
     use SoftDeletes;
 
-    /**
-     * Source attribute for slug generation.
-     */
     protected string $slugSource = 'title';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'title',
         'slug',
@@ -63,60 +49,74 @@ class Post extends Model implements Commentable
         'feature_until',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'published_at' => 'datetime',
-        'breaking_until' => 'datetime',
-        'feature_until' => 'datetime',
-        'metadata' => 'array',
-        'is_breaking' => 'boolean',
+        'published_at'    => 'datetime',
+        'breaking_until'  => 'datetime',
+        'feature_until'   => 'datetime',
+        'metadata'        => 'array',
+        'is_breaking'     => 'boolean',
     ];
 
-    /**
-     * The attributes that should be mutated to dates.
-     * (SoftDeletes and timestamps)
-     *
-     * @var array<string>
-     */
     protected $dates = [
         'deleted_at',
         'created_at',
         'updated_at',
     ];
 
-    /**
-     * Image attribute used by HasCleaning trait.
-     */
     public function getImageAttributeName(): string
     {
         return 'image';
     }
 
-    /**
-     * Directory used by HasCleaning trait.
-     */
     public function getImageDirectory(): string
     {
         return 'posts';
     }
 
-    /**
-     * Get the employee who last updated the post.
-     */
     public function updatedBy()
     {
         return $this->belongsTo(Employee::class, 'updated_by');
     }
 
-    /**
-     * Check if the user is authenticated.
-     */
     protected function isUserAuthenticated(): bool
     {
         return Auth::check();
+    }
+
+    /**
+     * Rebuild slug_path based on the category's slug_path + post slug.
+     */
+    public function refreshSlugPath(): void
+    {
+        $category = $this->category()
+            ->withoutGlobalScopes()
+            ->select(['id', 'slug_path'])
+            ->first();
+
+        $this->slug_path = trim($category->slug_path . '/' . $this->slug, '/');
+    }
+
+    /**
+     * When a Post is being saved → generate slug_path from the *current* category
+     *
+     * After the post is persisted → make sure the column is in sync
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function (Post $post) {
+            if ($post->isDirty(['slug', 'category_id'])) {
+                $post->refreshSlugPath();
+                $post->slug_path = $post->slug_path;
+            }
+        });
+
+        static::saved(function (Post $post) {
+            if ($post->wasChanged(['slug', 'category_id'])) {
+                $post->refreshSlugPath();
+                $post->updateQuietly(['slug_path' => $post->slug_path]);
+            }
+        });
     }
 }
