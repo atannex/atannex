@@ -54,11 +54,7 @@ trait PostQuery
         return $this->paginate(
             Post::query()
                 ->published()
-                ->whereHas('category', fn ($q) => $q->doesntHave('children'))
-                ->whereHas(
-                    'regions',
-                    fn ($q) => $q->whereIn('region_id', $this->getTreeIds($region))
-                )
+                ->whereHas('regions', fn ($q) => $q->whereIn('region_id', $this->getTreeIds($region)))
                 ->with($this->postRelations()),
             $limit
         );
