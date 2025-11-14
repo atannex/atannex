@@ -7,6 +7,7 @@ namespace App\Models\Regions;
 use App\Contracts\Sluggable;
 use App\Enums\Flag;
 use Atannex\Concerns\HasResolver;
+use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Filters\GetHierarchy;
 use Atannex\Relations\CategoryRelation;
@@ -23,6 +24,7 @@ class Category extends Model implements Sluggable
     use HasResolver;
     use HasSlugPath;
     use Slugging;
+    use Scoping;
     use SoftDeletes;
 
     protected $table = 'categories';

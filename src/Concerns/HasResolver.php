@@ -43,7 +43,7 @@ trait HasResolver
     protected function resolveCategory(string $slug): ?Category
     {
         return Category::query()
-            ->where('flag', Flag::PUBLISHED)
+            ->flagged(Flag::PUBLISHED)
             ->where('slug_path', $slug)
             ->first();
     }
@@ -70,6 +70,7 @@ trait HasResolver
     protected function resolvePost(string $slug): ?Post
     {
         return Post::query()
+            ->published()
             ->where('slug_path', $slug)
             ->first();
     }
@@ -86,8 +87,8 @@ trait HasResolver
     protected function resolveRegion(string $slug): ?Region
     {
         return Region::query()
+            ->flagged(Flag::PUBLISHED)
             ->where('slug_path', $slug)
-            ->where('flag', Flag::PUBLISHED)
             ->first();
     }
 

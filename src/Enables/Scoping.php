@@ -102,11 +102,11 @@ trait Scoping
     }
 
     /**
-     * Scope: Filter based on enum flags.
+     * Scope: Filter by any Flag enum value.
      */
-    protected function scopeFlagged(Builder $query, Flag $flag): Builder
+    protected function scopeFlagged(Builder $query, string $flag): Builder
     {
-        return $query->where('flag', $flag->value);
+        return $query->where('flag', $flag);
     }
 
     /**
