@@ -2,80 +2,106 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Posts\Post;
-use App\Models\Regions\Category;
-use App\Models\Regions\Employee;
-use App\Models\Regions\Region;
-use App\Models\Tags\Tag;
 use Atannex\Binders\HasView;
-use Atannex\Concerns\HasResolver;
 use Atannex\Services\RegionService;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\View\View;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Atannex\Concerns\HasResolver;
 
 /**
- * RegionController
+ * Class RegionController
  *
- * Handles all page-related requests.
- * This controller uses a resolver-based approach to determine
- * the type of content for a given slug and return the appropriate view.
+ * Resolves a slug into its corresponding content type and renders the appropriate view.
+ * The resolution follows a fixed priority chain: region > category > tag > author > post > sub-region > date archive.
  */
 class RegionController extends Controller
 {
     use HasResolver;
 
     /**
-     * PageController constructor.
+     * RegionController constructor.
      *
-     * @param  PageService  $pageService  Service to handle page-related business logic.
-     * @param  HasView  $getView  Service to render views dynamically.
+     * Applies authentication, verification, and password confirmation middleware.
+     *
+     * @param RegionService $regionService  Handles business logic related to regions.
+     * @param HasView       $viewBinder     Responsible for rendering views dynamically.
      */
     public function __construct(
         protected readonly RegionService $regionService,
-        protected readonly HasView $getView,
+        protected readonly HasView $viewBinder,
     ) {
-
         $this->middleware(['auth', 'verified', 'password.confirm']);
     }
 
     /**
-     * Resolve a slug to the correct resource and render its view.
+     * Resolve the provided slug into a content entity and return the corresponding view.
      *
-     * @param  string  $slug  The slug to resolve (e.g., page URL segment).
+     * This method checks each type of content in priority order. The first successful match
+     * results in rendering its view. If no matches are found, a 404 is returned.
      *
-     * @throws HttpResponseException Throws 404 if resource is not found.
+     * @param  string  $slug  The URL slug to resolve.
+     * @return View            The rendered view for the resolved entity.
+     *
+     * @throws HttpResponseException 404 if no content matches the slug.
      */
     public function resolve(string $slug): View
     {
-        if ($this->regionService->getMainRegion($slug) instanceof Region) {
+        // Ordered list of [resolver, renderer] pairs.
+        $handlers = [
+            // Main region (homepage)
+            [
+                fn($slug) => $this->regionService->getMainRegion($slug),
+                fn()      => $this->viewBinder->renderRegionPageView($slug),
+            ],
 
-            return $this->getView->renderRegionPageView($slug);
-        } elseif (($category = $this->resolveCategory($slug)) instanceof Category) {
+            // Category content
+            [
+                fn($slug) => $this->resolveCategory($slug),
+                fn($category) => $this->viewBinder->renderCategoryView($category),
+            ],
 
-            return $this->getView->renderCategoryView($category);
-        } elseif (($tag = $this->resolveTag($slug)) instanceof Tag) {
+            // Tagged content
+            [
+                fn($slug) => $this->resolveTag($slug),
+                fn($tag)  => $this->viewBinder->renderTagView($tag),
+            ],
 
-            return $this->getView->renderTagView($tag);
-        } elseif (($author = $this->resolveAuthor($slug)) instanceof Employee) {
+            // Author-specific content
+            [
+                fn($slug) => $this->resolveAuthor($slug),
+                fn($author) => $this->viewBinder->renderAuthorView($author),
+            ],
 
-            return $this->getView->renderAuthorView($author);
-        } elseif (($post = $this->resolvePost($slug)) instanceof Post) {
+            // Individual post
+            [
+                fn($slug) => $this->resolvePost($slug),
+                fn($post) => $this->viewBinder->renderPostShow($post->category, $slug),
+            ],
 
-            return $this->getView->renderPostShow($post->category, $slug);
-        } elseif (($region = $this->resolveRegion($slug)) instanceof Region) {
+            // Sub-region or location-specific pages
+            [
+                fn($slug) => $this->resolveRegion($slug),
+                fn($region) => $this->viewBinder->renderRegionView($region),
+            ],
+        ];
 
-            return $this->getView->renderRegionView($region);
-        } else {
+        // Iterate through handlers and return the first matching view
+        foreach ($handlers as [$resolver, $renderer]) {
+            $result = $resolver($slug);
 
-            foreach (['month', 'year'] as $part) {
-
-                if ($date = $this->resolvePostByDatePart($slug, $part)) {
-
-                    return $this->getView->renderDateView($date['value'], $date['type']);
-                }
+            if ($result) {
+                return $renderer($result);
             }
         }
 
+        // Fallback: Check for archive views (year/month)
+        foreach (['year', 'month'] as $part) {
+            if ($date = $this->resolvePostByDatePart($slug, $part)) {
+                return $this->viewBinder->renderDateView($date['value'], $date['type']);
+            }
+        }
+
+        // No match found: throw 404
         abort(404);
     }
 }
