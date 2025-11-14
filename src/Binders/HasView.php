@@ -10,30 +10,30 @@ use Atannex\Services\TagService;
 use Atannex\Views\Views;
 
 /**
- * Class GetView
+ * Class HasView
  *
- * Acts as a centralized binder for view-related functionalities.
- * Aggregates multiple view traits (AuthorView, CategoryView, PageView, etc.)
- * and provides access to essential services such as PageService, TagService,
- * and CategoryService. Facilitates rendering of various views like posts,
- * pages, tags, authors, regions, and dates.
+ * Central binder for all view-related logic.
+ * Loads the traits and services required to render posts, regions, categories,
+ * tags, components, and other content types.
+ *
+ * This class aggregates essential services such as RegionService, TagService,
+ * and CategoryService, ensuring consistent view rendering across the app.
  */
 class HasView
 {
     /**
      * Constructor
      *
-     * Injects the services and binders required for view rendering.
-     *
-     * @param  PageService  $pageService  Service for page-related operations.
-     * @param  Atannex  $atannex  Core provider for application-wide utilities.
-     * @param  TagService  $tagService  Service for tag-related operations.
-     * @param  CategoryService  $categoryService  Service for category-related operations.
-     * @param  HasPost  $getPost  Helper for fetching and preparing post data.
-     * @param  HasComponent  $getComponent  Helper for fetching reusable components.
+     * @param  RegionService     $regionService     Service for region-related operations.
+     * @param  Atannex           $atannex           Core provider for application-wide utilities.
+     * @param  TagService        $tagService        Service for tag-related operations.
+     * @param  CategoryService   $categoryService   Service for category-related operations.
+     * @param  HasPost           $getPost           Helper for preparing post data.
+     * @param  HasComponent      $getComponent      Helper for fetching reusable components.
+     * @param  ShareService      $shareService      Service for share/metadata operations.
      */
     public function __construct(
-        protected readonly RegionService $pageService,
+        protected readonly RegionService $regionService,
         protected readonly Atannex $atannex,
         protected readonly TagService $tagService,
         protected readonly CategoryService $categoryService,
@@ -43,8 +43,8 @@ class HasView
     ) {}
 
     /**
-     * Traits providing modular view logic.
-     * Each trait contains methods for rendering or preparing specific view types.
+     * Traits containing view logic for regions, posts, categories, tags, authors,
+     * dates, and shared components.
      */
     use Views;
 }

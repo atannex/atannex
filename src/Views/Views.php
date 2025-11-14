@@ -53,7 +53,7 @@ trait Views
      */
     public function renderRegionPageView(string $slug): View
     {
-        $region = $this->requireValue($this->pageService->getMainRegion($slug));
+        $region = $this->requireValue($this->regionService->getMainRegion($slug));
 
         $this->resolveSection($region);
 
