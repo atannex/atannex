@@ -49,7 +49,7 @@ class TagRepository implements TagInterface
     public function searchTags(string $searchTerm): Collection
     {
         return $this->queryTag()
-            ->where('name', 'like', '%'.$searchTerm.'%')
+            ->where('name', 'like', '%' . $searchTerm . '%')
             ->orderBy('name')
             ->get();
     }
@@ -61,11 +61,9 @@ class TagRepository implements TagInterface
      */
     public function getPopularTags(int $limit = 10): Collection
     {
-        return $this->queryTag()
-            ->whereHas('posts', fn ($q) => $q->published())
-            ->withCount(['posts' => fn ($q) => $q->published()])
-            ->orderByDesc('posts_count')
+        return Tag::withCount('posts')
             ->having('posts_count', '>=', 2)
+            ->orderBy('posts_count', 'desc')
             ->take($limit)
             ->get();
     }

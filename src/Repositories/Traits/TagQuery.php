@@ -3,7 +3,6 @@
 namespace Atannex\Repositories\Traits;
 
 use App\Enums\Flag;
-use App\Models\Posts\Post;
 use App\Models\Regions\Category;
 use App\Models\Tags\Tag;
 use Atannex\Traits\HasTree;
@@ -19,17 +18,15 @@ trait TagQuery
     protected const POPULAR_LIMIT = 12;
 
     /**
-     * Posts filtered by tag.
+     * Get posts filtered by tag.
      */
     public function postsByTag(Tag $tag, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
     {
-        return $this->paginate(
-            Post::published()
-                ->whereHas('tags', fn ($q) => $q->whereKey($tag->id))
-                ->with($this->postRelations()),
-            $limit
-        );
+        return $tag->posts()
+            ->latest()
+            ->paginate($limit);
     }
+
 
     /**
      * Popular tags inside the Tag's category tree.
@@ -40,9 +37,9 @@ trait TagQuery
         $treeIds = $this->getTreeIds($root);
 
         return Tag::query()
-            ->whereHas('posts', fn ($q) => $q->whereIn('category_id', $treeIds))
+            ->whereHas('posts', fn($q) => $q->whereIn('category_id', $treeIds))
             ->withCount([
-                'posts' => fn ($q) => $q->whereIn('category_id', $treeIds),
+                'posts' => fn($q) => $q->whereIn('category_id', $treeIds),
             ])
             ->orderByDesc('posts_count')
             ->limit($this->sanitizeLimit($limit))

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atannex\Services;
 
+use App\Models\Regions\Category;
 use App\Models\Regions\Region;
 use Atannex\Contracts\RegionInterface;
 use Illuminate\Support\Collection;
@@ -18,32 +19,33 @@ final class RegionService
     ) {}
 
     /**
-     * Retrieve a specific active main region by slug.
+     * Retrieve a parent region (main region) by slug.
      *
-     * @return Region The matching Region instance.
+     * @param string $slug
+     * @return Region
      */
-    public function getMainRegion(string $slug): ?Region
+    public function getRegionBySlug(string $slug): ?Region
     {
-        return $this->interface->getMainRegion($slug);
+        return $this->interface->getRegionBySlug($slug);
     }
 
     /**
-     * Retrieve all top-level published region categories.
+     * Retrieve all root category regions.
      *
-     * @return Collection<int, Region>
+     * @return Collection<int, Category>
      */
-    public function getAllCategoryRegions(): Collection
+    public function getRootCategoryRegions(): Collection
     {
-        return $this->interface->getAllCategoryRegions();
+        return $this->interface->getRootCategoryRegions();
     }
 
     /**
-     * Retrieve all published and active main regions.
+     * Retrieve all root (top-level) regions.
      *
      * @return Collection<int, Region>
      */
-    public function getAllMainRegions(): Collection
+    public function getRootRegions(): Collection
     {
-        return $this->interface->getAllMainRegions();
+        return $this->interface->getRootRegions();
     }
 }

@@ -71,7 +71,7 @@ final class CategoryService
     /**
      * Recent posts related to the same category tree.
      */
-    public function recentPosts(Post $post, int $limit = self::RECENT_LIMIT): Collection
+    public function recentPosts(?Post $post = null, int $limit = self::RECENT_LIMIT): Collection
     {
         return $this->interface->recentPosts($post, $limit);
     }
@@ -95,7 +95,7 @@ final class CategoryService
     /**
      * Category suggestions based on tag.
      */
-    public function relatedCategoriesByTag(Tag $tag): Collection
+    public function relatedCategoriesByTag(?Tag $tag): Collection
     {
         return $this->interface->relatedCategoriesByTag($tag);
     }

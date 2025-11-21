@@ -4,7 +4,7 @@ namespace Atannex\Traits;
 
 use Illuminate\Support\Str;
 
-trait GeneratesUniqueCode
+trait GeneratesCode
 {
     /**
      * Generate the base code: ATA + year + abbreviation + unique 4-digit number

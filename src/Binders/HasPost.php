@@ -12,7 +12,6 @@ use Atannex\Sections\GetPosts\ByRecent;
 use Atannex\Sections\GetPosts\ByRegion;
 use Atannex\Sections\GetPosts\ByRelated;
 use Atannex\Sections\GetPosts\ByToday;
-use Atannex\Sections\GetPosts\ModuleBySlug;
 
 /**
  * Class GetPost
@@ -37,5 +36,4 @@ class HasPost
     use ByRegion;
     use ByRelated;
     use ByToday;
-    use ModuleBySlug;
 }

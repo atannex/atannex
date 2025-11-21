@@ -2,11 +2,11 @@
 
 namespace Atannex\Concerns;
 
-use Atannex\Traits\GeneratesUniqueCode;
+use Atannex\Traits\GeneratesCode;
 
 trait DepartmentCode
 {
-    use GeneratesUniqueCode;
+    use GeneratesCode;
 
     public static function bootGeneratesDepartmentCode()
     {
