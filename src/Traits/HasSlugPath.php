@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Atannex\Traits;
 
+use App\Enums\Flag;
 use App\Models\Posts\Post;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait HasSlugPath
 {
@@ -25,8 +26,11 @@ trait HasSlugPath
      */
     public function children(): HasMany
     {
-        return $this->hasMany(static::class, 'parent_id');
+        return $this->hasMany(static::class, 'parent_id')
+            ->where('flag', Flag::PUBLISHED)
+            ->whereNull('deleted_at');
     }
+
 
     /**
      * Generate the full hierarchical slug path.

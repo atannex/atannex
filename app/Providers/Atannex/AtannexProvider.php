@@ -28,7 +28,7 @@ class AtannexProvider extends ServiceProvider
     {
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Comment::class, CommentPolicy::class);
-        Gate::after(fn ($user) => $user->hasRole('Super Administrator') ? true : null);
+        Gate::after(fn($user) => $user->hasRole('Super Administrator') ? true : null);
         $this->shareGlobalData($lebialem);
     }
 

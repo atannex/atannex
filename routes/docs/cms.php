@@ -52,5 +52,7 @@ Route::middleware(['onboarded'])->group(function () {
 Route::middleware(['pages'])
     ->controller(RegionController::class)
     ->group(function () {
-        Route::get('{slug}', 'resolve')->where('slug', '.*')->name('page.index');
+        Route::get('{slug}', 'resolve')
+            ->where('slug', '.*')
+            ->name('page.index');
     });

@@ -4,19 +4,21 @@ namespace App\Models\Tags;
 
 use App\Models\Pivots\PostTag;
 use App\Models\Posts\Post;
-use Atannex\Enables\Slugging;
+use Atannex\Traits\GeneratesSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tag extends Model
 {
-    use Slugging;
     use SoftDeletes;
+    use GeneratesSlug;
 
     /**
      * Source field for slug generation.
      */
+    protected string $slugMode = 'mixed';
+
     protected string $slugSource = 'name';
 
     /**

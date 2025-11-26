@@ -1,7 +1,9 @@
 <x-layouts.page :title="$seoTitle">
 
-    <x-partials.breadcrumb />
+    @foreach ($region->sections as $section)
 
-    @include('sections.category-3-column', ['posts' => $posts])
+    @include("sections.{$section->slug}", ['section' => $section])
+
+    @endforeach
 
 </x-layouts.page>

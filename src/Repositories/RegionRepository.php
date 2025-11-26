@@ -11,17 +11,16 @@ use Illuminate\Support\Collection;
 /**
  * Repository handling region and category retrieval.
  *
- * Implements the RegionInterface without internal error handling.
- * Assumes all data exists and queries always return valid results.
+ * Designed to always return non-null results where required.
  */
 class RegionRepository implements RegionInterface
 {
     /**
-     * Retrieve all top-level published region categories with their children recursively loaded.
+     * Retrieve all published top-level region categories with their children.
      *
-     * @return \Illuminate\Database\Eloquent\Collection<int, Category>
+     * @return Collection<int, Category>
      */
-    public function getAllCategoryRegions(): Collection
+    public function getRootCategoryRegions(): Collection
     {
         return Category::query()
             ->where('flag', Flag::PUBLISHED)
@@ -31,11 +30,12 @@ class RegionRepository implements RegionInterface
     }
 
     /**
-     * Retrieve all published and active main regions along with their nested children.
+     * Retrieve all published top-level regions (main regions)
+     * with their nested children loaded recursively.
      *
      * @return Collection<int, Region>
      */
-    public function getAllMainRegions(): Collection
+    public function getRootRegions(): Collection
     {
         return Region::query()
             ->where('flag', Flag::PUBLISHED)
@@ -45,14 +45,14 @@ class RegionRepository implements RegionInterface
     }
 
     /**
-     * Retrieve a single published region by slug,
-     * including only published sections and widgets.
+     * Retrieve a single parent region by slug.
+     * Always returns a Region or throws an exception.
      */
-    public function getMainRegion(string $slug): ?Region
+    public function getRegionBySlug(string $slug): ?Region
     {
         return Region::query()
             ->where('flag', Flag::PUBLISHED)
-            ->where('slug', $slug)
+            ->where('slug_path', $slug)
             ->with([
                 'sections',
                 'sections.widgets',

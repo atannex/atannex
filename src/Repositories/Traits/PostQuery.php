@@ -22,29 +22,39 @@ trait PostQuery
     /**
      * Paginate posts under any Category tree.
      */
+    /**
+     * Paginate posts assigned to the given Category and its full subtree.
+     */
     public function postsByCategory(Category $category, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
     {
-        return $this->paginate(
-            Post::published()
-                ->whereIn('category_id', $this->getTreeIds($category))
-                ->with($this->postRelations()),
-            $limit
-        );
+        $categoryIds = $this->getTreeIds($category);
+
+        return Post::published()
+            ->whereIn('category_id', $categoryIds)
+            ->with($this->postRelations())
+            ->latest()
+            ->paginate($limit);
     }
+
 
     /**
      * Recent posts from within same tree — excluding the current post.
      */
-    public function recentPosts(Post $post, int $limit = self::RECENT_LIMIT): Collection
+    public function recentPosts(?Post $post = null, int $limit = self::RECENT_LIMIT): Collection
     {
-        return Post::published()
-            ->whereIn('category_id', $this->getTreeIds($this->getRoot($post->category)))
-            ->where('id', '!=', $post->id)
+        $query = Post::published()
             ->with($this->postRelations())
             ->latest('published_at')
-            ->limit($this->sanitizeLimit($limit))
-            ->get();
+            ->limit($this->sanitizeLimit($limit));
+
+        if ($post) {
+            $query->whereIn('category_id', $this->getTreeIds($this->getRoot($post->category)))
+                ->where('id', '!=', $post->id);
+        }
+
+        return $query->get();
     }
+
 
     /**
      * Paginate posts under a Region tree (leaf-category filtering).
@@ -54,27 +64,27 @@ trait PostQuery
         return $this->paginate(
             Post::query()
                 ->published()
-                ->whereHas('regions', fn ($q) => $q->whereIn('region_id', $this->getTreeIds($region)))
+                ->whereHas('regions', fn($q) => $q->whereIn('region_id', $this->getTreeIds($region)))
                 ->with($this->postRelations()),
             $limit
         );
     }
 
     /**
-     * Paginate posts by archive year+month.
+     * Paginate posts by archive year and/or month.
      */
     public function postsByDate(string $yearMonth, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
     {
-        $date = $this->parseDateSlug($yearMonth);
+        [$year, $month] = $this->extractDateParts($yearMonth);
 
-        return $this->paginate(
-            Post::published()
-                ->when($date['year'], fn ($q) => $q->whereYear('published_at', $date['year']))
-                ->when($date['month'], fn ($q) => $q->whereMonth('published_at', $date['month']))
-                ->with($this->postRelations()),
-            $limit
-        );
+        $query = Post::published()
+            ->when($year, fn($q) => $q->whereYear('published_at', $year))
+            ->when($month, fn($q) => $q->whereMonth('published_at', $month))
+            ->with($this->postRelations());
+
+        return $this->paginate($query, $limit);
     }
+
 
     /**
      * Paginate posts by author.

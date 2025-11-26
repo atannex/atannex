@@ -51,12 +51,13 @@ interface CategoryInterface
     public function relatedCategories(Category $category): Collection;
 
     /**
-     * Get recent posts excluding the given post.
+     * Get recent posts, optionally excluding the given post.
      */
     public function recentPosts(
-        Post $post,
+        ?Post $post = null,
         int $limit = self::PAGINATION_RECENT_POSTS
     ): Collection;
+
 
     /**
      * Get popular tags used within the post’s category tree.

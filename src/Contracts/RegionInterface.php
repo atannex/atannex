@@ -8,29 +8,33 @@ use Illuminate\Support\Collection;
 /**
  * Interface RegionInterface
  *
- * Contract for retrieving and categorizing regions.
+ * Contract for retrieving and classifying regions.
  */
 interface RegionInterface
 {
     /**
-     * Retrieve a main region by its slug path.
+     * Retrieve a parent region by its slug.
      *
-     * @param  string  $slug_path  The unique slug identifier for the region.
-     * @return Region|null The matching Region instance or null if not found.
+     * Must always return a Region instance.
+     * If no region is found, the implementation should handle this internally
+     * (e.g., throw an exception or return a default/fallback Region).
+     *
+     * @param  string  $slug
+     * @return Region
      */
-    public function getMainRegion(string $slug_path): ?Region;
+    public function getRegionBySlug(string $slug): ?Region;
 
     /**
-     * Get all category-related regions.
+     * Retrieve all root category regions.
      *
-     * @return Collection<int, Region> Collection of category Region instances.
+     * @return Collection<int, Region>
      */
-    public function getAllCategoryRegions(): Collection;
+    public function getRootCategoryRegions(): Collection;
 
     /**
-     * Get all main regions.
+     * Retrieve all root regions (main regions).
      *
-     * @return Collection<int, Region> Collection of main Region instances.
+     * @return Collection<int, Region>
      */
-    public function getAllMainRegions(): Collection;
+    public function getRootRegions(): Collection;
 }

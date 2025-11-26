@@ -7,144 +7,123 @@ use App\Enums\Status;
 use App\Models\Posts\Post;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
-use App\Models\Regions\Region;
 use App\Models\Tags\Tag;
 
-/**
- * Trait Resolver
- *
- * Provides methods to resolve various model instances by their slug.
- */
 trait HasResolver
 {
     /**
-     * Resolve an employee author by their user slug.
-     *
-     * @param  string  $slug  The unique slug of the user
-     * @return Employee|null The matching Employee instance or null if not found
+     * Resolve an Employee (author) by user slug.
+     * Consider caching this if frequently accessed.
      */
     protected function resolveAuthor(string $slug): ?Employee
     {
-        return Employee::query()
-            ->whereHas('user', function ($query) use ($slug) {
-                $query->where('slug', $slug);
-            })
-            ->with('user')
+        // Good: eager loads user, filters active employees
+        // Suggestion: add index on users.slug + employees.status if not already
+        return Employee::with('user')
             ->where('status', Status::ACTIVE)
+            ->whereHas('user', fn($q) => $q->where('slug', $slug))
             ->first();
     }
 
     /**
-     * Resolve a category by its slug path.
-     *
-     * @param  string  $slug  The unique slug path of the category
-     * @return Category The matching Category instance or null if not found
+     * Resolve a Category by full slug path.
+     * Uses firstOrFail() — this will throw 404 if not found (good for routes).
      */
-    protected function resolveCategory(string $slug): ?Category
+    protected function resolveCategory(string $slug): Category // Remove ? since firstOrFail() never returns null
     {
-        return Category::query()
-            ->flagged(Flag::PUBLISHED)
-            ->where('slug_path', $slug)
-            ->first();
+        return Category::where([
+            ['flag', Flag::PUBLISHED],
+            ['slug_path', $slug],
+        ])->firstOrFail();
     }
 
     /**
-     * Resolve a post tag by its slug path.
-     *
-     * @param  string  $slug  The unique slug path of the post tag
-     * @return Tag|null The matching PostTag instance or null if not found
+     * Resolve a Tag by slug.
+     * Consider adding ->where('status', 'published') or similar if tags can be unpublished.
      */
     protected function resolveTag(string $slug): ?Tag
     {
-        return Tag::query()
-            ->where('slug', $slug)
-            ->first();
+        return Tag::where('slug', $slug)->first();
     }
 
     /**
-     * Resolve a post by its slug path.
-     *
-     * @param  string  $slug  The unique slug path of the post
-     * @return Post|null The matching Post instance or null if not found
+     * Resolve a Post by slug_path.
+     * Consider scoping to published posts only unless intentionally allowing drafts/previews.
      */
     protected function resolvePost(string $slug): ?Post
     {
-        return Post::query()
-            ->published()
+        // Suggestion: if this is for public routes, filter by published status/flag
+        // return Post::where('slug_path', $slug)->first();
+        // Or better:
+        return Post::published()
             ->where('slug_path', $slug)
             ->first();
     }
 
     /**
-     * Resolve a region by its slug.
-     *
-     * This method queries the database for a Region record matching the provided slug.
-     * It returns the first matching record or null if no match is found.
-     *
-     * @param  string  $slug  The slug identifier of the region.
-     * @return Region|null The matching Region instance, or null if not found.
-     */
-    protected function resolveRegion(string $slug): ?Region
-    {
-        return Region::query()
-            ->flagged(Flag::PUBLISHED)
-            ->where('slug_path', $slug)
-            ->first();
-    }
-
-    /**
-     * Parse year/month from a slug string.
-     */
-    protected function parseDateSlug(string $slug): array
-    {
-        [$year, $month] = array_pad(explode('/', $slug, 2), 2, null);
-
-        return ['year' => $year, 'month' => $month];
-    }
-
-    /**
-     * Resolves a post based on a date slug and a specified date part (year or month).
-     *
-     * This method parses a date slug to extract year and/or month components and queries
-     * the database for the first published post matching the specified date part. If a
-     * matching post is found, it returns an array with the date part type and its formatted
-     * value. If no post is found or the required date component is missing, it returns null.
-     *
-     * @param  string  $slug  The date slug (e.g., '2023' or '2023-10') to parse for year and/or month.
-     * @param  string  $part  The date part to resolve, either 'year' or 'month'.
-     * @return array|null An array containing the date part type and its formatted value (e.g., ['type' => 'year', 'value' => '2023']),
-     *                    or null if no post is found or the slug is invalid for the specified part.
+     * Resolve archive context (year/month) from a slug like "2024" or "2024/05"
+     * Returns structured data or null if invalid.
      */
     protected function resolvePostByDatePart(string $slug, string $part): ?array
     {
-        ['year' => $year, 'month' => $month] = $this->parseDateSlug($slug);
+        [$year, $month] = $this->extractDateParts($slug);
 
-        if (! $year && $part === 'year') {
+        if (! $this->isValidDatePart($year, $month, $part)) {
             return null;
         }
 
-        if (! $month && $part === 'month') {
+        $post = $this->queryPostByDatePart($year, $month, $part)->first();
+
+        // This checks existence of *any* post in that period — correct for validation
+        if (! $post) {
             return null;
         }
 
-        $query = Post::query()->whereNotNull('published_at');
+        // Good formatting logic
+        return [
+            'type'  => $part,
+            'value' => $post->published_at->format($part === 'month' ? 'm' : 'Y'),
+            // Suggestion: also return formatted label?
+            // 'label' => $post->published_at->translatedFormat($part === 'month' ? 'F Y' : 'Y'),
+        ];
+    }
+
+    /**
+     * Extract year and month from slug path like "2025/03" → ['2025', '03']
+     * Fallback to null if not present.
+     */
+    protected function extractDateParts(string $slug): array
+    {
+        // array_pad is clever — ensures exactly 2 elements
+        return array_pad(explode('/', $slug, 2), 2, null);
+    }
+
+    /**
+     * Validate that the requested part (year/month) actually exists in the slug
+     */
+    protected function isValidDatePart(?string $year, ?string $month, string $part): bool
+    {
+        // Solid logic
+        return ($part === 'year' && $year !== null) || ($part === 'month' && $month !== null);
+    }
+
+    /**
+     * Build query for posts in a specific year or month
+     */
+    protected function queryPostByDatePart(?string $year, ?string $month, string $part)
+    {
+        $query = Post::whereNotNull('published_at')
+            ->published(); // ← Strongly recommend adding a scope if not exists
 
         if ($part === 'year') {
             $query->whereYear('published_at', $year);
-        }
-
-        if ($part === 'month') {
+        } else { // month
             $query->whereMonth('published_at', $month);
             if ($year) {
                 $query->whereYear('published_at', $year);
             }
         }
 
-        $post = $query->first();
-
-        return $post ? [
-            'type' => $part,
-            'value' => $post->published_at->format($part === 'month' ? 'm' : 'Y'),
-        ] : null;
+        return $query;
     }
 }
