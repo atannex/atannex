@@ -68,12 +68,13 @@
 }
 
 .author-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    flex-shrink: 0 !important;
 }
+
 .blog-info .fa {
     font-size: 1.1rem;
     transition: transform 0.2s;
