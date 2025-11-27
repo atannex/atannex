@@ -1,4 +1,16 @@
-<x-layouts.show :ogTitle="$module->post->title" :ogDescription="$module->post->description" :ogImage="asset('storage/' . $module->post->image)" :publishedAt="$module->post->published_at" :updatedAt="$module->post->updated_at">
+<x-layouts.base :ogTitle="$module->post->title" :ogDescription="$module->post->description" :ogImage="asset('storage/' . $module->post->image)" :publishedAt="$module->post->published_at" :updatedAt="$module->post->updated_at">
+
+    <x-sections.preloader />
+
+    @livewire('search.web')
+
+    <x-sections.side-menu />
+
+    <livewire:forms.subscription />
+
+    <x-sections.category.header />
+
+    <x-partials.breadcrumb />
 
     <section class="th-blog-wrapper blog-details space-top space-extra-bottom">
         <div class="container">
@@ -50,4 +62,6 @@
         </div>
     </section>
 
-</x-layouts.show>
+    <x-sections.category.footer />
+
+</x-layouts.base>
