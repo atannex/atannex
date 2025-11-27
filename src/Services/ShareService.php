@@ -14,6 +14,19 @@ class ShareService
 {
     use HasPlatforms;
 
+    /**
+     * Build shareable URLs for all supported platforms.
+     *
+     * This method:
+     *  - Uses the Jorenvh\Share package to generate default links for major platforms.
+     *  - Extends support to custom platforms (Pinterest, Email) with manually crafted URLs.
+     *  - Guarantees a complete map of platform → share URL.
+     *
+     * @param string $url   Fully qualified URL to be shared.
+     * @param string $title Display title used by some platforms.
+     *
+     * @return array<string,string> Associative array of platform keys to share URLs.
+     */
     public function generate(string $url, string $title): array
     {
         $baseLinks = ShareFacade::page($url, $title)
@@ -48,6 +61,19 @@ class ShareService
         return $links;
     }
 
+    /**
+     * Record a share event for analytics and engagement tracking.
+     *
+     * Logic:
+     *  - One record per user/platform/model is maintained.
+     *  - If a record exists, its share_count is incremented.
+     *  - Otherwise, a new record is stored with an initial count.
+     *
+     * @param object $model    Any shareable model (Post, Video, etc.).
+     * @param string $platform Platform key representing where the share occurred.
+     *
+     * @return Share The updated or newly created share record.
+     */
     public function recordShare(object $model, string $platform): Share
     {
         $userId = Auth::id();
