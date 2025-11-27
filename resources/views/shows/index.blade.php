@@ -35,7 +35,9 @@
                     <div class="blog-content-wrap">
 
                         <div class="share-links-wrap">
+
                             <x-shows.social-share :module="$module" :icons="$icons" />
+
                         </div>
 
                         <div class="blog-content">
@@ -43,7 +45,9 @@
                             <livewire:show.info :post="$module->post" />
 
                             <x-shows.content :module="$module" />
+
                             <x-shows.related-tag :relatedTags="$relatedTags" />
+
 
                         </div>
                     </div>

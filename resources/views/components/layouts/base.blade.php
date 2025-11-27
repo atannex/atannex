@@ -56,8 +56,10 @@
     <link rel="stylesheet" href="{{ asset('assets/css/menu.css') }}">
 
     @stack('styles')
+
     @livewireStyles
     <x-layouts.googletagmanager />
+
 </head>
 
 <body>
@@ -73,5 +75,6 @@
     <script src="{{ asset('js/share.js') }}" defer></script>
 
     @stack('scripts')
+
 </body>
 </html>
