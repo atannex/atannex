@@ -1,4 +1,4 @@
-<x-layouts.page :title="seo_title($author->user->name)">
+<x-layouts.page :ogTitle="seo_title($author->user->name)">
 
     <x-partials.breadcrumb />
 

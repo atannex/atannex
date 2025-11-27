@@ -1,4 +1,4 @@
-<x-layouts.page :title="$seoTitle">
+<x-layouts.page :ogTitle="$seoTitle">
 
     @foreach ($region->sections as $section)
 
