@@ -1,4 +1,4 @@
-<x-layouts.guest :title="seo_title('Please Enter Your Name')">
+<x-layouts.guest :ogTitle="seo_title('Please Enter Your Name')">
     <div class="space2 d-flex justify-content-center align-items-center" style="min-height: 50vh;">
         <div class="container">
             <div class="row justify-content-center">
