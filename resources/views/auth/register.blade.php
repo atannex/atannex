@@ -1,4 +1,4 @@
-<x-layouts.guest :title="seo_title('Join Our Community!')">
+<x-layouts.guest :ogTitle="seo_title('Join Our Community!')">
     <div class="space2 d-flex justify-content-center align-items-center" style="min-height: 50vh;">
         <div class="container">
             <div class="row justify-content-center">

@@ -1,4 +1,4 @@
-<x-layouts.guest :title="seo_title('Reset Your Password')">
+<x-layouts.guest :ogTitle="seo_title('Reset Your Password')">
     <div class="space2">
         <div class="container">
             <div class="row justify-content-center">

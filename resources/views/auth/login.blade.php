@@ -1,4 +1,4 @@
-<x-layouts.guest :title="seo_title('Welcome Back to Atannex!')">
+<x-layouts.guest :ogTitle="seo_title('Welcome Back to Atannex!')">
     <div class="space2">
         <div class="container">
             <div class="row justify-content-center">

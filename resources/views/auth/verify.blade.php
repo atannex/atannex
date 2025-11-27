@@ -1,4 +1,4 @@
-<x-layouts.guest :title="seo_title('Almost There - Verify Your Email!')">
+<x-layouts.guest :ogTitle="seo_title('Almost There - Verify Your Email!')">
     <div class="space2">
         <div class="container">
             <div class="row justify-content-center">
