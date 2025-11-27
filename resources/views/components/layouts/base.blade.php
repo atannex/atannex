@@ -12,7 +12,7 @@
     <link rel="canonical" href="{{ url()->current() }}">
     <meta name="robots" content="index, follow">
 
-    @if(isset($ogTitle))
+    @if(isset($ogTitle, $ogDescription, $ogImage))
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="article">
     <meta property="og:title" content="{{ $ogTitle }}">
