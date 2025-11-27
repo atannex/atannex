@@ -4,28 +4,34 @@
 
     <title>{{ $title ?? __('Atannex - Lebialem Community News') }}</title>
 
-    <meta name="description" content="{{ Str::limit($post->description ?? $post->content ?? 'Lebialem community news and updates.', 160) }}">
-    <meta name="keywords" content="Lebialem news, Atannex, Cameroon, community news">
+    <meta name="description" content="{{ $description ?? 'Lebialem news and community updates from Atannex.' }}">
+    <meta name="keywords" content="{{ implode(', ', config('site.keywords')) }}">
 
-    <meta property="og:title" content="{{ $title ?? 'Atannex - Lebialem Community News' }}">
-    <meta property="og:description" content="{{ Str::limit($post->description ?? $post->content ?? 'Community updates from Lebialem.', 200) }}">
-    <meta property="og:image" content="{{ asset('storage/' . ($global['favicon']?->image ?? 'default-favicon.png')) }}">
+    @if(isset($ogTitle))
+    <meta property="og:title" content="{{ $ogTitle }}">
+    <meta property="og:description" content="{{ $ogDescription }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="article">
+    <meta property="og:image" content="{{ $ogImage }}">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $title ?? 'Atannex - Lebialem Community News' }}">
-    <meta name="twitter:description" content="{{ Str::limit($post->description ?? $post->content ?? 'Community updates from Lebialem.', 200) }}">
-    <meta name="twitter:image" content="{{ asset('storage/' . ($global['favicon']?->image ?? 'default-favicon.png')) }}">
-
-    @if(isset($post))
-    <meta property="article:published_time" content="{{ $post->published_at }}">
-    <meta property="article:modified_time" content="{{ $post->updated_at }}">
+    <meta name="twitter:title" content="{{ $ogTitle }}">
+    <meta name="twitter:description" content="{{ $ogDescription }}">
+    <meta name="twitter:image" content="{{ $ogImage }}">
     @endif
 
-    <meta name="theme-color" content="#008000">
+    @isset($publishedAt)
+    <meta property="article:published_time" content="{{ $publishedAt }}">
+    @endisset
 
-    @php $favicon = asset('storage/' . ($global['favicon']?->image ?? 'default-favicon.png')) @endphp
+    @isset($updatedAt)
+    <meta property="article:modified_time" content="{{ $updatedAt }}">
+    @endisset
+
+    @php
+    $favicon = asset('storage/' . ($global['favicon']?->image));
+    @endphp
+
     <link rel="icon" href="{{ $favicon }}">
     <link rel="apple-touch-icon" href="{{ $favicon }}">
 

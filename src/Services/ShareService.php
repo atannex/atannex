@@ -28,19 +28,20 @@ class ShareService
 
         foreach (self::SUPPORTED_PLATFORMS as $platform) {
             $links[$platform] = match ($platform) {
+
                 Icon::FACEBOOK,
                 Icon::TWITTER,
                 Icon::LINKEDIN,
                 Icon::WHATSAPP,
                 Icon::TELEGRAM => $baseLinks[$platform],
 
-                Icon::PINTEREST => 'https://pinterest.com/pin/create/button/?'.http_build_query([
-                    'url' => $url,
+                Icon::PINTEREST => 'https://pinterest.com/pin/create/button/?' . http_build_query([
+                    'url'         => $url,
                     'description' => $title,
                 ]),
 
-                Icon::EMAIL => 'mailto:?subject='.rawurlencode($title)
-                    .'&body='.rawurlencode($url),
+                Icon::EMAIL => 'mailto:?subject=' . rawurlencode($title)
+                    . '&body=' . rawurlencode($url),
             };
         }
 
@@ -62,12 +63,12 @@ class ShareService
             $share->increment('share_count');
         } else {
             $share = Share::create([
-                'shareable_id' => $model->id,
+                'shareable_id'   => $model->id,
                 'shareable_type' => get_class($model),
-                'user_id' => $userId,
-                'platform' => $platform,
-                'share_count' => 1,
-                'shared_at' => now(),
+                'user_id'        => $userId,
+                'platform'       => $platform,
+                'share_count'    => 1,
+                'shared_at'      => now(),
             ]);
         }
 

@@ -30,8 +30,17 @@ class Post extends Model implements Commentable
     use Slugging;
     use SoftDeletes;
 
+    /**
+     * The field used as the source for slug generation.
+     * Spatie Sluggable will generate or regenerate the slug using this column.
+     */
     protected string $slugSource = 'title';
 
+    /**
+     * Mass assignable attributes for a Post.
+     *
+     * @var array
+     */
     protected $fillable = [
         'title',
         'slug',
@@ -49,6 +58,11 @@ class Post extends Model implements Commentable
         'feature_until',
     ];
 
+    /**
+     * Attribute casting rules.
+     *
+     * @var array
+     */
     protected $casts = [
         'published_at' => 'datetime',
         'breaking_until' => 'datetime',
@@ -57,34 +71,62 @@ class Post extends Model implements Commentable
         'is_breaking' => 'boolean',
     ];
 
+    /**
+     * Date attributes handled by Eloquent.
+     *
+     * @var array
+     */
     protected $dates = [
         'deleted_at',
         'created_at',
         'updated_at',
     ];
 
+    /**
+     * The attribute name for the post's primary image field.
+     *
+     * @return string
+     */
     public function getImageAttributeName(): string
     {
         return 'image';
     }
 
+    /**
+     * The directory where post images should be stored.
+     *
+     * @return string
+     */
     public function getImageDirectory(): string
     {
         return 'posts';
     }
 
+    /**
+     * User who last updated the post.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function updatedBy()
     {
         return $this->belongsTo(Employee::class, 'updated_by');
     }
 
+    /**
+     * Determine whether the current user is authenticated.
+     *
+     * @return bool
+     */
     protected function isUserAuthenticated(): bool
     {
         return Auth::check();
     }
 
     /**
-     * Rebuild slug_path based on the category's slug_path + post slug.
+     * Build the slug_path by combining the category's slug_path with the post's slug.
+     * This ensures hierarchical URLs like: /news/local/my-post-title
+     *
+     * @return void
      */
     public function refreshSlugPath(): void
     {
@@ -93,18 +135,25 @@ class Post extends Model implements Commentable
             ->select(['id', 'slug_path'])
             ->first();
 
-        $this->slug_path = trim($category->slug_path.'/'.$this->slug, '/');
+        $this->slug_path = trim($category->slug_path . '/' . $this->slug, '/');
     }
 
     /**
-     * When a Post is being saved → generate slug_path from the *current* category
+     * Model boot method.
      *
-     * After the post is persisted → make sure the column is in sync
+     * Handles automatic regeneration of slug_path whenever:
+     *   - The slug changes
+     *   - The category changes
+     *
+     * Ensures slug_path is always kept in sync before and after save.
      */
     protected static function boot()
     {
         parent::boot();
 
+        /**
+         * Before saving the post, update slug_path if slug or category_id changed.
+         */
         static::saving(function (Post $post) {
             if ($post->isDirty(['slug', 'category_id'])) {
                 $post->refreshSlugPath();
@@ -112,6 +161,9 @@ class Post extends Model implements Commentable
             }
         });
 
+        /**
+         * After saving, ensure the slug_path column is updated silently.
+         */
         static::saved(function (Post $post) {
             if ($post->wasChanged(['slug', 'category_id'])) {
                 $post->refreshSlugPath();

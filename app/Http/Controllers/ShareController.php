@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use Atannex\Binders\HasPost;
+use App\Models\Posts\Post;
 use Atannex\Concerns\HasUserTracking;
 use Atannex\Services\ShareService;
 use Illuminate\Http\RedirectResponse;
@@ -18,21 +19,19 @@ class ShareController extends Controller
         protected readonly HasPost $hasPost,
     ) {}
 
-    public function share(string $platform, string $slug): RedirectResponse
+    public function share(string $platform, Post $post): RedirectResponse
     {
-        $post = $this->hasPost->getModulePostBySlug($slug);
-
         $urls = $this->shareService->generate(
-            url($post->slug),
+            url("/{$post->slug}/"),
             $post->title
         );
 
         $this->shareService->recordShare($post, $platform);
 
         $this->trackActivity('share_click', [
-            'post_id' => $post->id,
-            'slug' => $post->slug,
-            'platform' => $platform,
+            'post_id'   => $post->id,
+            'slug'      => $post->slug,
+            'platform'  => $platform,
             'clicked_at' => now()->toDateTimeString(),
         ]);
 
