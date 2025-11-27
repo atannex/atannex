@@ -42,8 +42,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/menu.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/image.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/auth.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/image.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/auth.css') }}?v={{ time() }}">
+
+
+    <link rel="stylesheet" href="{{ asset('assets/css/menu.css') }}?v={{ time() }}">
+
 </head>
