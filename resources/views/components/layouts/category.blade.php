@@ -1,12 +1,15 @@
-<x-layouts.app :ogTitle="$ogTitle">
+@extends('components.layouts.app')
+
+@section('og:title')
+
+@section('app')
 
     <x-sections.category.header />
 
     <x-partials.breadcrumb />
 
-
-    {{ $slot }}
+    @yield('category')
 
     <x-sections.category.footer />
 
-</x-layouts.app>
+@endsection

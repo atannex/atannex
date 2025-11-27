@@ -1,5 +1,9 @@
-<x-layouts.page :ogTitle="$seoTitle">
+@extends('components.layouts.page')
+
+@section('og:title', $seoTitle)
+
+@section('page')
 
     @include('sections.blog-list', ['posts' => $posts])
 
-</x-layouts.page>
+@endsection

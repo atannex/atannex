@@ -1,67 +1,74 @@
-<x-layouts.base :ogTitle="$module->post->title" :ogDescription="$module->post->description" :ogImage="asset('storage/' . $module->post->image)" :publishedAt="$module->post->published_at" :updatedAt="$module->post->updated_at">
+@extends('components.layouts.base')
 
-    <x-sections.preloader />
+@section('og:title', $module->post->title)
+@section('og:description', $module->post->description)
+@section('og:image', asset('storage/' . $module->post->image))
+@section('og:publishedAt', $module->post->published_at)
+@section('og:updatedAt', $module->post->updated_at)
 
-    @livewire('search.web')
+@section('base')
 
-    <x-sections.side-menu />
+<x-sections.preloader />
 
-    <livewire:forms.subscription />
+@livewire('search.web')
 
-    <x-sections.category.header />
+<x-sections.side-menu />
 
-    <x-partials.breadcrumb />
+<livewire:forms.subscription />
 
-    <section class="th-blog-wrapper blog-details space-top space-extra-bottom">
-        <div class="container">
-            <div class="row">
+<x-sections.category.header />
 
-                <div class="col-12">
+<x-partials.breadcrumb />
 
-                    <x-shows.header-content :module="$module" />
+<section class="th-blog-wrapper blog-details space-top space-extra-bottom">
+    <div class="container">
+        <div class="row">
 
-                </div>
+            <div class="col-12">
 
-                <div class="col-xxl-9 col-lg-8">
-                    <div class="th-blog blog-single">
-                        <div class="blog-content-wrap">
-
-                            <div class="share-links-wrap">
-                                <x-shows.social-share :module="$module" :icons="$icons" />
-                            </div>
-
-                            <div class="blog-content">
-
-                                <livewire:show.info :post="$module->post" />
-
-                                <x-shows.content :module="$module" />
-
-
-                                <x-shows.related-tag :relatedTags="$relatedTags" />
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <x-shows.navigation :navigation="$navigation" />
-
-                    <x-shows.author :module="$module" :medias="$medias" />
-
-                    <livewire:forms.comment wire:key="comments-{{ $module->post->id }}" :commentable="$module->post" />
-
-                    <x-shows.related-posts :relatedPosts="$relatedPosts" />
-                </div>
-
-                <div class="col-xxl-3 col-lg-4 sidebar-wrap">
-
-                    @include('partials.aside')
-
-                </div>
+                <x-shows.header-content :module="$module" />
 
             </div>
+
+            <div class="col-xxl-9 col-lg-8">
+                <div class="th-blog blog-single">
+                    <div class="blog-content-wrap">
+
+                        <div class="share-links-wrap">
+                            <x-shows.social-share :module="$module" :icons="$icons" />
+                        </div>
+
+                        <div class="blog-content">
+
+                            <livewire:show.info :post="$module->post" />
+
+                            <x-shows.content :module="$module" />
+                            <x-shows.related-tag :relatedTags="$relatedTags" />
+
+                        </div>
+                    </div>
+                </div>
+
+                <x-shows.navigation :navigation="$navigation" />
+
+                <x-shows.author :module="$module" :medias="$medias" />
+
+                <livewire:forms.comment wire:key="comments-{{ $module->post->id }}" :commentable="$module->post" />
+
+                <x-shows.related-posts :relatedPosts="$relatedPosts" />
+
+            </div>
+
+            <div class="col-xxl-3 col-lg-4 sidebar-wrap">
+
+                @include('partials.aside')
+
+            </div>
+
         </div>
-    </section>
+    </div>
+</section>
 
-    <x-sections.category.footer />
+<x-sections.category.footer />
 
-</x-layouts.base>
+@endsection
