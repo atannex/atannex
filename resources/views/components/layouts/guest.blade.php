@@ -1,4 +1,4 @@
-<x-layouts.base :title="$title" :description="$description" :ogTitle="$ogTitle" :ogDescription="$ogDescription" :ogImage="$ogImage" :publishedAt="$publishedAt" :updatedAt="$updatedAt" >
+<x-layouts.base :title="$title">
 
 
     <x-sections.preloader />

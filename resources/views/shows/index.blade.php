@@ -1,4 +1,4 @@
-<x-layouts.category :title="seo_title($module->post->title)" :description="$module->post->description" :ogTitle="$module->post->title" :ogDescription="$module->post->description" :ogImage="$module->post->image" :publishedAt="$module->post->published_at" :updatedAt="$module->post->updated_at">
+<x-layouts.show :title="seo_title($module->post->title)" :description="$module->post->description" :ogTitle="$module->post->title" :ogDescription="$module->post->description" :ogImage="$module->post->image" :publishedAt="$module->post->published_at" :updatedAt="$module->post->updated_at">
 
     <section class="th-blog-wrapper blog-details space-top space-extra-bottom">
         <div class="container">
@@ -44,4 +44,4 @@
             </div>
         </div>
     </section>
-</x-layouts.category>
+</x-layouts.show>
