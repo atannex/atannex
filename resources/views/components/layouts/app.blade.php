@@ -1,15 +1,15 @@
-<x-layouts.base :title="$title">
+<x-layouts.base :title="$title" :description="$description" :ogTitle="$ogTitle" :ogDescription="$ogDescription" :ogImage="$ogImage" :publishedAt="$publishedAt" :updatedAt="$updatedAt" />
 
-    <x-sections.preloader />
+<x-sections.preloader />
 
-    @livewire('search.web')
+@livewire('search.web')
 
-    <x-sections.side-menu />
-
-
-    <livewire:forms.subscription />
+<x-sections.side-menu />
 
 
-    {{ $slot }}
+<livewire:forms.subscription />
+
+
+{{ $slot }}
 
 </x-layouts.base>

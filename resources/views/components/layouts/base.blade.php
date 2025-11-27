@@ -3,7 +3,7 @@
 
 <head>
 
-    <x-layouts.files.header :title="$title" />
+    <x-layouts.files.header :title="$title" :description="$description" :ogTitle="$ogTitle" :ogDescription="$ogDescription" :ogImage="$ogImage" :publishedAt="$publishedAt" :updatedAt="$updatedAt" />
 
     @livewireStyles
 
