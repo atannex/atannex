@@ -1,4 +1,4 @@
-<x-layouts.guest :title="seo_title($type)">
+<x-layouts.guest :ogTitle="seo_title($type)">
 
     <x-partials.breadcrumb />
 
