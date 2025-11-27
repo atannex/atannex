@@ -1,4 +1,4 @@
-<x-layouts.guest :title="seo_title('Contact Atannex | Get in Touch')">
+<x-layouts.guest :ogTitle="seo_title('Contact Atannex | Get in Touch')">
 
     <x-partials.breadcrumb />
 

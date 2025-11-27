@@ -1,4 +1,4 @@
-<x-layouts.show :title="seo_title($module->post->title)" :description="$module->post->description" :ogTitle="$module->post->title" :ogDescription="$module->post->description" :ogImage="asset('storage/' . $module->post->image)" :publishedAt="$module->post->published_at" :updatedAt="$module->post->updated_at">
+<x-layouts.show :ogTitle="$module->post->title" :ogDescription="$module->post->description" :ogImage="asset('storage/' . $module->post->image)" :publishedAt="$module->post->published_at" :updatedAt="$module->post->updated_at">
 
     <!-- ============================================================
          SINGLE POST PAGE WRAPPER

@@ -1,4 +1,4 @@
-<x-layouts.guest :title="seo_title()">
+<x-layouts.guest :ogTitle="seo_title()">
 
     @if($allPosts->isNotEmpty())
     <div class="mb-4 th-hero-wrapper hero-1" id="hero">
