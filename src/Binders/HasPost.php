@@ -5,6 +5,7 @@ namespace Atannex\Binders;
 use Atannex\Sections\GetPosts\ByBreaking;
 use Atannex\Sections\GetPosts\ByEditorPick;
 use Atannex\Sections\GetPosts\ByFeatured;
+use Atannex\Sections\GetPosts\ByModule;
 use Atannex\Sections\GetPosts\ByMostRead;
 use Atannex\Sections\GetPosts\ByNavigation;
 use Atannex\Sections\GetPosts\ByPopular;
@@ -36,4 +37,5 @@ class HasPost
     use ByRegion;
     use ByRelated;
     use ByToday;
+    use ByModule;
 }
