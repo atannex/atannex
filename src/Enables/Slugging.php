@@ -6,19 +6,22 @@ use Spatie\Sluggable\HasSlug as Slug;
 use Spatie\Sluggable\SlugOptions;
 
 /**
- * Trait EnableSlug
+ * Trait Slugging
  *
- * Provides functionality to automatically generate and manage URL-friendly slugs
- * for Eloquent models using the Spatie Sluggable package.
+ * Provides automatic slug generation for Eloquent models using
+ * the Spatie Sluggable package. This version also regenerates
+ * the slug whenever the source field (e.g., title) is updated.
  */
 trait Slugging
 {
     use Slug;
 
     /**
-     * Get the source field for slug generation.
+     * Defines the field name used as the slug source.
      *
-     * @return string The name of the field to generate the slug from
+     * Example: "title"
+     *
+     * @return string
      */
     protected function getSlugSource(): string
     {
@@ -26,9 +29,10 @@ trait Slugging
     }
 
     /**
-     * Get the destination field for storing the generated slug.
+     * Defines the field name where the generated slug
+     * will be stored in the database.
      *
-     * @return string The name of the field to store the slug
+     * @return string
      */
     protected function getSlugDestination(): string
     {
@@ -36,16 +40,27 @@ trait Slugging
     }
 
     /**
-     * Configure the slug generation options.
+     * Configure the SlugOptions used to generate the slug.
      *
-     * @return SlugOptions The configured slug options
+     * @return SlugOptions
      */
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom($this->getSlugSource())
             ->saveSlugsTo($this->getSlugDestination())
-            ->allowDuplicateSlugs()
-            ->usingSeparator('_');
+            ->allowDuplicateSlugs();
+    }
+
+    /**
+     * Determines whether the slug should be regenerated
+     * on model update. Returning true ensures that if the
+     * title (or source field) changes, the slug updates too.
+     *
+     * @return bool
+     */
+    public function slugsShouldBeGeneratedOnUpdate(): bool
+    {
+        return true;
     }
 }
