@@ -6,9 +6,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ $title }}</title>
+    <title>{{ $title ?? __('Atannex - Lebialem Community News') }}</title>
 
-    <meta name="description" content="{{ $description }}">
+    <meta name="description" content="{{ $description ?? __('Lebialem news and community updates from Atannex') }}">
     <meta name="keywords" content="{{ implode(', ', config('site.keywords')) }}">
 
     <!-- ===== OPEN GRAPH & TWITTER ===== -->
