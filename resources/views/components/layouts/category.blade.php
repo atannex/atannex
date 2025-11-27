@@ -1,12 +1,12 @@
-<x-layouts.app :title="$title">
+<x-layouts.app :title="$title" :description="$description" :ogTitle="$ogTitle" :ogDescription="$ogDescription" :ogImage="$ogImage" :publishedAt="$publishedAt" :updatedAt="$updatedAt" />
 
-    <x-sections.category.header />
+<x-sections.category.header />
 
-    <x-partials.breadcrumb />
+<x-partials.breadcrumb />
 
 
-    {{ $slot }}
+{{ $slot }}
 
-    <x-sections.category.footer />
+<x-sections.category.footer />
 
 </x-layouts.app>
