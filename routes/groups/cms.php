@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegionController;
-use App\Http\Controllers\ShareController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,13 +13,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['onboarded'])->group(function () {
-
-    /*
-    |--------------------------------------------------------------------------
-    | Subscription Routes
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/subscription/verify/{token}', [SubscriptionController::class, 'verify'])->name('subscription.verify');
 
     /*
     |--------------------------------------------------------------------------
@@ -42,17 +34,25 @@ Route::middleware(['onboarded'])->group(function () {
 | Middleware: Pages (onboarded + complete.name)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['pages'])
-    ->controller(RegionController::class)
-    ->group(function () {
-        Route::get('{slug}', 'resolve')
-            ->where('slug', '.*')
-            ->name('page.index');
-    });
+Route::middleware(['pages'])->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Subscription Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/subscription/verify/{token}', [SubscriptionController::class, 'verify'])
+        ->name('subscription.verify');
+});
+
 
 /*
     |--------------------------------------------------------------------------
-    | Social Media Sharing Routes
+    | Region Page Catch-All
     |--------------------------------------------------------------------------
     */
-Route::get('/share/{platform:platform}/{post:slug}', [ShareController::class, 'share'])->name('share');
+Route::controller(RegionController::class)->group(function () {
+    Route::get('{slug}', 'resolve')
+        ->where('slug', '.*')
+        ->name('page.index');
+});
