@@ -1,95 +1,95 @@
-    @extends('components.layouts.guest')
+@extends('components.layouts.guest')
 
-    @section('og:title', seo_title($type))
+@section('og:title', seo_title($type))
 
-    @section('guest')
+@section('guest')
 
-    <x-partials.breadcrumb />
+<x-partials.breadcrumb />
 
-    @if($isValidDocumentType)
-    <section class="space-top space-extra-bottom">
-        <div class="container">
-            <div class="row">
-                <div class="col-xxl-9 col-lg-8">
-                    <div class="mb-30">
-                        @foreach($documents as $post)
-                        <div class="border-blog2">
-                            <div class="blog-style4">
-                                <div class="blog-content">
-                                    <h3 class="box-title-30">
-                                        <a class="hover-line" href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}">
-                                            {{ $post->title }}
-                                        </a>
-                                    </h3>
-                                    <p class="blog-text">{!! $post->description !!}</p>
-                                    <div class="blog-meta">
-                                        @if($post->updated_at->diffInMinutes($post->created_at) >= 2)
-                                        <a href="javascript:void(0)">
-                                            <i class="far fa-user-edit"></i>
-                                            {{ __('Updated by: ') . $post->updated_by->user->name ?? $post->author->user->name }}
-                                        </a>
-                                        <a href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}">
-                                            <i class="fal fa-calendar-edit"></i>
-                                            {{ __('Updated: ') . $post->updated_at->format('d M, Y') }}
-                                        </a>
-                                        @else
-                                        <a href="javascript:void(0)">
-                                            <i class="far fa-user"></i>
-                                            {{ __('By: ') . $post->author->user->name }}
-                                        </a>
-                                        <a href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}">
-                                            <i class="fal fa-calendar-days"></i>
-                                            {{ __('Published: ') . $post->created_at->format('d M, Y') }}
-                                        </a>
-                                        @endif
-                                    </div>
-                                    <a href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}" class="th-btn style2">
-                                        {{ __("Read More") }} <i class="fas fa-arrow-up-right ms-2"></i>
+@if($isValidDocumentType)
+<section class="space-top space-extra-bottom">
+    <div class="container">
+        <div class="row">
+            <div class="col-xxl-9 col-lg-8">
+                <div class="mb-30">
+                    @foreach($documents as $post)
+                    <div class="border-blog2">
+                        <div class="blog-style4">
+                            <div class="blog-content">
+                                <h3 class="box-title-30">
+                                    <a class="hover-line" href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}">
+                                        {{ $post->title }}
                                     </a>
+                                </h3>
+                                <p class="blog-text">{!! $post->description !!}</p>
+                                <div class="blog-meta">
+                                    @if($post->updated_at->diffInMinutes($post->created_at) >= 2)
+                                    <a href="javascript:void(0)">
+                                        <i class="far fa-user-edit"></i>
+                                        {{ __('Updated by: ') . $post->updated_by->user->name ?? $post->author->user->name }}
+                                    </a>
+                                    <a href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}">
+                                        <i class="fal fa-calendar-edit"></i>
+                                        {{ __('Updated: ') . $post->updated_at->format('d M, Y') }}
+                                    </a>
+                                    @else
+                                    <a href="javascript:void(0)">
+                                        <i class="far fa-user"></i>
+                                        {{ __('By: ') . $post->author->user->name }}
+                                    </a>
+                                    <a href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}">
+                                        <i class="fal fa-calendar-days"></i>
+                                        {{ __('Published: ') . $post->created_at->format('d M, Y') }}
+                                    </a>
+                                    @endif
                                 </div>
+                                <a href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}" class="th-btn style2">
+                                    {{ __("Read More") }} <i class="fas fa-arrow-up-right ms-2"></i>
+                                </a>
                             </div>
                         </div>
-                        @endforeach
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+            @include('documents.aside', ['documents' => $documents->reverse()->values()])
+        </div>
+    </div>
+</section>
+
+@elseif($isTestimonialType)
+<section class="space-top space-extra-bottom">
+    <div class="container">
+        <div class="row gy-30 mb-30">
+            @foreach($documents as $post)
+            <div class="col-xl-4 col-sm-6">
+                <div class="blog-style1">
+                    <div class="blog-img">
+                        <img src="{{ asset('storage/'. $post->image) }}" alt="{{ $post->title }}">
+                    </div>
+                    <h3 class="box-title-24">
+                        <a class="hover-line" href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}">
+                            {{ $post->title }}
+                        </a>
+                    </h3>
+                    <p class="blog-text">{!! $post->description !!}</p>
+                    <div class="blog-meta">
+                        <a href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}">
+                            <i class="far fa-user"></i>
+                            {{ __('By: ') . $post->author->user->name }}
+                        </a>
+                        <a href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}">
+                            <i class="fal fa-calendar-days"></i>
+                            {{ __('Published: ') . $post->created_at->format('d M, Y') }}
+                        </a>
                     </div>
                 </div>
-
-                @include('documents.aside', ['documents' => $documents->reverse()->values()])
             </div>
+            @endforeach
         </div>
-    </section>
+    </div>
+</section>
+@endif
 
-    @elseif($isTestimonialType)
-    <section class="space-top space-extra-bottom">
-        <div class="container">
-            <div class="row gy-30 mb-30">
-                @foreach($documents as $post)
-                <div class="col-xl-4 col-sm-6">
-                    <div class="blog-style1">
-                        <div class="blog-img">
-                            <img src="{{ asset('storage/'. $post->image) }}" alt="{{ $post->title }}">
-                        </div>
-                        <h3 class="box-title-24">
-                            <a class="hover-line" href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}">
-                                {{ $post->title }}
-                            </a>
-                        </h3>
-                        <p class="blog-text">{!! $post->description !!}</p>
-                        <div class="blog-meta">
-                            <a href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}">
-                                <i class="far fa-user"></i>
-                                {{ __('By: ') . $post->author->user->name }}
-                            </a>
-                            <a href="{{ route('document.show', ['type' => $type, 'slug' => $post->slug]) }}">
-                                <i class="fal fa-calendar-days"></i>
-                                {{ __('Published: ') . $post->created_at->format('d M, Y') }}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-    @endif
-
-    @endsection
+@endsection
