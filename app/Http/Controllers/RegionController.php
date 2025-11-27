@@ -15,7 +15,7 @@ class RegionController extends Controller
         protected readonly RegionService $regionService,
         protected readonly HasView $viewBinder,
     ) {
-        $this->middleware(['auth', 'verified', 'password.confirm']);
+        $this->middleware('pages');
     }
 
     /**

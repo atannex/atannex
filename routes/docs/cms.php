@@ -17,13 +17,6 @@ Route::middleware(['onboarded'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Social Media Sharing Routes
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/share/{platform:platform}/{post:slug}', [ShareController::class, 'share'])->name('share');
-
-    /*
-    |--------------------------------------------------------------------------
     | Subscription Routes
     |--------------------------------------------------------------------------
     */
@@ -56,3 +49,10 @@ Route::middleware(['pages'])
             ->where('slug', '.*')
             ->name('page.index');
     });
+
+/*
+    |--------------------------------------------------------------------------
+    | Social Media Sharing Routes
+    |--------------------------------------------------------------------------
+    */
+Route::get('/share/{platform:platform}/{post:slug}', [ShareController::class, 'share'])->name('share');
