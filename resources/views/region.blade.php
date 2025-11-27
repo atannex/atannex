@@ -1,9 +1,11 @@
-<x-layouts.page :ogTitle="$seoTitle">
+@extends('components.layouts.page')
+
+@section('og:title', $seoTitle)
+
+@section('page')
 
     @foreach ($region->sections as $section)
-
-    @include("sections.{$section->slug}", ['section' => $section])
-
+        @include("sections.{$section->slug}", ['section' => $section])
     @endforeach
 
-</x-layouts.page>
+@endsection

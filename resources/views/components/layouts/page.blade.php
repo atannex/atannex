@@ -1,4 +1,6 @@
-<x-layouts.base :ogTitle="$ogTitle">
+@extends('components.layouts.base')
+
+@section('base')
 
     <x-sections.preloader />
 
@@ -6,13 +8,12 @@
 
     <x-sections.side-menu />
 
-
     <livewire:forms.subscription />
 
     <x-sections.pages.header />
 
-    {{ $slot }}
+    @yield('page')
 
     <x-sections.pages.footer />
 
-</x-layouts.base>
+@endsection

@@ -1,4 +1,8 @@
-<x-layouts.guest :ogTitle="seo_title($type)">
+    @extends('components.layouts.guest')
+
+    @section('og:title', seo_title($type))
+
+    @section('guest')
 
     <x-partials.breadcrumb />
 
@@ -88,4 +92,4 @@
     </section>
     @endif
 
-</x-layouts.guest>
+    @endsection

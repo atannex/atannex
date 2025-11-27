@@ -1,4 +1,8 @@
-<x-layouts.guest :ogTitle="seo_title()">
+@extends('components.layouts.guest')
+
+@section('og:title', seo_title())
+
+@section('guest')
 
     @if($allPosts->isNotEmpty())
     <div class="mb-4 th-hero-wrapper hero-1" id="hero">
@@ -424,4 +428,4 @@
         </div>
     </section>
 
-</x-layouts.guest>
+@endsection

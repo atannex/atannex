@@ -1,4 +1,8 @@
-<x-layouts.page :ogTitle="seo_title($author->user->name)">
+@extends('components.layouts.page')
+
+@section('og:title', seo_title($author->user->name))
+
+@section('page')
 
     <x-partials.breadcrumb />
 
@@ -136,4 +140,5 @@
             </div>
         </div>
     </section>
-</x-layouts.page>
+
+@endsection

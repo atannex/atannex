@@ -1,15 +1,17 @@
-<x-layouts.base :ogTitle="$ogTitle">
+@extends('components.layouts.base')
 
-    <x-sections.preloader />
+@section('og:title')
 
-    @livewire('search.web')
+@section('base')
 
-    <x-sections.side-menu />
+<x-sections.preloader />
 
+@livewire('search.web')
 
-    <livewire:forms.subscription />
+<x-sections.side-menu />
 
+<livewire:forms.subscription />
 
-    {{ $slot }}
+@yield('app')
 
-</x-layouts.base>
+@endsection

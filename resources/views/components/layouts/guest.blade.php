@@ -1,19 +1,19 @@
-<x-layouts.base :ogTitle="$ogTitle">
+@extends('components.layouts.base')
 
+@section('og:title')
+
+@section('base')
 
     <x-sections.preloader />
-
 
     <x-sections.guest.header />
 
     @auth
-
-    <livewire:forms.subscription />
-
+        <livewire:forms.subscription />
     @endauth
 
-    {{ $slot }}
+    @yield('guest')
 
     <x-sections.guest.footer />
 
-</x-layouts.base>
+@endsection

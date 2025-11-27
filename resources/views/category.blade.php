@@ -1,9 +1,11 @@
-<x-layouts.category :ogTitle="seo_title($category->name)">
+@extends('components.layouts.category')
+
+@section('og:title', seo_title($category->name))
+
+@section('category')
 
     @foreach ($category->sections as $section)
-
-    @includeIf("sections.{$section->slug}", ['section' => $section])
-
+        @includeIf("sections.{$section->slug}", ['section' => $section])
     @endforeach
 
-</x-layouts.category>
+@endsection
