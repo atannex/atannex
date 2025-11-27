@@ -1,4 +1,4 @@
-<x-layouts.guest :title="$module->document->title . ' - ' . __('top stories, breaking news & headlines') . ' | ' . config('app.name')">
+<x-layouts.guest :ogTitle="$module->document->title . ' - ' . __('top stories, breaking news & headlines') . ' | ' . config('app.name')">
 
     <x-partials.breadcrumb />
 
