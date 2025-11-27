@@ -12,23 +12,25 @@ use Illuminate\View\View;
 /**
  * Trait HasShow
  *
- * Provides reusable logic for rendering post "show" pages.
- * This trait integrates module retrieval, SEO configuration,
- * and view data composition for category-based post pages.
+ * Provides reusable logic for rendering post detail (“show”) pages.
+ * This trait centralizes module fetching, SEO setup, relationship
+ * loading, and view data construction for category-based content pages.
  */
 trait HasShow
 {
     use HasPlatforms;
 
     /**
-     * Render a full post show page view.
+     * Render the full post "show" page.
      *
-     * @param  Category  $category  The category context for the post.
-     * @param  string  $slug  The unique post slug (slug_path).
+     * Responsibilities:
+     *  - Resolve a post module by its slug, including all needed relations.
+     *  - Build an organized dataset containing tags, navigation, and related posts.
+     *  - Pass SEO title and metadata into the base rendering engine.
+     *
+     * @param  Category  $category  Category context for the post.
+     * @param  string    $slug      Post slug (slug_path).
      * @return View
-     *
-     * Fetches the PostModule with all required relationships,
-     * prepares the view data, and returns the rendered page.
      */
     public function renderPostShow(Category $category, string $slug): View
     {
@@ -43,48 +45,56 @@ trait HasShow
     }
 
     /**
-     * Retrieve the PostModule and eager-load dependencies.
+     * Retrieve the PostModule instance for the requested slug.
      *
-     * @param  string  $slug  The slug path of the target post.
+     * Eager-loads all required relationships to ensure efficient rendering:
+     *  - Author details
+     *  - Post tags
+     *  - Category information
+     *
+     * Uses a slug-path constraint to guarantee unique resolution.
+     *
+     * @param  string  $slug
      * @return PostModule
-     *
-     * Loads the post module with author, tags, and category relationships.
-     * Uses slug-based resolution to ensure unique retrieval.
      */
     protected function fetchPostModule(string $slug): PostModule
     {
         return PostModule::with([
-            'post.author',
-            'post.tags',
-            'post.category',
-        ])
+                'post.author',
+                'post.tags',
+                'post.category',
+            ])
             ->whereHas('post', fn ($query) => $query->where('slug_path', $slug))
             ->firstOrFail();
     }
 
     /**
-     * Construct all necessary data for the post view.
+     * Build and return all data required by the post detail view.
      *
-     * @param  Category  $category  The category context.
-     * @param  mixed  $post  The post model instance.
-     * @param  PostModule  $module  The loaded PostModule.
+     * Assembles a structured dataset including:
+     *  - Tag metadata (popular and related)
+     *  - Previous/next navigation
+     *  - Related categories and posts
+     *  - Author social/employee media
+     *  - Share icons for social media integration
+     *
+     * @param  Category    $category
+     * @param  mixed       $post      Post model instance
+     * @param  PostModule  $module
      * @return array
-     *
-     * Collects all related resources including tags, navigation,
-     * related content, social media links, and sharing icons.
      */
     protected function buildPostShowData(Category $category, $post, PostModule $module): array
     {
         return [
-            'module' => $module,
-            'popularTags' => $this->tagService->getPopularTags(),
-            'relatedTags' => $this->tagService->getTagsForPost($post->id),
-            'navigation' => $this->getPost->getPostNavigation($post),
-            'relatedCategories' => $this->categoryService->relatedCategories($category),
-            'recentPosts' => $this->categoryService->recentPosts($post),
-            'relatedPosts' => $this->getPost->getRelatedPosts($post),
-            'medias' => $this->categoryService->employeeSocial($post->author),
-            'icons' => $this->getAllShareIcons(),
+            'module'             => $module,
+            'popularTags'        => $this->tagService->getPopularTags(),
+            'relatedTags'        => $this->tagService->getTagsForPost($post->id),
+            'navigation'         => $this->getPost->getPostNavigation($post),
+            'relatedCategories'  => $this->categoryService->relatedCategories($category),
+            'recentPosts'        => $this->categoryService->recentPosts($post),
+            'relatedPosts'       => $this->getPost->getRelatedPosts($post),
+            'medias'             => $this->categoryService->employeeSocial($post->author),
+            'icons'              => $this->getAllShareIcons(),
         ];
     }
 }
