@@ -1,15 +1,18 @@
-<x-layouts.base :title="$title" :description="$description" :ogTitle="$ogTitle" :ogDescription="$ogDescription" :ogImage="$ogImage" :publishedAt="$publishedAt" :updatedAt="$updatedAt" />
+<x-layouts.base :title="$title" :description="$description" :ogTitle="$ogTitle" :ogDescription="$ogDescription" :ogImage="$ogImage" :publishedAt="$publishedAt" :updatedAt="$updatedAt">
 
-<x-sections.preloader />
+    <!-- Preloader -->
+    <x-sections.preloader />
 
-@livewire('search.web')
+    <!-- Global Search -->
+    @livewire('search.web')
 
-<x-sections.side-menu />
+    <!-- Sidebar Menu -->
+    <x-sections.side-menu />
 
+    <!-- Newsletter / Subscription Form -->
+    <livewire:forms.subscription />
 
-<livewire:forms.subscription />
-
-
-{{ $slot }}
+    <!-- Main Page Content -->
+    {{ $slot }}
 
 </x-layouts.base>
