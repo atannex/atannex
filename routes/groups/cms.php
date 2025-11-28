@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RegionController;
-use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ShareController;
+use App\Http\Controllers\RegionController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubscriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,21 +39,29 @@ Route::middleware(['pages'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | Social Media Sharing Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/share/{platform:platform}/{post:slug}', [ShareController::class, 'share'])->name('share');
+
+
+    /*
+    |--------------------------------------------------------------------------
     | Subscription Routes
     |--------------------------------------------------------------------------
     */
     Route::get('/subscription/verify/{token}', [SubscriptionController::class, 'verify'])
         ->name('subscription.verify');
-});
 
-
-/*
+    /*
     |--------------------------------------------------------------------------
     | Region Page Catch-All
     |--------------------------------------------------------------------------
     */
-Route::controller(RegionController::class)->group(function () {
-    Route::get('{slug}', 'resolve')
-        ->where('slug', '.*')
-        ->name('page.index');
+    Route::controller(RegionController::class)->group(function () {
+        Route::get('{slug}', 'resolve')
+            ->where('slug', '.*')
+            ->name('page.index');
+    });
 });
