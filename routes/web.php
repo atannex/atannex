@@ -2,16 +2,20 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SubscriptionController;
+
+use App\Http\Controllers\ShareController;
 
 /*
     |--------------------------------------------------------------------------
-    | Subscription Routes
+    | Social Media Sharing Routes (PREFIXED TO PREVENT COLLISION)
     |--------------------------------------------------------------------------
     */
 
-Route::get('/subscription/verify/{token}', [SubscriptionController::class, 'verify'])
-    ->name('subscription.verify');
+Route::prefix('share')->group(function () {
+    Route::get('{platform:platform}/{post:slug}', [ShareController::class, 'share'])
+        ->name('share');
+});
+
 
 /*
 |--------------------------------------------------------------------------
