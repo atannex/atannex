@@ -1,20 +1,31 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SubscriptionController;
+
+/*
+    |--------------------------------------------------------------------------
+    | Subscription Routes
+    |--------------------------------------------------------------------------
+    */
+
+Route::get('/subscription/verify/{token}', [SubscriptionController::class, 'verify'])
+    ->name('subscription.verify');
 
 /*
 |--------------------------------------------------------------------------
 | Guest Routes
 |--------------------------------------------------------------------------
 */
-require __DIR__.'/groups/guest.php';
+require __DIR__ . '/groups/guest.php';
 
 /*
 |--------------------------------------------------------------------------
 | Document Routes
 |--------------------------------------------------------------------------
 */
-require __DIR__.'/groups/document.php';
+require __DIR__ . '/groups/document.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -28,4 +39,4 @@ Auth::routes(['verify' => true]);
 | CMS Routes
 |--------------------------------------------------------------------------
 */
-require __DIR__.'/groups/cms.php';
+require __DIR__ . '/groups/cms.php';
