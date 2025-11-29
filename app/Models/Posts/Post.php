@@ -171,4 +171,9 @@ class Post extends Model implements Commentable
             }
         });
     }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 }
