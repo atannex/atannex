@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SubscriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,15 +45,6 @@ Route::middleware(['pages'])->group(function () {
         Route::get('{platform:platform}/{post:slug}', [ShareController::class, 'share'])
             ->name('share');
     });
-
-    /*
-    |--------------------------------------------------------------------------
-    | Subscription Routes
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/subscription/verify/{token}', [SubscriptionController::class, 'verify'])
-        ->name('subscription.verify');
-
 
     /*
     |--------------------------------------------------------------------------
