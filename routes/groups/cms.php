@@ -39,12 +39,13 @@ Route::middleware(['pages'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Social Media Sharing Routes
+    | Social Media Sharing Routes (PREFIXED TO PREVENT COLLISION)
     |--------------------------------------------------------------------------
     */
-
-    Route::get('/share/{platform:platform}/{post:slug}', [ShareController::class, 'share'])->name('share');
-
+    Route::prefix('share')->group(function () {
+        Route::get('{platform:platform}/{post:slug}', [ShareController::class, 'share'])
+            ->name('share');
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -54,14 +55,15 @@ Route::middleware(['pages'])->group(function () {
     Route::get('/subscription/verify/{token}', [SubscriptionController::class, 'verify'])
         ->name('subscription.verify');
 
+
     /*
     |--------------------------------------------------------------------------
-    | Region Page Catch-All
+    | Region Page Catch-All (SAFE, DOES NOT MATCH OTHER ROUTES)
     |--------------------------------------------------------------------------
     */
     Route::controller(RegionController::class)->group(function () {
         Route::get('{slug}', 'resolve')
-            ->where('slug', '.*')
+            ->where('slug', '^(?!share|subscription|user).*$')
             ->name('page.index');
     });
 });
