@@ -1,14 +1,30 @@
 <?php
 
-use App\Http\Controllers\DocumentController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DocumentController;
 
-Route::middleware('track.activity')
+/*
+|--------------------------------------------------------------------------
+| Public Documents (Tracked, No Auth)
+|--------------------------------------------------------------------------
+| These routes must be registered BEFORE the CMS catch-all
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('how-to-use-atannex')
+    ->middleware('track.activity')
     ->name('document.')
+    ->controller(DocumentController::class)
     ->group(function () {
-        Route::get('/how-to-use-atannex/{type}', [DocumentController::class, 'index'])
+
+        Route::get('{type}', 'index')
+            ->where('type', '[a-zA-Z0-9\-]+')
             ->name('index');
 
-        Route::get('/how-to-use-atannex/{type}/{slug}', [DocumentController::class, 'show'])
+        Route::get('{type}/{slug}', 'show')
+            ->where([
+                'type' => '[a-zA-Z0-9\-]+',
+                'slug' => '[a-zA-Z0-9\-]+',
+            ])
             ->name('show');
     });

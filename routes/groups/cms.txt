@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RegionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubscriptionController;
 
@@ -42,4 +43,16 @@ Route::middleware(['pages'])->group(function () {
     */
     Route::get('/subscription/verify/{token}', [SubscriptionController::class, 'verify'])
         ->name('subscription.verify');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Region Page Catch-All (SAFE, DOES NOT MATCH OTHER ROUTES)
+    |--------------------------------------------------------------------------
+    */
+    Route::controller(RegionController::class)->group(function () {
+        Route::get('{slug}', 'resolve')
+            ->where('slug', '^(?!share|subscription|user).+')
+            ->name('page.index');
+    });
 });
