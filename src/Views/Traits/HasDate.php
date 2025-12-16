@@ -7,26 +7,43 @@ use Illuminate\View\View;
 trait HasDate
 {
     /**
-     * Render posts filtered by date.
+     * Render posts filtered by date (year or month archive).
+     *
+     * Expected calls:
+     * - Year:  renderDateView(year: '2024', type: 'year')
+     * - Month: renderDateView(year: '2024', month: '03', type: 'month')
      */
-    public function renderDateView(string $value, string $type, ?string $year = null): View
-    {
+    public function renderDateView(
+        string $year,
+        string $type = 'year',
+        ?string $month = null
+    ): View {
+
         $months = config('dates.months');
 
-        $isMonth = $type === 'month';
-        $displayValue = $isMonth ? $months[(int) $value] : $value;
-        $yearMonth = $isMonth
-            ? ($year ?? date('Y')) . '/' . $value
-            : $value;
+        if ($type === 'month') {
 
-        $seoTitle = $isMonth
-            ? 'Posts for the month of ' . $displayValue
-            : 'Posts for the year ' . $value;
+            $monthInt = (int) ltrim($month ?? '01', '0') ?: 1;
+
+            $displayValue = $months[$monthInt] ?? 'Unknown Month';
+            $seoTitle     = "Posts for {$displayValue} {$year}";
+            $yearMonth    = "{$year}/" . str_pad($month ?? '01', 2, '0', STR_PAD_LEFT);
+        } else {
+            $displayValue = $year;
+            $seoTitle     = "Posts for the year {$year}";
+            $yearMonth    = $year;
+        }
+
+        $posts = $this->categoryService->postsByDate($yearMonth);
 
         return $this->renderView(
             'date',
             [
-                'posts' => $this->categoryService->postsByDate($yearMonth),
+                'posts'        => $posts,
+                'displayValue' => $displayValue,
+                'type'         => $type,
+                'year'         => $year,
+                'month'        => $month,
             ],
             seo_title($seoTitle)
         );

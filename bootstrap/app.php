@@ -15,23 +15,56 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withSchedule(function (Schedule $schedule) {
-
-        // $schedule->command('model:prune')->dailyAt('22:59');
+        //
     })
     ->withMiddleware(function (Middleware $middleware): void {
 
+        /*
+        |--------------------------------------------------------------------------
+        | Middleware Aliases
+        |--------------------------------------------------------------------------
+        */
         $middleware->alias([
             'track.activity' => TrackUserActivity::class,
-            'complete.name' => CheckNameComplete::class,
+            'complete.name'  => CheckNameComplete::class,
         ]);
 
-        $middleware->group('onboarded', [
+        /*
+        |--------------------------------------------------------------------------
+        | Group: authenticated (base auth)
+        |--------------------------------------------------------------------------
+        |
+        | Ensures the user is logged in.
+        |
+        */
+        $middleware->group('authenticated', [
             'auth',
             'track.activity',
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Group: onboarded (authenticated + verified + pwd confirm)
+        |--------------------------------------------------------------------------
+        |
+        | Applies after basic authentication.
+        | Higher level security for user pages/settings.
+        |
+        */
+        $middleware->group('onboarded', [
+            'authenticated',
             'verified',
             'password.confirm',
         ]);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Group: pages (final step: profile complete)
+        |--------------------------------------------------------------------------
+        |
+        | Applies ONLY to pages that require a completed user profile.
+        |
+        */
         $middleware->group('pages', [
             'onboarded',
             'complete.name',
@@ -39,4 +72,5 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->create();

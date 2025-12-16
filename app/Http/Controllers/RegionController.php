@@ -35,12 +35,12 @@ class RegionController extends Controller
             return $this->viewBinder->renderAuthorView($author);
         }
 
-        if ($year = $this->resolvePostByDatePart($slug, 'year')) {
-            return $this->viewBinder->renderDateView($year['value'], 'year');
-        }
-
-        if ($month = $this->resolvePostByDatePart($slug, 'month')) {
-            return $this->viewBinder->renderDateView($month['value'], 'month');
+        if ($date = $this->resolvePostByDate($slug)) {
+            return $this->viewBinder->renderDateView(
+                year: $date['year'],
+                month: $date['type'] === 'month' ? $date['month'] : null,
+                type: $date['type']
+            );
         }
 
         if ($post = $this->resolvePost($slug)) {
