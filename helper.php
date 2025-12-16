@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -78,7 +79,7 @@ if (! function_exists('get_posts_from_tabs')) {
     function get_posts_from_tabs(array $tabs): Collection
     {
         return collect($tabs)
-            ->flatMap(fn ($tab) => $tab['content'] ?? collect($tab['entities'])->flatMap(fn ($region) => $region['posts']))
+            ->flatMap(fn($tab) => $tab['content'] ?? collect($tab['entities'])->flatMap(fn($region) => $region['posts']))
             ->unique('id')
             ->values();
     }
@@ -117,7 +118,7 @@ if (! function_exists('format_count')) {
         if ($value < 1000) {
             $formatted = number_format((int) $value);
 
-            return $sign.$formatted;
+            return $sign . $formatted;
         }
 
         $suffixes = [
@@ -148,10 +149,35 @@ if (! function_exists('format_count')) {
                     }
                 }
 
-                return $sign.$formatted.$suffix;
+                return $sign . $formatted . $suffix;
             }
         }
 
-        return $sign.number_format((int) $value);
+        return $sign . number_format((int) $value);
+    }
+}
+
+if (! function_exists('displayGuestData')) {
+    function displayGuestData(array $global): array
+    {
+        $mainRegion = $global['mainRegions']->first();
+
+        return [
+            'currentRoute' => Route::currentRouteName(),
+
+            'homeRoute' => Auth::guest() || ! $mainRegion
+                ? route('home')
+                : route('page.index', ['slug' => $mainRegion->slug]),
+
+            'helpItems' => [
+                'help-center' => __('Help Center'),
+                'guidelines'  => __('Guidelines'),
+            ],
+
+            'policyItems' => [
+                'privacy' => __('Privacy Policy'),
+                'terms'   => __('Terms & Conditions'),
+            ],
+        ];
     }
 }

@@ -20,7 +20,7 @@ Route::middleware(['onboarded'])->group(function () {
     | Prefix: /user/name
     |--------------------------------------------------------------------------
     */
-    Route::prefix('user/name')
+    Route::prefix('user/name/')
         ->controller(ProfileController::class)
         ->group(function () {
             Route::get('set/{token}', 'show')->name('name.index');
@@ -52,7 +52,7 @@ Route::middleware(['pages'])->group(function () {
     */
     Route::controller(RegionController::class)->group(function () {
         Route::get('{slug}', 'resolve')
-            ->where('slug', '^(?!share|subscription|user).*$')
+            ->where('slug', '^(?!share|subscription|user).+')
             ->name('page.index');
     });
 });

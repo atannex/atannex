@@ -41,10 +41,8 @@ class ShareController extends Controller
      */
     public function share(string $platform, Post $post): RedirectResponse
     {
-        $publicUrl = url($post->slug_path);
-
         $urls = $this->shareService->generate(
-            $publicUrl,
+            url("/{$post->slug_path}/"),
             $post->title
         );
 
