@@ -31,11 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         /*
         |--------------------------------------------------------------------------
-        | Group: authenticated (base auth)
+        | Group: authenticated
         |--------------------------------------------------------------------------
-        |
-        | Ensures the user is logged in.
-        |
         */
         $middleware->group('authenticated', [
             'auth',
@@ -44,12 +41,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         /*
         |--------------------------------------------------------------------------
-        | Group: onboarded (authenticated + verified + pwd confirm)
+        | Group: onboarded
         |--------------------------------------------------------------------------
-        |
-        | Applies after basic authentication.
-        | Higher level security for user pages/settings.
-        |
+        | Applied AFTER user registers / logs in
+        |--------------------------------------------------------------------------
         */
         $middleware->group('onboarded', [
             'authenticated',
@@ -59,11 +54,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         /*
         |--------------------------------------------------------------------------
-        | Group: pages (final step: profile complete)
+        | Group: pages
         |--------------------------------------------------------------------------
-        |
-        | Applies ONLY to pages that require a completed user profile.
-        |
+        | Final step – profile must be complete
+        |--------------------------------------------------------------------------
         */
         $middleware->group('pages', [
             'onboarded',

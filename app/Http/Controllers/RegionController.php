@@ -14,9 +14,7 @@ class RegionController extends Controller
     public function __construct(
         protected readonly RegionService $regionService,
         protected readonly HasView $viewBinder,
-    ) {
-        $this->middleware('pages');
-    }
+    ) {}
 
     /**
      * Resolve a slug into its corresponding content entity.
