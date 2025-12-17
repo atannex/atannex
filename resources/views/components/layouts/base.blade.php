@@ -28,20 +28,17 @@
     <meta name="twitter:creator" content="@atannex">
 
     @hasSection('og:publishedAt')
-        <meta property="article:published_time" content="@yield('og:publishedAt')">
+    <meta property="article:published_time" content="@yield('og:publishedAt')">
     @endif
 
     @hasSection('og:updatedAt')
-        <meta property="article:modified_time" content="@yield('og:updatedAt')">
+    <meta property="article:modified_time" content="@yield('og:updatedAt')">
     @endif
 
-    @php
-        $favicon = asset('storage/' . optional($global['favicon'])->image);
-    @endphp
-
-    <link rel="icon" href="{{ $favicon }}">
-    <link rel="apple-touch-icon" href="{{ $favicon }}">
-    <meta name="theme-color" content="#ffffff">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
 
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
