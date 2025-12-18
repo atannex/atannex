@@ -12,8 +12,6 @@ use Illuminate\Http\RedirectResponse;
 
 class ShareController extends Controller
 {
-    use HasUserTracking;
-
     /**
      * Inject required services.
      *
@@ -47,13 +45,6 @@ class ShareController extends Controller
         );
 
         $this->shareService->recordShare($post, $platform);
-
-        $this->trackActivity('share_click', [
-            'post_id'    => $post->id,
-            'slug'       => $post->slug_path,
-            'platform'   => $platform,
-            'clicked_at' => now()->toDateTimeString(),
-        ]);
 
         return redirect()->away($urls[$platform]);
     }

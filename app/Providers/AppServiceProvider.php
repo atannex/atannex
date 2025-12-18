@@ -13,7 +13,6 @@ use App\Models\Regions\Widget;
 use App\Models\Regions\Section;
 use App\Events\Users\UserCreated;
 use App\Observers\WidgetObserver;
-use Illuminate\Auth\Events\Login;
 use App\Observers\SectionObserver;
 use Atannex\Adapters\WidgetAdapter;
 use App\Events\Docs\DocumentCreated;
@@ -21,7 +20,6 @@ use Atannex\Adapters\SectionAdapter;
 use App\Events\ContactMessageCreated;
 use App\Listeners\SendContactMessage;
 use Illuminate\Support\Facades\Event;
-use App\Listeners\GuestActivityOnLogin;
 use Illuminate\Support\ServiceProvider;
 use App\Listeners\Docs\DocumentNotification;
 use App\Listeners\Users\SendUserRegisteredNotification;
@@ -79,11 +77,6 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function registerEventListeners(): void
     {
-        Event::listen(
-            Login::class,
-            GuestActivityOnLogin::class
-        );
-
         Event::listen(
             DocumentCreated::class,
             DocumentNotification::class

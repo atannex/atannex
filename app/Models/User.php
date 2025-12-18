@@ -16,14 +16,12 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Atannex\Concerns\Tracking\TracksAuthenticatedUsers;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     use HasCleaning;
     use HasRoles;
-    use TracksAuthenticatedUsers;
     use Notifiable;
     use Slugging;
     use SoftDeletes;
@@ -82,15 +80,5 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
                 config('filament.allowed_email_domains', ['gmail.com', 'atannex.org', 'atannex.com'])
             )
             && $this->isEmployee();
-    }
-
-    public function sessions(): HasMany
-    {
-        return $this->hasMany(Session::class, 'user_id');
-    }
-
-    public function activities(): HasMany
-    {
-        return $this->hasMany(UserActivity::class);
     }
 }

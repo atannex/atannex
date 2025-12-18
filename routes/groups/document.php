@@ -5,14 +5,12 @@ use App\Http\Controllers\DocumentController;
 
 /*
 |--------------------------------------------------------------------------
-| Public Documents (Tracked, No Auth)
 |--------------------------------------------------------------------------
 | These routes must be registered BEFORE the CMS catch-all
 |--------------------------------------------------------------------------
 */
 
 Route::prefix('how-to-use-atannex')
-    ->middleware('track.activity')
     ->name('document.')
     ->controller(DocumentController::class)
     ->group(function () {

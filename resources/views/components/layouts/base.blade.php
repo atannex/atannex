@@ -8,9 +8,9 @@
     <meta name="description" content="@yield('og:description', config('app.description'))">
     <meta name="keywords" content="{{ implode(', ', config('site.keywords')) }}">
     <link rel="canonical" href="{{ url()->current() }}">
+    <meta property="og:url" content="{{ url()->current() }}">
     <meta name="robots" content="index, follow">
 
-    <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="article">
     <meta property="og:title" content="@yield('og:title', config('app.title'))">
     <meta property="og:description" content="@yield('og:description', config('app.description'))">
@@ -43,10 +43,10 @@
     <link rel="apple-touch-icon" href="{{ $favicon }}">
     <meta name="theme-color" content="#ffffff">
 
-    {{-- <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/favicon/site.webmanifest"> --}}
+    <link rel="manifest" href="/favicon/site.webmanifest">
 
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
