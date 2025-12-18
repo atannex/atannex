@@ -7,6 +7,19 @@ use App\Http\Controllers\RegionController;
 
 /*
 |--------------------------------------------------------------------------
+| Social Media Sharing Routes
+|--------------------------------------------------------------------------
+| Prefixed so they never collide with region, category, or post slugs.
+*/
+
+Route::prefix('share/')->group(function () {
+    Route::get('{platform:platform}/{post:slug}', [ShareController::class, 'share'])
+        ->name('share');
+});
+
+
+/*
+|--------------------------------------------------------------------------
 | CMS / REGION CATCH-ALL (⚠️ MUST BE LAST)
 |--------------------------------------------------------------------------
 | Prevents conflict with auth & static pages
@@ -20,20 +33,6 @@ Route::controller(RegionController::class)->group(function () {
     Route::get('{slug}', 'resolve')
         ->where('slug', "^(?!{$reserved}).+")
         ->name('page.index');
-});
-
-
-
-/*
-|--------------------------------------------------------------------------
-| Social Media Sharing Routes
-|--------------------------------------------------------------------------
-| Prefixed so they never collide with region, category, or post slugs.
-*/
-
-Route::prefix('share/')->group(function () {
-    Route::get('{platform:platform}/{post:slug}', [ShareController::class, 'share'])
-        ->name('share');
 });
 
 /*
