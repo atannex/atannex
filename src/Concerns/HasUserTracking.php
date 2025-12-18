@@ -2,7 +2,6 @@
 
 namespace Atannex\Concerns;
 
-use GeoIp2\Database\Reader;
 use App\Models\Users\UserActivity;
 use Illuminate\Support\Facades\Auth;
 use Atannex\Concerns\Tracking\TracksGuestUsers;
@@ -17,8 +16,10 @@ trait HasUserTracking
         string $eventType,
         array $metadata = []
     ): UserActivity {
-        return Auth::check()
-            ? $this->trackAuth(Auth::user(), $eventType, $metadata)
+        $user = Auth::user();
+
+        return $user
+            ? $this->trackAuth($user, $eventType, $metadata)
             : $this->trackGuest($eventType, $metadata);
     }
 
@@ -38,12 +39,15 @@ trait HasUserTracking
 
     protected function resolveGeo(string $ip): string
     {
-        if (app()->environment('local') || in_array($ip, ['127.0.0.1', '::1'])) {
+        if (
+            app()->environment('local') ||
+            in_array($ip, ['127.0.0.1', '::1', '0.0.0.0'], true)
+        ) {
             return 'Local';
         }
 
         try {
-            $reader = new Reader(
+            $reader = new \GeoIp2\Database\Reader(
                 storage_path('app/GeoLite2/GeoLite2-City.mmdb')
             );
 
@@ -51,7 +55,7 @@ trait HasUserTracking
 
             return trim(
                 ($record->city->name ?? '') . ', ' .
-                ($record->country->name ?? '')
+                    ($record->country->name ?? '')
             );
         } catch (\Throwable) {
             return 'Unknown';
