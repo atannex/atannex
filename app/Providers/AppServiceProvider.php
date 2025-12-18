@@ -2,43 +2,48 @@
 
 namespace App\Providers;
 
-use App\Enums\Binding;
-use App\Enums\Classification;
-use App\Enums\Entity;
 use App\Enums\Flag;
 use App\Enums\Image;
-use App\Enums\Status;
 use App\Enums\Title;
-use App\Models\Regions\Section;
+use App\Enums\Entity;
+use App\Enums\Status;
+use App\Enums\Binding;
+use App\Enums\Classification;
 use App\Models\Regions\Widget;
-use App\Observers\SectionObserver;
+use App\Models\Regions\Section;
+use App\Events\Users\UserCreated;
 use App\Observers\WidgetObserver;
-use Atannex\Adapters\SectionAdapter;
+use Illuminate\Auth\Events\Login;
+use App\Observers\SectionObserver;
 use Atannex\Adapters\WidgetAdapter;
+use App\Events\Docs\DocumentCreated;
+use Atannex\Adapters\SectionAdapter;
+use App\Events\ContactMessageCreated;
+use App\Listeners\SendContactMessage;
+use Illuminate\Support\Facades\Event;
+use App\Listeners\GuestActivityOnLogin;
 use Illuminate\Support\ServiceProvider;
-use Ngangagah\Handlers\Navigation;
+use App\Listeners\Docs\DocumentNotification;
+use App\Listeners\Users\SendUserRegisteredNotification;
 
 /**
- * Class AppServiceProvider
+ * Application Service Provider
  *
- * Registers and bootstraps application services, including:
- *  - Observers registration for Page, Widget, and Section models
- *  - Bootstrapping enum classes
- *  - Sharing global navigation data with all views
+ * Responsible for:
+ * - Registering model observers
+ * - Bootstrapping enums
+ * - Registering application-wide events & listeners
  */
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap any application services.
-     *
-     * Registers model observers, boots enums, and shares navigation data with all views.
-     *
-     * @param  Navigation  $navigation  Navigation handler for shared navigation data
+     * Bootstrap application services.
      */
     public function boot(): void
     {
         $this->registerObservers();
         $this->bootEnums();
+        $this->registerEventListeners();
     }
 
     /**
@@ -46,12 +51,17 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function registerObservers(): void
     {
-        Section::observe(new SectionObserver(new SectionAdapter));
-        Widget::observe(new WidgetObserver(new WidgetAdapter));
+        Section::observe(
+            new SectionObserver(new SectionAdapter())
+        );
+
+        Widget::observe(
+            new WidgetObserver(new WidgetAdapter())
+        );
     }
 
     /**
-     * Boot enum classes.
+     * Boot all enum classes.
      */
     protected function bootEnums(): void
     {
@@ -62,5 +72,31 @@ class AppServiceProvider extends ServiceProvider
         Status::boot();
         Title::boot();
         Classification::boot();
+    }
+
+    /**
+     * Register application event listeners.
+     */
+    protected function registerEventListeners(): void
+    {
+        Event::listen(
+            Login::class,
+            GuestActivityOnLogin::class
+        );
+
+        Event::listen(
+            DocumentCreated::class,
+            DocumentNotification::class
+        );
+
+        Event::listen(
+            UserCreated::class,
+            SendUserRegisteredNotification::class
+        );
+
+        Event::listen(
+            ContactMessageCreated::class,
+            SendContactMessage::class
+        );
     }
 }

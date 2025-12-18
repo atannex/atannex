@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use Atannex\Binders\HasPost;
 use App\Models\Posts\Post;
+use Atannex\Binders\HasPost;
 use Atannex\Concerns\HasUserTracking;
 use Atannex\Services\ShareService;
 use Illuminate\Http\RedirectResponse;

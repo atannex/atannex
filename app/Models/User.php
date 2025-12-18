@@ -2,28 +2,28 @@
 
 namespace App\Models;
 
+use Filament\Panel;
 use App\Enums\Gender;
 use App\Enums\Status;
+use Atannex\Enables\Slugging;
+use Atannex\Traits\HasCleaning;
 use App\Models\Controls\Session;
 use App\Models\Users\UserActivity;
-use Atannex\Concerns\HasUserTracking;
-use Atannex\Enables\Slugging;
 use Atannex\Relations\UserRelation;
-use Atannex\Traits\HasCleaning;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Atannex\Concerns\Tracking\TracksAuthenticatedUsers;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     use HasCleaning;
     use HasRoles;
-    use HasUserTracking;
+    use TracksAuthenticatedUsers;
     use Notifiable;
     use Slugging;
     use SoftDeletes;
