@@ -12,15 +12,17 @@ class TrackUserActivity
 
     public function handle(Request $request, Closure $next)
     {
+        $response = $next($request);
+
         $user = $request->user();
 
         $this->trackActivity('route_access', [
-            'route'     => $request->route()?->getName(),
-            'url'       => $request->fullUrl(),
-            'method'    => $request->method(),
-            'timezone'  => $user?->timezone,
+            'route'    => $request->route()?->getName(),
+            'url'      => $request->fullUrl(),
+            'method'   => $request->method(),
+            'timezone' => $user?->timezone,
         ]);
 
-        return $next($request);
+        return $response;
     }
 }
