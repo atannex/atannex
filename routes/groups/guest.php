@@ -28,14 +28,15 @@ Route::prefix('share/')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::controller(RegionController::class)->group(function () {
+Route::middleware('track.activity')
+    ->controller(RegionController::class)->group(function () {
 
-    $reserved = implode('|', config('cms.reserved_slugs'));
+        $reserved = implode('|', config('cms.reserved_slugs'));
 
-    Route::get('{slug}', 'resolve')
-        ->where('slug', "^(?!{$reserved}).+")
-        ->name('page.index');
-});
+        Route::get('{slug}', 'resolve')
+            ->where('slug', "^(?!{$reserved}).+")
+            ->name('page.index');
+    });
 
 /*
 |--------------------------------------------------------------------------
