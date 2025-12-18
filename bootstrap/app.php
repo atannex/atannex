@@ -3,7 +3,6 @@
 
 use Illuminate\Foundation\Application;
 use App\Http\Middleware\CheckNameComplete;
-use App\Http\Middleware\TrackUserActivity;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -26,7 +25,6 @@ return Application::configure(basePath: dirname(__DIR__))
         |--------------------------------------------------------------------------
         */
         $middleware->alias([
-            'track.activity' => TrackUserActivity::class,
             'complete.name'  => CheckNameComplete::class,
         ]);
 
@@ -37,7 +35,6 @@ return Application::configure(basePath: dirname(__DIR__))
         */
         $middleware->group('authenticated', [
             'auth',
-            'track.activity',
         ]);
 
         /*

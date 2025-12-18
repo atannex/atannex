@@ -28,8 +28,7 @@ Route::prefix('share/')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('track.activity')
-    ->controller(RegionController::class)->group(function () {
+Route::controller(RegionController::class)->group(function () {
 
         $reserved = implode('|', config('cms.reserved_slugs'));
 
@@ -44,8 +43,7 @@ Route::middleware('track.activity')
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('track.activity')
-    ->controller(HomeController::class)
+Route::controller(HomeController::class)
     ->group(function () {
         Route::get('/', 'index')->name('home');
         Route::get('about-us', 'about')->name('about');

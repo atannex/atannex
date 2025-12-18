@@ -3,8 +3,6 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\Abouts\AboutResource;
-use App\Filament\Resources\CacheLocks\CacheLockResource;
-use App\Filament\Resources\Caches\CacheResource;
 use App\Filament\Resources\Categories\CategoryResource;
 use App\Filament\Resources\CategorySections\CategorySectionResource;
 use App\Filament\Resources\Colors\ColorResource;
@@ -14,12 +12,8 @@ use App\Filament\Resources\DocumentModules\DocumentModuleResource;
 use App\Filament\Resources\Documents\DocumentResource;
 use App\Filament\Resources\EmployeeDepartments\EmployeeDepartmentResource;
 use App\Filament\Resources\Employees\EmployeeResource;
-use App\Filament\Resources\FailedJobs\FailedJobResource;
 use App\Filament\Resources\Galleries\GalleryResource;
-use App\Filament\Resources\JobBatches\JobBatchResource;
-use App\Filament\Resources\Jobs\JobResource;
 use App\Filament\Resources\Likes\LikeResource;
-use App\Filament\Resources\PasswordResetTokens\PasswordResetTokenResource;
 use App\Filament\Resources\Permissions\PermissionResource;
 use App\Filament\Resources\PostModules\PostModuleResource;
 use App\Filament\Resources\PostRegions\PostRegionResource;
@@ -31,7 +25,6 @@ use App\Filament\Resources\RegionSectionWidgets\RegionSectionWidgetResource;
 use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Resources\Rulers\RulerResource;
 use App\Filament\Resources\Sections\SectionResource;
-use App\Filament\Resources\Sessions\SessionResource;
 use App\Filament\Resources\Shares\ShareResource;
 use App\Filament\Resources\SocialMedia\SocialMediaResource;
 use App\Filament\Resources\Tags\TagResource;
@@ -144,17 +137,6 @@ class AdminPanelProvider extends PanelProvider
                             ...ViewResource::getNavigationItems(),
                         ]),
 
-                    NavigationGroup::make('System')
-                        ->items([
-                            ...CacheResource::getNavigationItems(),
-                            ...CacheLockResource::getNavigationItems(),
-                            ...FailedJobResource::getNavigationItems(),
-                            ...JobResource::getNavigationItems(),
-                            ...JobBatchResource::getNavigationItems(),
-                            ...PasswordResetTokenResource::getNavigationItems(),
-                            ...SessionResource::getNavigationItems(),
-                        ]),
-
                     NavigationGroup::make('Documentation')
                         ->items([
                             ...DocumentResource::getNavigationItems(),
@@ -164,7 +146,6 @@ class AdminPanelProvider extends PanelProvider
                         ->items([
                             ...AboutResource::getNavigationItems(),
                             ...ColorResource::getNavigationItems(),
-                            // ...ContactResource::getNavigationItems(),
                             ...GalleryResource::getNavigationItems(),
                             ...SocialMediaResource::getNavigationItems(),
                         ]),
