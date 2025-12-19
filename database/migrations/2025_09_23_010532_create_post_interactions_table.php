@@ -11,53 +11,72 @@ return new class extends Migration
         Schema::create('likes', function (Blueprint $table) {
             $table->id();
             $table->morphs('likeable');
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamp('liked_at')->useCurrent();
-            $table->softDeletes();
             $table->timestamps();
-            $table->unique(['likeable_id', 'likeable_type', 'user_id'], 'uniq_likes_user');
+
+            $table->unique(
+                ['likeable_id', 'likeable_type', 'user_id'],
+                'uniq_likes_user'
+            );
         });
 
         Schema::create('views', function (Blueprint $table) {
             $table->id();
+
             $table->morphs('viewable');
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+
+            $table->uuid('visitor_id')->index();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+
             $table->string('ip_address', 45)->nullable();
+            $table->string('user_agent')->nullable();
+
             $table->timestamp('viewed_at')->useCurrent();
-            $table->softDeletes();
             $table->timestamps();
-            $table->index(['viewable_id', 'viewable_type', 'user_id'], 'idx_views_user');
+
+            $table->unique(
+                ['viewable_id', 'viewable_type', 'visitor_id'],
+                'uniq_views_visitor'
+            );
+
+            $table->index(['user_id', 'viewed_at']);
         });
 
         Schema::create('shares', function (Blueprint $table) {
             $table->id();
             $table->morphs('shareable');
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('platform', 100)->nullable();
-            $table->unsignedInteger('share_count')->default(1);
+
+            $table->uuid('visitor_id')->index();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+
+            $table->string('platform', 100);
             $table->timestamp('shared_at')->useCurrent();
-            $table->softDeletes();
             $table->timestamps();
-            $table->index(['shareable_id', 'shareable_type', 'platform'], 'idx_shares_platform');
+
+            $table->index(['shareable_id', 'shareable_type', 'platform']);
         });
 
         Schema::create('ratings', function (Blueprint $table) {
             $table->id();
             $table->morphs('rateable');
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->tinyInteger('rating');
             $table->timestamp('rated_at')->useCurrent();
-            $table->softDeletes();
             $table->timestamps();
-            $table->unique(['rateable_id', 'rateable_type', 'user_id'], 'uniq_rateable_user');
+
+            $table->unique(
+                ['rateable_id', 'rateable_type', 'user_id'],
+                'uniq_rateable_user'
+            );
         });
     }
 
     public function down(): void
     {
         Schema::dropIfExists('ratings');
-        Schema::dropIfExists('likes');
-        Schema::dropIfExists('views');
         Schema::dropIfExists('shares');
+        Schema::dropIfExists('views');
+        Schema::dropIfExists('likes');
     }
 };

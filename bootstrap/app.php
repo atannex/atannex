@@ -2,6 +2,7 @@
 
 
 use Illuminate\Foundation\Application;
+use App\Http\Middleware\EnsureVisitorId;
 use App\Http\Middleware\CheckNameComplete;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -20,30 +21,39 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
 
         /*
-        |--------------------------------------------------------------------------
-        | Middleware Aliases
-        |--------------------------------------------------------------------------
-        */
-        $middleware->alias([
-            'complete.name'  => CheckNameComplete::class,
+    |--------------------------------------------------------------------------
+    | Web Middleware
+    |--------------------------------------------------------------------------
+    | Runs on every web request (before Livewire/controllers)
+    |--------------------------------------------------------------------------
+    */
+        $middleware->appendToGroup('web', [
+            EnsureVisitorId::class,
         ]);
 
         /*
-        |--------------------------------------------------------------------------
-        | Group: authenticated
-        |--------------------------------------------------------------------------
-        */
+    |--------------------------------------------------------------------------
+    | Middleware Aliases
+    |--------------------------------------------------------------------------
+    */
+        $middleware->alias([
+            'complete.name' => CheckNameComplete::class,
+        ]);
+
+        /*
+    |--------------------------------------------------------------------------
+    | Group: authenticated
+    |--------------------------------------------------------------------------
+    */
         $middleware->group('authenticated', [
             'auth',
         ]);
 
         /*
-        |--------------------------------------------------------------------------
-        | Group: onboarded
-        |--------------------------------------------------------------------------
-        | Applied AFTER user registers / logs in
-        |--------------------------------------------------------------------------
-        */
+    |--------------------------------------------------------------------------
+    | Group: onboarded
+    |--------------------------------------------------------------------------
+    */
         $middleware->group('onboarded', [
             'authenticated',
             'verified',
@@ -51,17 +61,16 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         /*
-        |--------------------------------------------------------------------------
-        | Group: page
-        |--------------------------------------------------------------------------
-        | Final step – profile must be complete
-        |--------------------------------------------------------------------------
-        */
+    |--------------------------------------------------------------------------
+    | Group: page
+    |--------------------------------------------------------------------------
+    */
         $middleware->group('pages', [
             'onboarded',
             'complete.name',
         ]);
     })
+
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })

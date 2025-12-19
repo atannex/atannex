@@ -20,12 +20,8 @@ use Livewire\Component;
  * Renders a post with real-time interaction counters:
  * - Likes (toggle + count)
  * - Ratings (1–5 stars + average)
- * - Shares (display-only total)
- * - Views (auto-recorded)
- *
- * All state is synchronized on mount, hydration, and via Laravel Echo broadcasts.
- *
- * @property-read Post $post The shareable post model instance.
+ * - Shares (event-based total)
+ * - Views (unique per visitor)
  */
 class Info extends Component
 {
@@ -43,18 +39,9 @@ class Info extends Component
     public Post $post;
 
     /**
-     * Total number of shares across all users and platforms.
+     * Mount the component.
      *
-     * Synchronized via `syncShareState()` from the `CanShare` trait.
-     */
-    public int $sharesCount = 0;
-
-    /**
-     * Mount the component with the given post.
-     *
-     * Records a view and initializes all interaction states.
-     *
-     * @param  Post  $post  The post model instance.
+     * Records a unique view and initializes interaction state.
      */
     public function mount(Post $post): void
     {
@@ -66,8 +53,6 @@ class Info extends Component
 
     /**
      * Refresh all interaction counters from the database.
-     *
-     * Called on mount, hydration, and real-time updates.
      */
     protected function refreshInteractionState(): void
     {
@@ -79,8 +64,6 @@ class Info extends Component
 
     /**
      * Re-sync interaction state when the component rehydrates.
-     *
-     * Ensures UI reflects latest data after browser tab restore or network reconnect.
      */
     public function hydrate(): void
     {
@@ -89,10 +72,6 @@ class Info extends Component
 
     /**
      * Listen for real-time interaction updates via Laravel Echo.
-     *
-     * Refreshes all counters when another user interacts with the same post.
-     *
-     * @listens echo:interactions,InteractionUpdated
      */
     #[On('echo:interactions,InteractionUpdated')]
     public function refreshOnBroadcast(): void
@@ -101,7 +80,7 @@ class Info extends Component
     }
 
     /**
-     * Render the Blade view for this component.
+     * Render the component view.
      */
     public function render(): View
     {
