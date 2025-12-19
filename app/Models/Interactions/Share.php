@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Share
@@ -15,8 +14,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Share extends Model
 {
-    use SoftDeletes;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -28,6 +25,7 @@ class Share extends Model
         'share_count',
         'shareable_id',
         'shareable_type',
+        'visitor_id',
         'shared_at',
     ];
 

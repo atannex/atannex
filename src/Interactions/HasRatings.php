@@ -11,12 +11,11 @@ use Illuminate\Support\Facades\Auth;
  * Trait HasRatings
  *
  * Provides rating functionality for models using polymorphic relations.
- * Assumes data (e.g., Auth user, ratings) is always available and valid.
+ * Ratings are treated as state (no soft deletes).
  */
 trait HasRatings
 {
     public const RATING_MIN = 1;
-
     public const RATING_MAX = 5;
 
     /**
@@ -24,54 +23,36 @@ trait HasRatings
      */
     public function ratings(): MorphMany
     {
-        return $this->morphMany(Rating::class, 'rateable')->withTrashed();
+        return $this->morphMany(Rating::class, 'rateable');
     }
 
     /**
-     * Query for the current authenticated user's rating.
-     *
-     * @return Builder
+     * Query builder for the current authenticated user's rating.
      */
-    protected function userRatingQuery()
+    protected function userRatingQuery(): Builder
     {
-        return $this->ratings()->where('user_id', Auth::id());
-    }
-
-    /**
-     * Retrieve the rating record for the current user.
-     * Assumes the record always exists.
-     */
-    protected function userRatingRecord(): ?Rating
-    {
-        return $this->userRatingQuery()->first();
+        return $this->ratings()
+            ->getQuery()
+            ->where('user_id', Auth::id());
     }
 
     /**
      * Create or update the rating for the current user.
-     * Restores the rating if it was soft-deleted.
      */
     public function rate(int $value): bool
     {
-        if ($value < self::RATING_MIN || $value > self::RATING_MAX) {
+        if (! Auth::check()) {
             return false;
         }
 
-        $rating = $this->userRatingRecord();
-
-        if ($rating?->trashed()) {
-            $rating->restore();
-            $rating->update([
-                'rating' => $value,
-                'rated_at' => now(),
-            ]);
-
-            return true;
+        if ($value < self::RATING_MIN || $value > self::RATING_MAX) {
+            return false;
         }
 
         $this->ratings()->updateOrCreate(
             ['user_id' => Auth::id()],
             [
-                'rating' => $value,
+                'rating'   => $value,
                 'rated_at' => now(),
             ]
         );
@@ -80,49 +61,42 @@ trait HasRatings
     }
 
     /**
-     * Soft-delete the current user's rating.
-     * Assumes the rating is not already trashed.
+     * Remove the current user's rating.
      */
     public function unrate(): bool
     {
-        $rating = $this->userRatingRecord();
+        if (! Auth::check()) {
+            return false;
+        }
 
-        $rating->delete();
+        $this->userRatingQuery()->delete();
 
         return true;
     }
 
     /**
-     * Calculate the average rating (excluding soft-deleted entries).
-     * Returns rounded float to two decimal places.
+     * Calculate the average rating.
      */
     public function averageRating(): float
     {
-        return round(
-            $this->ratings()
-                ->whereNull('deleted_at')
-                ->avg('rating'),
-            2
-        );
+        $average = $this->ratings()->avg('rating');
+
+        return $average ? round($average, 2) : 0.0;
     }
 
     /**
-     * Count the number of active (non-deleted) ratings.
+     * Count the number of ratings.
      */
     public function ratingCount(): int
     {
-        return $this->ratings()
-            ->whereNull('deleted_at')
-            ->count();
+        return $this->ratings()->count();
     }
 
     /**
      * Get the current user's rating value.
      */
-    public function userRating(): int
+    public function userRating(): ?int
     {
-        return (int) $this->userRatingQuery()
-            ->whereNull('deleted_at')
-            ->value('rating');
+        return $this->userRatingQuery()->value('rating');
     }
 }

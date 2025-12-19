@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class View
@@ -15,8 +14,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class View extends Model
 {
-    use SoftDeletes;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -29,6 +26,7 @@ class View extends Model
         'viewable_type',
         'viewed_at',
         'user_agent',
+        'visitor_id',
     ];
 
     /**
