@@ -28,6 +28,7 @@ class View extends Model
         'viewable_id',
         'viewable_type',
         'viewed_at',
+        'user_agent',
     ];
 
     /**
