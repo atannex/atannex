@@ -26,6 +26,19 @@ trait CanView
      */
     protected function recordView(int $ttlMinutes = 10): void
     {
+        /**
+         * STEP 1:
+         * If the viewer is authenticated, upgrade any existing guest view
+         * (same IP) to this user to avoid double counting.
+         */
+        if (Auth::check()) {
+            $this->post->mergeGuestViewIntoUser();
+        }
+
+        /**
+         * STEP 2:
+         * Apply throttling per viewer identity.
+         */
         $viewerId = Auth::id();
         $ip       = Request::ip();
 
@@ -41,11 +54,19 @@ trait CanView
             ->where('viewed_at', '>=', now()->subMinutes($ttlMinutes))
             ->exists();
 
+        /**
+         * STEP 3:
+         * Record view only if throttling allows it.
+         */
         if (! $recentViewExists) {
             $this->post->recordView();
             $this->fireViewAnalyticsEvent();
         }
 
+        /**
+         * STEP 4:
+         * Sync Livewire state.
+         */
         $this->syncViewState();
     }
 
@@ -62,6 +83,6 @@ trait CanView
      */
     protected function fireViewAnalyticsEvent(): void
     {
-        event(new ModelViewed($this->post, Request::ip()));
+        event(new ModelViewed($this->post));
     }
 }
