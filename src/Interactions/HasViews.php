@@ -11,56 +11,71 @@ use Illuminate\Support\Facades\Request;
 /**
  * Trait HasViews
  *
- * Adds view-tracking functionality to models using polymorphic relations.
- * Tracks authenticated user views with IP and timestamp.
+ * Cache-free view tracking for polymorphic models.
+ * Supports authenticated users and guests using DB-level guarantees.
  */
 trait HasViews
 {
-    /**
-     * Define a polymorphic one-to-many relationship with the View model.
-     */
     public function views(): MorphMany
     {
         return $this->morphMany(View::class, 'viewable');
     }
 
-    /**
-     * Query builder for retrieving the current user's view record.
-     *
-     * @return Builder
-     */
-    protected function userViewQuery()
+    protected function viewerIdentity(): array
     {
-        return $this->views()->where('user_id', Auth::id());
+        return [
+            'user_id'    => Auth::id(),
+            'ip_address' => Request::ip(),
+        ];
+    }
+
+    protected function viewerQuery(): Builder
+    {
+        return $this->views()
+            ->where('user_id', Auth::id())
+            ->where('ip_address', Request::ip());
     }
 
     /**
-     * Record a view by the currently authenticated user.
-     * Updates the existing view if it exists; otherwise, creates a new one.
+     * Record a view.
+     * Re-visits update timestamp instead of creating new rows.
      */
     public function recordView(): void
     {
-        $existing = $this->userViewQuery()->first();
-
-        if ($existing) {
-            $existing->update([
-                'ip_address' => Request::ip(),
-                'viewed_at' => now(),
-            ]);
-        } else {
-            $this->views()->create([
-                'user_id' => Auth::id(),
-                'ip_address' => Request::ip(),
-                'viewed_at' => now(),
-            ]);
-        }
+        $this->views()->updateOrCreate(
+            $this->viewerIdentity(),
+            [
+                'user_agent' => Request::userAgent(),
+                'viewed_at'  => now(),
+            ]
+        );
     }
 
     /**
-     * Get the total number of views for the current model.
+     * Total views count.
      */
     public function viewsCount(): int
     {
         return $this->views()->count();
+    }
+
+    /**
+     * Unique views count.
+     */
+    public function uniqueViewsCount(): int
+    {
+        return $this->views()
+            ->selectRaw('COUNT(DISTINCT COALESCE(user_id, ip_address)) as count')
+            ->value('count');
+    }
+
+    /**
+     * Views within a time window (optional).
+     */
+    public function viewsSince(\DateTimeInterface $since): int
+    {
+        return $this->views()
+            ->where('viewed_at', '>=', $since)
+            ->count();
     }
 }

@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Request;
 /**
  * Trait CanView
  *
- * Adds view-tracking for Livewire components with throttling using the database.
- * Requires the model to use the HasViews trait and have a `views` table with IP/user tracking.
+ * Adds view-tracking for Livewire components with DB-only throttling.
+ * Requires the model to use the HasViews trait.
  */
 trait CanView
 {
@@ -20,15 +20,24 @@ trait CanView
     public int $viewsCount = 0;
 
     /**
-     * Record a view for the current user/IP, with throttling via database.
+     * Record a view for the current viewer with DB throttling.
      *
-     * @param  int  $ttlMinutes  Minutes before another view from the same IP/user is accepted.
+     * @param int $ttlMinutes Minutes before another view from the same viewer is accepted.
      */
     protected function recordView(int $ttlMinutes = 10): void
     {
+        $viewerId = Auth::id();
+        $ip       = Request::ip();
+
         $recentViewExists = $this->post->views()
-            ->where('user_id', Auth::id())
-            ->orWhere('ip_address', Request::ip())
+            ->where(function ($query) use ($viewerId, $ip) {
+                if ($viewerId !== null) {
+                    $query->where('user_id', $viewerId);
+                } else {
+                    $query->whereNull('user_id')
+                        ->where('ip_address', $ip);
+                }
+            })
             ->where('viewed_at', '>=', now()->subMinutes($ttlMinutes))
             ->exists();
 
@@ -41,7 +50,7 @@ trait CanView
     }
 
     /**
-     * Sync the component view count with the model's current views.
+     * Sync the Livewire component state with the model view count.
      */
     protected function syncViewState(): void
     {
@@ -49,7 +58,7 @@ trait CanView
     }
 
     /**
-     * Trigger analytics logic or event dispatching after a view is recorded.
+     * Dispatch analytics event after a successful view record.
      */
     protected function fireViewAnalyticsEvent(): void
     {
