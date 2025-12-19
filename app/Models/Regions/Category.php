@@ -22,8 +22,8 @@ class Category extends Model implements Sluggable
     use GetHierarchy;
     use HasCleaning;
     use HasResolver;
-    use HasSlugPath;
     use Slugging;
+    use HasSlugPath;
     use Scoping;
     use SoftDeletes;
 
