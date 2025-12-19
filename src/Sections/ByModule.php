@@ -1,7 +1,8 @@
 <?php
 
-namespace Atannex\Sections\GetPosts;
+namespace Atannex\Sections;
 
+use App\Enums\Flag;
 use App\Models\Modules\PostModule;
 
 trait ByModule
@@ -13,9 +14,10 @@ trait ByModule
             'post.author',
             'post.tags',
         ])->whereHas('post', function ($query) use ($slug) {
-                $query->where('slug', $slug)
-                    ->published();
-            })
+            $query->where('slug', $slug)
+                ->published()
+                ->flagged(Flag::PUBLISHED);
+        })
             ->firstOrFail();
     }
 }

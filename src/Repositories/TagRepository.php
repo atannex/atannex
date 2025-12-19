@@ -2,10 +2,11 @@
 
 namespace Atannex\Repositories;
 
-use App\Models\Posts\Post;
+use App\Enums\Flag;
 use App\Models\Tags\Tag;
-use Atannex\Contracts\TagInterface;
+use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
+use Atannex\Contracts\TagInterface;
 
 class TagRepository implements TagInterface
 {
@@ -14,11 +15,14 @@ class TagRepository implements TagInterface
      */
     public function getTagBySlug(string $slug): ?Tag
     {
-        return $this->queryTag()->where('slug', $slug)->first();
+        return $this->queryTag()
+            ->where('slug', $slug)
+            ->first();
     }
 
     /**
-     * Retrieves all tags associated with a specified blog post, ordered alphabetically by name.
+     * Retrieves all tags associated with a specified blog post,
+     * ordered alphabetically by name.
      *
      * @return Collection<Tag>
      */
@@ -26,11 +30,14 @@ class TagRepository implements TagInterface
     {
         $post = $this->findPost($postId);
 
-        return $post->tags()->orderBy('name')->get();
+        return $post->tags()
+            ->orderBy('name')
+            ->get();
     }
 
     /**
-     * Retrieves all blog posts associated with a tag (using the tag's slug), ordered by published date descending.
+     * Retrieves all blog posts associated with a tag (using the tag's slug),
+     * ordered by published date descending.
      *
      * @return Collection<Post>
      */
@@ -38,7 +45,10 @@ class TagRepository implements TagInterface
     {
         $tag = $this->getTagBySlug($tagSlug);
 
-        return $tag->posts()->published()->orderByDesc('published_at')->get();
+        return $tag->posts()
+            ->flagged(Flag::PUBLISHED)
+            ->orderByDesc('published_at')
+            ->get();
     }
 
     /**
@@ -55,15 +65,18 @@ class TagRepository implements TagInterface
     }
 
     /**
-     * Retrieves the most popular tags based on the number of associated published posts.
+     * Retrieves the most popular tags based on the number
+     * of associated published posts.
      *
      * @return Collection<Tag>
      */
     public function getPopularTags(int $limit = 10): Collection
     {
-        return Tag::withCount('posts')
+        return Tag::withCount([
+            'posts' => fn($q) => $q->flagged(Flag::PUBLISHED),
+        ])
             ->having('posts_count', '>=', 2)
-            ->orderBy('posts_count', 'desc')
+            ->orderByDesc('posts_count')
             ->take($limit)
             ->get();
     }
@@ -77,10 +90,12 @@ class TagRepository implements TagInterface
     }
 
     /**
-     * Finds a post by ID or fails.
+     * Finds a published post by ID or fails.
      */
     private function findPost(int $postId): Post
     {
-        return Post::findOrFail($postId);
+        return Post::query()
+            ->flagged(Flag::PUBLISHED)
+            ->findOrFail($postId);
     }
 }

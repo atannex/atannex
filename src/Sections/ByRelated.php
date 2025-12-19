@@ -1,6 +1,6 @@
 <?php
 
-namespace Atannex\Sections\GetPosts;
+namespace Atannex\Sections;
 
 use App\Enums\Flag;
 use App\Models\Posts\Post;
@@ -26,6 +26,7 @@ trait ByRelated
         $tagIds = $post->tags()->pluck('tags.id')->toArray();
 
         return Post::query()
+            ->flagged(Flag::PUBLISHED)
             ->where('id', '!=', $post->id)
             ->where(function ($query) use ($post, $tagIds) {
                 $query->where('category_id', $post->category_id);
@@ -36,7 +37,6 @@ trait ByRelated
                     });
                 }
             })
-            ->where('flag', Flag::PUBLISHED)
             ->latest()
             ->limit($limit)
             ->get();

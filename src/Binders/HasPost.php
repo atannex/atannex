@@ -2,17 +2,17 @@
 
 namespace Atannex\Binders;
 
-use Atannex\Sections\GetPosts\ByBreaking;
-use Atannex\Sections\GetPosts\ByEditorPick;
-use Atannex\Sections\GetPosts\ByFeatured;
-use Atannex\Sections\GetPosts\ByModule;
-use Atannex\Sections\GetPosts\ByMostRead;
-use Atannex\Sections\GetPosts\ByNavigation;
-use Atannex\Sections\GetPosts\ByPopular;
-use Atannex\Sections\GetPosts\ByRecent;
-use Atannex\Sections\GetPosts\ByRegion;
-use Atannex\Sections\GetPosts\ByRelated;
-use Atannex\Sections\GetPosts\ByToday;
+use Atannex\Sections\ByBreaking;
+use Atannex\Sections\ByEditorPick;
+use Atannex\Sections\ByFeatured;
+use Atannex\Sections\ByModule;
+use Atannex\Sections\ByMostRead;
+use Atannex\Sections\ByNavigation;
+use Atannex\Sections\ByPopular;
+use Atannex\Sections\ByRecent;
+use Atannex\Sections\ByRegion;
+use Atannex\Sections\ByRelated;
+use Atannex\Sections\ByToday;
 
 /**
  * Class GetPost

@@ -1,6 +1,6 @@
 <?php
 
-namespace Atannex\Sections\GetPosts;
+namespace Atannex\Sections;
 
 use App\Enums\Flag;
 use App\Models\Posts\Post;
@@ -32,7 +32,7 @@ trait ByNavigation
 
         return Post::where('category_id', $post->category_id)
             ->where('id', $operator, $post->id)
-            ->where('flag', Flag::PUBLISHED)
+            ->flagged(Flag::PUBLISHED)
             ->orderBy('id', $order)
             ->first();
     }

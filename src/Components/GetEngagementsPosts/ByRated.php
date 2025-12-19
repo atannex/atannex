@@ -2,6 +2,7 @@
 
 namespace Atannex\Components\GetEngagementsPosts;
 
+use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 
@@ -24,14 +25,15 @@ trait ByRated
      */
     public function getTopRatedPosts(array $config = []): Collection
     {
-        $limit = $config['limit'] ?? 5;
-        $orderBy = $config['orderBy'] ?? 'rating';
-        $categoryId = $config['category_id'] ?? null;
-        $tagId = $config['tag_id'] ?? null;
-        $relations = $config['with'] ?? ['category', 'tags'];
+        $limit = $config['limit'];
+        $orderBy = $config['orderBy'];
+        $categoryId = $config['category_id'];
+        $tagId = $config['tag_id'];
+        $relations = $config['with'];
 
         $query = Post::query()
             ->published()
+            ->flagged(Flag::PUBLISHED)
             ->when($categoryId, fn ($q) => $q->where('category_id', $categoryId))
             ->when($tagId, fn ($q) => $q->whereHas('tags', fn ($q) => $q->where('id', $tagId)))
             ->with($relations)

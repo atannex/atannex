@@ -1,7 +1,8 @@
 <?php
 
-namespace Atannex\Sections\GetPosts;
+namespace Atannex\Sections;
 
+use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,7 @@ trait ByToday
 
         $query = Post::query()
             ->published()
+            ->flagged(Flag::PUBLISHED)
             ->whereBetween('published_at', [$startOfDay, $endOfDay]);
 
         if ($limit > 0) {

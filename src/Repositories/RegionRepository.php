@@ -23,7 +23,7 @@ class RegionRepository implements RegionInterface
     public function getRootCategoryRegions(): Collection
     {
         return Category::query()
-            ->where('flag', Flag::PUBLISHED)
+            ->flagged(Flag::PUBLISHED)
             ->whereNull('parent_id')
             ->with('children')
             ->get();
@@ -38,7 +38,7 @@ class RegionRepository implements RegionInterface
     public function getRootRegions(): Collection
     {
         return Region::query()
-            ->where('flag', Flag::PUBLISHED)
+            ->flagged(Flag::PUBLISHED)
             ->whereNull('parent_id')
             ->with('childrenRecursive')
             ->get();
@@ -51,7 +51,7 @@ class RegionRepository implements RegionInterface
     public function getRegionBySlug(string $slug): ?Region
     {
         return Region::query()
-            ->where('flag', Flag::PUBLISHED)
+            ->flagged(Flag::PUBLISHED)
             ->where('slug_path', $slug)
             ->with([
                 'sections',
