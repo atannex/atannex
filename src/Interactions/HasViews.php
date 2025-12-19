@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Request;
 /**
  * Trait HasViews
  *
- * Cache-free view tracking for polymorphic models.
- * Supports authenticated users and guests using DB-level guarantees.
+ * Cache-free, DB-driven view tracking for polymorphic models.
+ * Supports guests and authenticated users with identity merging.
  */
 trait HasViews
 {
@@ -21,27 +21,52 @@ trait HasViews
         return $this->morphMany(View::class, 'viewable');
     }
 
+    /**
+     * Upgrade an existing guest view to an authenticated user view.
+     * Prevents double counting when a guest logs in.
+     */
+    public function mergeGuestViewIntoUser(): void
+    {
+        if (! Auth::check()) {
+            return;
+        }
+
+        $this->views()
+            ->whereNull('user_id')
+            ->where('ip_address', Request::ip())
+            ->update([
+                'user_id'   => Auth::id(),
+                'viewed_at' => now(),
+            ]);
+    }
+
+    /**
+     * Build the identity used for creating/updating a view.
+     */
     protected function viewerIdentity(): array
     {
+        if (Auth::check()) {
+            return [
+                'user_id'    => Auth::id(),
+                'ip_address' => Request::ip(),
+            ];
+        }
+
         return [
-            'user_id'    => Auth::id(),
+            'user_id'    => null,
             'ip_address' => Request::ip(),
         ];
     }
 
-    protected function viewerQuery(): Builder
-    {
-        return $this->views()
-            ->where('user_id', Auth::id())
-            ->where('ip_address', Request::ip());
-    }
-
     /**
      * Record a view.
-     * Re-visits update timestamp instead of creating new rows.
+     * Updates timestamps instead of creating duplicate rows.
      */
     public function recordView(): void
     {
+        // Ensure guest views are merged before recording
+        $this->mergeGuestViewIntoUser();
+
         $this->views()->updateOrCreate(
             $this->viewerIdentity(),
             [
@@ -52,7 +77,7 @@ trait HasViews
     }
 
     /**
-     * Total views count.
+     * Total views count (unique viewers).
      */
     public function viewsCount(): int
     {
@@ -60,7 +85,7 @@ trait HasViews
     }
 
     /**
-     * Unique views count.
+     * Unique views count (explicit, analytics-safe).
      */
     public function uniqueViewsCount(): int
     {
@@ -70,7 +95,7 @@ trait HasViews
     }
 
     /**
-     * Views within a time window (optional).
+     * Views within a time window.
      */
     public function viewsSince(\DateTimeInterface $since): int
     {

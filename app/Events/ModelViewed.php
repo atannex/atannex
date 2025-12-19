@@ -3,37 +3,43 @@
 namespace App\Events;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 class ModelViewed
 {
-    use Dispatchable;
-    use SerializesModels;
+    use Dispatchable, SerializesModels;
 
     /**
-     * The model that was viewed.
-     *
-     * @var Model
+     * The viewed model.
      */
-    public $model;
+    public Model $model;
 
     /**
-     * The IP address of the viewer.
-     *
-     * @var string|null
+     * Authenticated user ID (null for guests).
      */
-    public $ip;
+    public ?int $userId;
+
+    /**
+     * Viewer IP address.
+     */
+    public ?string $ip;
+
+    /**
+     * Viewer user agent.
+     */
+    public ?string $userAgent;
 
     /**
      * Create a new event instance.
-     *
-     * @param Model $model
-     * @param string|null $ip
      */
-    public function __construct($model, ?string $ip = null)
+    public function __construct(Model $model)
     {
-        $this->model = $model;
-        $this->ip = $ip;
+        $this->model     = $model;
+        $this->userId    = Auth::id();
+        $this->ip        = Request::ip();
+        $this->userAgent = Request::userAgent();
     }
 }
