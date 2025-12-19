@@ -1,7 +1,8 @@
 <?php
 
-namespace Atannex\Sections\GetPosts;
+namespace Atannex\Sections;
 
+use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 
@@ -13,6 +14,7 @@ trait ByMostRead
     public function getMostReadPosts(int $limit = 5): Collection
     {
         return Post::withCount('views')
+            ->flagged(Flag::PUBLISHED)
             ->published()
             ->orderByDesc('views_count')
             ->take($limit)

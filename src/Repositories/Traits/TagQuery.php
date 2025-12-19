@@ -14,7 +14,6 @@ trait TagQuery
     use HasTree;
 
     protected const PAGINATION_LIMIT = 15;
-
     protected const POPULAR_LIMIT = 12;
 
     /**
@@ -23,10 +22,10 @@ trait TagQuery
     public function postsByTag(Tag $tag, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
     {
         return $tag->posts()
+            ->flagged(Flag::PUBLISHED)
             ->latest()
             ->paginate($limit);
     }
-
 
     /**
      * Popular tags inside the Tag's category tree.
@@ -37,9 +36,16 @@ trait TagQuery
         $treeIds = $this->getTreeIds($root);
 
         return Tag::query()
-            ->whereHas('posts', fn($q) => $q->whereIn('category_id', $treeIds))
+            ->whereHas(
+                'posts',
+                fn($q) => $q
+                    ->flagged(Flag::PUBLISHED)
+                    ->whereIn('category_id', $treeIds)
+            )
             ->withCount([
-                'posts' => fn($q) => $q->whereIn('category_id', $treeIds),
+                'posts' => fn($q) => $q
+                    ->flagged(Flag::PUBLISHED)
+                    ->whereIn('category_id', $treeIds),
             ])
             ->orderByDesc('posts_count')
             ->limit($this->sanitizeLimit($limit))
@@ -66,6 +72,7 @@ trait TagQuery
     protected function resolveTagCategory(Tag $tag): Category
     {
         return $tag->posts()
+            ->flagged(Flag::PUBLISHED)
             ->with('category.parent')
             ->firstOrFail()
             ->category;

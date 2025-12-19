@@ -21,10 +21,11 @@ trait ByEditorPick
      */
     public function getEditorPicks(array $config = []): Collection
     {
-        $limit = $config['limit'] ?? 5;
+        $limit = $config['limit'];
 
         return Post::query()
-            ->where('flag', Flag::EDITORIAL_PICK)
+            ->flagged(Flag::EDITORIAL_PICK)
+            ->flagged(Flag::PUBLISHED)
             ->published()
             ->orderByDesc('updated_at')
             ->limit($limit)

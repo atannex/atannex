@@ -1,7 +1,8 @@
 <?php
 
-namespace Atannex\Sections\GetPosts;
+namespace Atannex\Sections;
 
+use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
@@ -22,6 +23,7 @@ trait ByRecent
     {
         return Post::query()
             ->published()
+            ->flagged(Flag::PUBLISHED)
             ->whereDate('published_at', '<', Date::today())
             ->latest('published_at')
             ->limit($limit)

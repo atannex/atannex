@@ -1,7 +1,8 @@
 <?php
 
-namespace Atannex\Sections\GetPosts;
+namespace Atannex\Sections;
 
+use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 
@@ -13,6 +14,7 @@ trait ByEditorPick
     public function getEditorPick(int $limit = 5): Collection
     {
         return Post::query()
+            ->flagged(Flag::PUBLISHED)
             ->editorPick()
             ->orderBy('published_at', 'desc')
             ->limit($limit)

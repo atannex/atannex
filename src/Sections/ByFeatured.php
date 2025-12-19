@@ -1,6 +1,6 @@
 <?php
 
-namespace Atannex\Sections\GetPosts;
+namespace Atannex\Sections;
 
 use App\Enums\Flag;
 use App\Models\Posts\Post;
@@ -15,6 +15,7 @@ trait ByFeatured
     {
         return Post::query()
             ->where('flag', Flag::FEATURED)
+            ->flagged(Flag::PUBLISHED)
             ->published()
             ->where(function ($query) {
                 $query->whereNull('featured_until')

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Atannex\Traits;
 
+use App\Enums\Flag;
+use Illuminate\Support\Collection;
 use Atannex\Views\Traits\CanNormalize;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 
 /**
  * Provides functionality to fetch hierarchical models and attach their posts efficiently.
@@ -56,7 +57,7 @@ trait WithHierarchicalPosts
         );
 
         return $models->map(
-            fn (Model $model) => $this->attachPostsToModel(
+            fn(Model $model) => $this->attachPostsToModel(
                 $model,
                 $postLimit,
                 $leafPostLimit,
@@ -86,10 +87,14 @@ trait WithHierarchicalPosts
             ->whereIn('id', $ids)
             ->with([
                 sprintf('%s:id,parent_id,name,%s', $childrenRelation, $sortField),
-                sprintf('%s.%s', $childrenRelation, $postsRelation) => fn ($q) => $q
+
+                sprintf('%s.%s', $childrenRelation, $postsRelation) => fn($q) => $q
+                    ->flagged(Flag::PUBLISHED)
                     ->orderBy($sortField, $order)
                     ->limit($leafPostLimit),
-                $postsRelation => fn ($q) => $q
+
+                $postsRelation => fn($q) => $q
+                    ->flagged(Flag::PUBLISHED)
                     ->orderBy($sortField, $order)
                     ->limit($postLimit),
             ])
@@ -97,6 +102,7 @@ trait WithHierarchicalPosts
             ->limit($limit)
             ->get();
     }
+
 
     /**
      * Combine a model's own posts with those from its leaf descendants.

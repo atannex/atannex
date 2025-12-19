@@ -9,22 +9,15 @@
 <div class="blog-meta">
     <a class="author" href="{{ route('page.index', $module->post->author->user->slug) }}">
         <i class="far fa-user"></i>
-        {{ __('By - ') . $module->post->author->user->name }}
+        {{ __('By - ') . Str::title($module->post->author->user->name) }}
     </a>
 
-    <a href="javascript:void(0)">
+    <a href="{{ route('page.index', $module->post->author->user->slug) }}">
         <i class="fal fa-calendar-days"></i>
-        {{ __(' Published: ') . $module->created_at->diffForHumans() }}
+        {{ $module->created_at->diffForHumans() }}
     </a>
 
-    @if($module->updated_at && $module->updated_at->gt($module->created_at))
-    <a href="javascript:void(0)">
-        <i class="fal fa-calendar-days"></i>
-        {{ __(' Updated: ') . $module->updated_at->diffForHumans() }}
-    </a>
-    @endif
-
-    <a href="javascript:void(0)">
+    <a href="{{ route('page.index', $module->post->author->user->slug) }}">
         <i class="far fa-comments"></i>
         ({{ format_count($module->post->comments->count()) }}
         {{ Str::plural('Comment', $module->post->comments->count()) }})

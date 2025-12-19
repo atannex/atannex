@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Atannex\Traits;
 
+use App\Enums\Flag;
 use App\Enums\Sorting;
 use App\Models\Posts\Post;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Trait HasPostsForHierarchy
@@ -89,8 +90,8 @@ trait HasPostsForHierarchy
         }
 
         return $query->get()
-            ->groupBy($groupByResolver ?? fn (Post $p) => $this->resolveGroupByKey($p, $foreignKey, $relationName))
-            ->flatMap(fn (Collection $group) => $group->take($limitPerLeaf))
+            ->groupBy($groupByResolver ?? fn(Post $p) => $this->resolveGroupByKey($p, $foreignKey, $relationName))
+            ->flatMap(fn(Collection $group) => $group->take($limitPerLeaf))
             ->values();
     }
 
@@ -105,23 +106,27 @@ trait HasPostsForHierarchy
         string $sortDir
     ): Builder {
         $query = Post::query()
-            ->published()
+            ->flagged(Flag::PUBLISHED)
             ->withCount([
-                'views as views_count' => fn ($q) => $q->latest('viewed_at'),
-                'likes as likes_count' => fn ($q) => $q->latest('liked_at'),
-                'shares as shares_count' => fn ($q) => $q->latest('shared_at'),
-                'ratings as rates_count' => fn ($q) => $q->latest('rated_at'),
-                'comments as comments_count' => fn ($q) => $q->latest('created_at'),
+                'views as views_count' => fn($q) => $q->latest('viewed_at'),
+                'likes as likes_count' => fn($q) => $q->latest('liked_at'),
+                'shares as shares_count' => fn($q) => $q->latest('shared_at'),
+                'ratings as rates_count' => fn($q) => $q->latest('rated_at'),
+                'comments as comments_count' => fn($q) => $q->latest('created_at'),
             ])
             ->withAvg('ratings as average_rating', 'rating')
-            ->when($foreignKey, fn (Builder $q) => $q->whereIn($foreignKey, $leafIds))
+            ->when($foreignKey, fn(Builder $q) => $q->whereIn($foreignKey, $leafIds))
             ->when(
                 ! $foreignKey,
-                fn (Builder $q) => $q->whereHas($relationName, fn (Builder $b) => $b->whereIn($relationName.'.id', $leafIds))
+                fn(Builder $q) => $q->whereHas(
+                    $relationName,
+                    fn(Builder $b) => $b->whereIn($relationName . '.id', $leafIds)
+                )
             );
 
         return $this->applySortingAndThresholds($query, $sortBy, $sortDir);
     }
+
 
     /**
      * Apply enum-based sorting and minimum engagement thresholds.
@@ -189,7 +194,7 @@ trait HasPostsForHierarchy
                 break;
 
             case Sorting::TRENDING:
-                $query->orderByRaw('(views_count + shares_count + likes_count) '.strtoupper($sortDir));
+                $query->orderByRaw('(views_count + shares_count + likes_count) ' . strtoupper($sortDir));
                 break;
 
             case Sorting::BREAKING_PRIORITY:
@@ -209,7 +214,7 @@ trait HasPostsForHierarchy
                 break;
 
             case Sorting::HEADLINE_LENGTH:
-                $query->orderByRaw('CHAR_LENGTH(title) '.strtoupper($sortDir));
+                $query->orderByRaw('CHAR_LENGTH(title) ' . strtoupper($sortDir));
                 break;
 
             case Sorting::RELEVANCE:
@@ -254,15 +259,15 @@ trait HasPostsForHierarchy
 
         if ($sortBy === Sorting::POPULARITY || $sortBy === Sorting::TRENDING) {
             $posts = $posts->sortByDesc(
-                fn ($p) => $p->views_count + $p->likes_count + $p->shares_count + $p->comments_count
+                fn($p) => $p->views_count + $p->likes_count + $p->shares_count + $p->comments_count
             );
         } elseif ($sortBy === Sorting::FEATURED) {
-            $posts = $posts->sortByDesc(fn ($p) => $p->is_featured);
+            $posts = $posts->sortByDesc(fn($p) => $p->is_featured);
         } elseif ($sortBy === Sorting::EDITOR_PICK) {
-            $posts = $posts->sortByDesc(fn ($p) => $p->is_editor_pick);
+            $posts = $posts->sortByDesc(fn($p) => $p->is_editor_pick);
         } elseif ($sortBy === Sorting::HEADLINE_LENGTH) {
             $posts = $posts->sortBy(
-                fn ($p) => mb_strlen($p->title),
+                fn($p) => mb_strlen($p->title),
                 SORT_REGULAR,
                 $sortDir === 'desc'
             );
@@ -284,9 +289,9 @@ trait HasPostsForHierarchy
         return $leafIdResolver
             ? $leafIdResolver($item)
             : $item->getDescendants()
-                ->where(fn ($child) => $child->children->isEmpty())
-                ->pluck('id')
-                ->all();
+            ->where(fn($child) => $child->children->isEmpty())
+            ->pluck('id')
+            ->all();
     }
 
     protected function resolveGroupByKey(Post $post, ?string $foreignKey, string $relationName): int|string
