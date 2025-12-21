@@ -17,49 +17,8 @@
                         <div class="flex flex-wrap gap-3 blog-meta">
 
                             @include('partials.author')
+
                             @include('partials.date')
-
-                            @php
-                            $commentsCount = $post->comments->count();
-                            $likesCount = $post->likesCount();
-                            $ratingCount = $post->ratingCount();
-                            $viewCount = $post->viewsCount();
-                            @endphp
-
-                            <span class="meta-item disabled-link">
-                                <i class="far fa-comments"></i>
-                                {{ trans_choice(
-            ':count Comment|:count Comments',
-            $commentsCount,
-            ['count' => format_count($commentsCount)]
-        ) }}
-                            </span>
-
-                            <span class="meta-item disabled-link like-btn">
-                                <i class="far fa-thumbs-up"></i>
-                                {{ trans_choice(
-            ':count Like|:count Likes',
-            $likesCount,
-            ['count' => format_count($likesCount)]
-        ) }}
-                            </span>
-
-                            <span class="meta-item disabled-link like-btn">
-                                <i class="far fa-eye"></i>
-                                {{ trans_choice(
-            ':count View|:count Views',
-            $viewCount,
-            ['count' => format_count($viewCount)]
-        ) }}
-                            </span>
-
-                            <span class="meta-item post-rating">
-                                <i class="fas fa-star"></i>
-                                <span class="rating-score">
-                                    {{ number_format($post->averageRating(), 1) }}/5
-                                    ({{ format_count($ratingCount, 1) }})
-                                </span>
-                            </span>
 
                         </div>
 

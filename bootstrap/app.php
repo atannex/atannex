@@ -2,7 +2,6 @@
 
 
 use Illuminate\Foundation\Application;
-use App\Http\Middleware\EnsureVisitorId;
 use App\Http\Middleware\CheckNameComplete;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -19,17 +18,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withMiddleware(function (Middleware $middleware): void {
-
-        /*
-    |--------------------------------------------------------------------------
-    | Web Middleware
-    |--------------------------------------------------------------------------
-    | Runs on every web request (before Livewire/controllers)
-    |--------------------------------------------------------------------------
-    */
-        $middleware->appendToGroup('web', [
-            EnsureVisitorId::class,
-        ]);
 
         /*
     |--------------------------------------------------------------------------

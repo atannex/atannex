@@ -7,17 +7,20 @@ namespace Atannex\Traits;
 use App\Enums\Flag;
 use App\Enums\Sorting;
 use App\Models\Posts\Post;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 /**
  * Trait HasPostsForHierarchy
  *
- * Fetches posts across hierarchical models using enum-based sorting
- * tailored for news websites with engagement and editorial relevance.
+ * Fetch posts across hierarchical models using a strictly limited
+ * and validated set of sorting options.
  */
 trait HasPostsForHierarchy
 {
+    /**
+     * Public entry point
+     */
     protected function fetchPostsForHierarchy(
         array $ids,
         array $options,
@@ -27,12 +30,10 @@ trait HasPostsForHierarchy
         ?callable $leafIdResolver = null,
         ?callable $groupByResolver = null
     ): Collection {
-        $limit = (int) ($options['limit'] ?? 10);
-        $limitPerLeaf = (int) ($options['leaf_relation_limit'] ?? 3);
-        $sortKey = $options['sort'] ?? Sorting::PUBLISHED_AT;
-        $sortDir = strtolower($options['order'] ?? 'desc');
+        $limit          = (int) ($options['limit'] ?? 10);
+        $limitPerLeaf   = (int) ($options['leaf_relation_limit'] ?? 3);
 
-        $sortBy = Sorting::hasValue($sortKey) ? $sortKey : Sorting::PUBLISHED_AT;
+        ['key' => $sortBy, 'dir' => $sortDir] = $this->resolveSorting($options);
 
         $items = $this->fetchHierarchyItems($modelClass, $ids);
 
@@ -44,7 +45,7 @@ trait HasPostsForHierarchy
             $limit,
             $limitPerLeaf,
             $leafIdResolver,
-            $groupByResolver,
+            $groupByResolver
         ) {
             return $carry->merge(
                 $this->fetchPostsForItem(
@@ -61,16 +62,65 @@ trait HasPostsForHierarchy
             );
         }, collect());
 
-        return $this->finalizePostsCollection($allPosts, $sortBy, $sortDir, $limit);
+        return $this->finalizePostsCollection(
+            $allPosts,
+            $sortBy,
+            $sortDir,
+            $limit
+        );
     }
 
-    protected function fetchHierarchyItems(string $modelClass, array $ids): Collection
+    /**
+     * Allowed sortable columns (single source of truth)
+     */
+    protected function sortableColumns(): array
     {
+        return [
+            Sorting::PUBLISHED_AT => 'published_at',
+            Sorting::CREATED_AT  => 'created_at',
+            Sorting::UPDATED_AT  => 'updated_at',
+            Sorting::COMMENTS    => 'comments_count',
+            Sorting::CATEGORY    => 'category_id',
+            Sorting::REGION      => 'region',
+        ];
+    }
+
+    /**
+     * Strict sorting resolver
+     */
+    protected function resolveSorting(array $options): array
+    {
+        $sort = $options['sort'] ?? Sorting::PUBLISHED_AT;
+        $dir  = strtolower($options['order'] ?? 'desc');
+
+        $allowed = array_keys($this->sortableColumns());
+
+        return [
+            'key' => in_array($sort, $allowed, true)
+                ? $sort
+                : Sorting::PUBLISHED_AT,
+
+            'dir' => in_array($dir, ['asc', 'desc'], true)
+                ? $dir
+                : 'desc',
+        ];
+    }
+
+    /**
+     * Fetch hierarchy root items
+     */
+    protected function fetchHierarchyItems(
+        string $modelClass,
+        array $ids
+    ): Collection {
         return $modelClass::with('children')
             ->whereIn('id', $ids)
             ->get();
     }
 
+    /**
+     * Fetch posts for a single hierarchy item
+     */
     protected function fetchPostsForItem(
         mixed $item,
         ?string $foreignKey,
@@ -83,20 +133,34 @@ trait HasPostsForHierarchy
         ?callable $groupByResolver
     ): Collection {
         $leafIds = $this->resolveLeafIds($item, $leafIdResolver);
-        $query = $this->buildPostQuery($leafIds, $foreignKey, $relationName, $sortBy, $sortDir);
+
+        $query = $this->buildPostQuery(
+            $leafIds,
+            $foreignKey,
+            $relationName,
+            $sortBy,
+            $sortDir
+        );
 
         if ($item->children->isEmpty()) {
             return $query->limit($limit)->get();
         }
 
         return $query->get()
-            ->groupBy($groupByResolver ?? fn(Post $p) => $this->resolveGroupByKey($p, $foreignKey, $relationName))
+            ->groupBy(
+                $groupByResolver
+                    ?? fn(Post $p) => $this->resolveGroupByKey(
+                        $p,
+                        $foreignKey,
+                        $relationName
+                    )
+            )
             ->flatMap(fn(Collection $group) => $group->take($limitPerLeaf))
             ->values();
     }
 
     /**
-     * Build the base post query with counts, averages, and thresholds.
+     * Build base post query
      */
     protected function buildPostQuery(
         array $leafIds,
@@ -108,180 +172,75 @@ trait HasPostsForHierarchy
         $query = Post::query()
             ->flagged(Flag::PUBLISHED)
             ->withCount([
-                'views as views_count' => fn($q) => $q->latest('viewed_at'),
-                'likes as likes_count' => fn($q) => $q->latest('liked_at'),
-                'shares as shares_count' => fn($q) => $q->latest('shared_at'),
-                'ratings as rates_count' => fn($q) => $q->latest('rated_at'),
-                'comments as comments_count' => fn($q) => $q->latest('created_at'),
+                'comments as comments_count',
             ])
-            ->withAvg('ratings as average_rating', 'rating')
-            ->when($foreignKey, fn(Builder $q) => $q->whereIn($foreignKey, $leafIds))
+            ->when(
+                $foreignKey,
+                fn(Builder $q) => $q->whereIn($foreignKey, $leafIds)
+            )
             ->when(
                 ! $foreignKey,
                 fn(Builder $q) => $q->whereHas(
                     $relationName,
-                    fn(Builder $b) => $b->whereIn($relationName . '.id', $leafIds)
+                    fn(Builder $b) =>
+                    $b->whereIn($relationName . '.id', $leafIds)
                 )
             );
 
-        return $this->applySortingAndThresholds($query, $sortBy, $sortDir);
+        return $this->applySortingAndThresholds(
+            $query,
+            $sortBy,
+            $sortDir
+        );
     }
-
 
     /**
-     * Apply enum-based sorting and minimum engagement thresholds.
+     * Apply sorting and minimal thresholds
      */
-    protected function applySortingAndThresholds(Builder $query, string $sortBy, string $sortDir): Builder
-    {
-        $thresholds = [
-            Sorting::VIEWS => ['relation' => 'views', 'column' => 'views_count', 'min' => 10],
-            Sorting::LIKES => ['relation' => 'likes', 'column' => 'likes_count', 'min' => 5],
-            Sorting::SHARES => ['relation' => 'shares', 'column' => 'shares_count', 'min' => 5],
-            Sorting::COMMENTS => ['relation' => 'comments', 'column' => 'comments_count', 'min' => 3],
-            Sorting::RATING => ['relation' => 'ratings', 'column' => 'average_rating', 'min' => 2],
-        ];
-
-        if (isset($thresholds[$sortBy])) {
-            $t = $thresholds[$sortBy];
-            $query->has($t['relation'], '>=', $t['min']);
+    protected function applySortingAndThresholds(
+        Builder $query,
+        string $sortBy,
+        string $sortDir
+    ): Builder {
+        if ($sortBy === Sorting::COMMENTS) {
+            $query->has('comments', '>=', 3);
         }
 
-        switch ($sortBy) {
-            case Sorting::PUBLISHED_AT:
-            case Sorting::CREATED_AT:
-            case Sorting::UPDATED_AT:
-                $query->orderBy($sortBy, $sortDir);
-                break;
+        $column = $this->sortableColumns()[$sortBy] ?? 'published_at';
 
-            case Sorting::VIEWS:
-                $query->orderBy('views_count', $sortDir);
-                break;
-
-            case Sorting::COMMENTS:
-                $query->orderBy('comments_count', $sortDir);
-                break;
-
-            case Sorting::LIKES:
-                $query->orderBy('likes_count', $sortDir);
-                break;
-
-            case Sorting::SHARES:
-                $query->orderBy('shares_count', $sortDir);
-                break;
-
-            case Sorting::RATING:
-                $query->orderBy('average_rating', $sortDir);
-                break;
-
-            case Sorting::TITLE:
-                $query->orderBy('title', $sortDir);
-                break;
-
-            case Sorting::AUTHOR:
-                $query->orderBy('author_id', $sortDir);
-                break;
-
-            case Sorting::READING_TIME:
-                $query->orderBy('reading_time', $sortDir);
-                break;
-
-            case Sorting::CATEGORY:
-                $query->orderBy('category_id', $sortDir);
-                break;
-
-            case Sorting::FEATURED:
-                $query->orderByDesc('is_featured');
-                break;
-
-            case Sorting::TRENDING:
-                $query->orderByRaw('(views_count + shares_count + likes_count) ' . strtoupper($sortDir));
-                break;
-
-            case Sorting::BREAKING_PRIORITY:
-                $query->orderByDesc('breaking_priority');
-                break;
-
-            case Sorting::EDITOR_PICK:
-                $query->orderByDesc('flag');
-                break;
-
-            case Sorting::SOURCE_CREDIBILITY:
-                $query->orderBy('source_credibility_score', $sortDir);
-                break;
-
-            case Sorting::REGION:
-                $query->orderBy('region', $sortDir);
-                break;
-
-            case Sorting::HEADLINE_LENGTH:
-                $query->orderByRaw('CHAR_LENGTH(title) ' . strtoupper($sortDir));
-                break;
-
-            case Sorting::RELEVANCE:
-                $query->orderBy('relevance_score', $sortDir);
-                break;
-
-            case Sorting::POPULARITY:
-                $query->orderByRaw('(views_count + likes_count + shares_count + comments_count) DESC');
-                break;
-
-            case Sorting::RANDOM:
-                $query->inRandomOrder();
-                break;
-
-            default:
-                $query->latest('published_at');
-                break;
-        }
-
-        return $query;
+        return $query->orderBy($column, $sortDir);
     }
 
-    protected function finalizePostsCollection(Collection $posts, string $sortBy, string $sortDir, int $limit): Collection
-    {
-        $columnMap = [
-            Sorting::PUBLISHED_AT => 'published_at',
-            Sorting::CREATED_AT => 'created_at',
-            Sorting::UPDATED_AT => 'updated_at',
-            Sorting::VIEWS => 'views_count',
-            Sorting::COMMENTS => 'comments_count',
-            Sorting::LIKES => 'likes_count',
-            Sorting::SHARES => 'shares_count',
-            Sorting::RATING => 'average_rating',
-            Sorting::TITLE => 'title',
-            Sorting::AUTHOR => 'author_id',
-            Sorting::READING_TIME => 'reading_time',
-            Sorting::CATEGORY => 'category_id',
-            Sorting::REGION => 'region',
-        ];
+    /**
+     * Final in-memory sort & limit
+     */
+    protected function finalizePostsCollection(
+        Collection $posts,
+        string $sortBy,
+        string $sortDir,
+        int $limit
+    ): Collection {
+        $column = $this->sortableColumns()[$sortBy] ?? 'published_at';
 
-        $column = $columnMap[$sortBy] ?? 'published_at';
+        $posts = $posts->sortBy(
+            $column,
+            SORT_REGULAR,
+            $sortDir === 'desc'
+        );
 
-        if ($sortBy === Sorting::POPULARITY || $sortBy === Sorting::TRENDING) {
-            $posts = $posts->sortByDesc(
-                fn($p) => $p->views_count + $p->likes_count + $p->shares_count + $p->comments_count
-            );
-        } elseif ($sortBy === Sorting::FEATURED) {
-            $posts = $posts->sortByDesc(fn($p) => $p->is_featured);
-        } elseif ($sortBy === Sorting::EDITOR_PICK) {
-            $posts = $posts->sortByDesc(fn($p) => $p->is_editor_pick);
-        } elseif ($sortBy === Sorting::HEADLINE_LENGTH) {
-            $posts = $posts->sortBy(
-                fn($p) => mb_strlen($p->title),
-                SORT_REGULAR,
-                $sortDir === 'desc'
-            );
-        } elseif ($sortBy !== Sorting::RANDOM) {
-            $posts = $posts->sortBy($column, SORT_REGULAR, $sortDir === 'desc');
-        } else {
-            $posts = $posts->shuffle();
-        }
-
-        return $posts->unique('id')->take($limit)->values();
+        return $posts
+            ->unique('id')
+            ->take($limit)
+            ->values();
     }
 
-    protected function resolveLeafIds(mixed $item, ?callable $leafIdResolver): array
-    {
+    /**
+     * Resolve leaf IDs
+     */
+    protected function resolveLeafIds(
+        mixed $item,
+        ?callable $leafIdResolver
+    ): array {
         if ($item->children->isEmpty()) {
             return [$item->id];
         }
@@ -294,8 +253,14 @@ trait HasPostsForHierarchy
             ->all();
     }
 
-    protected function resolveGroupByKey(Post $post, ?string $foreignKey, string $relationName): int|string
-    {
+    /**
+     * Resolve grouping key
+     */
+    protected function resolveGroupByKey(
+        Post $post,
+        ?string $foreignKey,
+        string $relationName
+    ): int|string {
         return $foreignKey
             ? $post->{$foreignKey}
             : $post->{$relationName}->first()?->id;
