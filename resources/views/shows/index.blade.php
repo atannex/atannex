@@ -42,8 +42,6 @@
 
                         <div class="blog-content">
 
-                            <livewire:show.info :post="$module->post" />
-
                             <x-shows.content :module="$module" />
 
                             <x-shows.related-tag :relatedTags="$relatedTags" />

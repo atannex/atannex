@@ -4,10 +4,6 @@ namespace Atannex\Relations;
 
 use App\Enums\Status;
 use App\Models\Comments\Comment;
-use App\Models\Interactions\Like;
-use App\Models\Interactions\Rating;
-use App\Models\Interactions\Share;
-use App\Models\Interactions\View;
 use App\Models\Regions\Employee;
 use App\Models\Users\UserNameToken;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -74,37 +70,5 @@ trait UserRelation
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
-    }
-
-    /**
-     * Relationship: User → Likes
-     */
-    public function likes(): HasMany
-    {
-        return $this->hasMany(Like::class);
-    }
-
-    /**
-     * Relationship: User → Views
-     */
-    public function views(): HasMany
-    {
-        return $this->hasMany(View::class);
-    }
-
-    /**
-     * Relationship: User → Shares
-     */
-    public function shares(): HasMany
-    {
-        return $this->hasMany(Share::class);
-    }
-
-    /**
-     * Relationship: User → Ratings
-     */
-    public function ratings(): HasMany
-    {
-        return $this->hasMany(Rating::class);
     }
 }

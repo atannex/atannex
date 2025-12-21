@@ -11,18 +11,11 @@ use App\Enums\Binding;
 use App\Enums\Classification;
 use App\Models\Regions\Widget;
 use App\Models\Regions\Section;
-use App\Events\Users\UserCreated;
 use App\Observers\WidgetObserver;
 use App\Observers\SectionObserver;
 use Atannex\Adapters\WidgetAdapter;
-use App\Events\Docs\DocumentCreated;
 use Atannex\Adapters\SectionAdapter;
-use App\Events\ContactMessageCreated;
-use App\Listeners\SendContactMessage;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
-use App\Listeners\Docs\DocumentNotification;
-use App\Listeners\Users\SendUserRegisteredNotification;
 
 /**
  * Application Service Provider
@@ -77,19 +70,6 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function registerEventListeners(): void
     {
-        Event::listen(
-            DocumentCreated::class,
-            DocumentNotification::class
-        );
 
-        Event::listen(
-            UserCreated::class,
-            SendUserRegisteredNotification::class
-        );
-
-        Event::listen(
-            ContactMessageCreated::class,
-            SendContactMessage::class
-        );
     }
 }

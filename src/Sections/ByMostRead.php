@@ -13,10 +13,8 @@ trait ByMostRead
      */
     public function getMostReadPosts(int $limit = 5): Collection
     {
-        return Post::withCount('views')
-            ->flagged(Flag::PUBLISHED)
+        return Post::flagged(Flag::PUBLISHED)
             ->published()
-            ->orderByDesc('views_count')
             ->take($limit)
             ->get();
     }

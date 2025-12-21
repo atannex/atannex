@@ -13,23 +13,19 @@ use App\Filament\Resources\Documents\DocumentResource;
 use App\Filament\Resources\EmployeeDepartments\EmployeeDepartmentResource;
 use App\Filament\Resources\Employees\EmployeeResource;
 use App\Filament\Resources\Galleries\GalleryResource;
-use App\Filament\Resources\Likes\LikeResource;
 use App\Filament\Resources\Permissions\PermissionResource;
 use App\Filament\Resources\PostModules\PostModuleResource;
 use App\Filament\Resources\PostRegions\PostRegionResource;
 use App\Filament\Resources\Posts\PostResource;
 use App\Filament\Resources\PostTags\PostTagResource;
-use App\Filament\Resources\Ratings\RatingResource;
 use App\Filament\Resources\Regions\RegionResource;
 use App\Filament\Resources\RegionSectionWidgets\RegionSectionWidgetResource;
 use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Resources\Rulers\RulerResource;
 use App\Filament\Resources\Sections\SectionResource;
-use App\Filament\Resources\Shares\ShareResource;
 use App\Filament\Resources\SocialMedia\SocialMediaResource;
 use App\Filament\Resources\Tags\TagResource;
 use App\Filament\Resources\Users\UserResource;
-use App\Filament\Resources\Views\ViewResource;
 use App\Filament\Resources\Widgets\WidgetResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -131,10 +127,6 @@ class AdminPanelProvider extends PanelProvider
                     NavigationGroup::make('Engagement')
                         ->items([
                             ...CommentResource::getNavigationItems(),
-                            ...LikeResource::getNavigationItems(),
-                            ...RatingResource::getNavigationItems(),
-                            ...ShareResource::getNavigationItems(),
-                            ...ViewResource::getNavigationItems(),
                         ]),
 
                     NavigationGroup::make('Documentation')

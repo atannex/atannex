@@ -7,10 +7,6 @@ use App\Models\Regions\Employee;
 use Atannex\Concerns\HasBreaking;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
-use Atannex\Interactions\HasLikes;
-use Atannex\Interactions\HasRatings;
-use Atannex\Interactions\HasShares;
-use Atannex\Interactions\HasViews;
 use Atannex\Relations\PostRelation;
 use Atannex\Traits\HasCleaning;
 use Illuminate\Database\Eloquent\Model;
@@ -21,10 +17,6 @@ class Post extends Model implements Commentable
 {
     use HasBreaking;
     use HasCleaning;
-    use HasLikes;
-    use HasRatings;
-    use HasShares;
-    use HasViews;
     use PostRelation;
     use Scoping;
     use Slugging;

@@ -12,11 +12,8 @@ trait HasPlatforms
     public const SUPPORTED_PLATFORMS = [
         Icon::FACEBOOK,
         Icon::TWITTER,
-        Icon::LINKEDIN,
         Icon::WHATSAPP,
         Icon::TELEGRAM,
-        Icon::PINTEREST,
-        Icon::EMAIL,
     ];
 
     /**

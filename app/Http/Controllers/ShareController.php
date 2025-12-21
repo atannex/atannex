@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Posts\Post;
 use Atannex\Binders\HasPost;
-use Atannex\Concerns\HasUserTracking;
 use Atannex\Services\ShareService;
 use Illuminate\Http\RedirectResponse;
 
@@ -43,8 +42,6 @@ class ShareController extends Controller
             url("/{$post->slug_path}/"),
             $post->title
         );
-
-        $this->shareService->recordShare($post, $platform);
 
         return redirect()->away($urls[$platform]);
     }
