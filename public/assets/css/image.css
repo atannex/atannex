@@ -1,10 +1,5 @@
 /* =========================================================
-   PERFECT SPHERICAL PROFILE IMAGE SYSTEM
-   Android • iOS • Desktop • WebView Safe
-========================================================= */
-
-/* =========================================================
-   1. DESIGN TOKENS
+   DESIGN TOKENS
 ========================================================= */
 :root {
     --avatar-bg: #e5e7eb;
@@ -20,10 +15,19 @@
     --status-online: #22c55e;
     --status-offline: #9ca3af;
     --status-busy: #ef4444;
+
+    /* Aspect Ratios */
+    --ratio-square: 1 / 1;
+    --ratio-hero: 1920 / 645;
+    --ratio-image-show: 1224 / 600;
+    --ratio-card: 392 / 310;
+    --ratio-blog: 896 / 500;
+    --ratio-sidebar: 4 / 3;
+    --ratio-wide: 3 / 2;
 }
 
 /* =========================================================
-   2. AVATAR WRAPPER (PERFECT CIRCLE)
+   AVATAR SYSTEM (PERFECT CIRCLE)
 ========================================================= */
 .avatar {
     position: relative;
@@ -32,32 +36,23 @@
     justify-content: center;
 
     width: clamp(40px, 4vw, 56px);
-    aspect-ratio: 1 / 1;
+    aspect-ratio: var(--ratio-square);
 
     border-radius: 50%;
     overflow: hidden;
-    flex-shrink: 0;
-
     background-color: var(--avatar-bg);
 }
 
-/* =========================================================
-   3. AVATAR IMAGE (NO STRETCH)
-========================================================= */
 .avatar img {
     width: 100% !important;
     height: 100% !important;
-
     object-fit: cover !important;
     object-position: center !important;
-
     border-radius: 50%;
     display: block !important;
 }
 
-/* =========================================================
-   4. AVATAR SIZE MODIFIERS
-========================================================= */
+/* Avatar sizes */
 .avatar--xs {
     width: var(--avatar-xs);
 }
@@ -74,101 +69,103 @@
     width: var(--avatar-xl);
 }
 
-.avatar--xs,
-.avatar--sm,
-.avatar--md,
-.avatar--lg,
-.avatar--xl {
-    aspect-ratio: 1 / 1;
-}
-
-/* =========================================================
-   5. AVATAR STATUS INDICATOR
-========================================================= */
+/* Status indicator */
 .avatar--status::after {
     content: "";
     position: absolute;
     bottom: 2px;
     right: 2px;
-
     width: 22%;
     height: 22%;
-
     border-radius: 50%;
-    border: 2px solid #ffffff;
+    border: 2px solid #fff;
     background-color: var(--status-online);
 }
-
 .avatar--offline::after {
     background-color: var(--status-offline);
 }
-
 .avatar--busy::after {
     background-color: var(--status-busy);
 }
 
-/* =========================================================
-   6. AVATAR PLACEHOLDER
-========================================================= */
-.avatar--placeholder {
-    font-weight: 600;
-    font-size: 0.75rem;
-    color: #6b7280;
-    text-transform: uppercase;
-}
-
-/* =========================================================
-   7. AVATAR ACCESSIBILITY
-========================================================= */
+/* Accessibility */
 .avatar:focus-visible {
     outline: 2px solid var(--avatar-focus);
     outline-offset: 2px;
 }
 
 /* =========================================================
-   8. DARK MODE
+   GLOBAL IMAGE NORMALIZATION
 ========================================================= */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --avatar-bg: #1f2937;
-        --avatar-focus: #60a5fa;
-    }
-}
-
-/* =========================================================
-   GLOBAL IMAGE COVER NORMALIZATION
-   (NO STRETCH — PERFECT FIT)
-========================================================= */
-
-/* IMG TAGS */
-.image-show img,
-.home-hero-bg img,
-.home-hero img,
-.top-stories-main-center img,
-.category-3-column img,
-.large-carousel-image img,
-.primary-news-section-widget img,
-.category-3-column-sidebar img,
-.blog-list img,
-.blog-standard img,
-.top-stories-left-sidebar img,
-.top-stories-right-sidebar img,
-.small-image-carousel img,
-.primary-news-section img,
-.content-filter-section img,
-.page-banner img,
-.subscription img,
-.author-image img {
+.image-show,
+.home-hero-bg,
+.home-hero,
+.top-stories-main-center,
+.category-3-column,
+.large-carousel-image,
+.primary-news-section-widget,
+.category-3-column-sidebar,
+.blog-list,
+.blog-standard,
+.top-stories-left-sidebar,
+.top-stories-right-sidebar,
+.small-image-carousel,
+.primary-news-section,
+.content-filter-section,
+.page-banner,
+.subscription,
+.author-image {
     width: 100% !important;
     height: 100% !important;
-
     object-fit: cover !important;
     object-position: center !important;
-
     display: block !important;
 }
 
-/* BACKGROUND IMAGE CONTAINERS */
+/* =========================================================
+   IMAGE CONTAINERS — ASPECT RATIO BASED
+========================================================= */
+.home-hero-bg {
+    width: 100%;
+    max-width: 1920px;
+    aspect-ratio: var(--ratio-hero);
+}
+
+.image-show {
+    width: 100%;
+    max-width: 1224px;
+    aspect-ratio: var(--ratio-image-show);
+}
+
+.category-3-column,
+.large-carousel-image,
+.primary-news-section-widget {
+    aspect-ratio: var(--ratio-card);
+}
+
+.blog-standard {
+    aspect-ratio: var(--ratio-blog);
+}
+
+.top-stories-main-center {
+    aspect-ratio: 600 / 625;
+}
+
+.category-3-column-sidebar,
+.blog-list {
+    aspect-ratio: var(--ratio-sidebar);
+}
+
+.primary-news-section,
+.small-image-carousel {
+    aspect-ratio: var(--ratio-wide);
+}
+
+.subscription {
+    aspect-ratio: 404 / 350;
+}
+
+/* Background image behavior */
 .image-show,
 .home-hero-bg,
 .top-stories-main-center,
@@ -189,116 +186,63 @@
 }
 
 /* =========================================================
-   AUTHOR IMAGE (FORCE CIRCLE)
+   AUTHOR IMAGE
 ========================================================= */
 .author-image {
     width: 100px !important;
-    height: 100px !important;
-
+    aspect-ratio: var(--ratio-square);
     border-radius: 50% !important;
     overflow: hidden !important;
-
-    object-fit: cover !important;
-    object-position: center !important;
 }
 
 /* =========================================================
-   TRANSITIONS & INTERACTIONS
+   INTERACTIONS
 ========================================================= */
 .social-icon {
     transition: transform 0.2s ease, filter 0.2s ease !important;
 }
-
 .social-icon:hover {
-    filter: brightness(85%) !important;
     transform: scale(1.1) !important;
+    filter: brightness(85%) !important;
 }
 
 /* =========================================================
-   DESKTOP LAYOUT (≥ 768px)
+   RESPONSIVE WIDTH ADJUSTMENTS (NO HEIGHTS)
 ========================================================= */
 @media (min-width: 768px) {
-    .home-hero-bg {
-        width: 1920px !important;
-        height: 645px !important;
+    .category-3-column,
+    .large-carousel-image,
+    .primary-news-section-widget,
+    .subscription {
+        width: 48% !important;
     }
+}
 
+@media (min-width: 992px) {
+    .category-3-column,
+    .large-carousel-image,
+    .primary-news-section-widget {
+        width: 360px !important;
+    }
+}
+
+@media (min-width: 1200px) {
     .home-hero {
         width: 184px !important;
-        height: 80px !important;
-    }
-
-    .top-stories-main-center {
-        width: 600px !important;
-        height: 625px !important;
-    }
-
-    .image-show {
-        width: 100% !important;
-        max-width: 1224px !important;
-        height: 600px !important;
-        display: block !important;
+        aspect-ratio: 184 / 80;
     }
 
     .category-3-column,
     .large-carousel-image,
     .primary-news-section-widget {
         width: 392px !important;
-        height: 310px !important;
-    }
-
-    .category-3-column-sidebar {
-        width: 436px !important;
-        height: 300px !important;
-    }
-
-    .blog-list {
-        width: 386px !important;
-        height: 300px !important;
     }
 
     .blog-standard {
         width: 896px !important;
-        height: 500px !important;
-    }
-
-    .top-stories-left-sidebar {
-        width: 288px !important;
-        height: 288px !important;
-    }
-
-    .top-stories-right-sidebar {
-        width: 100px !important;
-        height: 100px !important;
-    }
-
-    .small-image-carousel {
-        width: 288px !important;
-        height: 187px !important;
-    }
-
-    .primary-news-section {
-        width: 300px !important;
-        height: 200px !important;
-    }
-
-    .content-filter-section {
-        width: 600px !important;
-        height: 490px !important;
-    }
-
-    .page-banner {
-        width: 100% !important;
-        max-width: 1224px !important;
-        height: 100px !important;
     }
 
     .subscription {
         width: 404px !important;
-        height: 350px !important;
     }
 }
-
-/* =========================================================
-   END OF FILE
-========================================================= */
