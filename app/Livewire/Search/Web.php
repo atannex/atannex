@@ -3,14 +3,14 @@
 namespace App\Livewire\Search;
 
 use App\Livewire\Search\Abstracts\Searchable;
-use App\Livewire\Search\Traits\HasFields;
+use App\Livewire\Search\Traits\HasPostSearchFields;
 
 /**
  * Livewire component for global search functionality, specifically for Post models.
  */
 final class Web extends Searchable
 {
-    use HasFields;
+    use HasPostSearchFields;
 
     /**
      * Defines the view to be rendered for this component.

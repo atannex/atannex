@@ -2,26 +2,28 @@
 
 namespace App\Livewire\Search\Traits;
 
+use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Database\Eloquent\Builder;
 
-trait HasFields
+/**
+ * Implements Searchable query + searchable fields for Posts.
+ */
+trait HasPostSearchFields
 {
-    /**
-     * Defines the base Eloquent query for retrieving Post models with related data.
-     */
     protected function newModelQuery(): Builder
     {
         return Post::query()
             ->published()
-            ->with(['author', 'category', 'tags', 'regions']);
+            ->flagged(Flag::PUBLISHED)
+            ->with([
+                'author.user',
+                'category',
+                'tags',
+                'regions',
+            ]);
     }
 
-    /**
-     * Defines the array of fields in the Post model that should be included in the search.
-     *
-     * @return array<int, string>
-     */
     protected function searchableFields(): array
     {
         return [
