@@ -9,7 +9,7 @@
 
     <div class="hero-slider-1 th-carousel" data-fade="true" data-slide-show="1" data-md-slide-show="1" data-adaptive-height="false">
 
-        @foreach($recentPosts->take(4) as $post)
+        @foreach($recentPosts as $post)
         <div class="th-hero-slide" style="
                 min-height:520px;
                 position:relative;
