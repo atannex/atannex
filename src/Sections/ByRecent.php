@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Atannex\Sections;
 
 use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Date;
 
 /**
- * Trait GetRecentPost
+ * Trait ByRecent
  *
  * Provides functionality to retrieve recent published posts.
  */
@@ -17,16 +18,16 @@ trait ByRecent
     /**
      * Retrieve the most recent published posts.
      *
-     * @param  int  $limit  The number of posts to retrieve.
+     * @param int $limit Number of posts to retrieve.
+     *
+     * @return Collection<int, Post>
      */
     public function getRecentPosts(int $limit = 5): Collection
     {
         return Post::query()
-            ->published()
             ->flagged(Flag::PUBLISHED)
-            ->whereDate('published_at', '<', Date::today())
             ->latest('published_at')
-            ->limit($limit)
+            ->take($limit)
             ->get();
     }
 }
