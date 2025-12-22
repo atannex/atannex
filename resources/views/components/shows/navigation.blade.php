@@ -4,46 +4,45 @@ $nextPost = $navigation['next'];
 @endphp
 
 @if($previousPost || $nextPost)
-<div class="blog-navigation d-flex justify-content-between align-items-center">
+<div class="blog-navigation">
 
-    <div class="nav-btn prev d-flex align-items-center {{ $previousPost ? '' : 'invisible' }}">
+    <div class="nav-btn prev">
         @if($previousPost)
-        <div class="img me-3">
-            <img src="{{ asset('storage/' . $previousPost->image) }}" alt="{{ $previousPost->title }}" class="img-fluid rounded-circle profile-img">
+        <div class="img">
+            <img src="{{ asset('storage/' . $previousPost->image) }}" alt="{{ $previousPost->title }}" class="avatar avatar--lg avatar--status">
         </div>
         <div class="media-body">
-            <h5 class="mb-2 title">
-                <a href="{{ route('page.index', ['slug' => $previousPost->slug_path]) }}" class="hover-line text-decoration-none">
+            <h5 class="title">
+                <a href="{{ route('page.index', ['slug' => $previousPost->slug_path]) }}" class="hover-line">
                     {{ Str::limit($previousPost->title, 60) }}
                 </a>
             </h5>
-            <a href="{{ route('page.index', ['slug' => $previousPost->slug_path]) }}" class="nav-text text-decoration-none">
+            <a href="{{ route('page.index', ['slug' => $previousPost->slug_path]) }}" class="nav-text">
                 <i class="fas fa-arrow-left me-2"></i> {{ __('Previous') }}
             </a>
         </div>
         @endif
     </div>
 
-    @if($previousPost && $nextPost)
-    <div class="mx-3 divider" style="width: 1px; height: 80px; background: #e5e5e5;"></div>
+    @if($previousPost || $nextPost)
+    <div class="divider"></div>
     @endif
 
-    <div class="nav-btn next d-flex align-items-center {{ $nextPost ? '' : 'invisible' }}">
+    <div class="nav-btn next">
         @if($nextPost)
-        <div class="media-body text-end">
-            <h5 class="mb-2 title">
-                <a href="{{ route('page.index', ['slug' => $nextPost->slug_path]) }}" class="hover-line text-decoration-none">
+        <div class="media-body">
+            <h5 class="title">
+                <a href="{{ route('page.index', ['slug' => $nextPost->slug_path]) }}" class="hover-line">
                     {{ Str::limit($nextPost->title, 60) }}
                 </a>
             </h5>
-            <a href="{{ route('page.index', ['slug' => $nextPost->slug_path]) }}" class="nav-text text-decoration-none">
+            <a href="{{ route('page.index', ['slug' => $nextPost->slug_path]) }}" class="nav-text">
                 {{ __('Next') }} <i class="fas fa-arrow-right ms-2"></i>
             </a>
         </div>
-        <div class="ms-3">
-            <img src="{{ asset('storage/' . $nextPost->image) }}" alt="{{ $nextPost->title }}" class="img-fluid rounded-circle profile-img">
+        <div class="img">
+            <img src="{{ asset('storage/' . $nextPost->image) }}" alt="{{ $nextPost->title }}" class="avatar avatar--lg avatar--status">
         </div>
-
         @endif
     </div>
 

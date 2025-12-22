@@ -1,3 +1,147 @@
+/* =========================================================
+   PERFECT SPHERICAL PROFILE IMAGE SYSTEM
+   Android • iOS • Desktop • WebView Safe
+========================================================= */
+
+/* =========================================================
+   1. DESIGN TOKENS
+========================================================= */
+:root {
+    --avatar-bg: #e5e7eb;
+
+    --avatar-xs: 28px;
+    --avatar-sm: 36px;
+    --avatar-md: 48px;
+    --avatar-lg: 64px;
+    --avatar-xl: 80px;
+
+    --avatar-focus: #2563eb;
+
+    --status-online: #22c55e;
+    --status-offline: #9ca3af;
+    --status-busy: #ef4444;
+}
+
+/* =========================================================
+   2. AVATAR WRAPPER (CIRCLE GUARANTEE)
+========================================================= */
+.avatar {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Always equal width & height */
+    width: clamp(40px, 4vw, 56px);
+    aspect-ratio: 1 / 1;
+
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    background-color: var(--avatar-bg);
+}
+
+/* =========================================================
+   3. IMAGE ITSELF (TRUE CIRCLE)
+========================================================= */
+.avatar img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center;
+
+    border-radius: 50%;
+    display: block;
+}
+
+/* =========================================================
+   4. SIZE MODIFIERS
+========================================================= */
+.avatar--xs {
+    width: var(--avatar-xs);
+}
+.avatar--sm {
+    width: var(--avatar-sm);
+}
+.avatar--md {
+    width: var(--avatar-md);
+}
+.avatar--lg {
+    width: var(--avatar-lg);
+}
+.avatar--xl {
+    width: var(--avatar-xl);
+}
+
+/* Maintain perfect circle */
+.avatar--xs,
+.avatar--sm,
+.avatar--md,
+.avatar--lg,
+.avatar--xl {
+    aspect-ratio: 1 / 1;
+}
+
+/* =========================================================
+   5. STATUS INDICATOR
+========================================================= */
+.avatar--status::after {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+
+    width: 22%;
+    height: 22%;
+
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    background-color: var(--status-online);
+}
+
+/* Status states */
+.avatar--offline::after {
+    background-color: var(--status-offline);
+}
+
+.avatar--busy::after {
+    background-color: var(--status-busy);
+}
+
+/* =========================================================
+   6. PLACEHOLDER (INITIALS)
+========================================================= */
+.avatar--placeholder {
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+/* =========================================================
+   7. ACCESSIBILITY
+========================================================= */
+.avatar:focus-visible {
+    outline: 2px solid var(--avatar-focus);
+    outline-offset: 2px;
+}
+
+/* =========================================================
+   8. DARK MODE
+========================================================= */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --avatar-bg: #1f2937;
+        --avatar-focus: #60a5fa;
+    }
+}
+
+/* =========================================================
+   END OF FILE
+========================================================= */
+
 /* =========================================
    Transitions & Interactions
 ========================================= */
@@ -23,16 +167,6 @@
     object-fit: cover !important;
     width: 100px !important;
     height: 100px !important;
-}
-
-/* =========================================
-   Profile / Avatar images
-========================================= */
-.profile-img {
-    width: 50px !important;
-    height: 50px !important;
-    border-radius: 50% !important;
-    object-fit: cover !important;
 }
 
 /* =========================================
