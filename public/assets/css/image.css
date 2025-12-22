@@ -246,3 +246,23 @@
         width: 404px !important;
     }
 }
+
+.hero-tab {
+    display: flex !important;
+    gap: 8px !important;
+}
+
+.hero-tab .tab-btn {
+    width: 180px !important; /* width > height */
+    aspect-ratio: 4 / 3 !important; /* landscape */
+    overflow: hidden !important;
+    cursor: pointer !important;
+    border-radius: 4px !important;
+}
+
+.hero-tab .tab-btn img {
+    width: 100% !important;
+    height: 50% !important;
+    object-fit: cover !important;
+    display: block !important;
+}
