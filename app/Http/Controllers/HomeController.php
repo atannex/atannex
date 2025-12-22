@@ -36,7 +36,7 @@ class HomeController extends Controller
 
         $viewData = [
             'heroTitle' => $this->getHeroTitle($postsData['todayPosts']),
-            'allPosts' => $this->getMainPosts($postsData['todayPosts'], $postsData['recentPosts']),
+            'recentPosts' => $postsData['recentPosts'],
             'editorPicks' => $postsData['editorPicks'],
             'sideBlogs' => $this->getSideBlogs($postsData['todayPosts']),
             'featuredBlog' => $this->getFeaturedBlog($postsData['todayPosts']),
@@ -66,16 +66,6 @@ class HomeController extends Controller
             'mostReadPosts' => $this->postService->getMostReadPosts(6),
             'popularPosts' => $this->postService->getPopularPosts(5),
         ];
-    }
-
-    /**
-     * Determines the main posts to display.
-     */
-    private function getMainPosts(Collection $todayPosts, Collection $recentPosts): Collection
-    {
-        return $todayPosts->isNotEmpty()
-            ? $todayPosts->take(6)
-            : $recentPosts->take(6);
     }
 
     /**
