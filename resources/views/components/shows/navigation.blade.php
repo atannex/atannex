@@ -1,6 +1,6 @@
 @php
-$previousPost = $navigation['previous'] ?? null;
-$nextPost = $navigation['next'] ?? null;
+$previousPost = $navigation['previous'];
+$nextPost = $navigation['next'];
 @endphp
 
 @if($previousPost || $nextPost)
@@ -9,7 +9,7 @@ $nextPost = $navigation['next'] ?? null;
     <div class="nav-btn prev d-flex align-items-center {{ $previousPost ? '' : 'invisible' }}">
         @if($previousPost)
         <div class="img me-3">
-            <img src="{{ asset('storage/' . $previousPost->image) }}" alt="{{ $previousPost->title }}" class="rounded-circle img-fluid" style="width: 80px; height: 80px; object-fit: cover;">
+            <img src="{{ asset('storage/' . $previousPost->image) }}" alt="{{ $previousPost->title }}" class="img-fluid rounded-circle profile-img">
         </div>
         <div class="media-body">
             <h5 class="mb-2 title">
@@ -40,9 +40,10 @@ $nextPost = $navigation['next'] ?? null;
                 {{ __('Next') }} <i class="fas fa-arrow-right ms-2"></i>
             </a>
         </div>
-        <div class="img ms-3">
-            <img src="{{ asset('storage/' . $nextPost->image) }}" alt="{{ $nextPost->title }}" class="rounded-circle img-fluid" style="width: 80px; height: 80px; object-fit: cover;">
+        <div class="ms-3">
+            <img src="{{ asset('storage/' . $nextPost->image) }}" alt="{{ $nextPost->title }}" class="img-fluid rounded-circle profile-img">
         </div>
+
         @endif
     </div>
 
