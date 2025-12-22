@@ -1,35 +1,38 @@
+/* =========================================
+   Transitions & Interactions
+========================================= */
+.social-icon {
+    transition: transform 0.2s ease, filter 0.2s ease !important;
+}
+
 .social-icon:hover {
-    filter: brightness(85%);
-    transform: scale(1.1);
-    transition: 0.2s;
+    filter: brightness(85%) !important;
+    transform: scale(1.1) !important;
 }
 
 /* =========================================
-   Media query for screens 768px and above
-   ========================================= */
+   Common image behavior
+========================================= */
+.img-cover {
+    object-fit: cover !important;
+    object-position: center !important;
+    background-color: #f0f0f0 !important;
+}
+
+/* =========================================
+   Profile / Avatar images
+========================================= */
+.profile-img {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+/* =========================================
+   Desktop layout (≥ 768px)
+========================================= */
 @media (min-width: 768px) {
-    /* ------------------------------
-       Common styles for all images
-    ------------------------------- */
-    .home-hero-bg,
-    .home-hero,
-    .blog-list,
-    .blog-standard,
-    .category-3-column,
-    .category-3-column-sidebar,
-    .top-stories-main-center,
-    .top-stories-left-sidebar,
-    .top-stories-right-sidebar,
-    .small-image-carousel,
-    .large-carousel-image,
-    .primary-news-section,
-    .content-filter-section,
-    .primary-news-section-widget,
-    .page-banner {
-        object-fit: cover !important;
-        object-position: center !important;
-        background-color: #f0f0f0 !important;
-    }
     .home-hero-bg {
         width: 1920px !important;
         height: 645px !important;
@@ -98,8 +101,8 @@
     }
 
     .page-banner {
-        width: 100% !important;
         max-width: 1224px !important;
+        width: 100% !important;
         height: 100px !important;
     }
 
