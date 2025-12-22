@@ -266,3 +266,12 @@
     object-fit: cover !important;
     display: block !important;
 }
+
+/* Title is NOT clipped */
+.hero-tab .tab-title {
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: normal;      /* allows wrapping */
+    word-break: break-word;   /* handles long words */
+}
