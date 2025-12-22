@@ -4,35 +4,38 @@
 
 @section('guest')
 
-@if($recentPosts->isNotEmpty())
+@if ($recentPosts->isNotEmpty())
 <div class="mb-4 th-hero-wrapper hero-1" id="hero">
 
     <div class="hero-slider-1 th-carousel" data-fade="true" data-slide-show="1" data-md-slide-show="1" data-adaptive-height="true">
 
-        @foreach($recentPosts as $post)
+        @foreach ($recentPosts as $post)
         <div class="th-hero-slide">
 
             <div class="th-hero-bg" data-overlay="black" data-opacity="6" data-bg-src="{{ asset('storage/' . $post->image) }}">
             </div>
 
-
             <div class="container">
                 <div class="blog-bg-style1">
 
-
-                    @if($post->category)
+                    @if ($post->category)
                     <a href="{{ route('page.index', $post->category->slug_path) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" data-ani="slideinup" data-ani-delay="0.1s">
                         {{ $post->category->name }}
                     </a>
                     @endif
 
-
                     <h3 class="box-title-50" data-ani="slideinup" data-ani-delay="0.3s">
 
-                        @include('partials.title', ['post' => $post])
+                        @if($post->category)
+                        <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="hover-line">
+                            {{ Str::limit($post->title, 30) }}
+                        </a>
+                        @else
+                        <span>{{ Str::limit($post->title, 30) }}</span>
+                        @endif
+
 
                     </h3>
-
 
                     <div class="blog-meta" data-ani="slideinup" data-ani-delay="0.5s">
 
@@ -42,33 +45,43 @@
 
                     </div>
 
+                    <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}">
+                        <p class="blog-text" data-ani="slideinup" data-ani-delay="0.7s">
+                            {{ Str::limit(strip_tags($post->description), 50) }}
+                        </p>
+                    </a>
 
-                    <p class="blog-text" data-ani="slideinup" data-ani-delay="0.7s">
-                        {{ Str::limit(strip_tags($post->description), 150) }}
-                    </p>
                 </div>
             </div>
         </div>
         @endforeach
     </div>
 
-    <div class="hero-tab-area">
+    <div class="mt-3 hero-tab-area">
         <div class="container">
-            <div class="hero-tab" data-asnavfor=".hero-slider-1">
-                @foreach($recentPosts as $index => $post)
-                <div class="tab-btn {{ $index === 0 ? 'active' : '' }}">
 
-                    <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}">
-                        <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}" class="img-fluid home-hero">
-                    </a>
+            <div class="gap-2 pb-2 overflow-auto hero-tab d-flex" data-asnavfor=".hero-slider-1">
+
+                @foreach ($recentPosts as $index => $post)
+                <div class="tab-btn {{ $index === 0 ? 'active' : '' }}
+                                d-flex align-items-center justify-content-center
+                                flex-shrink-0 rounded" style="width:100px;height:70px;">
+
+                    @include('partials.image', [
+                    'post' => $post,
+                    'class' => 'img-fluid w-100 h-100 object-fit-cover rounded'
+                    ])
 
                 </div>
                 @endforeach
+
             </div>
         </div>
     </div>
+
 </div>
 @endif
+
 
 @if($editorPicks->isNotEmpty())
 <div class="space-top">
