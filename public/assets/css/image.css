@@ -23,7 +23,7 @@
 }
 
 /* =========================================================
-   2. AVATAR WRAPPER (CIRCLE GUARANTEE)
+   2. AVATAR WRAPPER (PERFECT CIRCLE)
 ========================================================= */
 .avatar {
     position: relative;
@@ -31,7 +31,6 @@
     align-items: center;
     justify-content: center;
 
-    /* Always equal width & height */
     width: clamp(40px, 4vw, 56px);
     aspect-ratio: 1 / 1;
 
@@ -43,21 +42,21 @@
 }
 
 /* =========================================================
-   3. IMAGE ITSELF (TRUE CIRCLE)
+   3. AVATAR IMAGE (NO STRETCH)
 ========================================================= */
 .avatar img {
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
 
-    object-fit: cover;
-    object-position: center;
+    object-fit: cover !important;
+    object-position: center !important;
 
     border-radius: 50%;
-    display: block;
+    display: block !important;
 }
 
 /* =========================================================
-   4. SIZE MODIFIERS
+   4. AVATAR SIZE MODIFIERS
 ========================================================= */
 .avatar--xs {
     width: var(--avatar-xs);
@@ -75,7 +74,6 @@
     width: var(--avatar-xl);
 }
 
-/* Maintain perfect circle */
 .avatar--xs,
 .avatar--sm,
 .avatar--md,
@@ -85,7 +83,7 @@
 }
 
 /* =========================================================
-   5. STATUS INDICATOR
+   5. AVATAR STATUS INDICATOR
 ========================================================= */
 .avatar--status::after {
     content: "";
@@ -101,7 +99,6 @@
     background-color: var(--status-online);
 }
 
-/* Status states */
 .avatar--offline::after {
     background-color: var(--status-offline);
 }
@@ -111,7 +108,7 @@
 }
 
 /* =========================================================
-   6. PLACEHOLDER (INITIALS)
+   6. AVATAR PLACEHOLDER
 ========================================================= */
 .avatar--placeholder {
     font-weight: 600;
@@ -121,7 +118,7 @@
 }
 
 /* =========================================================
-   7. ACCESSIBILITY
+   7. AVATAR ACCESSIBILITY
 ========================================================= */
 .avatar:focus-visible {
     outline: 2px solid var(--avatar-focus);
@@ -139,12 +136,75 @@
 }
 
 /* =========================================================
-   END OF FILE
+   GLOBAL IMAGE COVER NORMALIZATION
+   (NO STRETCH — PERFECT FIT)
 ========================================================= */
 
-/* =========================================
-   Transitions & Interactions
-========================================= */
+/* IMG TAGS */
+.image-show img,
+.home-hero-bg img,
+.home-hero img,
+.top-stories-main-center img,
+.category-3-column img,
+.large-carousel-image img,
+.primary-news-section-widget img,
+.category-3-column-sidebar img,
+.blog-list img,
+.blog-standard img,
+.top-stories-left-sidebar img,
+.top-stories-right-sidebar img,
+.small-image-carousel img,
+.primary-news-section img,
+.content-filter-section img,
+.page-banner img,
+.subscription img,
+.author-image img {
+    width: 100% !important;
+    height: 100% !important;
+
+    object-fit: cover !important;
+    object-position: center !important;
+
+    display: block !important;
+}
+
+/* BACKGROUND IMAGE CONTAINERS */
+.image-show,
+.home-hero-bg,
+.top-stories-main-center,
+.category-3-column,
+.large-carousel-image,
+.primary-news-section-widget,
+.category-3-column-sidebar,
+.blog-list,
+.blog-standard,
+.small-image-carousel,
+.primary-news-section,
+.content-filter-section,
+.page-banner,
+.subscription {
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+/* =========================================================
+   AUTHOR IMAGE (FORCE CIRCLE)
+========================================================= */
+.author-image {
+    width: 100px !important;
+    height: 100px !important;
+
+    border-radius: 50% !important;
+    overflow: hidden !important;
+
+    object-fit: cover !important;
+    object-position: center !important;
+}
+
+/* =========================================================
+   TRANSITIONS & INTERACTIONS
+========================================================= */
 .social-icon {
     transition: transform 0.2s ease, filter 0.2s ease !important;
 }
@@ -154,24 +214,9 @@
     transform: scale(1.1) !important;
 }
 
-/* =========================================
-   Common image behavior
-========================================= */
-.img-cover {
-    object-fit: cover !important;
-    object-position: center !important;
-    background-color: #f0f0f0 !important;
-}
-
-.author-image {
-    object-fit: cover !important;
-    width: 100px !important;
-    height: 100px !important;
-}
-
-/* =========================================
-   Desktop layout (≥ 768px)
-========================================= */
+/* =========================================================
+   DESKTOP LAYOUT (≥ 768px)
+========================================================= */
 @media (min-width: 768px) {
     .home-hero-bg {
         width: 1920px !important;
@@ -189,8 +234,10 @@
     }
 
     .image-show {
-        width: 1224px !important;
+        width: 100% !important;
+        max-width: 1224px !important;
         height: 600px !important;
+        display: block !important;
     }
 
     .category-3-column,
@@ -241,8 +288,8 @@
     }
 
     .page-banner {
-        max-width: 1224px !important;
         width: 100% !important;
+        max-width: 1224px !important;
         height: 100px !important;
     }
 
@@ -251,3 +298,7 @@
         height: 350px !important;
     }
 }
+
+/* =========================================================
+   END OF FILE
+========================================================= */
