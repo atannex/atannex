@@ -7,7 +7,7 @@
         <div class="comment-content flex-grow-1">
             <div class="comment-header d-flex justify-content-between align-items-center">
                 <div>
-                    <h3 class="name d-inline">{{ $comment->user->name }}</h3>
+                    <h6 class="name d-inline">{{ Str::title($comment->user->name) }}</h6>
                     <span class="commented-on ms-2 text-muted">
                         <i class="fas fa-calendar-alt"></i>
                         {{ $comment->created_at->diffForHumans() }}
@@ -33,7 +33,7 @@
 
             <p class="mt-2 text">
                 @if($comment->parent_id && optional($comment->parent->user)->name)
-                <span class="text-primary">@ {{ $comment->parent->user->name }}</span>,
+                <span class="text-primary">@ {{ Str::title($comment->parent->user->name) }}</span>,
                 @endif
                 {!! $comment->comment !!}
             </p>
@@ -54,7 +54,7 @@
                 <div class="comment-content flex-grow-1">
                     <div class="comment-header d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="name d-inline">{{ $reply->user->name }}</h3>
+                            <h6 class="name d-inline">{{ Str::title($reply->user->name) }}</h6>
                             <span class="commented-on ms-2 text-muted">
                                 <i class="fas fa-calendar-alt"></i>
                                 {{ $reply->created_at->diffForHumans() }}
@@ -78,7 +78,7 @@
                     </div>
                     <p class="mt-2 text">
                         @if($reply->parent_id && optional($reply->parent->user)->name)
-                        <span class="text-primary">@ {{ $reply->parent->user->name }}</span>,
+                        <span class="text-primary">@ {{ Str::title($reply->parent->user->name) }} </span>,
                         @endif
                         {!! $reply->comment !!}
                     </p>

@@ -19,6 +19,12 @@
     background-color: #f0f0f0 !important;
 }
 
+.author-image {
+    object-fit: cover !important;
+    width: 100px !important;
+    height: 100px !important;
+}
+
 /* =========================================
    Profile / Avatar images
 ========================================= */
