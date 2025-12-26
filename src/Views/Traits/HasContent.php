@@ -21,19 +21,19 @@ trait HasContent
      */
     protected function resolveSection(Region $region, int $sectionLimit = 6, int $widgetLimit = 3): void
     {
-        $region->load([
-            'sections' => function ($query) use ($region, $sectionLimit, $widgetLimit) {
-                $query->when($sectionLimit, fn ($q) => $q->limit($sectionLimit))
-                    ->with([
-                        'widgets' => fn ($q) => $q->wherePivot('region_id', $region->id)
-                            ->when($widgetLimit, fn ($w) => $w->limit($widgetLimit)),
-                    ]);
-            },
-        ]);
+        $sections = $region->sections()
+            ->when($sectionLimit, fn($q) => $q->limit($sectionLimit))
+            ->with([
+                'widgets' => fn($q) => $q->wherePivot('region_id', $region->id)
+                    ->when($widgetLimit, fn($w) => $w->limit($widgetLimit)),
+            ])
+            ->get();
 
-        foreach ($region->sections as $section) {
+        foreach ($sections as $section) {
             $this->resolveEntityWithWidgets($section);
         }
+
+        $region->setRelation('sections', $sections);
     }
 
     /**

@@ -41,7 +41,7 @@ trait CanNormalize
     }
 
     /**
-     * Resolve a single tab’s data using its mapping definition.
+     * Resolve a single tab's data using its mapping definition.
      */
     private function resolveSingleTab(array $tab, object $component): array
     {
@@ -50,8 +50,8 @@ trait CanNormalize
 
         $entities = $component->{$mapping['method']}($args);
 
-        $tab['entities'] = $entities->take($args['limit']);
-        $tab['content'] = $tab['entities'];
+        $tab['entities'] = $entities;
+        $tab['content'] = $entities;
 
         return $tab;
     }

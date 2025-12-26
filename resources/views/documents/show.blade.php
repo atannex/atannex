@@ -1,6 +1,6 @@
 @extends('components.layouts.guest')
 
-@section('og:title', seo_title($module->document->title))
+@section('og:title', seo_title($seoTitle))
 
 @section('guest')
 
@@ -15,7 +15,7 @@
                         <div class="blog-style4">
                             <div class="blog-content">
                                 <h3 class="box-title-30">
-                                    <a class="hover-line" href="{{ route('document.show', ['type' => $type, 'slug' => $module->document->slug]) }}">
+                                    <a class="hover-line" href="{{ route('page.index', ['slug' => $module->document->slug_path]) }}">
                                         {{ $module->document->title }}
                                     </a>
                                 </h3>

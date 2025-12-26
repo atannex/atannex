@@ -3,11 +3,9 @@
 namespace App\Providers\Atannex;
 
 use Atannex\Contracts\CategoryInterface;
-use Atannex\Contracts\DocumentInterface;
 use Atannex\Contracts\RegionInterface;
 use Atannex\Contracts\TagInterface;
 use Atannex\Repositories\CategoryRepository;
-use Atannex\Repositories\DocumentRepository;
 use Atannex\Repositories\RegionRepository;
 use Atannex\Repositories\TagRepository;
 use Illuminate\Support\ServiceProvider;
@@ -37,11 +35,6 @@ class LekeatehProvider extends ServiceProvider
         $this->app->bind(
             CategoryInterface::class,
             CategoryRepository::class
-        );
-
-        $this->app->bind(
-            DocumentInterface::class,
-            DocumentRepository::class
         );
 
         $this->app->bind(

@@ -2,18 +2,16 @@
 
 @section('base')
 
-    <x-sections.preloader />
+<x-sections.preloader />
 
-    @livewire('search.web')
+@livewire('search.web')
 
-    <x-sections.side-menu />
+<x-sections.side-menu />
 
-    <livewire:forms.subscription />
+<x-sections.pages.header />
 
-    <x-sections.pages.header />
+@yield('page')
 
-    @yield('page')
-
-    <x-sections.pages.footer />
+<x-sections.pages.footer />
 
 @endsection

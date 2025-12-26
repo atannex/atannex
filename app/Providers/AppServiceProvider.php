@@ -17,6 +17,7 @@ use Atannex\Adapters\WidgetAdapter;
 use Atannex\Adapters\SectionAdapter;
 use Illuminate\Support\ServiceProvider;
 
+
 /**
  * Application Service Provider
  *
@@ -34,7 +35,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->registerObservers();
         $this->bootEnums();
-        $this->registerEventListeners();
     }
 
     /**
@@ -63,13 +63,5 @@ class AppServiceProvider extends ServiceProvider
         Status::boot();
         Title::boot();
         Classification::boot();
-    }
-
-    /**
-     * Register application event listeners.
-     */
-    protected function registerEventListeners(): void
-    {
-
     }
 }

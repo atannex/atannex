@@ -20,18 +20,10 @@ return [
         'email',
         'verification',
 
-        // static pages
         'about-us',
         'contact-us',
-        'gallery',
-
-        // system routes
-        'subscription',
         'user',
-        'dashboard',
-
-        // document routes
-        'how-to-use-atannex',
+        'share',
     ],
 
 ];

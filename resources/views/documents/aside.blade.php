@@ -7,7 +7,7 @@
                 <div class="recent-post">
                     <div class="media-body">
                         <h3 class="post-title">
-                            <a class="hover-line" href="{{ route('document.show', ['type' => $type, 'slug' => $item->slug]) }}">
+                            <a class="hover-line" href="{{ route('page.index', ['slug' => $type, 'slug' => $item->slug]) }}">
                                 {{ $index + 1 }}. {{ e($item->title) }}
                             </a>
                         </h3>

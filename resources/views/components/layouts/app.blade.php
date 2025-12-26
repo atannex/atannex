@@ -10,8 +10,6 @@
 
 <x-sections.side-menu />
 
-<livewire:forms.subscription />
-
 @yield('app')
 
 @endsection

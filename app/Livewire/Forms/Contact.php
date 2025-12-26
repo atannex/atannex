@@ -3,7 +3,6 @@
 namespace App\Livewire\Forms;
 
 use App\Enums\Subject;
-use App\Events\ContactMessageCreated;
 use App\Models\Others\Contact as ContactMessage;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -56,8 +55,6 @@ class Contact extends Component
             'subject' => $this->subject,
             'message' => $this->message,
         ]);
-
-        event(new ContactMessageCreated($contact));
 
         session()->flash('success', 'Message sent successfully!');
 

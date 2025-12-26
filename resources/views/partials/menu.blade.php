@@ -8,17 +8,17 @@ $menu = displayGuestData($global);
     </li>
 
     <li><a href="{{ route('about') }}">{{ __('About Us') }}</a></li>
-    <li><a href="{{ route('document.index', ['type' => 'faq']) }}">{{ __('FAQs') }}</a></li>
-    <li><a href="{{ route('document.index', ['type' => 'testimonials']) }}">{{ __('Testimonials') }}</a></li>
+    <li><a href="{{ route('page.index', ['slug' => 'faq']) }}">{{ __('FAQs') }}</a></li>
+    <li><a href="{{ route('page.index', ['slug' => 'testimonials']) }}">{{ __('Testimonials') }}</a></li>
 
     <li class="menu-item-has-children">
-        <a href="{{ route('document.index', ['type' => 'help-center']) }}">
+        <a href="{{ route('page.index', ['slug' => 'help-center']) }}">
             {{ __('Help') }}
         </a>
         <ul class="sub-menu">
             @foreach ($menu['helpItems'] as $type => $label)
             <li>
-                <a href="{{ route('document.index', ['type' => $type]) }}">
+                <a href="{{ route('page.index', ['slug' => $type]) }}">
                     {{ $label }}
                 </a>
             </li>
@@ -27,13 +27,13 @@ $menu = displayGuestData($global);
     </li>
 
     <li class="menu-item-has-children">
-        <a href="{{ route('document.index', ['type' => 'privacy']) }}">
+        <a href="{{ route('page.index', ['slug' => 'privacy']) }}">
             {{ __('Policy') }}
         </a>
         <ul class="sub-menu">
             @foreach ($menu['policyItems'] as $type => $label)
             <li>
-                <a href="{{ route('document.index', ['type' => $type]) }}">
+                <a href="{{ route('page.index', ['slug' => $type]) }}">
                     {{ $label }}
                 </a>
             </li>
