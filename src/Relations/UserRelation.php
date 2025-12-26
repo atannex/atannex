@@ -5,7 +5,6 @@ namespace Atannex\Relations;
 use App\Enums\Status;
 use App\Models\Comments\Comment;
 use App\Models\Regions\Employee;
-use App\Models\Users\UserNameToken;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -17,11 +16,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 trait UserRelation
 {
-    public function userNameToken(): HasOne
-    {
-        return $this->hasOne(UserNameToken::class);
-    }
-
     /**
      * Relationship: User → Employee
      */

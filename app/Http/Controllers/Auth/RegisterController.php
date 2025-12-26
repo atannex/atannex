@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Events\Users\UserCreated;
-use App\Http\Controllers\Controller;
+
 use App\Models\User;
-use App\Models\Users\UserNameToken;
 use App\Rules\Auth\StrongEmail;
 use App\Rules\Auth\StrongPassword;
-use Illuminate\Contracts\Validation\Validator as ValidatorContract;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 
 class RegisterController extends Controller
 {
@@ -50,21 +48,6 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'timezone' => $data['timezone'],
-        ]);
-
-        $token = UserNameToken::create([
-            'user_id' => $user->id,
-            'token' => UserNameToken::generateToken(),
-            'expires_at' => now()->addMinutes(60),
-        ]);
-
-        event(new UserCreated($user));
-
-        Log::info('User registered successfully', [
-            'id' => $user->id,
-            'email' => $user->email,
-            'timezone' => $user->timezone,
-            'token' => $token->token,
         ]);
 
         return $user;

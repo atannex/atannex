@@ -16,17 +16,17 @@
             <div class="footer-menu mb-30">
                 <ul>
                     <li>
-                        <a href="{{ route('document.index', ['type' => 'faq']) }}">
+                        <a href="{{ route('page.index', ['slug' => 'faq']) }}">
                             {{ __('FAQs') }}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('document.index', ['type' => 'privacy']) }}">
+                        <a href="{{ route('page.index', ['slug' => 'privacy']) }}">
                             {{ __('Privacy Policy') }}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('document.index', ['type' => 'terms']) }}">
+                        <a href="{{ route('page.index', ['slug' => 'terms']) }}">
                             {{ __('Terms & Conditions') }}
                         </a>
                     </li>

@@ -87,9 +87,9 @@
                                     <label class="form-check-label form-text" for="terms">
                                         <i class="fas fa-handshake me-1 text-muted"></i>
                                         {{ __('I agree to the') }}
-                                        <a href="{{ route('document.index', ['type' => 'terms']) }}" target="_blank" class="text-primary">{{ __('Terms of Service') }}</a>
+                                        <a href="{{ route('page.index', ['slug' => 'terms']) }}" target="_blank" class="text-primary">{{ __('Terms of Service') }}</a>
                                         {{ __('and') }}
-                                        <a href="{{ route('document.index', ['type' => 'privacy']) }}" target="_blank" class="text-primary">{{ __('Privacy Policy') }}</a>
+                                        <a href="{{ route('page.index', ['slug' => 'privacy']) }}" target="_blank" class="text-primary">{{ __('Privacy Policy') }}</a>
                                     </label>
                                     <div class="form-text">{{ __('Don\'t worry, we keep it simple and fair!') }}</div>
                                 </div>

@@ -7,15 +7,16 @@ use App\Enums\Gender;
 use App\Enums\Status;
 use Atannex\Enables\Slugging;
 use Atannex\Traits\HasCleaning;
-use App\Models\Controls\Session;
-use App\Models\Users\UserActivity;
 use Atannex\Relations\UserRelation;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Subscribing\Subscription;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Notifications\VerifyEmailNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Notifications\ResetPasswordNotification;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
@@ -80,5 +81,20 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
                 config('filament.allowed_email_domains', ['gmail.com', 'atannex.org', 'atannex.com'])
             )
             && $this->isEmployee();
+    }
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(Subscription::class);
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmailNotification());
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

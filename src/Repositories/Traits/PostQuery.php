@@ -6,6 +6,7 @@ use App\Enums\Flag;
 use App\Models\Posts\Post;
 use App\Models\Regions\Category;
 use App\Models\Regions\Region;
+use App\Models\Regions\Employee;
 use Atannex\Concerns\HasResolver;
 use Atannex\Traits\HasTree;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -22,13 +23,13 @@ trait PostQuery
     /**
      * Paginate posts assigned to the given Category and its full subtree.
      */
-    public function postsByCategory(Category $category, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
-    {
-        $categoryIds = $this->getTreeIds($category);
-
+    public function postsByCategory(
+        Category $category,
+        int $limit = self::PAGINATION_LIMIT
+    ): LengthAwarePaginator {
         return Post::query()
             ->flagged(Flag::PUBLISHED)
-            ->whereIn('category_id', $categoryIds)
+            ->whereIn('category_id', $this->getTreeIds($category))
             ->with($this->postRelations())
             ->latest()
             ->paginate($limit);
@@ -37,8 +38,10 @@ trait PostQuery
     /**
      * Recent posts from within same tree — excluding the current post.
      */
-    public function recentPosts(?Post $post = null, int $limit = self::RECENT_LIMIT): Collection
-    {
+    public function recentPosts(
+        ?Post $post = null,
+        int $limit = self::RECENT_LIMIT
+    ): Collection {
         $query = Post::query()
             ->flagged(Flag::PUBLISHED)
             ->with($this->postRelations())
@@ -49,7 +52,9 @@ trait PostQuery
             $query
                 ->whereIn(
                     'category_id',
-                    $this->getTreeIds($this->getRoot($post->category))
+                    $this->getTreeIds(
+                        $this->getRoot($post->category)
+                    )
                 )
                 ->where('id', '!=', $post->id);
         }
@@ -58,16 +63,21 @@ trait PostQuery
     }
 
     /**
-     * Paginate posts under a Region tree (leaf-category filtering).
+     * Paginate posts under a Region tree.
      */
-    public function postsByRegion(Region $region, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
-    {
+    public function postsByRegion(
+        Region $region,
+        int $limit = self::PAGINATION_LIMIT
+    ): LengthAwarePaginator {
         return $this->paginate(
             Post::query()
                 ->flagged(Flag::PUBLISHED)
                 ->whereHas(
                     'regions',
-                    fn($q) => $q->whereIn('region_id', $this->getTreeIds($region))
+                    fn($q) => $q->whereIn(
+                        'region_id',
+                        $this->getTreeIds($region)
+                    )
                 )
                 ->with($this->postRelations()),
             $limit
@@ -77,30 +87,49 @@ trait PostQuery
     /**
      * Paginate posts by archive year and/or month.
      */
-    public function postsByDate(string $yearMonth, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
-    {
+    public function postsByDate(
+        string $yearMonth,
+        int $limit = self::PAGINATION_LIMIT
+    ): LengthAwarePaginator {
         [$year, $month] = $this->extractDateParts($yearMonth);
 
         $query = Post::query()
             ->flagged(Flag::PUBLISHED)
-            ->when($year, fn($q) => $q->whereYear('published_at', $year))
-            ->when($month, fn($q) => $q->whereMonth('published_at', $month))
+            ->when(
+                $year,
+                fn($q) => $q->whereYear('published_at', $year)
+            )
+            ->when(
+                $month,
+                fn($q) => $q->whereMonth('published_at', $month)
+            )
             ->with($this->postRelations());
 
         return $this->paginate($query, $limit);
     }
 
     /**
-     * Paginate posts by author.
+     * Paginate posts by author slug.
+     *
+     * Uses HasResolver strictly for detection.
      */
-    public function postsByAuthor(string $slug, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
-    {
-        $author = $this->resolveAuthor($slug);
+    public function postsByAuthor(
+        string $slug,
+        int $limit = self::PAGINATION_LIMIT
+    ): LengthAwarePaginator {
+        abort_if(! $this->authorExists($slug), 404);
+
+        $authorId = Employee::whereHas(
+            'user',
+            fn($q) => $q->where('slug', $slug)
+        )->value('id');
+
+        abort_if(! $authorId, 404);
 
         return $this->paginate(
             Post::query()
                 ->flagged(Flag::PUBLISHED)
-                ->where('author_id', $author->id)
+                ->where('author_id', $authorId)
                 ->with($this->postRelations()),
             $limit
         );

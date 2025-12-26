@@ -17,47 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withSchedule(function (Schedule $schedule) {
         //
     })
-    ->withMiddleware(function (Middleware $middleware): void {
-
-        /*
-    |--------------------------------------------------------------------------
-    | Middleware Aliases
-    |--------------------------------------------------------------------------
-    */
-        $middleware->alias([
-            'complete.name' => CheckNameComplete::class,
-        ]);
-
-        /*
-    |--------------------------------------------------------------------------
-    | Group: authenticated
-    |--------------------------------------------------------------------------
-    */
-        $middleware->group('authenticated', [
-            'auth',
-        ]);
-
-        /*
-    |--------------------------------------------------------------------------
-    | Group: onboarded
-    |--------------------------------------------------------------------------
-    */
-        $middleware->group('onboarded', [
-            'authenticated',
-            'verified',
-            'password.confirm',
-        ]);
-
-        /*
-    |--------------------------------------------------------------------------
-    | Group: page
-    |--------------------------------------------------------------------------
-    */
-        $middleware->group('pages', [
-            'onboarded',
-            'complete.name',
-        ]);
-    })
+    ->withMiddleware(function (Middleware $middleware): void {})
 
     ->withExceptions(function (Exceptions $exceptions): void {
         //

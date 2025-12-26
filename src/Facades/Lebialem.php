@@ -15,29 +15,33 @@ final class Lebialem extends HasPost
     public function __construct(
         protected readonly RegionService $regionService,
         protected readonly TagService $tagService,
-        protected readonly HasPost $hasPost,
-    ) {}
+    ) {
+    }
 
     /**
-     * Prepare shared view data for public region navigation.
+     * Prepare shared view data for public-facing layouts.
      *
      * @return array<string, mixed>
      */
     public function getGlobalData(): array
     {
+        $regions = $this->regionService->getRootRegions();
+
         return [
-            'popularTags'     => $this->tagService->getPopularTags(10),
-            'logo'            => $this->getGalleryImage(Image::LOGO()),
-            'subscription'    => $this->getGalleryImage(Image::SUBSCRIPTION()),
-            'banner'          => $this->getGalleryImage(Image::BANNER()),
-            'favicon'         => $this->getGalleryImage(Image::FAVICON()),
-            'global_icons'    => $this->getSocialMediaIcons(),
 
-            'mainRegions'         => $this->regionService->getRootRegions(),
-            'categoryRegions' => $this->regionService->getRootCategoryRegions(),
+            'logo'         => $this->getGalleryImage(Image::LOGO()),
+            'favicon'      => $this->getGalleryImage(Image::FAVICON()),
+            'banner'       => $this->getGalleryImage(Image::BANNER()),
 
-            'recentPosts'     => $this->getRecentPosts(2),
-            'breaking'        => $this->hasPost->getBreakingPosts(),
+            'global_icons' => $this->getSocialMediaIcons(),
+            'popularTags'  => $this->tagService->getPopularTags(10),
+
+            'mainRegions'      => $regions,
+            'headerRegion'     => $regions->first(),
+            'categoryRegions'  => $this->regionService->getRootCategoryRegions(),
+
+            'recentPosts' => $this->getRecentPosts(2),
+            'breaking'    => $this->getBreakingPosts(),
         ];
     }
 }

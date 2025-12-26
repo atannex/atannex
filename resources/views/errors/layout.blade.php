@@ -1,6 +1,56 @@
 @extends('components.layouts.guest')
 
+@section('og:title', seo_title())
+
 @section('guest')
+
+
+<style>
+    /* Error page layout tuning */
+    .error-page {
+        padding-top: 2rem;
+        /* reduces top whitespace */
+    }
+
+    /* Move image upward */
+    .error-img {
+        margin-top: -2.5rem;
+        /* pulls image upward */
+        margin-bottom: 1.5rem;
+        /* tighter gap before text */
+    }
+
+    /* Image sizing (kept responsive) */
+    .error-img img {
+        max-width: 280px;
+        width: 100%;
+        height: auto;
+        display: block;
+        margin-inline: auto;
+    }
+
+    /* Responsive scaling */
+    @media (min-width: 768px) {
+        .error-img {
+            margin-top: -3rem;
+        }
+
+        .error-img img {
+            max-width: 360px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .error-img {
+            margin-top: -3.5rem;
+        }
+
+        .error-img img {
+            max-width: 420px;
+        }
+    }
+
+</style>
 
 @php
 $code = $code ?? 500;
@@ -52,50 +102,4 @@ $buttonIcon = $buttonIcon ?? 'home';
 
     </div>
 </section>
-<style>
-    /* Error page layout tuning */
-    .error-page {
-        padding-top: 2rem;
-        /* reduces top whitespace */
-    }
-
-    /* Move image upward */
-    .error-img {
-        margin-top: -2.5rem;
-        /* pulls image upward */
-        margin-bottom: 1.5rem;
-        /* tighter gap before text */
-    }
-
-    /* Image sizing (kept responsive) */
-    .error-img img {
-        max-width: 280px;
-        width: 100%;
-        height: auto;
-        display: block;
-        margin-inline: auto;
-    }
-
-    /* Responsive scaling */
-    @media (min-width: 768px) {
-        .error-img {
-            margin-top: -3rem;
-        }
-
-        .error-img img {
-            max-width: 360px;
-        }
-    }
-
-    @media (min-width: 1200px) {
-        .error-img {
-            margin-top: -3.5rem;
-        }
-
-        .error-img img {
-            max-width: 420px;
-        }
-    }
-
-</style>
 @endsection

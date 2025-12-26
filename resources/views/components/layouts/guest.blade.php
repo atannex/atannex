@@ -4,16 +4,12 @@
 
 @section('base')
 
-    <x-sections.preloader />
+<x-sections.preloader />
 
-    <x-sections.guest.header />
+<x-sections.guest.header />
 
-    @auth
-        <livewire:forms.subscription />
-    @endauth
+@yield('guest')
 
-    @yield('guest')
-
-    <x-sections.guest.footer />
+<x-sections.guest.footer />
 
 @endsection

@@ -3,7 +3,7 @@
 namespace App\Livewire\Search;
 
 use App\Livewire\Search\Abstracts\Searchable;
-use App\Livewire\Search\Traits\HasPostSearchFields;
+use App\Livewire\Traits\HasPostSearchFields;
 
 /**
  * Livewire component for global search functionality, specifically for Post models.

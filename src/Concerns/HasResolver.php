@@ -8,43 +8,55 @@ use App\Models\Posts\Post;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
 use App\Models\Tags\Tag;
+use Atannex\Traits\HasGlobal;
 
 trait HasResolver
 {
-    protected function resolveAuthor(string $slug): ?Employee
+    use HasGlobal;
+
+    /**
+     * Check if an author exists by slug.
+     */
+    protected function authorExists(string $slug): bool
     {
-        return Employee::with('user')
-            ->where('status', Status::ACTIVE)
+        return Employee::where('status', Status::ACTIVE)
             ->whereHas('user', fn($q) => $q->where('slug', $slug))
-            ->first();
+            ->exists();
     }
 
-    protected function resolveCategory(string $slug): ?Category
+    /**
+     * Check if a category exists by slug.
+     */
+    protected function categoryExists(string $slug): bool
     {
         return Category::where([
             ['flag', Flag::PUBLISHED],
             ['slug_path', $slug],
-        ])->first();
+        ])->exists();
     }
 
-    protected function resolveTag(string $slug): ?Tag
+    /**
+     * Check if a tag exists by slug.
+     */
+    protected function tagExists(string $slug): bool
     {
-        return Tag::where('slug', $slug)->first();
+        return Tag::where('slug', $slug)->exists();
     }
 
-    protected function resolvePost(string $slug): ?Post
+    /**
+     * Check if a post exists by slug.
+     */
+    protected function postExists(string $slug): bool
     {
         return Post::published()
             ->where('slug_path', $slug)
-            ->first();
+            ->exists();
     }
 
     /**
      * Resolve posts by year or year/month slug.
-     * Examples:
-     * - 2024          → year archive (if posts exist)
-     * - 2024/03       → month archive if posts exist in that month
-     *                   → otherwise fall back to year archive if year has posts
+     *
+     * Returns resolution metadata only — no models.
      */
     protected function resolvePostByDate(string $slug): ?array
     {
@@ -54,15 +66,12 @@ trait HasResolver
             return null;
         }
 
-        $yearQuery = $this->queryByYear($year);
-        if (! $yearQuery->exists()) {
+        if (! $this->postsExistForYear($year)) {
             return null;
         }
 
         if ($month && $this->isValidMonth($month)) {
-            $monthQuery = $this->queryByMonth($year, $month);
-
-            if ($monthQuery->exists()) {
+            if ($this->postsExistForMonth($year, $month)) {
                 return [
                     'type'  => 'month',
                     'year'  => $year,
@@ -72,36 +81,27 @@ trait HasResolver
         }
 
         return [
-            'type' => 'year',
-            'year' => $year,
+            'type'  => 'year',
+            'year'  => $year,
+            'month' => null,
         ];
     }
 
-    protected function extractDateParts(string $slug): array
-    {
-        return array_pad(explode('/', trim($slug, '/'), 2), 2, null);
-    }
-
-    protected function isValidYear(?string $year): bool
-    {
-        return $year && preg_match('/^\d{4}$/', $year);
-    }
-
-    protected function isValidMonth(?string $month): bool
-    {
-        return $month && preg_match('/^(0[1-9]|1[0-2])$/', $month);
-    }
-
-    protected function queryByYear(string $year)
-    {
-        return Post::published()
-            ->whereYear('published_at', $year);
-    }
-
-    protected function queryByMonth(string $year, string $month)
+    /**
+     * Helpers
+     */
+    protected function postsExistForYear(string $year): bool
     {
         return Post::published()
             ->whereYear('published_at', $year)
-            ->whereMonth('published_at', $month);
+            ->exists();
+    }
+
+    protected function postsExistForMonth(string $year, string $month): bool
+    {
+        return Post::published()
+            ->whereYear('published_at', $year)
+            ->whereMonth('published_at', $month)
+            ->exists();
     }
 }

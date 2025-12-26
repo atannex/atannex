@@ -48,7 +48,7 @@ class RegionRepository implements RegionInterface
      * Retrieve a single parent region by slug.
      * Always returns a Region or throws an exception.
      */
-    public function getRegionBySlug(string $slug): ?Region
+    public function getRegionBySlug(string $slug): Region
     {
         return Region::query()
             ->flagged(Flag::PUBLISHED)
@@ -57,6 +57,6 @@ class RegionRepository implements RegionInterface
                 'sections',
                 'sections.widgets',
             ])
-            ->first();
+            ->firstOrFail();
     }
 }

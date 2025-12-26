@@ -10,10 +10,10 @@ $limit = 10;
     <div class="container">
         <ul class="breadcumb-menu">
 
-            @if($global['mainRegions'])
+            @if($global['headerRegion'])
             <li>
-                <a href="{{ route('page.index', ['slug' => $global['mainRegions']->first()->slug]) }}">
-                    {{ $global['mainRegions']->first()->name }}
+                <a href="{{ route('page.index', ['slug' => $global['headerRegion']->slug]) }}">
+                    {{ $global['headerRegion']->name }}
                 </a>
             </li>
             @endif

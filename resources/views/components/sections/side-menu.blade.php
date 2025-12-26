@@ -18,22 +18,22 @@
                 </p>
 
                 <div class="th-social style-black">
+
                     @foreach ($global['global_icons'] as $media)
+
                     <a href="{{ $media['url'] }}" target="_blank" rel="noopener noreferrer" class="d-inline-flex align-items-center justify-content-center rounded-circle me-1 social-icon" style="width: 2.5rem; height: 2.5rem; background-color: {{ $media['color'] }};">
                         <i class="{{ $media['icon'] }} text-white"></i>
                     </a>
+
                     @endforeach
+
                 </div>
             </div>
         </div>
 
-        @includeIf('partials.recent-posts')
+        @include('partials.recent-posts')
 
-        @if(View::exists('livewire.forms.subscriber'))
-
-        @livewire('forms.subscriber')
-
-        @endif
+        {{-- @livewire('forms.footer-subscription') --}}
 
     </div>
 </div>

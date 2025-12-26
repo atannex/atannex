@@ -1,8 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SubscriptionController;
+use Illuminate\Support\Facades\Auth;
+
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
+|--------------------------------------------------------------------------
+*/
+
+Auth::routes(['verify' => true]);
 
 /*
 |--------------------------------------------------------------------------
@@ -11,35 +18,8 @@ use App\Http\Controllers\SubscriptionController;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['onboarded'])->group(function () {
-
-    /*
-    |--------------------------------------------------------------------------
-    | User Name Completion Routes
-    | Prefix: /user/name
-    |--------------------------------------------------------------------------
-    */
-    Route::prefix('user/name/')
-        ->controller(ProfileController::class)
-        ->group(function () {
-            Route::get('set/{token}', 'show')->name('name.index');
-            Route::post('complete/{token}', 'store')->name('name.complete');
-        });
-});
-
-/*
-|--------------------------------------------------------------------------
-| Page Routes
-| Middleware: Pages (onboarded + complete.name)
-|--------------------------------------------------------------------------
-*/
-Route::middleware(['pages'])->group(function () {
-
-    /*
-    |--------------------------------------------------------------------------
-    | Subscription Routes
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/subscription/verify/{token}', [SubscriptionController::class, 'verify'])
-        ->name('subscription.verify');
-});
+Route::middleware([
+    'auth',
+    'verified',
+    'password.confirm'
+])->group(function () {});

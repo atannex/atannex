@@ -2,14 +2,15 @@
 
 namespace App\Models\Docs;
 
-use App\Models\Modules\DocumentModule;
-use App\Models\Regions\Employee;
+use Illuminate\Support\Str;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
+use App\Models\Regions\Employee;
+use App\Models\Modules\DocumentModule;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Document extends Model
 {
@@ -31,6 +32,7 @@ class Document extends Model
         'title',
         'type',
         'slug',
+        'slug_path',
         'description',
         'author_id',
         'flag',
@@ -62,5 +64,27 @@ class Document extends Model
     public function modules(): HasOne
     {
         return $this->hasOne(DocumentModule::class, 'document_id');
+    }
+
+    protected static function bootHasSlugPath(): void
+    {
+        static::creating(function ($model) {
+            $model->syncSlugPath();
+        });
+
+        static::updating(function ($model) {
+            if ($model->isDirty(['slug', 'type'])) {
+                $model->syncSlugPath();
+            }
+        });
+    }
+
+    protected function syncSlugPath(): void
+    {
+        if (! empty($this->type) && ! empty($this->slug)) {
+            $this->slug_path = Str::lower(
+                trim($this->type, '/') . '/' . trim($this->slug, '/')
+            );
+        }
     }
 }
