@@ -14,8 +14,6 @@
 
 <x-sections.side-menu />
 
-<livewire:forms.subscription />
-
 <x-sections.category.header />
 
 <x-partials.breadcrumb />
