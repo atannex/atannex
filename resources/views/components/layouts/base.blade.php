@@ -28,7 +28,6 @@
     <meta property="article:modified_time" content="@yield('og:updatedAt')">
     @endif
 
-
     @hasSection('og:video')
     <meta property="og:video" content="@yield('og:video')">
     <meta property="og:video:secure_url" content="@yield('og:video')">
@@ -37,6 +36,7 @@
     <meta property="og:video:height" content="720">
     @endif
 
+    <!-- Twitter -->
     <meta name="twitter:card" content="@yield('twitter:card', 'summary_large_image')">
     <meta name="twitter:title" content="@yield('og:title', config('app.title'))">
     <meta name="twitter:description" content="@yield('og:description', config('app.description'))">
@@ -59,19 +59,17 @@
     <link rel="icon" href="{{ $favicon }}">
     <link rel="apple-touch-icon" href="{{ $favicon }}">
     <meta name="theme-color" content="#ffffff">
-
     <link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
+
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/image.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/auth.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/menu.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/video.css') }}">
@@ -80,7 +78,6 @@
     @livewireStyles
 
     <x-layouts.googletagmanager />
-
 </head>
 
 <body>
