@@ -31,7 +31,7 @@ class RegionController extends Controller
     public function resolve(string $slug): View
     {
         /**
-         * 1️⃣ Document listing pages
+         * 1️⃣ Document listing pages (explicit slugs)
          */
         if ($this->isSupportedDocumentType($slug) || $slug === 'testimonials') {
             return view('documents.index', [
@@ -43,7 +43,7 @@ class RegionController extends Controller
         }
 
         /**
-         * 2️⃣ Single document page
+         * 2️⃣ Single document page (exact match)
          */
         if ($this->documentExists($slug)) {
             $document = $this->getDocumentByPath($slug);
@@ -60,19 +60,28 @@ class RegionController extends Controller
         }
 
         /**
-         * 3️⃣ Region
+         * 3️⃣ Post by date (year/month routes)
          */
-        if ($region = $this->regionService->getRegionBySlug($slug)) {
-            return $this->viewBinder->renderRegionView($region);
+        if ($date = $this->resolvePostByDate($slug)) {
+            return $this->viewBinder->renderDateView(
+                year: $date['year'],
+                month: $date['month'],
+                type: $date['type']
+            );
         }
 
         /**
-         * 4️⃣ Tag
+         * 4️⃣ Single post
          */
-        if ($this->tagExists($slug)) {
-            $tag = Tag::where('slug', $slug)->firstOrFail();
+        if ($this->postExists($slug)) {
+            $post = Post::published()
+                ->where('slug_path', $slug)
+                ->firstOrFail();
 
-            return $this->viewBinder->renderTagView($tag);
+            return $this->viewBinder->renderPostShow(
+                $post->category,
+                $slug
+            );
         }
 
         /**
@@ -87,32 +96,16 @@ class RegionController extends Controller
         }
 
         /**
-         * 6️⃣ Post by date
+         * 6️⃣ Tag
          */
-        if ($date = $this->resolvePostByDate($slug)) {
-            return $this->viewBinder->renderDateView(
-                year: $date['year'],
-                month: $date['month'],
-                type: $date['type']
-            );
+        if ($this->tagExists($slug)) {
+            $tag = Tag::where('slug', $slug)->firstOrFail();
+
+            return $this->viewBinder->renderTagView($tag);
         }
 
         /**
-         * 7️⃣ Single post
-         */
-        if ($this->postExists($slug)) {
-            $post = Post::published()
-                ->where('slug_path', $slug)
-                ->firstOrFail();
-
-            return $this->viewBinder->renderPostShow(
-                $post->category,
-                $slug
-            );
-        }
-
-        /**
-         * 8️⃣ Category
+         * 7️⃣ Category
          */
         if ($this->categoryExists($slug)) {
             $category = Category::where([
@@ -121,6 +114,13 @@ class RegionController extends Controller
             ])->firstOrFail();
 
             return $this->viewBinder->renderCategoryView($category);
+        }
+
+        /**
+         * 8️⃣ Region (most generic, highest collision risk)
+         */
+        if ($region = $this->regionService->getRegionBySlug($slug)) {
+            return $this->viewBinder->renderRegionView($region);
         }
 
         abort(404);

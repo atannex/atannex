@@ -36,7 +36,7 @@
 
                     <div class="col-md-6 col-xl-3">
 
-                        @livewire('forms.footer-subscription')
+                        @livewire('forms.subscription')
 
                     </div>
 
