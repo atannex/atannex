@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Atannex\Views\Traits;
 
+use App\Enums\PostType;
 use App\Models\Modules\PostModule;
 use App\Models\Regions\Category;
 use Atannex\Concerns\HasPlatforms;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 /**
  * Trait HasShow
  *
- * Provides reusable logic for rendering post detail (“show”) pages.
- * This trait centralizes module fetching, SEO setup, relationship
- * loading, and view data construction for category-based content pages.
+ * Centralized, cached logic for rendering post "show" pages
+ * based on post module type.
  */
 trait HasShow
 {
@@ -22,79 +23,124 @@ trait HasShow
 
     /**
      * Render the full post "show" page.
-     *
-     * Responsibilities:
-     *  - Resolve a post module by its slug, including all needed relations.
-     *  - Build an organized dataset containing tags, navigation, and related posts.
-     *  - Pass SEO title and metadata into the base rendering engine.
-     *
-     * @param  Category  $category  Category context for the post.
-     * @param  string    $slug      Post slug (slug_path).
-     * @return View
      */
     public function renderPostShow(Category $category, string $slug): View
     {
         $module = $this->fetchPostModule($slug);
-        $post = $module->post;
+        $post   = $module->post;
 
         return $this->renderView(
-            'shows.index',
+            $this->resolvePostShowView($module),
             $this->buildPostShowData($category, $post, $module),
             seo_title($post->title)
         );
     }
 
     /**
+     * Resolve the correct show view based on post type.
+     * Article is the default fallback.
+     */
+    protected function resolvePostShowView(PostModule $module): string
+    {
+        return match ($module->type->value) {
+            PostType::VIDEO => 'shows.video',
+            PostType::AUDIO => 'shows.audio',
+            default         => 'shows.index',
+        };
+    }
+
+    /**
      * Retrieve the PostModule instance for the requested slug.
-     *
-     * Eager-loads all required relationships to ensure efficient rendering:
-     *  - Author details
-     *  - Post tags
-     *  - Category information
-     *
-     * Uses a slug-path constraint to guarantee unique resolution.
-     *
-     * @param  string  $slug
-     * @return PostModule
+     * Cached to avoid repeated heavy joins.
      */
     protected function fetchPostModule(string $slug): PostModule
     {
-        return PostModule::with([
-                'post.author',
-                'post.tags',
-                'post.category',
-            ])
-            ->whereHas('post', fn ($query) => $query->where('slug_path', $slug))
-            ->firstOrFail();
+        return Cache::remember(
+            $this->cacheKey("post_module.slug.{$slug}"),
+            now()->addMinutes(20),
+            static function () use ($slug): PostModule {
+                return PostModule::with([
+                    'post.author',
+                    'post.tags',
+                    'post.category',
+                ])
+                    ->whereHas(
+                        'post',
+                        fn($query) => $query->where('slug_path', $slug)
+                    )
+                    ->firstOrFail();
+            }
+        );
     }
 
     /**
      * Build and return all data required by the post detail view.
-     *
-     * Assembles a structured dataset including:
-     *  - Tag metadata (popular and related)
-     *  - Previous/next navigation
-     *  - Related categories and posts
-     *  - Author social/employee media
-     *  - Share icons for social media integration
-     *
-     * @param  Category    $category
-     * @param  mixed       $post      Post model instance
-     * @param  PostModule  $module
-     * @return array
+     * Each expensive dependency is cached independently.
      */
-    protected function buildPostShowData(Category $category, $post, PostModule $module): array
-    {
+    protected function buildPostShowData(
+        Category $category,
+        $post,
+        PostModule $module
+    ): array {
+        $postId     = (int) $post->id;
+        $categoryId = (int) $category->id;
+        $authorId   = (int) $post->author->id;
+
         return [
-            'module'             => $module,
-            'popularTags'        => $this->tagService->getPopularTags(),
-            'relatedTags'        => $this->tagService->getTagsForPost($post->id),
-            'navigation'         => $this->getPost->getPostNavigation($post),
-            'relatedCategories'  => $this->categoryService->relatedCategories($category),
-            'recentPosts'        => $this->categoryService->recentPosts($post),
-            'relatedPosts'       => $this->getPost->getRelatedPosts($post),
-            'medias'             => $this->categoryService->employeeSocial($post->author),
-            'icons'              => $this->getAllShareIcons(),
+            'module' => $module,
+
+            'popularTags' => Cache::remember(
+                $this->cacheKey('tags.popular'),
+                now()->addMinutes(45),
+                fn() => $this->tagService->getPopularTags()
+            ),
+
+            'relatedTags' => Cache::remember(
+                $this->cacheKey("tags.post.{$postId}"),
+                now()->addMinutes(20),
+                fn() => $this->tagService->getTagsForPost($postId)
+            ),
+
+            'navigation' => Cache::remember(
+                $this->cacheKey("post.navigation.{$postId}"),
+                now()->addMinutes(15),
+                fn() => $this->getPost->getPostNavigation($post)
+            ),
+
+            'relatedCategories' => Cache::remember(
+                $this->cacheKey("categories.related.{$categoryId}"),
+                now()->addMinutes(60),
+                fn() => $this->categoryService->relatedCategories($category)
+            ),
+
+            'recentPosts' => Cache::remember(
+                $this->cacheKey("posts.recent.{$postId}"),
+                now()->addMinutes(10),
+                fn() => $this->categoryService->recentPosts($post)
+            ),
+
+            'relatedPosts' => Cache::remember(
+                $this->cacheKey("posts.related.{$postId}"),
+                now()->addMinutes(15),
+                fn() => $this->getPost->getRelatedPosts($post)
+            ),
+
+            'medias' => Cache::remember(
+                $this->cacheKey("author.media.{$authorId}"),
+                now()->addMinutes(60),
+                fn() => $this->categoryService->employeeSocial($post->author)
+            ),
+
+            'icons' => $this->getAllShareIcons(),
         ];
+    }
+
+    /**
+     * Generate consistent cache keys.
+     * Centralized to allow easy versioning.
+     */
+    protected function cacheKey(string $key): string
+    {
+        return "view.show.v1.{$key}";
     }
 }

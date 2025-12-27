@@ -28,7 +28,3 @@
         {{ $module->readingTime() }} {{ Str::plural('Min', $module->readingTime()) . __(" Read") }}
     </span>
 </div>
-
-<div class="mb-40 blog-img">
-    <img class="img-fluid image-show" src="{{ asset('storage/' . $module->post->image) }}" alt="{{ config('app.name') }}">
-</div>

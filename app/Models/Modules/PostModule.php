@@ -2,6 +2,7 @@
 
 namespace App\Models\Modules;
 
+use App\Enums\PostType;
 use App\Models\Posts\Post;
 use Atannex\Traits\HasReading;
 use Illuminate\Database\Eloquent\Model;
@@ -26,6 +27,8 @@ class PostModule extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'type',
+        'video',
         'content',
         'post_id',
     ];
@@ -36,7 +39,9 @@ class PostModule extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'type'    => PostType::class,
         'content' => 'array',
+        'video' => 'array',
     ];
 
     /**
