@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Posts;
 
 use App\Contracts\Commentable;
+use App\Events\PostContentChanged;
 use App\Models\Regions\Employee;
 use Atannex\Concerns\HasBreaking;
 use Atannex\Enables\Scoping;
@@ -12,6 +15,7 @@ use Atannex\Traits\HasCleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class Post extends Model implements Commentable
 {
@@ -22,17 +26,8 @@ class Post extends Model implements Commentable
     use Slugging;
     use SoftDeletes;
 
-    /**
-     * The field used as the source for slug generation.
-     * Spatie Sluggable will generate or regenerate the slug using this column.
-     */
     protected string $slugSource = 'title';
 
-    /**
-     * Mass assignable attributes for a Post.
-     *
-     * @var array
-     */
     protected $fillable = [
         'title',
         'slug',
@@ -50,29 +45,138 @@ class Post extends Model implements Commentable
         'feature_until',
     ];
 
-    /**
-     * Attribute casting rules.
-     *
-     * @var array
-     */
     protected $casts = [
-        'published_at' => 'datetime',
+        'published_at'    => 'datetime',
         'breaking_until' => 'datetime',
-        'feature_until' => 'datetime',
-        'metadata' => 'array',
-        'is_breaking' => 'boolean',
+        'feature_until'  => 'datetime',
+        'metadata'       => 'array',
+        'is_breaking'    => 'boolean',
     ];
 
-    /**
-     * Date attributes handled by Eloquent.
-     *
-     * @var array
-     */
     protected $dates = [
         'deleted_at',
         'created_at',
         'updated_at',
     ];
+
+    /* -----------------------------------------------------------------
+     |  Relations / Helpers
+     | -----------------------------------------------------------------
+     */
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(Employee::class, 'updated_by');
+    }
+
+    protected function isUserAuthenticated(): bool
+    {
+        return Auth::check();
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    /* -----------------------------------------------------------------
+     |  Slug Path Handling (Safe & Silent)
+     | -----------------------------------------------------------------
+     */
+
+    public function refreshSlugPath(): void
+    {
+        $category = $this->category()
+            ->withoutGlobalScopes()
+            ->select(['id', 'slug_path'])
+            ->first();
+
+        $this->slug_path = trim(
+            ($category->slug_path ?? '') . '/' . $this->slug,
+            '/'
+        );
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        // Before save: recalc slug_path if needed
+        static::saving(function (Post $post) {
+            if ($post->isDirty(['slug', 'category_id'])) {
+                $post->refreshSlugPath();
+            }
+        });
+
+        // After save: persist slug_path quietly (NO events)
+        static::saved(function (Post $post) {
+            if ($post->wasChanged(['slug', 'category_id'])) {
+                $post->updateQuietly([
+                    'slug_path' => $post->slug_path,
+                ]);
+            }
+        });
+    }
+
+    /* -----------------------------------------------------------------
+     |  Domain Event Dispatching (STRICT & GUARDED)
+     | -----------------------------------------------------------------
+     */
+
+    protected static function booted(): void
+    {
+        static::updated(function (Post $post) {
+            if (! $post->hasContentChanged()) {
+                return;
+            }
+
+            self::dispatchPostContentChanged($post);
+        });
+
+        static::deleted(
+            fn(Post $post) =>
+            self::dispatchPostContentChanged($post)
+        );
+
+        static::restored(
+            fn(Post $post) =>
+            self::dispatchPostContentChanged($post)
+        );
+    }
+
+    /**
+     * Determine if the update affects the rendered post content.
+     */
+    protected function hasContentChanged(): bool
+    {
+        return $this->wasChanged([
+            'title',
+            'slug',
+            'slug_path',
+            'description',
+            'image',
+            'metadata',
+            'published_at',
+            'is_breaking',
+            'breaking_until',
+            'feature_until',
+            'category_id',
+        ]);
+    }
+
+    /**
+     * Dispatch the PostContentChanged event with debounce protection.
+     */
+    protected static function dispatchPostContentChanged(Post $post): void
+    {
+        Cache::lock(
+            "post-content-changed:{$post->id}",
+            2
+        )->get(
+            fn() =>
+            PostContentChanged::dispatch($post)
+        );
+    }
 
     /**
      * The attribute name for the post's primary image field.
@@ -92,80 +196,5 @@ class Post extends Model implements Commentable
     public function getImageDirectory(): string
     {
         return 'posts';
-    }
-
-    /**
-     * User who last updated the post.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function updatedBy()
-    {
-        return $this->belongsTo(Employee::class, 'updated_by');
-    }
-
-    /**
-     * Determine whether the current user is authenticated.
-     *
-     * @return bool
-     */
-    protected function isUserAuthenticated(): bool
-    {
-        return Auth::check();
-    }
-
-    /**
-     * Build the slug_path by combining the category's slug_path with the post's slug.
-     * This ensures hierarchical URLs like: /news/local/my-post-title
-     *
-     * @return void
-     */
-    public function refreshSlugPath(): void
-    {
-        $category = $this->category()
-            ->withoutGlobalScopes()
-            ->select(['id', 'slug_path'])
-            ->first();
-
-        $this->slug_path = trim($category->slug_path . '/' . $this->slug, '/');
-    }
-
-    /**
-     * Model boot method.
-     *
-     * Handles automatic regeneration of slug_path whenever:
-     *   - The slug changes
-     *   - The category changes
-     *
-     * Ensures slug_path is always kept in sync before and after save.
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        /**
-         * Before saving the post, update slug_path if slug or category_id changed.
-         */
-        static::saving(function (Post $post) {
-            if ($post->isDirty(['slug', 'category_id'])) {
-                $post->refreshSlugPath();
-                $post->slug_path = $post->slug_path;
-            }
-        });
-
-        /**
-         * After saving, ensure the slug_path column is updated silently.
-         */
-        static::saved(function (Post $post) {
-            if ($post->wasChanged(['slug', 'category_id'])) {
-                $post->refreshSlugPath();
-                $post->updateQuietly(['slug_path' => $post->slug_path]);
-            }
-        });
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
     }
 }
