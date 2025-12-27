@@ -2,7 +2,9 @@
 
 @section('og:title', $module->post->title)
 @section('og:description', $module->post->description)
+
 @section('og:image', asset('storage/' . $module->post->image))
+
 @section('og:publishedAt', $module->post->published_at)
 @section('og:updatedAt', $module->post->updated_at)
 
@@ -26,12 +28,15 @@
 
                 <x-shows.header-content :module="$module" />
 
+                <div class="mb-40 blog-img">
+                    <img class="img-fluid image-show" src="{{ asset('storage/' . $module->post->image) }}" alt="{{ config('app.name') }}">
+                </div>
+
             </div>
 
             <div class="col-xxl-9 col-lg-8">
                 <div class="th-blog blog-single">
                     <div class="blog-content-wrap">
-
                         <div class="share-links-wrap">
 
                             <x-shows.social-share :module="$module" :icons="$icons" />
@@ -43,7 +48,6 @@
                             <x-shows.content :module="$module" />
 
                             <x-shows.related-tag :relatedTags="$relatedTags" />
-
 
                         </div>
                     </div>
@@ -60,12 +64,23 @@
             </div>
 
             <div class="col-xxl-3 col-lg-4 sidebar-wrap">
+                <aside class="sidebar-area">
+                    <div class="widget widget_tag_cloud">
 
-                @include('partials.aside')
+                        @livewire('search.post')
 
+                    </div>
+
+                    @include('partials.aside.category')
+
+                    @include('partials.aside.recent-posts')
+
+                    @include('partials.aside.tag')
+
+                </aside>
             </div>
-
         </div>
+    </div>
     </div>
 </section>
 

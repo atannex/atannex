@@ -42,8 +42,20 @@
             </div>
 
             <div class="col-xxl-3 col-lg-4 sidebar-wrap">
+                <aside class="sidebar-area">
+                    <div class="widget widget_tag_cloud">
 
-                @include('partials.aside')
+                        @livewire('search.post')
+
+                    </div>
+
+                    @include('partials.aside.category')
+
+                    @include('partials.aside.recent-posts')
+
+                    @include('partials.aside.tag')
+
+                </aside>
 
             </div>
         </div>

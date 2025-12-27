@@ -40,7 +40,7 @@
                 <div class="col-md-6 col-xl-3">
                     <div class="widget widget_tag_cloud footer-widget">
 
-                        @include('components.partials.tags')
+                        @include('partials.aside.tag')
 
                     </div>
                 </div>
