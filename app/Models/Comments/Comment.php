@@ -4,36 +4,56 @@ namespace App\Models\Comments;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Collection;
 
 /**
  * Class Comment
  *
- * Represents a comment in the application, supporting polymorphic relationships
- * to allow comments on multiple types of entities (e.g., posts, articles).
- * Supports nested comments through a parent-child relationship.
+ * Represents a polymorphic, threaded comment.
+ * Supports authenticated users and guests, moderation, and spam protection.
  */
 class Comment extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+    /* -----------------------------------------------------------------
+     |  Mass Assignment
+     | -----------------------------------------------------------------
      */
     protected $fillable = [
-        'user_id',          // The ID of the user who created the comment
-        'commentable_type', // The type of the entity the comment is associated with
-        'commentable_id',   // The ID of the entity the comment is associated with
-        'parent_id',        // The ID of the parent comment for nested replies
-        'comment',          // The content of the comment
+        'user_id',
+        'is_guest',
+        'guest_name',
+        'guest_email',
+        'guest_token',
+        'commentable_type',
+        'commentable_id',
+        'parent_id',
+        'comment',
+        'ip_address',
+        'is_approved',
+        'edited_at',
     ];
 
+    /* -----------------------------------------------------------------
+     |  Casting
+     | -----------------------------------------------------------------
+     */
+    protected $casts = [
+        'is_guest'    => 'boolean',
+        'is_approved' => 'boolean',
+        'edited_at'   => 'datetime',
+    ];
+
+    /* -----------------------------------------------------------------
+     |  Relationships
+     | -----------------------------------------------------------------
+     */
+
     /**
-     * Get the parent entity that this comment belongs to (polymorphic relationship).
+     * Polymorphic parent (Post, Article, etc.).
      */
     public function commentable(): MorphTo
     {
@@ -41,24 +61,7 @@ class Comment extends Model
     }
 
     /**
-     * Get the parent comment for this comment (if it is a reply).
-     */
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(Comment::class, 'parent_id');
-    }
-
-    /**
-     * Get all replies to this comment.
-     * Replies are ordered by the latest first.
-     */
-    public function replies(): HasMany
-    {
-        return $this->hasMany(Comment::class, 'parent_id')->latest();
-    }
-
-    /**
-     * Get the user who created this comment.
+     * Authenticated user (nullable for guests).
      */
     public function user(): BelongsTo
     {
@@ -66,24 +69,87 @@ class Comment extends Model
     }
 
     /**
-     * Accessor to retrieve all replies for this comment.
-     * Returns an empty collection if no replies exist.
-     *
-     * @return Collection
+     * Parent comment (for replies).
      */
-    protected function getAllRepliesAttribute()
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    /**
+     * Direct replies to this comment.
+     */
+    public function replies(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id')
+            ->approved()
+            ->latest();
+    }
+
+    /* -----------------------------------------------------------------
+     |  Scopes
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Only top-level comments.
+     */
+    public function scopeTopLevel(Builder $query): Builder
+    {
+        return $query->whereNull('parent_id');
+    }
+
+    /**
+     * Only approved comments.
+     */
+    public function scopeApproved(Builder $query): Builder
+    {
+        return $query->where('is_approved', true);
+    }
+
+    /* -----------------------------------------------------------------
+     |  Accessors
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Unified author name (user or guest).
+     */
+    public function getAuthorNameAttribute(): string
+    {
+        return $this->user?->name
+            ?? $this->guest_name
+            ?? __('Guest');
+    }
+
+    /**
+     * Safe replies collection.
+     */
+    public function getAllRepliesAttribute(): Collection
     {
         return $this->replies ?? collect();
     }
 
     /**
-     * Scope to retrieve top-level comments (comments without a parent).
-     *
-     * @param  Builder  $query
-     * @return Builder
+     * Check if the comment belongs to a guest.
      */
-    protected function scopeTopLevel($query)
+    public function getIsGuestCommentAttribute(): bool
     {
-        return $query->whereNull('parent_id');
+        return $this->is_guest && is_null($this->user_id);
+    }
+
+    /* -----------------------------------------------------------------
+     |  Helpers
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Mark comment as edited.
+     */
+    public function markEdited(): void
+    {
+        $this->forceFill([
+            'edited_at' => now(),
+        ])->save();
     }
 }

@@ -4,67 +4,54 @@ namespace App\Policies;
 
 use App\Models\Comments\Comment;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CommentPolicy
 {
-    /**
-     * Determine whether the user can view any comments.
-     */
-    public function viewAny(User $user): bool
-    {
-        return true; // Optional: Allow all authenticated users
-    }
+    use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view a specific comment.
+     * Determine whether the user can create comments.
+     *
+     * Anyone can create comments (authenticated users or guests).
      */
-    public function view(User $user, Comment $comment): bool
+    public function create(?User $user): bool
     {
-        return true; // Comments are public, typically
-    }
-
-    /**
-     * Determine whether the user can create a comment.
-     */
-    public function create(User $user): bool
-    {
-        return $user->exists;
+        return true;
     }
 
     /**
      * Determine whether the user can update the comment.
+     *
+     * - Authenticated users: only if they own the comment (user_id matches)
+     * - Guests: only if the current session's guest_comment_token matches the comment's token
      */
-    public function update(User $user, Comment $comment): Response
+    public function update(?User $user, Comment $comment): bool
     {
-        return $user->id === $comment->user_id
-            ? Response::allow()
-            : Response::deny('You do not own this comment.');
+        // Authenticated user: must be the owner
+        if ($user) {
+            return $comment->user_id === $user->id;
+        }
+
+        // Guest user: must have matching guest token in session
+        if ($comment->is_guest) {
+            $sessionToken = session('guest_comment_token');
+
+            return $sessionToken !== null && $sessionToken === $comment->guest_token;
+        }
+
+        // Guest trying to edit a non-guest comment → denied
+        return false;
     }
 
     /**
      * Determine whether the user can delete the comment.
+     *
+     * Same rules as update (owner only).
      */
-    public function delete(User $user, Comment $comment): Response
+    public function delete(?User $user, Comment $comment): bool
     {
-        return $user->id === $comment->user_id
-            ? Response::allow()
-            : Response::deny('You can only delete your own comments.');
-    }
-
-    /**
-     * Determine whether the user can restore the comment.
-     */
-    public function restore(User $user, Comment $comment): bool
-    {
-        return $user->id === $comment->user_id;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the comment.
-     */
-    public function forceDelete(User $user, Comment $comment): bool
-    {
-        return $user->roles()->exists();
+        // Reuse update logic – delete follows the same ownership rules
+        return $this->update($user, $comment);
     }
 }
