@@ -68,11 +68,13 @@
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
 
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/image.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/auth.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/menu.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/video.css') }}">
+    @php $cssVersion = '1.0.1'; @endphp
+
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v={{ $cssVersion }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/image.css') }}?v={{ $cssVersion }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/auth.css') }}?v={{ $cssVersion }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/menu.css') }}?v={{ $cssVersion }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/video.css') }}?v={{ $cssVersion }}">
 
     @stack('styles')
     @livewireStyles
