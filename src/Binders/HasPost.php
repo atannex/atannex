@@ -12,7 +12,7 @@ use Atannex\Sections\ByPopular;
 use Atannex\Sections\ByRecent;
 use Atannex\Sections\ByRegion;
 use Atannex\Sections\ByRelated;
-use Atannex\Sections\ByToday;
+use Atannex\Sections\ByPastWeek;
 
 /**
  * Class GetPost
