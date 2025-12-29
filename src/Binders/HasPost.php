@@ -36,6 +36,6 @@ class HasPost
     use ByRecent;
     use ByRegion;
     use ByRelated;
-    use ByToday;
+    use ByPastWeek;
     use ByModule;
 }
