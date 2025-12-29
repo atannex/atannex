@@ -3,25 +3,18 @@
 namespace App\Providers;
 
 use App\Enums\Flag;
-use App\Observers\PostModuleObserver;
 use App\Enums\Image;
 use App\Enums\Title;
 use App\Enums\Entity;
 use App\Enums\Status;
 use App\Enums\Binding;
 use App\Enums\Classification;
-use App\Events\PostContentChanged;
-use App\Listeners\ClearPostShowCache;
-use App\Models\Modules\PostModule;
-use App\Models\Posts\Post;
 use App\Models\Regions\Widget;
 use App\Models\Regions\Section;
-use App\Observers\PostObserver;
 use App\Observers\WidgetObserver;
 use App\Observers\SectionObserver;
 use Atannex\Adapters\WidgetAdapter;
 use Atannex\Adapters\SectionAdapter;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 
@@ -56,8 +49,6 @@ class AppServiceProvider extends ServiceProvider
         Widget::observe(
             new WidgetObserver(new WidgetAdapter())
         );
-
-        Event::listen(PostContentChanged::class, ClearPostShowCache::class);
     }
 
     /**
