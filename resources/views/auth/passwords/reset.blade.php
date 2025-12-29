@@ -23,84 +23,98 @@
                     </div>
 
                     <div class="card-body">
-                        <form action="{{ route('password.update') }}" method="POST" class="contact-form">
+                        <form action="{{ route('password.update') }}" method="POST" class="contact-form" novalidate>
                             @csrf
+
                             <input type="hidden" name="token" value="{{ $token }}">
                             <input type="hidden" name="email" value="{{ old('email', request()->email) }}">
 
                             <div class="row">
 
-                                <div class="form-group col-md-12 position-relative">
-                                    <label for="password" class="mb-2 form-label text-start d-block">
+                                <div class="mb-4 col-12 form-group position-relative">
+                                    <label for="password" class="mb-2 form-label fw-medium text-start d-block">
                                         <i class="fas fa-key me-1"></i>
                                         {{ __('Create New Password') }}
+                                        <span class="text-danger">*</span>
                                     </label>
-                                    <div class="position-relative">
-                                        <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ __('Enter your new secure password') }}" required autocomplete="new-password">
-                                        <span class="toggle-password" onclick="togglePasswordVisibility('password', 'toggle-icon-password')" style="position:absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor:pointer;">
-                                            <i class="fas fa-eye" id="toggle-icon-password"></i>
-                                        </span>
-                                    </div>
-                                    @error('password')
-                                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                                    @enderror
-                                    <small class="mt-1 form-text text-muted">
-                                        {{ __('Use at least 8 characters with a mix of letters, numbers, and symbols') }}
-                                    </small>
 
-                                    <div class="mt-1" id="password-strength-container" style="display: none;">
-                                        <small id="password-strength-text" class="form-text"></small>
-                                        <div class="progress" style="height: 5px;">
-                                            <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                                    <div class="input-group position-relative">
+                                        <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ __('Enter your new secure password') }}" autocomplete="new-password" required>
+
+                                        <button type="button" class="p-0 bg-transparent border-0 btn position-absolute top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password', 'toggle-icon-password')" aria-label="{{ __('Toggle password visibility') }}">
+                                            <i class="fas fa-eye text-muted" id="toggle-icon-password"></i>
+                                        </button>
+                                    </div>
+
+                                    @error('password')
+                                    <div class="invalid-feedback d-block">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+
+                                    <div class="mt-1 form-text">
+                                        {{ __('Use at least 8 characters with a mix of letters, numbers, and symbols.') }}
+                                    </div>
+
+                                    <div class="mt-2" id="password-strength-container" style="display: none;">
+                                        <small id="password-strength-text" class="form-text fw-medium"></small>
+
+                                        <div class="mt-1 progress" style="height: 5px;">
+                                            <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
+
+                                        <div id="password-feedback" class="mt-2 small"></div>
                                     </div>
                                 </div>
 
-                                <div class="form-group col-md-12 position-relative">
-                                    <label for="password-confirm" class="mb-2 form-label text-start d-block">
+                                <div class="mb-4 col-12 form-group position-relative">
+                                    <label for="password-confirm" class="mb-2 form-label fw-medium text-start d-block">
                                         <i class="fas fa-check-double me-1"></i>
                                         {{ __('Confirm Your New Password') }}
+                                        <span class="text-danger">*</span>
                                     </label>
-                                    <div class="position-relative">
-                                        <input type="password" name="password_confirmation" id="password-confirm" class="form-control" placeholder="{{ __('Type your password again to confirm') }}" required>
-                                        <span class="toggle-password" onclick="togglePasswordVisibility('password-confirm', 'toggle-icon-confirm')" style="position:absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor:pointer;">
-                                            <i class="fas fa-eye" id="toggle-icon-confirm"></i>
-                                        </span>
+
+                                    <div class="input-group position-relative">
+                                        <input type="password" name="password_confirmation" id="password-confirm" class="form-control" placeholder="{{ __('Type your password again to confirm') }}" autocomplete="new-password" required>
+
+                                        <button type="button" class="p-0 bg-transparent border-0 btn position-absolute top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password-confirm', 'toggle-icon-confirm')" aria-label="{{ __('Toggle password visibility') }}">
+                                            <i class="fas fa-eye text-muted" id="toggle-icon-confirm"></i>
+                                        </button>
                                     </div>
-                                    <small id="password-match-text" class="mt-1 form-text text-muted">
-                                        {{ __('Make sure both passwords match perfectly') }}
-                                    </small>
+
+                                    <small id="password-match-text" class="mt-1 form-text"></small>
                                 </div>
 
-                                <div class="form-btn col-12 d-flex justify-content-center flex-column align-items-center">
+                                <div class="col-12 form-btn d-flex flex-column align-items-center">
                                     <button type="submit" class="mb-3 th-btn btn-lg w-100">
                                         <i class="fas fa-lock me-2"></i>
-                                        {{ __("Update My Password") }}
+                                        {{ __('Update My Password') }}
                                         <i class="fas fa-arrow-right ms-2"></i>
                                     </button>
 
-                                    <div class="text-center alternative-actions">
-                                        <a href="{{ route('login') }}" class="text-decoration-none fw-semibold text-muted">
-                                            <i class="fas fa-arrow-left me-1"></i>
-                                            {{ __('Back to login') }}
-                                        </a>
-                                    </div>
+                                    <a href="{{ route('login') }}" class="fw-semibold text-muted text-decoration-none">
+                                        <i class="fas fa-arrow-left me-1"></i>
+                                        {{ __('Back to login') }}
+                                    </a>
                                 </div>
+
                             </div>
 
                             <div class="mt-4 row">
                                 <div class="col-12">
-                                    <div class="alert alert-success d-flex align-items-center" role="alert">
-                                        <i class="fas fa-lightbulb me-2"></i>
+                                    <div class="alert alert-success d-flex align-items-start" role="alert">
+                                        <i class="mt-1 fas fa-lightbulb me-2"></i>
                                         <small>
                                             <strong>{{ __('Pro Tip:') }}</strong>
-                                            {{ __('Choose a password that\'s easy for you to remember but hard for others to guess. Consider using a passphrase!') }}
+                                            {{ __('Use a passphrase — a few unrelated words are easier to remember and far more secure.') }}
                                         </small>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
+
                 </div>
             </div>
         </div>

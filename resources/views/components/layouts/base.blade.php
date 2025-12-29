@@ -36,7 +36,6 @@
     <meta property="og:video:height" content="720">
     @endif
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="@yield('twitter:card', 'summary_large_image')">
     <meta name="twitter:title" content="@yield('og:title', config('app.title'))">
     <meta name="twitter:description" content="@yield('og:description', config('app.description'))">
@@ -86,6 +85,8 @@
     @yield('base')
 
     @livewireScripts
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" defer></script>
 
     <script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}" defer></script>
     <script src="{{ asset('assets/js/app.min.js') }}" defer></script>

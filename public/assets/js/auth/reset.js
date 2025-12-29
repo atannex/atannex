@@ -1,240 +1,230 @@
 /**
- * Manages password input validation, strength checking, and timezone initialization for a form.
- * @module PasswordValidation
+ * Form Utilities
+ * -----------------------------
+ * - Timezone auto-detection
+ * - Real-time password entropy analysis (zxcvbn)
+ * - Password match validation
+ * - Password visibility toggle
+ * - Submit-time enforcement
+ *
+ * @module FormUtilities
  */
 
-/**
- * Initializes timezone input with the user's current timezone.
- * @function initializeTimezone
- * @private
- */
-function initializeTimezone() {
-    const timezoneInput = document.getElementById("timezone");
-    if (!timezoneInput) {
-        console.warn("Timezone input element not found");
-        return;
-    }
-    try {
-        timezoneInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    } catch (error) {
-        console.error("Error setting timezone:", error);
-    }
-}
+(() => {
+    "use strict";
 
-/**
- * Evaluates password strength based on defined criteria.
- * @function calculatePasswordStrength
- * @param {string} password - The password to evaluate
- * @returns {number} Strength score (0-5)
- * @private
- */
-function calculatePasswordStrength(password) {
-    let strength = 0;
-    if (password.length >= 8) strength++;
-    if (/[a-z]/.test(password)) strength++;
-    if (/[A-Z]/.test(password)) strength++;
-    if (/[0-9]/.test(password)) strength++;
-    if (/[\W_]/.test(password)) strength++;
-    return strength;
-}
+    /* ----------------------------------------------------------------------
+     * Configuration
+     * ---------------------------------------------------------------------- */
 
-/**
- * Updates the password strength UI based on the strength score.
- * @function updateStrengthUI
- * @param {number} strength - The password strength score (0-5)
- * @param {HTMLElement} strengthBar - The progress bar element
- * @param {HTMLElement} strengthText - The strength text element
- * @private
- */
-function updateStrengthUI(strength, strengthBar, strengthText) {
-    const percentage = (strength / 5) * 100;
-    strengthBar.style.width = `${percentage}%`;
+    const PASSWORD_POLICY = {
+        MIN_SCORE: 3, // zxcvbn score (0–4)
+    };
 
-    if (strength <= 2) {
-        strengthBar.className = "progress-bar bg-danger";
-        strengthText.textContent = "Weak";
-        strengthText.className = "form-text text-danger";
-        return;
-    }
-    if (strength <= 4) {
-        strengthBar.className = "progress-bar bg-warning";
-        strengthText.textContent = "Moderate";
-        strengthText.className = "form-text text-warning";
-        return;
-    }
-    strengthBar.className = "progress-bar bg-success";
-    strengthText.textContent = "Strong";
-    strengthText.className = "form-text text-success";
-}
+    const STRENGTH_UI = [
+        {
+            label: "Very Weak",
+            class: "bg-danger",
+            text: "text-danger",
+            percent: 20,
+        },
+        { label: "Weak", class: "bg-danger", text: "text-danger", percent: 40 },
+        {
+            label: "Fair",
+            class: "bg-warning",
+            text: "text-warning",
+            percent: 60,
+        },
+        { label: "Good", class: "bg-info", text: "text-info", percent: 80 },
+        {
+            label: "Strong",
+            class: "bg-success",
+            text: "text-success",
+            percent: 100,
+        },
+    ];
 
-/**
- * Checks if the password and confirmation inputs match.
- * @function checkPasswordMatch
- * @param {HTMLInputElement} passwordInput - The password input element
- * @param {HTMLInputElement} passwordConfirm - The confirmation input element
- * @param {HTMLElement} matchText - The match status text element
- * @private
- */
-function checkPasswordMatch(passwordInput, passwordConfirm, matchText) {
-    if (!passwordConfirm.value.length) {
-        matchText.textContent = "";
-        return;
+    /* ----------------------------------------------------------------------
+     * Utilities
+     * ---------------------------------------------------------------------- */
+
+    /**
+     * Safely get DOM element by ID.
+     */
+    const el = (id) => document.getElementById(id);
+
+    /**
+     * Initialize timezone field.
+     */
+    function initializeTimezone() {
+        const timezoneInput = el("timezone");
+        if (!timezoneInput) return;
+
+        try {
+            timezoneInput.value =
+                Intl.DateTimeFormat().resolvedOptions().timeZone;
+        } catch (error) {
+            console.error("Timezone detection failed:", error);
+        }
     }
-    matchText.textContent =
-        passwordInput.value === passwordConfirm.value
+
+    /* ----------------------------------------------------------------------
+     * Password Strength (zxcvbn)
+     * ---------------------------------------------------------------------- */
+
+    /**
+     * Get password strength score using zxcvbn.
+     *
+     * @param {string} password
+     * @returns {object|null}
+     */
+    function analyzePassword(password) {
+        if (!password || typeof zxcvbn !== "function") {
+            return null;
+        }
+        return zxcvbn(password);
+    }
+
+    /**
+     * Update strength UI.
+     */
+    function updateStrengthUI(score, bar, text) {
+        const config = STRENGTH_UI[score] || STRENGTH_UI[0];
+
+        bar.style.width = `${config.percent}%`;
+        bar.className = `progress-bar ${config.class}`;
+
+        text.textContent = config.label;
+        text.className = `form-text ${config.text}`;
+    }
+
+    /**
+     * Update password feedback text.
+     */
+    function updateFeedback(result, feedbackEl) {
+        if (!result || !feedbackEl) {
+            feedbackEl.textContent = "";
+            return;
+        }
+
+        const { warning, suggestions } = result.feedback;
+
+        feedbackEl.innerHTML = `
+            ${warning ? `<div class="text-warning">${warning}</div>` : ""}
+            ${
+                suggestions.length
+                    ? `<ul class="mb-0">${suggestions
+                          .map((s) => `<li>${s}</li>`)
+                          .join("")}</ul>`
+                    : ""
+            }
+        `;
+    }
+
+    /**
+     * Validate password confirmation.
+     */
+    function checkPasswordMatch(password, confirm, output) {
+        if (!confirm.value) {
+            output.textContent = "";
+            return false;
+        }
+
+        const match = password.value === confirm.value;
+
+        output.textContent = match
             ? "Passwords match"
             : "Passwords do not match";
-    matchText.className = `mt-1 form-text ${
-        passwordInput.value === passwordConfirm.value
-            ? "text-success"
-            : "text-danger"
-    }`;
-}
 
-/**
- * Toggles password visibility for an input field.
- * @function togglePasswordVisibility
- * @param {string} inputId - The ID of the password input element
- * @param {string} iconId - The ID of the toggle icon element
- * @global
- */
-function togglePasswordVisibility(inputId, iconId) {
-    const input = document.getElementById(inputId);
-    const icon = document.getElementById(iconId);
+        output.className = `mt-1 form-text ${
+            match ? "text-success" : "text-danger"
+        }`;
 
-    if (!input || !icon) {
-        console.warn(`Element not found: ${!input ? "input" : "icon"}`);
-        return;
+        return match;
     }
 
-    const isPassword = input.type === "password";
-    input.type = isPassword ? "text" : "password";
-    icon.classList.toggle("fa-eye", !isPassword);
-    icon.classList.toggle("fa-eye-slash", isPassword);
-}
+    /**
+     * Toggle password visibility.
+     */
+    window.togglePasswordVisibility = function (inputId, iconId) {
+        const input = el(inputId);
+        const icon = el(iconId);
+        if (!input || !icon) return;
 
-/**
- * Initializes password validation functionality.
- * @function initializePasswordValidation
- * @private
- */
-function initializePasswordValidation() {
-    const elements = {
-        passwordInput: document.getElementById("password"),
-        strengthContainer: document.getElementById(
-            "password-strength-container"
-        ),
-        strengthText: document.getElementById("password-strength-text"),
-        strengthBar: document.getElementById("password-strength-bar"),
-        passwordConfirm: document.getElementById("password-confirm"),
-        matchText: document.getElementById("password-match-text"),
+        const isHidden = input.type === "password";
+        input.type = isHidden ? "text" : "password";
+
+        icon.classList.toggle("fa-eye", !isHidden);
+        icon.classList.toggle("fa-eye-slash", isHidden);
     };
 
-    // Validate required elements
-    if (!Object.values(elements).every((el) => el)) {
-        console.error("One or more required form elements are missing");
-        return;
+    /* ----------------------------------------------------------------------
+     * Initialization
+     * ---------------------------------------------------------------------- */
+
+    function initializePasswordValidation() {
+        const password = el("password");
+        const confirm = el("password-confirm");
+        const bar = el("password-strength-bar");
+        const text = el("password-strength-text");
+        const container = el("password-strength-container");
+        const matchText = el("password-match-text");
+        const feedback = el("password-feedback");
+        const form = password?.closest("form");
+
+        if (
+            !password ||
+            !confirm ||
+            !bar ||
+            !text ||
+            !container ||
+            !matchText
+        ) {
+            console.error("Password validation elements missing.");
+            return;
+        }
+
+        let currentScore = 0;
+
+        password.addEventListener("input", () => {
+            container.style.display = password.value ? "block" : "none";
+
+            const result = analyzePassword(password.value);
+            currentScore = result ? result.score : 0;
+
+            updateStrengthUI(currentScore, bar, text);
+            updateFeedback(result, feedback);
+            checkPasswordMatch(password, confirm, matchText);
+        });
+
+        confirm.addEventListener("input", () => {
+            checkPasswordMatch(password, confirm, matchText);
+        });
+
+        if (form) {
+            form.addEventListener("submit", (e) => {
+                const isStrongEnough =
+                    currentScore >= PASSWORD_POLICY.MIN_SCORE;
+                const isMatch = checkPasswordMatch(
+                    password,
+                    confirm,
+                    matchText
+                );
+
+                if (!isStrongEnough || !isMatch) {
+                    e.preventDefault();
+                    alert(
+                        "Please choose a stronger password and ensure both fields match."
+                    );
+                }
+            });
+        }
     }
 
-    // Password input event listener
-    elements.passwordInput.addEventListener("input", () => {
-        elements.strengthContainer.style.display =
-            elements.passwordInput.value.length > 0 ? "block" : "none";
-
-        const strength = calculatePasswordStrength(
-            elements.passwordInput.value
-        );
-        updateStrengthUI(strength, elements.strengthBar, elements.strengthText);
-        checkPasswordMatch(
-            elements.passwordInput,
-            elements.passwordConfirm,
-            elements.matchText
-        );
-    });
-
-    // Password confirmation event listener
-    elements.passwordConfirm.addEventListener("input", () => {
-        checkPasswordMatch(
-            elements.passwordInput,
-            elements.passwordConfirm,
-            elements.matchText
-        );
-    });
-}
-
-/**
- * Initializes all form functionality when the DOM is fully loaded.
- * @function initialize
- * @private
- */
-function initialize() {
-    try {
+    function initialize() {
         initializeTimezone();
         initializePasswordValidation();
-    } catch (error) {
-        console.error("Initialization error:", error);
     }
-}
 
-// Initialize when DOM is fully loaded
-document.addEventListener("DOMContentLoaded", initialize);
-
-function popupSubscribe(alreadySubscribed) {
-    return {
-        open: false,
-        alreadySubscribed: alreadySubscribed,
-        HIDE_DURATION: 7 * 24 * 60 * 60 * 1000,
-        SHOW_DELAY: 10000,
-        SCROLL_THRESHOLD: 0.5,
-
-        init() {
-            const hideUntil = localStorage.getItem("hideSubscribePopup");
-            const now = Date.now();
-
-            if (
-                this.alreadySubscribed ||
-                hideUntil === "permanent" ||
-                (hideUntil && now < Number(hideUntil))
-            ) {
-                return;
-            }
-
-            let isTriggered = false;
-
-            const showPopup = () => {
-                if (isTriggered) return;
-                this.open = true;
-                isTriggered = true;
-                window.removeEventListener("scroll", handleScroll);
-            };
-
-            const handleScroll = () => {
-                const scrollPosition = window.scrollY + window.innerHeight;
-                const pageHeight = document.documentElement.scrollHeight;
-                if (scrollPosition / pageHeight >= this.SCROLL_THRESHOLD)
-                    showPopup();
-            };
-
-            setTimeout(showPopup, this.SHOW_DELAY);
-            window.addEventListener("scroll", handleScroll);
-
-            window.addEventListener("subscription-success", () => {
-                this.closePopup();
-                localStorage.setItem(
-                    "hideSubscribePopup",
-                    now + this.HIDE_DURATION
-                );
-            });
-        },
-
-        closePopup() {
-            this.open = false;
-            localStorage.setItem("hideSubscribePopup", Date.now());
-        },
-
-        permanentlyHide() {
-            this.open = false;
-            localStorage.setItem("hideSubscribePopup", "permanent");
-        },
-    };
-}
+    document.addEventListener("DOMContentLoaded", initialize);
+})();
