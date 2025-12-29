@@ -10,7 +10,7 @@
 
 <x-home.regional-updates :regions="$regions" />
 
-<x-home.featured-section :todayPosts="$todayPosts" :heroTitle="$heroTitle" :sideBlogs="$sideBlogs" :featuredBlog="$featuredBlog" />
+<x-home.featured-section :getPastWeekPosts="$getPastWeekPosts" :heroTitle="$heroTitle" :sideBlogs="$sideBlogs" :featuredBlog="$featuredBlog" />
 
 <section class="space-bottom">
     <div class="container">

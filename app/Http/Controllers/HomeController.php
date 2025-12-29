@@ -58,7 +58,7 @@ class HomeController extends Controller
     private function getPostsData(): array
     {
         return [
-            'todayPosts' => $this->postService->getTodayPosts(6),
+            'getPastWeekPosts' => $this->postService->getPastWeekPosts(6),
             'recentPosts' => $this->postService->getRecentPosts(6),
             'regions' => $this->postService->getRegionWithPost(6),
             'editorPicks' => $this->postService->getEditorPick(10),
@@ -71,26 +71,26 @@ class HomeController extends Controller
     /**
      * Determines the hero title based on post availability.
      */
-    private function getHeroTitle(Collection $todayPosts): string
+    private function getHeroTitle(Collection $getPastWeekPosts): string
     {
-        return $todayPosts->isNotEmpty()
-            ? __('Today Updates')
+        return $getPastWeekPosts->isNotEmpty()
+            ? __('Weekly Updates')
             : __('Recent Updates');
     }
 
     /**
      * Gets the featured blog (first from today's posts).
      */
-    private function getFeaturedBlog(Collection $todayPosts): ?object
+    private function getFeaturedBlog(Collection $getPastWeekPosts): ?object
     {
-        return $todayPosts->first();
+        return $getPastWeekPosts->first();
     }
 
     /**
      * Gets the side blogs (after the featured blog).
      */
-    private function getSideBlogs(Collection $todayPosts): Collection
+    private function getSideBlogs(Collection $getPastWeekPosts): Collection
     {
-        return $todayPosts->skip(1)->take(2);
+        return $getPastWeekPosts->skip(1)->take(2);
     }
 }

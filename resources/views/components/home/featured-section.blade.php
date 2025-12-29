@@ -1,6 +1,6 @@
-@props(['todayPosts', 'heroTitle', 'sideBlogs', 'featuredBlog'])
+@props(['getPastWeekPosts', 'heroTitle', 'sideBlogs', 'featuredBlog'])
 
-@if($todayPosts->isNotEmpty())
+@if($getPastWeekPosts->isNotEmpty())
 <section class="space">
     <div class="container">
         <h2 class="sec-title has-line">
