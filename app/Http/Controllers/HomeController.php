@@ -35,13 +35,13 @@ class HomeController extends Controller
         $postsData = $this->getPostsData();
 
         $viewData = [
-            'heroTitle' => $this->getHeroTitle($postsData['todayPosts']),
+            'heroTitle' => $this->getHeroTitle($postsData['getPastWeekPosts']),
             'recentPosts' => $postsData['recentPosts'],
             'editorPicks' => $postsData['editorPicks'],
-            'sideBlogs' => $this->getSideBlogs($postsData['todayPosts']),
-            'featuredBlog' => $this->getFeaturedBlog($postsData['todayPosts']),
+            'sideBlogs' => $this->getSideBlogs($postsData['getPastWeekPosts']),
+            'featuredBlog' => $this->getFeaturedBlog($postsData['getPastWeekPosts']),
             'regions' => $postsData['regions'],
-            'todayPosts' => $postsData['todayPosts'],
+            'getPastWeekPosts' => $postsData['getPastWeekPosts'],
             'featuredPosts' => $postsData['featuredPosts'],
             'mostReadPosts' => $postsData['mostReadPosts'],
             'popularPosts' => $postsData['popularPosts'],
