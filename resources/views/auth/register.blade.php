@@ -42,42 +42,57 @@
                             </div>
 
                             <div class="mb-4 form-group">
-                                <label for="password" class="form-label fw-medium form-text text-start d-block">
+                                <label for="password" class="form-label fw-medium text-start d-block">
                                     <i class="fas fa-lock me-1"></i>
                                     {{ __('Create a secure password') }}
                                     <span class="text-danger">*</span>
                                 </label>
+
                                 <div class="input-group position-relative">
-                                    <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ __('Make it strong and memorable') }}" required>
+                                    <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ __('Make it strong and memorable') }}" autocomplete="new-password" required />
+
                                     <button type="button" class="p-0 bg-transparent border-0 btn position-absolute top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password', 'toggle-icon-password')" aria-label="{{ __('Toggle password visibility') }}">
                                         <i class="fas fa-eye text-muted fs-5" id="toggle-icon-password"></i>
                                     </button>
                                 </div>
-                                <div class="form-text">{{ __('At least 8 characters with letters, numbers, and symbols - your account\'s best friend!') }}</div>
+
+                                <div class="form-text">
+                                    {{ __('Use a long, unique password with words, numbers, or symbols.') }}
+                                </div>
+
                                 @error('password')
-                                <div class="invalid-feedback d-block"><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</div>
+                                <div class="invalid-feedback d-block">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                    {{ $message }}
+                                </div>
                                 @enderror
 
-                                <div class="mt-1" id="password-strength-container" style="display: none;">
-                                    <small id="password-strength-text" class="form-text"></small>
-                                    <div class="progress" style="height: 5px;">
-                                        <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                                <div class="mt-2" id="password-strength-container" style="display: none;">
+                                    <small id="password-strength-text" class="form-text fw-medium"></small>
+
+                                    <div class="mt-1 progress" style="height: 5px;">
+                                        <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
+
+                                    <div id="password-feedback" class="mt-2 small"></div>
                                 </div>
                             </div>
 
                             <div class="mb-4 form-group">
-                                <label for="password-confirm" class="form-label fw-medium form-text text-start d-block">
+                                <label for="password-confirm" class="form-label fw-medium text-start d-block">
                                     <i class="fas fa-check-double me-1"></i>
                                     {{ __('Confirm your password') }}
                                     <span class="text-danger">*</span>
                                 </label>
+
                                 <div class="input-group position-relative">
-                                    <input type="password" id="password-confirm" name="password_confirmation" class="form-control" placeholder="{{ __('Type your password again') }}" required>
+                                    <input type="password" id="password-confirm" name="password_confirmation" class="form-control" placeholder="{{ __('Type your password again') }}" autocomplete="new-password" required />
+
                                     <button type="button" class="p-0 bg-transparent border-0 btn position-absolute top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password-confirm', 'toggle-icon-confirm')" aria-label="{{ __('Toggle password visibility') }}">
                                         <i class="fas fa-eye text-muted fs-5" id="toggle-icon-confirm"></i>
                                     </button>
                                 </div>
+
                                 <small id="password-match-text" class="mt-1 form-text"></small>
                             </div>
 

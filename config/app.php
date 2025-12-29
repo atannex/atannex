@@ -6,29 +6,35 @@ return [
     |--------------------------------------------------------------------------
     | Platform Identity
     |--------------------------------------------------------------------------
-    |
-    | Defines the core branding and public-facing metadata for the news platform.
-    |
+    | Core branding and SEO-facing metadata.
+    | These values are frequently reused across views, meta tags, and feeds.
     */
 
     'name'        => env('APP_NAME', 'Atannex'),
     'title'       => env('APP_TITLE', 'Atannex: Lebialem Community News'),
     'image'       => env('APP_IMAGE', 'assets/img/logo.png'),
-    'description' => env('APP_DESCRIPTION', 'Daily updates, headlines, and reports from Lebialem and beyond.'),
+    'description' => env(
+        'APP_DESCRIPTION',
+        'Daily updates, headlines, and reports from Lebialem and beyond.'
+    ),
 
     /*
     |--------------------------------------------------------------------------
     | Editorial & Contact Information
     |--------------------------------------------------------------------------
-    |
-    | Centralized official contacts for various departments and purposes,
-    | as commonly structured in media/news organizations.
-    |
+    | Centralized official contacts, structured by responsibility.
+    | Keeps mail routing consistent across the platform.
     */
 
     'contacts' => [
-        'notification' => env('APP_NOTIFICATION_EMAIL', 'notification@atannex.com'),
 
+        // System-level notifications (errors, alerts, cron)
+        'notification' => env(
+            'APP_NOTIFICATION_EMAIL',
+            'notification@atannex.com'
+        ),
+
+        // Public-facing and internal departments
         'email' => [
             'editorial'   => env('APP_EDITORIAL_EMAIL', 'editorial@atannex.com'),
             'newsroom'    => env('APP_NEWSROOM_EMAIL', 'newsroom@atannex.com'),
@@ -50,6 +56,7 @@ return [
     |--------------------------------------------------------------------------
     | Environment & Debug
     |--------------------------------------------------------------------------
+    | Debug should NEVER be enabled in production.
     */
 
     'env'   => env('APP_ENV', 'production'),
@@ -59,10 +66,12 @@ return [
     |--------------------------------------------------------------------------
     | URL & Timezone
     |--------------------------------------------------------------------------
+    | Always store timestamps in UTC.
+    | Convert to user/guest timezone at render time.
     */
 
     'url'      => env('APP_URL', 'https://atannex.com'),
-    'timezone' => 'Africa/Douala',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------
@@ -83,6 +92,7 @@ return [
     'key'    => env('APP_KEY'),
     'cipher' => 'AES-256-CBC',
 
+    // Allows seamless key rotation
     'previous_keys' => array_filter(
         explode(',', env('APP_PREVIOUS_KEYS', ''))
     ),
@@ -91,6 +101,7 @@ return [
     |--------------------------------------------------------------------------
     | Maintenance Mode
     |--------------------------------------------------------------------------
+    | Database driver is recommended for clustered deployments.
     */
 
     'maintenance' => [
