@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models\Posts;
 
 use App\Contracts\Commentable;
-use App\Events\PostContentChanged;
 use App\Models\Regions\Employee;
 use Atannex\Concerns\HasBreaking;
 use Atannex\Enables\Scoping;
@@ -15,7 +14,6 @@ use Atannex\Traits\HasCleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 
 class Post extends Model implements Commentable
 {
@@ -116,66 +114,6 @@ class Post extends Model implements Commentable
                 ]);
             }
         });
-    }
-
-    /* -----------------------------------------------------------------
-     |  Domain Event Dispatching (STRICT & GUARDED)
-     | -----------------------------------------------------------------
-     */
-
-    protected static function booted(): void
-    {
-        static::updated(function (Post $post) {
-            if (! $post->hasContentChanged()) {
-                return;
-            }
-
-            self::dispatchPostContentChanged($post);
-        });
-
-        static::deleted(
-            fn(Post $post) =>
-            self::dispatchPostContentChanged($post)
-        );
-
-        static::restored(
-            fn(Post $post) =>
-            self::dispatchPostContentChanged($post)
-        );
-    }
-
-    /**
-     * Determine if the update affects the rendered post content.
-     */
-    protected function hasContentChanged(): bool
-    {
-        return $this->wasChanged([
-            'title',
-            'slug',
-            'slug_path',
-            'description',
-            'image',
-            'metadata',
-            'published_at',
-            'is_breaking',
-            'breaking_until',
-            'feature_until',
-            'category_id',
-        ]);
-    }
-
-    /**
-     * Dispatch the PostContentChanged event with debounce protection.
-     */
-    protected static function dispatchPostContentChanged(Post $post): void
-    {
-        Cache::lock(
-            "post-content-changed:{$post->id}",
-            2
-        )->get(
-            fn() =>
-            PostContentChanged::dispatch($post)
-        );
     }
 
     /**
