@@ -25,9 +25,10 @@ class CategoriesTable
             ->columns([
                 ImageColumn::make('image')
                     ->label('Image')
+                    ->disk('public')
                     ->circular()
-                    ->imageSize(40)
-                    ->defaultImageUrl(url('/images/placeholder-category.png'))
+                    ->imageSize(50)
+                    ->defaultImageUrl(url('/assets/img/logo.png'))
                     ->toggleable(),
 
                 TextColumn::make('name')

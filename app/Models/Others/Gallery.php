@@ -29,17 +29,17 @@ class Gallery extends Model
     ];
 
     /**
-     * Image attribute used by HasCleaning trait.
+     * Return the image attributes for this model.
      */
-    public function getImageAttributeName(): string
+    public function images(): array
     {
-        return 'image';
+        return ['logo'];
     }
 
     /**
-     * Directory used by HasCleaning trait.
+     * Directory for storing gallery images (used by FileUpload and HasCleaning).
      */
-    public function getImageDirectory(): string
+    public function dir(): string
     {
         return 'gallery';
     }

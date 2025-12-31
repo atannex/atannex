@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models\Posts;
 
 use App\Contracts\Commentable;
-use App\Models\Regions\Employee;
 use Atannex\Concerns\HasBreaking;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
@@ -13,7 +12,6 @@ use Atannex\Relations\PostRelation;
 use Atannex\Traits\HasCleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
 
 class Post extends Model implements Commentable
 {
@@ -36,19 +34,11 @@ class Post extends Model implements Commentable
         'description',
         'image',
         'published_at',
-        'metadata',
         'slug_path',
-        'is_breaking',
-        'breaking_until',
-        'feature_until',
     ];
 
     protected $casts = [
         'published_at'    => 'datetime',
-        'breaking_until' => 'datetime',
-        'feature_until'  => 'datetime',
-        'metadata'       => 'array',
-        'is_breaking'    => 'boolean',
     ];
 
     protected $dates = [
@@ -58,81 +48,29 @@ class Post extends Model implements Commentable
     ];
 
     /* -----------------------------------------------------------------
-     |  Relations / Helpers
+     |  Image Handling (Universal)
      | -----------------------------------------------------------------
      */
 
-    public function updatedBy()
+    /**
+     * Returns the image attributes for the model.
+     * Can add more image fields here if needed.
+     */
+    public function images(): array
     {
-        return $this->belongsTo(Employee::class, 'updated_by');
+        return ['image'];
     }
 
-    protected function isUserAuthenticated(): bool
+    /**
+     * Returns the directory where images should be stored.
+     */
+    public function dir(): string
     {
-        return Auth::check();
+        return 'posts';
     }
 
     public function getRouteKeyName(): string
     {
         return 'slug';
-    }
-
-    /* -----------------------------------------------------------------
-     |  Slug Path Handling (Safe & Silent)
-     | -----------------------------------------------------------------
-     */
-
-    public function refreshSlugPath(): void
-    {
-        $category = $this->category()
-            ->withoutGlobalScopes()
-            ->select(['id', 'slug_path'])
-            ->first();
-
-        $this->slug_path = trim(
-            ($category->slug_path ?? '') . '/' . $this->slug,
-            '/'
-        );
-    }
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        // Before save: recalc slug_path if needed
-        static::saving(function (Post $post) {
-            if ($post->isDirty(['slug', 'category_id'])) {
-                $post->refreshSlugPath();
-            }
-        });
-
-        // After save: persist slug_path quietly (NO events)
-        static::saved(function (Post $post) {
-            if ($post->wasChanged(['slug', 'category_id'])) {
-                $post->updateQuietly([
-                    'slug_path' => $post->slug_path,
-                ]);
-            }
-        });
-    }
-
-    /**
-     * The attribute name for the post's primary image field.
-     *
-     * @return string
-     */
-    public function getImageAttributeName(): string
-    {
-        return 'image';
-    }
-
-    /**
-     * The directory where post images should be stored.
-     *
-     * @return string
-     */
-    public function getImageDirectory(): string
-    {
-        return 'posts';
     }
 }

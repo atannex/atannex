@@ -3,6 +3,7 @@
 namespace App\Models\Regions;
 
 use Atannex\Enables\Slugging;
+use Atannex\Traits\HasCleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Ruler extends Model
 {
     use Slugging;
+    use HasCleaning;
     use SoftDeletes;
 
     protected string $slugSource = 'name';
@@ -39,8 +41,8 @@ class Ruler extends Model
      */
     protected $casts = [
         'reign_start' => 'date',
-        'reign_end' => 'date',
-        'metadata' => 'array',
+        'reign_end'   => 'date',
+        'metadata'    => 'array',
     ];
 
     /**
@@ -52,11 +54,34 @@ class Ruler extends Model
         'deleted_at',
     ];
 
-    /**
-     * Get the region associated with the Fon.
+    /* -----------------------------------------------------------------
+     |  Relationships
+     | -----------------------------------------------------------------
      */
+
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
+    }
+
+    /* -----------------------------------------------------------------
+     |  Image Handling (Universal)
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Return the image attributes for this model.
+     */
+    public function images(): array
+    {
+        return ['image'];
+    }
+
+    /**
+     * Return the storage directory for images.
+     */
+    public function dir(): string
+    {
+        return 'rulers';
     }
 }

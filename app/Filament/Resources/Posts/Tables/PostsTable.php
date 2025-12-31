@@ -24,15 +24,14 @@ class PostsTable
     {
         return $table
             ->columns([
-                TextColumn::make('id'),
-
                 ImageColumn::make('image')
                     ->label('Featured Image')
                     ->disk('public')
                     ->imageHeight(50)
+                    ->circular()
                     ->width(80)
                     ->extraImgAttributes(['class' => 'rounded-lg'])
-                    ->defaultImageUrl(url('/images/placeholder-post.jpg'))
+                    ->defaultImageUrl(url('/assets/img/logo.png'))
                     ->tooltip('Featured Image'),
 
                 TextColumn::make('title')

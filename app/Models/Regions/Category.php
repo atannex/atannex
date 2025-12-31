@@ -45,13 +45,35 @@ class Category extends Model implements Sluggable
 
     protected string $slugSource = 'name';
 
-    public function getImageAttributeName(): string
+    /* -----------------------------------------------------------------
+     |  Image Handling (Universal)
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Return the image attributes for this model.
+     * Add more fields if needed in the future.
+     */
+    public function images(): array
     {
-        return 'image';
+        return ['image'];
     }
 
-    public function getImageDirectory(): string
+    /**
+     * Return the storage directory for images.
+     */
+    public function dir(): string
     {
         return 'category';
+    }
+
+        /**
+     * Register model event hooks.
+     *
+     * Ensures HasSlugPath trait is properly initialized after booting.
+     */
+    protected static function booted(): void
+    {
+        static::bootHasSlugPath();
     }
 }

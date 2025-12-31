@@ -35,7 +35,7 @@ class RegionForm
                                             ->maxLength(255)
                                             ->live(onBlur: true)
                                             ->afterStateUpdated(
-                                                fn ($state, callable $set) => $set('slug', Str::slug($state))
+                                                fn($state, callable $set) => $set('slug', Str::slug($state))
                                             )
                                             ->placeholder('e.g., North America')
                                             ->helperText('This will be the primary display name')
@@ -125,7 +125,8 @@ class RegionForm
                                         '16:9',
                                     ])
                                     ->maxSize(2048)
-                                    ->directory('regions/logos')
+                                    ->disk('public')
+                                    ->directory(fn($record) => $record?->dir() ?? 'regions/logos')
                                     ->visibility('public')
                                     ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/svg+xml'])
                                     ->helperText('PNG, JPG, or SVG. Max 2MB.')
@@ -138,26 +139,26 @@ class RegionForm
                             ->schema([
                                 TextEntry::make('created_at')
                                     ->label('Created At')
-                                    ->state(fn ($record): string => $record?->created_at
+                                    ->state(fn($record): string => $record?->created_at
                                         ? $record->created_at->diffForHumans()
                                         : '-')
-                                    ->visible(fn ($record) => $record !== null),
+                                    ->visible(fn($record) => $record !== null),
 
                                 TextEntry::make('updated_at')
                                     ->label('Last Updated')
-                                    ->state(fn ($record): string => $record?->updated_at
+                                    ->state(fn($record): string => $record?->updated_at
                                         ? $record->updated_at->diffForHumans()
                                         : '-')
-                                    ->visible(fn ($record) => $record !== null),
+                                    ->visible(fn($record) => $record !== null),
 
                                 TextEntry::make('slug_path')
                                     ->label('Full Path')
-                                    ->state(fn ($record): string => $record?->slug_path ?? '-')
-                                    ->visible(fn ($record) => $record !== null && $record->slug_path),
+                                    ->state(fn($record): string => $record?->slug_path ?? '-')
+                                    ->visible(fn($record) => $record !== null && $record->slug_path),
                             ])
                             ->collapsible()
                             ->collapsed()
-                            ->visible(fn ($record) => $record !== null),
+                            ->visible(fn($record) => $record !== null),
                     ])
                     ->columnSpan(['lg' => 1]),
             ])
