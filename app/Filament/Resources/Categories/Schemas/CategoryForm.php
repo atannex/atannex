@@ -20,9 +20,6 @@ use Illuminate\Support\Str;
 
 class CategoryForm
 {
-    /**
-     * Configure the category form schema with professional features and improved UX.
-     */
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -47,7 +44,6 @@ class CategoryForm
                                             ->label('URL Slug')
                                             ->disabled()
                                             ->maxLength(255)
-                                            ->unique(ignoreRecord: true)
                                             ->helperText('Auto-generated from category name (editable)')
                                             ->prefixIcon('heroicon-m-link')
                                             ->rules(['alpha_dash'])
@@ -102,7 +98,7 @@ class CategoryForm
                                                     ->placeholder('auto-generated-slug'),
                                             ])
                                             ->createOptionAction(
-                                                fn ($action) => $action
+                                                fn($action) => $action
                                                     ->modalHeading('Create New Parent Category')
                                                     ->modalDescription('Add a new parent category for hierarchical organization')
                                                     ->modalSubmitActionLabel('Create Category')
@@ -129,18 +125,26 @@ class CategoryForm
                             ->schema([
                                 FileUpload::make('image')
                                     ->label('Category Image')
-                                    ->directory(fn ($record) => $record?->getImageDirectory())
+                                    ->disk('public')
+                                    ->directory(fn($record) => $record?->dir() ?? 'category')
+                                    ->visibility('public')
                                     ->image()
                                     ->imageEditor()
                                     ->imageEditorAspectRatios([
                                         '16:9' => '16:9 (Landscape)',
-                                        '4:3' => '4:3 (Standard)',
-                                        '1:1' => '1:1 (Square)',
+                                        '4:3'  => '4:3 (Standard)',
+                                        '1:1'  => '1:1 (Square)',
                                         '9:16' => '9:16 (Portrait)',
                                     ])
                                     ->maxSize(5120)
-                                    ->acceptedFileTypes(['image/png', 'image/jpg', 'image/jpeg', 'image/webp', 'image/svg+xml'])
-                                    ->helperText('Recommended: 1200x800px or larger. Max 5MB. Formats: PNG, JPG, WEBP, SVG')
+                                    ->acceptedFileTypes([
+                                        'image/png',
+                                        'image/jpg',
+                                        'image/jpeg',
+                                        'image/webp',
+                                        'image/svg+xml',
+                                    ])
+                                    ->helperText('Recommended: 1200×800px or larger. Max 5MB.')
                                     ->imagePreviewHeight('300')
                                     ->loadingIndicatorPosition('center')
                                     ->panelAspectRatio('16:9')
@@ -256,11 +260,11 @@ class CategoryForm
                             ->schema([
                                 TextEntry::make('created_at')
                                     ->label('Created')
-                                    ->state(fn ($record) => $record?->created_at?->format('M j, Y g:i A') ?? 'Not yet created'),
+                                    ->state(fn($record) => $record?->created_at?->format('M j, Y g:i A') ?? 'Not yet created'),
 
                                 TextEntry::make('updated_at')
                                     ->label('Last Updated')
-                                    ->state(fn ($record) => $record?->updated_at?->format('M j, Y g:i A') ?? 'Not yet updated'),
+                                    ->state(fn($record) => $record?->updated_at?->format('M j, Y g:i A') ?? 'Not yet updated'),
                             ])
                             ->collapsible()
                             ->collapsed()

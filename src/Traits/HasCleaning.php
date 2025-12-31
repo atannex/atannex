@@ -8,65 +8,79 @@ use Illuminate\Support\Facades\Storage;
 /**
  * Trait HasCleaning
  *
- * Provides functionality for handling image uploads and automatic cleanup of old images
- * when updating or deleting models.
+ * Automatically handles image uploads and cleanup on update or deletion.
+ * Fully universal, supports multiple images per model.
  */
 trait HasCleaning
 {
     /**
-     * Get the name of the image attribute.
+     * Return the list of image attributes for this model.
+     * Override in your model if there are multiple fields.
      */
-    abstract public function getImageAttributeName(): string;
-
-    /**
-     * Get the storage directory for the image.
-     */
-    abstract public function getImageDirectory(): string;
-
-    /**
-     * Set the image attribute, storing uploaded files and updating the attribute value.
-     *
-     * @param  UploadedFile|string|null  $value  The uploaded file or path string
-     */
-    protected function setImageAttribute($value): void
+    public function images(): array
     {
-        $attribute = $this->getImageAttributeName();
-        $this->attributes[$attribute] = $value instanceof UploadedFile
-            ? $value->store($this->getImageDirectory(), 'public')
+        return ['image']; // default single image
+    }
+
+    /**
+     * Return the storage directory for images.
+     * Override in your model if needed.
+     */
+    public function dir(): string
+    {
+        return 'images';
+    }
+
+    /**
+     * Set an image attribute, handling file uploads.
+     *
+     * @param string $attr
+     * @param UploadedFile|string|null $value
+     */
+    protected function setImage(string $attr, $value): void
+    {
+        $this->attributes[$attr] = $value instanceof UploadedFile
+            ? $value->store($this->dir(), 'public')
             : $value;
     }
 
     /**
      * Delete an image file from storage.
      *
-     * @param  string|null  $file  The file path to delete (defaults to the model's current image)
+     * @param string|null $file
      */
     public function deleteImage(?string $file = null): void
     {
-        $fileToDelete = $file ?? $this->getOriginal($this->getImageAttributeName());
-
-        if ($fileToDelete && Storage::disk('public')->exists($fileToDelete)) {
-            Storage::disk('public')->delete($fileToDelete);
+        if ($file && Storage::disk('public')->exists($file)) {
+            Storage::disk('public')->delete($file);
         }
     }
 
     /**
-     * Boot the trait, setting up event listeners for image cleanup.
+     * Boot the trait, attaching events for cleanup.
      */
     protected static function bootHasCleaning(): void
     {
-        // Clean up old image when updating
+        // Remove old images on update
         static::saving(function ($model) {
-            $attribute = $model->getImageAttributeName();
-            if ($model->isDirty($attribute)) {
-                $model->deleteImage($model->getOriginal($attribute));
+            foreach ($model->images() as $attr) {
+                if ($model->isDirty($attr)) {
+                    $model->deleteImage($model->getOriginal($attr));
+                }
             }
         });
 
-        // Clean up image on soft or force delete
-        static::deleted(fn ($model) => $model->deleteImage());
+        // Remove images on any deletion
+        static::deleted(function ($model) {
+            foreach ($model->images() as $attr) {
+                $model->deleteImage($model->$attr);
+            }
+        });
 
-        static::forceDeleted(fn ($model) => $model->deleteImage());
-
+        static::forceDeleted(function ($model) {
+            foreach ($model->images() as $attr) {
+                $model->deleteImage($model->$attr);
+            }
+        });
     }
 }

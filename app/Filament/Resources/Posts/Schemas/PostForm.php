@@ -4,8 +4,6 @@ namespace App\Filament\Resources\Posts\Schemas;
 
 use App\Enums\Flag;
 use App\Models\Regions\Category;
-use App\Models\Regions\Region;
-use App\Models\Tags\Tag;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -137,7 +135,7 @@ class PostForm
                                                     ])
                                                     ->createOptionModalHeading('Create New Category')
                                                     ->createOptionAction(
-                                                        fn ($action) => $action
+                                                        fn($action) => $action
                                                             ->modalHeading('Create Category')
                                                             ->modalDescription('Add a new category or subcategory.')
                                                             ->modalSubmitActionLabel('Save Category')
@@ -172,26 +170,13 @@ class PostForm
                                                     ->displayFormat('M d, Y - H:i')
                                                     ->seconds(false),
 
-                                                TextInput::make('updated_by')
+                                                TextInput::make('last_updated_by')
                                                     ->label('Last Updated By')
                                                     ->disabled()
-                                                    ->placeholder('User ID')
-                                                    ->helperText('Tracking field for audit purposes'),
-
-                                                Toggle::make('is_breaking')
-                                                    ->label('Breaking News')
-                                                    ->default(false)
-                                                    ->reactive()
-                                                    ->helperText('Enable this to mark the post as breaking news.'),
-
-                                                DateTimePicker::make('breaking_until')
-                                                    ->label('Breaking Until')
-                                                    ->placeholder('Select date and time')
-                                                    ->displayFormat('M d, Y - H:i')
-                                                    ->native(false)
-                                                    ->visible(fn ($get) => $get('is_breaking'))
-                                                    ->required(fn ($get) => $get('is_breaking')),
-
+                                                    ->helperText('Tracking field for audit purposes')
+                                                    ->afterStateHydrated(function ($component, $record) {
+                                                        $component->state($record->updatedBy->user->name ?? 'N/A');
+                                                    }),
                                             ])->columns(2),
                                     ])
                                     ->compact()
@@ -210,54 +195,32 @@ class PostForm
                                             ->label('Featured Image')
                                             ->disk('public')
                                             ->visibility('public')
-                                            ->directory(fn ($record) => $record?->getImageDirectory())
+                                            ->directory(fn($record) => $record?->dir() ?? 'posts')
                                             ->image()
                                             ->imageEditor()
                                             ->imageEditorAspectRatios([
                                                 '16:9' => '16:9 (Recommended)',
-                                                '4:3' => '4:3 (Standard)',
-                                                '1:1' => '1:1 (Square)',
+                                                '4:3'  => '4:3 (Standard)',
+                                                '1:1'  => '1:1 (Square)',
                                             ])
                                             ->maxSize(5120)
-                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                            ->helperText('Recommended size: 1200x675px (16:9 ratio)')
+                                            ->acceptedFileTypes([
+                                                'image/jpeg',
+                                                'image/png',
+                                                'image/webp',
+                                            ])
+                                            ->helperText('Recommended size: 1200×675px (16:9)')
                                             ->imagePreviewHeight('250')
-                                            ->uploadingMessage('Uploading your image...')
+                                            ->loadingIndicatorPosition('center')
+                                            ->panelAspectRatio('16:9')
+                                            ->panelLayout('integrated')
+                                            ->removeUploadedFileButtonPosition('top-right')
+                                            ->uploadProgressIndicatorPosition('center')
                                             ->columnSpanFull(),
                                     ])
                                     ->compact()
                                     ->collapsible()
                                     ->persistCollapsed(),
-
-                                Section::make('SEO & Metadata')
-                                    ->description('Optimize your post for search engines')
-                                    ->icon('heroicon-o-magnifying-glass')
-                                    ->schema([
-                                        Grid::make(1)
-                                            ->schema([
-                                                TextInput::make('meta_title')
-                                                    ->label('Meta Title')
-                                                    ->placeholder('Custom title for search results')
-                                                    ->maxLength(60)
-                                                    ->helperText('Leave empty to use post title'),
-
-                                                Textarea::make('meta_description')
-                                                    ->label('Meta Description')
-                                                    ->placeholder('Custom description for search results')
-                                                    ->rows(3)
-                                                    ->maxLength(160)
-                                                    ->helperText('Leave empty to use post description'),
-
-                                                TextInput::make('canonical_url')
-                                                    ->label('Canonical URL')
-                                                    ->placeholder('https://example.com/original-post')
-                                                    ->url()
-                                                    ->helperText('Optional: Link to original source if reposting'),
-                                            ]),
-                                    ])
-                                    ->compact()
-                                    ->collapsible()
-                                    ->collapsed(),
                             ])
                             ->columnSpan(1),
                     ])

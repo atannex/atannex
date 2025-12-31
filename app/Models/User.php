@@ -9,14 +9,12 @@ use Atannex\Enables\Slugging;
 use Atannex\Traits\HasCleaning;
 use Atannex\Relations\UserRelation;
 use Spatie\Permission\Traits\HasRoles;
-use App\Models\Subscribing\Subscription;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Notifications\VerifyEmailNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
@@ -64,12 +62,23 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         ];
     }
 
-    public function getImageAttributeName(): string
+       /* -----------------------------------------------------------------
+     |  Image Handling (Universal)
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Return the image attributes for this model.
+     */
+    public function images(): array
     {
-        return 'image';
+        return ['image'];
     }
 
-    public function getImageDirectory(): string
+    /**
+     * Return the storage directory for images.
+     */
+    public function dir(): string
     {
         return 'users';
     }
@@ -81,11 +90,6 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
                 config('filament.allowed_email_domains', ['gmail.com', 'atannex.org', 'atannex.com'])
             )
             && $this->isEmployee();
-    }
-
-    public function user(): HasOne
-    {
-        return $this->hasOne(Subscription::class);
     }
 
     public function sendEmailVerificationNotification()

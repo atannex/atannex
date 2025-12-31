@@ -11,6 +11,7 @@ use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Filters\GetHierarchy;
 use Atannex\Relations\RegionRelation;
+use Atannex\Traits\HasCleaning;
 use Atannex\Traits\HasSlugPath;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Class Region
  *
  * Represents a hierarchical region with support for slug paths,
- * scoped queries, soft deletion, and custom metadata.
+ * scoped queries, soft deletion, logo image handling, and custom metadata.
  */
 class Region extends Model implements Sluggable
 {
@@ -28,6 +29,7 @@ class Region extends Model implements Sluggable
     use RegionRelation;
     use Scoping;
     use Slugging;
+    use HasCleaning; // Added for automatic logo image cleanup
     use SoftDeletes;
 
     /**
@@ -59,10 +61,31 @@ class Region extends Model implements Sluggable
      * Attribute casting rules for this model.
      */
     protected $casts = [
-        'flag' => Flag::class,                  // Enum casting for feature flags
-        'metadata' => 'array',                  // JSON column casting
-        'territory' => Territories::class,      // Enum casting for region type
+        'flag'      => Flag::class,
+        'metadata'  => 'array',
+        'territory' => Territories::class,
     ];
+
+    /* -----------------------------------------------------------------
+     |  Image Handling
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Return the image attributes for this model.
+     */
+    public function images(): array
+    {
+        return ['logo'];
+    }
+
+    /**
+     * Return the directory where logos should be stored.
+     */
+    public function dir(): string
+    {
+        return 'regions/logos';
+    }
 
     /**
      * Register model event hooks.
