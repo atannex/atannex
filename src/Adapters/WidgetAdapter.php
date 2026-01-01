@@ -2,7 +2,7 @@
 
 namespace Atannex\Adapters;
 
-use Atannex\Filters\ViewFileManager;
+use Atannex\Filters\Manager;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 final class WidgetAdapter
 {
-    use ViewFileManager;
+    use Manager;
 
     /**
      * Initialize the adapter with custom view directory and file extension.

@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace App\Models\Regions;
 
 use App\Contracts\Sluggable;
+use App\Models\Pivots\CategorySection;
+use App\Models\Posts\Post;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Enums\Flag;
 use Atannex\Concerns\HasResolver;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
-use Atannex\Filters\GetHierarchy;
-use Atannex\Relations\CategoryRelation;
+use Atannex\Filters\Hierarchy;
 use Atannex\Traits\HasCleaning;
 use Atannex\Traits\HasSlugPath;
 use Illuminate\Database\Eloquent\Model;
@@ -18,8 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model implements Sluggable
 {
-    use CategoryRelation;
-    use GetHierarchy;
+    use Hierarchy;
     use HasCleaning;
     use HasResolver;
     use Slugging;
@@ -67,7 +69,7 @@ class Category extends Model implements Sluggable
         return 'category';
     }
 
-        /**
+    /**
      * Register model event hooks.
      *
      * Ensures HasSlugPath trait is properly initialized after booting.
@@ -75,5 +77,27 @@ class Category extends Model implements Sluggable
     protected static function booted(): void
     {
         static::bootHasSlugPath();
+    }
+
+    /**
+     * Posts under this category.
+     * Standard one-to-many relationship.
+     */
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class, 'category_id');
+    }
+
+    /**
+     * Sections associated with this category via the pivot table `category_section`.
+     * Includes pivot fields `config` and `flag`.
+     * Uses timestamps on the pivot table and a custom pivot model `CategorySection`.
+     */
+    public function sections(): BelongsToMany
+    {
+        return $this->belongsToMany(Section::class, 'category_section')
+            ->using(CategorySection::class)
+            ->withPivot('flag')
+            ->withTimestamps();
     }
 }

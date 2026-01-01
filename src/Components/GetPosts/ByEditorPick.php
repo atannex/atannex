@@ -2,7 +2,6 @@
 
 namespace Atannex\Components\GetPosts;
 
-use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 
@@ -24,10 +23,9 @@ trait ByEditorPick
         $limit = $config['limit'];
 
         return Post::query()
-            ->flagged(Flag::EDITORIAL_PICK)
-            ->flagged(Flag::PUBLISHED)
+            ->ActiveEditorPick()
             ->published()
-            ->orderByDesc('updated_at')
+            ->orderByDesc('published_at')
             ->limit($limit)
             ->get();
     }

@@ -10,44 +10,46 @@ use App\Enums\Entity;
  * Trait HasEntityMapping
  *
  * Provides a mapping mechanism for entities to their respective methods and ID keys.
- * Assumes all data is available and valid.
+ * Assumes all entity data is valid.
  */
 trait HasEntityMapping
 {
     /**
+     * Mapping configuration for entities.
+     *
      * @var array<string, array<string, mixed>>
      */
-    private static array $MAPPINGS = [
-        Entity::POST_BY_CATEGORY => [
-            'entity' => Entity::POST_BY_CATEGORY,
+    private static array $mappings = [
+        Entity::POSTS_BY_CATEGORY => [
+            'entity' => Entity::POSTS_BY_CATEGORY,
             'method' => 'getPostsForCategory',
             'idKey' => 'category_id',
         ],
-        Entity::POST_BY_REGION => [
-            'entity' => Entity::POST_BY_REGION,
+
+        Entity::POSTS_BY_REGION => [
+            'entity' => Entity::POSTS_BY_REGION,
             'method' => 'getPostsForRegion',
             'idKey' => 'region_id',
         ],
-        Entity::POST_BY_TAG => [
-            'entity' => Entity::POST_BY_TAG,
+
+        Entity::POSTS_BY_TAG => [
+            'entity' => Entity::POSTS_BY_TAG,
             'method' => 'getPostsByTag',
             'idKey' => 'tag_id',
         ],
-        Entity::GET_CATEGORY_WITH_POSTS => [
-            'entity' => Entity::GET_CATEGORY_WITH_POSTS,
+
+        Entity::CATEGORIES_WITH_POSTS => [
+            'entity' => Entity::CATEGORIES_WITH_POSTS,
             'method' => 'getCategoryWithPosts',
             'idKey' => 'posts_with_id',
         ],
-        Entity::GET_REGION_WITH_POSTS => [
-            'entity' => Entity::GET_REGION_WITH_POSTS,
+
+        Entity::REGIONS_WITH_POSTS => [
+            'entity' => Entity::REGIONS_WITH_POSTS,
             'method' => 'getRegionWithPosts',
             'idKey' => 'posts_with_id',
         ],
-        Entity::GET_TAG_WITH_POSTS => [
-            'entity' => Entity::GET_TAG_WITH_POSTS,
-            'method' => 'getTagWithPosts',
-            'idKey' => 'posts_with_id',
-        ],
+
         Entity::BREAKING_POSTS => [
             'entity' => Entity::BREAKING_POSTS,
             'method' => 'getBreakingPosts',
@@ -61,7 +63,7 @@ trait HasEntityMapping
      */
     public static function getMapping(string $entity): array
     {
-        return self::$MAPPINGS[$entity];
+        return self::$mappings[$entity];
     }
 
     /**
@@ -69,7 +71,7 @@ trait HasEntityMapping
      */
     public static function resolveMethod(string $entity): string
     {
-        return self::$MAPPINGS[$entity]['method'];
+        return self::$mappings[$entity]['method'];
     }
 
     /**
@@ -77,6 +79,6 @@ trait HasEntityMapping
      */
     public static function requiresIdKey(string $entity): bool
     {
-        return isset(self::$MAPPINGS[$entity]['idKey']);
+        return isset(self::$mappings[$entity]['idKey']);
     }
 }

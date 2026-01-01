@@ -8,29 +8,41 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * Class PostTag
+ * PostTag Pivot Model
  *
- * Pivot model representing the post-tag relationship with slug and publishing management.
+ * Represents the many-to-many relationship
+ * between Post and Tag models.
  */
 class PostTag extends Pivot
 {
+    /**
+     * The table associated with the pivot model.
+     */
     protected $table = 'post_tag';
 
+    /**
+     * Mass-assignable attributes.
+     */
     protected $fillable = [
         'post_id',
         'tag_id',
-        'slug_path',
-        'flag',
-    ];
-
-    protected $casts = [
-        'post_id' => 'integer',
-        'tag_id' => 'integer',
-        'slug_path' => 'string',
     ];
 
     /**
-     * Get the post associated with this pivot.
+     * Attribute casting for type safety.
+     */
+    protected $casts = [
+        'post_id' => 'int',
+        'tag_id'  => 'int',
+    ];
+
+    /**
+     * Indicates that the pivot table includes timestamps.
+     */
+    public $timestamps = true;
+
+    /**
+     * Get the post that owns this pivot record.
      */
     public function post(): BelongsTo
     {
@@ -38,7 +50,7 @@ class PostTag extends Pivot
     }
 
     /**
-     * Get the tag associated with this pivot.
+     * Get the tag that owns this pivot record.
      */
     public function tag(): BelongsTo
     {

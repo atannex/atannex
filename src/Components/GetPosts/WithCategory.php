@@ -3,8 +3,8 @@
 namespace Atannex\Components\GetPosts;
 
 use App\Models\Regions\Category;
-use Atannex\Traits\WithHierarchicalPosts;
 use Illuminate\Support\Collection;
+use Atannex\Concerns\WithHierarchicalPosts;
 
 /**
  * Trait WithCategory

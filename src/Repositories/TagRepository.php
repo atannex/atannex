@@ -2,7 +2,6 @@
 
 namespace Atannex\Repositories;
 
-use App\Enums\Flag;
 use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
@@ -46,7 +45,7 @@ class TagRepository implements TagInterface
         $tag = $this->getTagBySlug($tagSlug);
 
         return $tag->posts()
-            ->flagged(Flag::PUBLISHED)
+            ->published()
             ->orderByDesc('published_at')
             ->get();
     }
@@ -73,7 +72,7 @@ class TagRepository implements TagInterface
     public function getPopularTags(int $limit = 10): Collection
     {
         return Tag::withCount([
-            'posts' => fn($q) => $q->flagged(Flag::PUBLISHED),
+            'posts' => fn($q) => $q->published(),
         ])
             ->having('posts_count', '>=', 2)
             ->orderByDesc('posts_count')
@@ -95,7 +94,7 @@ class TagRepository implements TagInterface
     private function findPost(int $postId): Post
     {
         return Post::query()
-            ->flagged(Flag::PUBLISHED)
+            ->published()
             ->findOrFail($postId);
     }
 }

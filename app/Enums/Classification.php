@@ -4,64 +4,29 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use Atannex\Filters\GetEnum;
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
 /**
- * Classification Enum (string values for traditional ruler levels)
+ * Classification Enum
  *
- * Represents multiple hierarchical levels of traditional rulers.
+ * Represents hierarchical levels of traditional rulers
+ * based on official recognition and authority.
  */
 final class Classification extends Enum
 {
-    use GetEnum;
-
+    #[Description('First-Class Chief')]
     public const FIRST_CLASS = 'first_class';
 
+    #[Description('Second-Class Chief')]
     public const SECOND_CLASS = 'second_class';
 
+    #[Description('Third-Class Chief')]
     public const THIRD_CLASS = 'third_class';
 
+    #[Description('Fourth-Class Chief')]
     public const FOURTH_CLASS = 'fourth_class';
 
+    #[Description('Unclassified')]
     public const UNCLASSIFIED = 'unclassified';
-
-    /**
-     * Boot method to define metadata for each classification level.
-     */
-    public static function boot(): void
-    {
-        self::setMetadata([
-            self::FIRST_CLASS => [
-                'label' => 'First-Class Chief',
-                'description' => 'Highest level traditional ruler with national or regional recognition',
-                'color' => 'primary',
-                'icon' => 'heroicon-o-crown',
-            ],
-            self::SECOND_CLASS => [
-                'label' => 'Second-Class Chief',
-                'description' => 'Regional or district-level traditional ruler',
-                'color' => 'success',
-                'icon' => 'heroicon-o-shield-check',
-            ],
-            self::THIRD_CLASS => [
-                'label' => 'Third-Class Chief',
-                'description' => 'Local-level traditional ruler, presiding over towns or villages',
-                'color' => 'warning',
-                'icon' => 'heroicon-o-user-group',
-            ],
-            self::FOURTH_CLASS => [
-                'label' => 'Fourth-Class Chief',
-                'description' => 'Minor ruler, often heads of clans or quarters',
-                'color' => 'info',
-                'icon' => 'heroicon-o-badge-check',
-            ],
-            self::UNCLASSIFIED => [
-                'label' => 'Unclassified',
-                'description' => 'Ruler without formal government recognition or ceremonial role',
-                'color' => 'secondary',
-                'icon' => 'heroicon-o-question-mark-circle',
-            ],
-        ]);
-    }
 }

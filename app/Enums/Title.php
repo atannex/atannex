@@ -4,120 +4,49 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use Atannex\Filters\GetEnum;
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
 /**
- * Title Enum (string values for traditional ruler titles)
+ * Title Enum
  *
- * Represents various traditional ruler titles with metadata.
+ * Represents various traditional ruler titles.
  */
 final class Title extends Enum
 {
-    use GetEnum;
-
+    #[Description('HRM')]
     public const HRM = 'hrm';
 
+    #[Description('NYIATEMEH')]
     public const NYIATEMEH = 'nyiatemeh';
 
+    #[Description('HRH')]
     public const HRH = 'hrh';
 
+    #[Description('HRH-MARFOW')]
     public const HRH_MARFOW = 'hrh-marfow';
 
+    #[Description('MARFOW')]
     public const MARFOW = 'marfow';
 
+    #[Description('NDI-NKEM')]
     public const NDI_NKEM = 'ndi-nkem';
 
+    #[Description('NKEM')]
     public const NKEM = 'nkem';
 
+    #[Description('MBE')]
     public const MBE = 'mbe';
 
+    #[Description('MBE-MORFAW')]
     public const MBE_MORFAW = 'mbe-morfaw';
 
+    #[Description('NWET')]
     public const NWET = 'nwet';
 
+    #[Description('MBI')]
     public const MBI = 'mbi';
 
+    #[Description('AFUNGONG')]
     public const AFUNGONG = 'afungong';
-
-    /**
-     * Boot method to define metadata for each title.
-     */
-    public static function boot(): void
-    {
-        self::setMetadata([
-            self::HRM => [
-                'label' => 'HRM',
-                'description' => 'His/Her Royal Majesty',
-                'color' => 'primary',
-                'icon' => 'heroicon-o-crown',
-            ],
-            self::NYIATEMEH => [
-                'label' => 'NYIATEMEH',
-                'description' => 'Traditional title NYIATEMEH',
-                'color' => 'success',
-                'icon' => 'heroicon-o-shield-check',
-            ],
-            self::HRH => [
-                'label' => 'HRH',
-                'description' => 'His/Her Royal Highness',
-                'color' => 'info',
-                'icon' => 'heroicon-o-certificate',
-            ],
-            self::HRH_MARFOW => [
-                'label' => 'HRH-MARFOW',
-                'description' => 'HRH MARFOW traditional ruler',
-                'color' => 'warning',
-                'icon' => 'heroicon-o-badge-check',
-            ],
-            self::MARFOW => [
-                'label' => 'MARFOW',
-                'description' => 'MARFOW traditional ruler',
-                'color' => 'secondary',
-                'icon' => 'heroicon-o-user',
-            ],
-            self::NDI_NKEM => [
-                'label' => 'NDI-NKEM',
-                'description' => 'NDI-NKEM title holder',
-                'color' => 'purple',
-                'icon' => 'heroicon-o-star',
-            ],
-            self::NKEM => [
-                'label' => 'NKEM',
-                'description' => 'NKEM title holder',
-                'color' => 'teal',
-                'icon' => 'heroicon-o-emoji-happy',
-            ],
-            self::MBE => [
-                'label' => 'MBE',
-                'description' => 'MBE title holder',
-                'color' => 'info',
-                'icon' => 'heroicon-o-medal',
-            ],
-            self::MBE_MORFAW => [
-                'label' => 'MBE-MORFAW',
-                'description' => 'MBE MORFAW title holder',
-                'color' => 'warning',
-                'icon' => 'heroicon-o-badge-check',
-            ],
-            self::NWET => [
-                'label' => 'NWET',
-                'description' => 'NWET title holder',
-                'color' => 'success',
-                'icon' => 'heroicon-o-user-group',
-            ],
-            self::MBI => [
-                'label' => 'MBI',
-                'description' => 'MBI title holder',
-                'color' => 'primary',
-                'icon' => 'heroicon-o-star',
-            ],
-            self::AFUNGONG => [
-                'label' => 'AFUNGONG',
-                'description' => 'AFUNGONG title holder',
-                'color' => 'secondary',
-                'icon' => 'heroicon-o-cog',
-            ],
-        ]);
-    }
 }

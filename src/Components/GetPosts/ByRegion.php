@@ -3,7 +3,7 @@
 namespace Atannex\Components\GetPosts;
 
 use App\Models\Regions\Region;
-use Atannex\Traits\HasPostsForHierarchy;
+use Atannex\Concerns\HasPostsForHierarchy;
 use Illuminate\Support\Collection;
 
 trait ByRegion

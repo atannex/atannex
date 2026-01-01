@@ -8,27 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * Class Widget
- *
- * Represents a Widget entity that can be associated with Sections.
- * Supports soft deletes, slugs, and stores metadata and status flags.
- */
 class Widget extends Model
 {
     use Slugging;
     use SoftDeletes;
 
-    /**
-     * Source field for generating slug.
-     */
     protected string $slugSource = 'name';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'slug',
         'name',
@@ -36,19 +22,27 @@ class Widget extends Model
         'metadata',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'metadata' => 'array',
     ];
 
+    /**
+     * Regions that use this widget.
+     */
+    public function regions(): BelongsToMany
+    {
+        return $this->belongsToMany(Region::class, 'region_section_widgets')
+            ->using(RegionSectionWidget::class)
+            ->withPivot(['section_id', 'position', 'config', 'flag', 'metadata']);
+    }
+
+    /**
+     * Sections this widget is placed in (across regions).
+     */
     public function sections(): BelongsToMany
     {
         return $this->belongsToMany(Section::class, 'region_section_widgets')
             ->using(RegionSectionWidget::class)
-            ->withPivot(['region_id', 'config', 'flag', 'metadata']);
+            ->withPivot(['region_id', 'position', 'config', 'flag', 'metadata']);
     }
 }

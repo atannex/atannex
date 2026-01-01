@@ -8,7 +8,7 @@
             <div class="col-auto">
                 <div class="sec-btn">
                     <div class="filter-menu filter-menu-active1">
-                        @foreach ($tab['entities'] as $index => $region)
+                        @foreach ($tab['content'] as $index => $region)
                         <button type="button" data-filter=".filter-{{ $region['id'] }}" class="tab-btn {{ $index === 0 ? 'active' : '' }}" aria-label="{{ __('Filter by :region', ['region' => $region['name']]) }}">
                             {{ $region['name'] }}
                         </button>
@@ -19,7 +19,7 @@
         </div>
 
         <div class="filter-active-cat1">
-            @foreach ($tab['entities'] as $index => $region)
+            @foreach ($tab['content'] as $index => $region)
             @php
             $posts = $region->posts;
             $featuredPost = $posts->first();
@@ -34,7 +34,9 @@
                     <article class="blog-style1 style-big">
                         <div class="blog-img">
 
-                            @include('partials.image', [ 'post' => $featuredPost, 'class'=> 'content-filter-section' ])
+                            <a href="{{ route('page.index', ['slug' => $featuredPost->slug_path ]) }}">
+                                <img src="{{ asset('storage/' . $featuredPost->image) }}" alt="{{ config('app.name') }}" class="img-fluid content-filter-section">
+                            </a>
 
                             @include('partials.category', [ 'post' => $featuredPost ])
 
@@ -44,6 +46,9 @@
                             @include('partials.title', [ 'post' => $featuredPost ])
 
                         </h3>
+                        <p class="blog-text">
+                            {{ Str::limit($featuredPost->description, 120) }}
+                        </p>
                         <div class="blog-meta">
 
                             @include('partials.author', [ 'post' => $featuredPost ])

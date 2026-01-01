@@ -20,8 +20,9 @@
 
                             <h3 class="box-title-24">
 
-                                @include('partials.title')
-
+                                <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="hover-line">
+                                    {{ Str::limit($post->title, 60) }}
+                                </a>
                             </h3>
 
                             <div class="blog-meta">

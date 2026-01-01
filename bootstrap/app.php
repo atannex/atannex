@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Foundation\Application;
-use App\Http\Middleware\CheckNameComplete;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,9 +13,6 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
 
-    /* -------------------------------------------------
-     | Scheduled Tasks (Laravel 11 style)
-     |--------------------------------------------------*/
     ->withSchedule(function (Schedule $schedule) {
 
         $schedule->command(
@@ -25,10 +21,19 @@ return Application::configure(basePath: dirname(__DIR__))
             ->everyMinute()
             ->withoutOverlapping()
             ->onOneServer();
+
+        $schedule->command('atannex:breaking-cleanup')
+            ->everyMinute()
+            ->withoutOverlapping()
+            ->onOneServer();
+
+        $schedule->command('atannex:update-editor-picks')
+            ->everyMinute()
+            ->withoutOverlapping()
+            ->onOneServer();
     })
 
     ->withMiddleware(function (Middleware $middleware): void {
-        //
     })
 
     ->withExceptions(function (Exceptions $exceptions): void {

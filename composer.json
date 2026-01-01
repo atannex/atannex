@@ -63,7 +63,8 @@
             "morfaw/Helpers/SeoHelper.php",
             "morfaw/Helpers/PostHelper.php",
             "morfaw/Helpers/NumberHelper.php",
-            "morfaw/Helpers/GuestUiHelper.php"
+            "morfaw/Helpers/GuestUiHelper.php",
+            "morfaw/Traits/CanNormalize.php"
         ],
         "psr-4": {
             "App\\": "app/",

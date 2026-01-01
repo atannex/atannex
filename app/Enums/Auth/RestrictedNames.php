@@ -5,204 +5,309 @@ declare(strict_types=1);
 namespace App\Enums\Auth;
 
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
+/**
+ * RestrictedNames Enum
+ *
+ * Represents offensive, adult, or otherwise prohibited words.
+ */
 final class RestrictedNames extends Enum
 {
-    const SEX = 'sex';
+    #[Description('sex')]
+    public const SEX = 'sex';
 
-    const PORN = 'porn';
+    #[Description('porn')]
+    public const PORN = 'porn';
 
-    const XXX = 'xxx';
+    #[Description('xxx')]
+    public const XXX = 'xxx';
 
-    const NUDE = 'nude';
+    #[Description('nude')]
+    public const NUDE = 'nude';
 
-    const NAKED = 'naked';
+    #[Description('naked')]
+    public const NAKED = 'naked';
 
-    const ADULT = 'adult';
+    #[Description('adult')]
+    public const ADULT = 'adult';
 
-    const EROTIC = 'erotic';
+    #[Description('erotic')]
+    public const EROTIC = 'erotic';
 
-    const OBSCENE = 'obscene';
+    #[Description('obscene')]
+    public const OBSCENE = 'obscene';
 
-    const VULGAR = 'vulgar';
+    #[Description('vulgar')]
+    public const VULGAR = 'vulgar';
 
-    const OFFENSIVE = 'offensive';
+    #[Description('offensive')]
+    public const OFFENSIVE = 'offensive';
 
-    const EXPLICIT = 'explicit';
+    #[Description('explicit')]
+    public const EXPLICIT = 'explicit';
 
-    const FETISH = 'fetish';
+    #[Description('fetish')]
+    public const FETISH = 'fetish';
 
-    const GORE = 'gore';
+    #[Description('gore')]
+    public const GORE = 'gore';
 
-    const VIOLENT = 'violent';
+    #[Description('violent')]
+    public const VIOLENT = 'violent';
 
-    const ABUSE = 'abuse';
+    #[Description('abuse')]
+    public const ABUSE = 'abuse';
 
-    const RAPE = 'rape';
+    #[Description('rape')]
+    public const RAPE = 'rape';
 
-    const TORTURE = 'torture';
+    #[Description('torture')]
+    public const TORTURE = 'torture';
 
-    const MURDER = 'murder';
+    #[Description('murder')]
+    public const MURDER = 'murder';
 
-    const KILL = 'kill';
+    #[Description('kill')]
+    public const KILL = 'kill';
 
-    const DRUGS = 'drugs';
+    #[Description('drugs')]
+    public const DRUGS = 'drugs';
 
-    const WEED = 'weed';
+    #[Description('weed')]
+    public const WEED = 'weed';
 
-    const HEROIN = 'heroin';
+    #[Description('heroin')]
+    public const HEROIN = 'heroin';
 
-    const COCAINE = 'cocaine';
+    #[Description('cocaine')]
+    public const COCAINE = 'cocaine';
 
-    const METH = 'meth';
+    #[Description('meth')]
+    public const METH = 'meth';
 
-    const LSD = 'lsd';
+    #[Description('lsd')]
+    public const LSD = 'lsd';
 
-    const ECSTASY = 'ecstasy';
+    #[Description('ecstasy')]
+    public const ECSTASY = 'ecstasy';
 
-    const OPIUM = 'opium';
+    #[Description('opium')]
+    public const OPIUM = 'opium';
 
-    const SEXY = 'sexy';
+    #[Description('sexy')]
+    public const SEXY = 'sexy';
 
-    const HATE = 'hate';
+    #[Description('hate')]
+    public const HATE = 'hate';
 
-    const RACISM = 'racism';
+    #[Description('racism')]
+    public const RACISM = 'racism';
 
-    const BIGOT = 'bigot';
+    #[Description('bigot')]
+    public const BIGOT = 'bigot';
 
-    const NIGGER = 'nigger';
+    #[Description('nigger')]
+    public const NIGGER = 'nigger';
 
-    const FAGGOT = 'faggot';
+    #[Description('faggot')]
+    public const FAGGOT = 'faggot';
 
-    const PISS = 'piss';
+    #[Description('piss')]
+    public const PISS = 'piss';
 
-    const CUNT = 'cunt';
+    #[Description('cunt')]
+    public const CUNT = 'cunt';
 
-    const SLUT = 'slut';
+    #[Description('slut')]
+    public const SLUT = 'slut';
 
-    const WHORE = 'whore';
+    #[Description('whore')]
+    public const WHORE = 'whore';
 
-    const BITCH = 'bitch';
+    #[Description('bitch')]
+    public const BITCH = 'bitch';
 
-    const BASTARD = 'bastard';
+    #[Description('bastard')]
+    public const BASTARD = 'bastard';
 
-    const ASS = 'ass';
+    #[Description('ass')]
+    public const ASS = 'ass';
 
-    const COCK = 'cock';
+    #[Description('cock')]
+    public const COCK = 'cock';
 
-    const DICK = 'dick';
+    #[Description('dick')]
+    public const DICK = 'dick';
 
-    const PUSSY = 'pussy';
+    #[Description('pussy')]
+    public const PUSSY = 'pussy';
 
-    const BLOWJOB = 'blowjob';
+    #[Description('blowjob')]
+    public const BLOWJOB = 'blowjob';
 
-    const CUM = 'cum';
+    #[Description('cum')]
+    public const CUM = 'cum';
 
-    const ANAL = 'anal';
+    #[Description('anal')]
+    public const ANAL = 'anal';
 
-    const GAY = 'gay';
+    #[Description('gay')]
+    public const GAY = 'gay';
 
-    const LESBIAN = 'lesbian';
+    #[Description('lesbian')]
+    public const LESBIAN = 'lesbian';
 
-    const TRANSEXUAL = 'transexual';
+    #[Description('transexual')]
+    public const TRANSEXUAL = 'transexual';
 
-    const TRANNY = 'tranny';
+    #[Description('tranny')]
+    public const TRANNY = 'tranny';
 
-    const BESTIALITY = 'bestiality';
+    #[Description('bestiality')]
+    public const BESTIALITY = 'bestiality';
 
-    const ZOO = 'zoo';
+    #[Description('zoo')]
+    public const ZOO = 'zoo';
 
-    const FURRY = 'furry';
+    #[Description('furry')]
+    public const FURRY = 'furry';
 
-    const HORNY = 'horny';
+    #[Description('horny')]
+    public const HORNY = 'horny';
 
-    const PEDO = 'pedo';
+    #[Description('pedo')]
+    public const PEDO = 'pedo';
 
-    const PEDOPHILE = 'pedophile';
+    #[Description('pedophile')]
+    public const PEDOPHILE = 'pedophile';
 
-    const CHILD = 'child';
+    #[Description('child')]
+    public const CHILD = 'child';
 
-    const RIMMING = 'rimming';
+    #[Description('rimming')]
+    public const RIMMING = 'rimming';
 
-    const BDSM = 'bdsm';
+    #[Description('bdsm')]
+    public const BDSM = 'bdsm';
 
-    const DOMINATE = 'dominate';
+    #[Description('dominate')]
+    public const DOMINATE = 'dominate';
 
-    const SUBMISSIVE = 'submissive';
+    #[Description('submissive')]
+    public const SUBMISSIVE = 'submissive';
 
-    const SNUFF = 'snuff';
+    #[Description('snuff')]
+    public const SNUFF = 'snuff';
 
-    const SPIKE = 'spike';
+    #[Description('spike')]
+    public const SPIKE = 'spike';
 
-    const SPANK = 'spank';
+    #[Description('spank')]
+    public const SPANK = 'spank';
 
-    const FUCK = 'fuck';
+    #[Description('fuck')]
+    public const FUCK = 'fuck';
 
-    const STRAP_ON = 'strap-on';
+    #[Description('strap-on')]
+    public const STRAP_ON = 'strap-on';
 
-    const ORGY = 'orgy';
+    #[Description('orgy')]
+    public const ORGY = 'orgy';
 
-    const BONDAGE = 'bondage';
+    #[Description('bondage')]
+    public const BONDAGE = 'bondage';
 
-    const EXHIBITIONISM = 'exhibitionism';
+    #[Description('exhibitionism')]
+    public const EXHIBITIONISM = 'exhibitionism';
 
-    const VOYEURISM = 'voyeurism';
+    #[Description('voyeurism')]
+    public const VOYEURISM = 'voyeurism';
 
-    const INCEST = 'incest';
+    #[Description('incest')]
+    public const INCEST = 'incest';
 
-    const NECROPHILIA = 'necrophilia';
+    #[Description('necrophilia')]
+    public const NECROPHILIA = 'necrophilia';
 
-    const UROPHILIA = 'urophilia';
+    #[Description('urophilia')]
+    public const UROPHILIA = 'urophilia';
 
-    const COPROPHILIA = 'coprophilia';
+    #[Description('coprophilia')]
+    public const COPROPHILIA = 'coprophilia';
 
-    const HENTAI = 'hentai';
+    #[Description('hentai')]
+    public const HENTAI = 'hentai';
 
-    const LUST = 'lust';
+    #[Description('lust')]
+    public const LUST = 'lust';
 
-    const CLIT = 'clit';
+    #[Description('clit')]
+    public const CLIT = 'clit';
 
-    const PORNO = 'porno';
+    #[Description('porno')]
+    public const PORNO = 'porno';
 
-    const VIOLENCE = 'violence';
+    #[Description('violence')]
+    public const VIOLENCE = 'violence';
 
-    const METHAMPHETAMINE = 'methamphetamine';
+    #[Description('methamphetamine')]
+    public const METHAMPHETAMINE = 'methamphetamine';
 
-    const HEROINES = 'heroines';
+    #[Description('heroines')]
+    public const HEROINES = 'heroines';
 
-    const KILLER = 'killer';
+    #[Description('killer')]
+    public const KILLER = 'killer';
 
-    const GUNS = 'guns';
+    #[Description('guns')]
+    public const GUNS = 'guns';
 
-    const SHOT = 'shot';
+    #[Description('shot')]
+    public const SHOT = 'shot';
 
-    const SUICIDE = 'suicide';
+    #[Description('suicide')]
+    public const SUICIDE = 'suicide';
 
-    const SELF_HARM = 'self-harm';
+    #[Description('self-harm')]
+    public const SELF_HARM = 'self-harm';
 
-    const CUTTING = 'cutting';
+    #[Description('cutting')]
+    public const CUTTING = 'cutting';
 
-    const MASOCHISM = 'masochism';
+    #[Description('masochism')]
+    public const MASOCHISM = 'masochism';
 
-    const SADISM = 'sadism';
+    #[Description('sadism')]
+    public const SADISM = 'sadism';
 
-    const HOMICIDE = 'homicide';
+    #[Description('homicide')]
+    public const HOMICIDE = 'homicide';
 
-    const ROGUE = 'rogue';
+    #[Description('rogue')]
+    public const ROGUE = 'rogue';
 
-    const ASSASSIN = 'assassin';
+    #[Description('assassin')]
+    public const ASSASSIN = 'assassin';
 
-    const TERROR = 'terror';
+    #[Description('terror')]
+    public const TERROR = 'terror';
 
-    const TERRORIST = 'terrorist';
+    #[Description('terrorist')]
+    public const TERRORIST = 'terrorist';
 
-    const BOMB = 'bomb';
+    #[Description('bomb')]
+    public const BOMB = 'bomb';
 
-    const EXPLOSIVE = 'explosive';
+    #[Description('explosive')]
+    public const EXPLOSIVE = 'explosive';
 
-    const NUKE = 'nuke';
+    #[Description('nuke')]
+    public const NUKE = 'nuke';
 
-    const RADIATION = 'radiation';
+    #[Description('radiation')]
+    public const RADIATION = 'radiation';
 
-    const POISON = 'poison';
+    #[Description('poison')]
+    public const POISON = 'poison';
 }

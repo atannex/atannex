@@ -5,102 +5,156 @@ declare(strict_types=1);
 namespace App\Enums\Auth;
 
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
+/**
+ * RestrictedDomain Enum
+ *
+ * Represents disposable, temporary, or otherwise restricted email domains.
+ */
 final class RestrictedDomain extends Enum
 {
-    const EXAMPLE_COM = 'example.com';
+    #[Description('example.com')]
+    public const EXAMPLE_COM = 'example.com';
 
-    const MAILINATOR_COM = 'mailinator.com';
+    #[Description('mailinator.com')]
+    public const MAILINATOR_COM = 'mailinator.com';
 
-    const TEMPMAIL_COM = 'tempmail.com';
+    #[Description('tempmail.com')]
+    public const TEMPMAIL_COM = 'tempmail.com';
 
-    const TRASHMAIL_COM = 'trashmail.com';
+    #[Description('trashmail.com')]
+    public const TRASHMAIL_COM = 'trashmail.com';
 
-    const _10MINUTEMAIL_COM = '10minutemail.com';
+    #[Description('10minutemail.com')]
+    public const _10MINUTEMAIL_COM = '10minutemail.com';
 
-    const YOPMAIL_COM = 'yopmail.com';
+    #[Description('yopmail.com')]
+    public const YOPMAIL_COM = 'yopmail.com';
 
-    const MAILDROP_CC = 'maildrop.cc';
+    #[Description('maildrop.cc')]
+    public const MAILDROP_CC = 'maildrop.cc';
 
-    const GETNADA_COM = 'getnada.com';
+    #[Description('getnada.com')]
+    public const GETNADA_COM = 'getnada.com';
 
-    const MOAK_MAIL = 'moakmail.com';
+    #[Description('moakmail.com')]
+    public const MOAK_MAIL = 'moakmail.com';
 
-    const DISPOSTABLE_COM = 'dispostable.com';
+    #[Description('dispostable.com')]
+    public const DISPOSTABLE_COM = 'dispostable.com';
 
-    const EMAILTEMPORARY_COM = 'emailtemporary.com';
+    #[Description('emailtemporary.com')]
+    public const EMAILTEMPORARY_COM = 'emailtemporary.com';
 
-    const TEMPMAILOR_COM = 'tempmailor.com';
+    #[Description('tempmailor.com')]
+    public const TEMPMAILOR_COM = 'tempmailor.com';
 
-    const FAKEINBOX_COM = 'fakeinbox.com';
+    #[Description('fakeinbox.com')]
+    public const FAKEINBOX_COM = 'fakeinbox.com';
 
-    const EMAILONDECK_COM = 'emailondeck.com';
+    #[Description('emailondeck.com')]
+    public const EMAILONDECK_COM = 'emailondeck.com';
 
-    const SPAMGOURMET_COM = 'spamgourmet.com';
+    #[Description('spamgourmet.com')]
+    public const SPAMGOURMET_COM = 'spamgourmet.com';
 
-    const SHARKLASERS_COM = 'sharklasers.com';
+    #[Description('sharklasers.com')]
+    public const SHARKLASERS_COM = 'sharklasers.com';
 
-    const TRASHMAIL_DE = 'trashmail.de';
+    #[Description('trashmail.de')]
+    public const TRASHMAIL_DE = 'trashmail.de';
 
-    const THROWAWAYMAIL_COM = 'throwawaymail.com';
+    #[Description('throwawaymail.com')]
+    public const THROWAWAYMAIL_COM = 'throwawaymail.com';
 
-    const SPAMAVERT_COM = 'spamavert.com';
+    #[Description('spamavert.com')]
+    public const SPAMAVERT_COM = 'spamavert.com';
 
-    const GUERRILLAMAIL_COM = 'guerrillamail.com';
+    #[Description('guerrillamail.com')]
+    public const GUERRILLAMAIL_COM = 'guerrillamail.com';
 
-    const MAILCATCH_COM = 'mailcatch.com';
+    #[Description('mailcatch.com')]
+    public const MAILCATCH_COM = 'mailcatch.com';
 
-    const MYTEMP_EMAIL = 'mytemp.email';
+    #[Description('mytemp.email')]
+    public const MYTEMP_EMAIL = 'mytemp.email';
 
-    const MAILINATOR2_COM = 'mailinator2.com';
+    #[Description('mailinator2.com')]
+    public const MAILINATOR2_COM = 'mailinator2.com';
 
-    const SPAMBIN_COM = 'spambin.com';
+    #[Description('spambin.com')]
+    public const SPAMBIN_COM = 'spambin.com';
 
-    const TEMPEMAIL_NET = 'tempemail.net';
+    #[Description('tempemail.net')]
+    public const TEMPEMAIL_NET = 'tempemail.net';
 
-    const FAKE_MAIL = 'fake-mail.net';
+    #[Description('fake-mail.net')]
+    public const FAKE_MAIL = 'fake-mail.net';
 
-    const SPAMMOTEL_COM = 'spammotel.com';
+    #[Description('spammotel.com')]
+    public const SPAMMOTEL_COM = 'spammotel.com';
 
-    const EMAILTIMER_COM = 'emailtimer.com';
+    #[Description('emailtimer.com')]
+    public const EMAILTIMER_COM = 'emailtimer.com';
 
-    const INBOX_COM = 'inbox.com';
+    #[Description('inbox.com')]
+    public const INBOX_COM = 'inbox.com';
 
-    const MAILDROP_DE = 'maildrop.de';
+    #[Description('maildrop.de')]
+    public const MAILDROP_DE = 'maildrop.de';
 
-    const MINTEMAIL_COM = 'mintemail.com';
+    #[Description('mintemail.com')]
+    public const MINTEMAIL_COM = 'mintemail.com';
 
-    const EMAILTEMP_COM = 'emailtemp.com';
+    #[Description('emailtemp.com')]
+    public const EMAILTEMP_COM = 'emailtemp.com';
 
-    const GETAIRMAIL_COM = 'getairmail.com';
+    #[Description('getairmail.com')]
+    public const GETAIRMAIL_COM = 'getairmail.com';
 
-    const MOAKMAIL_DE = 'moakmail.de';
+    #[Description('moakmail.de')]
+    public const MOAKMAIL_DE = 'moakmail.de';
 
-    const TEMP_MAIL = 'temp-mail.org';
+    #[Description('temp-mail.org')]
+    public const TEMP_MAIL = 'temp-mail.org';
 
-    const TEMPINBOX_COM = 'tempinbox.com';
+    #[Description('tempinbox.com')]
+    public const TEMPINBOX_COM = 'tempinbox.com';
 
-    const NADA_EMAIL = 'nada.email';
+    #[Description('nada.email')]
+    public const NADA_EMAIL = 'nada.email';
 
-    const FAKEMAIL_GENERATOR_COM = 'fakemailgenerator.com';
+    #[Description('fakemailgenerator.com')]
+    public const FAKEMAIL_GENERATOR_COM = 'fakemailgenerator.com';
 
-    const MINTEMAIL_BIZ = 'mintemail.biz';
+    #[Description('mintemail.biz')]
+    public const MINTEMAIL_BIZ = 'mintemail.biz';
 
-    const DISPOSABLEEMAIL_COM = 'disposableemail.com';
+    #[Description('disposableemail.com')]
+    public const DISPOSABLEEMAIL_COM = 'disposableemail.com';
 
-    const SPAMBOX_ME = 'spambox.me';
+    #[Description('spambox.me')]
+    public const SPAMBOX_ME = 'spambox.me';
 
-    const TEMPEMAILCO_COM = 'tempemail.co';
+    #[Description('tempemail.co')]
+    public const TEMPEMAILCO_COM = 'tempemail.co';
 
-    const MAILNESIA_COM = 'mailnesia.com';
+    #[Description('mailnesia.com')]
+    public const MAILNESIA_COM = 'mailnesia.com';
 
-    const GETAIRMAIL_CC = 'getairmail.cc';
+    #[Description('getairmail.cc')]
+    public const GETAIRMAIL_CC = 'getairmail.cc';
 
-    const TEMPEMAILPRO_COM = 'tempemailpro.com';
+    #[Description('tempemailpro.com')]
+    public const TEMPEMAILPRO_COM = 'tempemailpro.com';
 
-    const MOAKMAIL_COM = 'moakmail.com';
+    #[Description('moakmail.com')]
+    public const MOAKMAIL_COM = 'moakmail.com';
 
-    const YOPMAIL_NET = 'yopmail.net';
+    #[Description('yopmail.net')]
+    public const YOPMAIL_NET = 'yopmail.net';
 
-    const MAILNAITOR_COM = 'mailnator.com';
+    #[Description('mailnator.com')]
+    public const MAILNAITOR_COM = 'mailnator.com';
 }

@@ -10,21 +10,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * RegionSectionWidget Pivot Model
+ *
+ * Represents the placement of a Widget inside a Section
+ * for a specific Region, including configuration and state.
+ */
 class RegionSectionWidget extends Pivot
 {
     use SoftDeletes;
 
     /**
-     * The table associated with the model.
-     *
-     * @var string
+     * The table associated with the pivot model.
      */
     protected $table = 'region_section_widgets';
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * Attributes that are mass assignable.
      */
     protected $fillable = [
         'region_id',
@@ -37,24 +39,17 @@ class RegionSectionWidget extends Pivot
     ];
 
     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array<string, string>
+     * Attribute casting for type safety.
      */
     protected $casts = [
-        'config' => 'array',
+        'config'   => 'array',
         'metadata' => 'array',
-        'flag' => Flag::class,
+        'flag'     => Flag::class,
+        'position' => 'int',
     ];
 
     /**
-     * -------------------------
-     *  RELATIONSHIPS
-     * -------------------------
-     */
-
-    /**
-     * Get the region associated with this widget.
+     * Region relationship.
      */
     public function region(): BelongsTo
     {
@@ -62,7 +57,7 @@ class RegionSectionWidget extends Pivot
     }
 
     /**
-     * Get the section associated with this widget.
+     * Section relationship.
      */
     public function section(): BelongsTo
     {
@@ -70,7 +65,7 @@ class RegionSectionWidget extends Pivot
     }
 
     /**
-     * Get the widget configuration record.
+     * Widget relationship.
      */
     public function widget(): BelongsTo
     {

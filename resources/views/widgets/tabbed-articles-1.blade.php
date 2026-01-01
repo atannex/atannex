@@ -28,10 +28,6 @@
                                 @include('partials.title')
 
                             </h3>
-                            <div class="blog-meta">
-
-                                @include('partials.date')
-                            </div>
                         </div>
                     </article>
                 </div>

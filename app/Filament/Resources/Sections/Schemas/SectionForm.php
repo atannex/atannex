@@ -70,7 +70,7 @@ class SectionForm
                                         Select::make('flag')
                                             ->label('Status Flag')
                                             ->required()
-                                            ->default(Flag::PENDING)
+                                            ->default(Flag::DRAFT)
                                             ->options(Flag::asSelectArray())
                                             ->searchable()
                                             ->preload()

@@ -2,27 +2,24 @@
 
 use Illuminate\Support\Str;
 
-if (! function_exists('displayData')) {
+if (! function_exists('category_display_data')) {
     /**
-     * Generate category display data (label + background image)
+     * Get display data for a category (label and background image).
      *
      * @param  \App\Models\Category  $category
-     * @return array{label:string, bgSrc:string}
+     * @return array{label: string, bgSrc: string}
      */
-    function displayData($category): array
+    function category_display_data($category): array
     {
-        $firstPost = $category->posts->first();
         $root = $category->getAncestors()->last() ?? $category;
         $rootName = strtolower($root->name);
 
-        $label = in_array($rootName, ['ruler', 'rulers'], true)
-            ? ($category->parent
-                ? "{$category->parent->name} → {$category->name}"
-                : $category->name)
+        $label = in_array($rootName, ['ruler', 'rulers'], true) && $category->parent
+            ? "{$category->parent->name} → {$category->name}"
             : $category->name;
 
-        $bgSrc = $firstPost?->image
-            ? asset("storage/{$firstPost->image}")
+        $bgSrc = $category->posts->first()?->image
+            ? asset('storage/' . $category->posts->first()->image)
             : '';
 
         return compact('label', 'bgSrc');
