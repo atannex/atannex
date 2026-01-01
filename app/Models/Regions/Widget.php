@@ -27,7 +27,9 @@ class Widget extends Model
     ];
 
     /**
-     * Regions that use this widget.
+     * Get regions that use this widget.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany Relationship to Region using the RegionSectionWidget pivot and including pivot columns `section_id`, `position`, `config`, `flag`, `metadata`.
      */
     public function regions(): BelongsToMany
     {
@@ -37,7 +39,9 @@ class Widget extends Model
     }
 
     /**
-     * Sections this widget is placed in (across regions).
+     * Get sections this widget is placed in across regions.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany BelongsToMany relation to Section including pivot attributes `region_id`, `position`, `config`, `flag`, and `metadata`.
      */
     public function sections(): BelongsToMany
     {

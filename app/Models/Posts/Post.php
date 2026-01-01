@@ -59,9 +59,10 @@ class Post extends Model implements Commentable
         'editor_pick_expires' => 'datetime',
     ];
 
-    /* -----------------------------------------------------------------
-     |  Image Handling
-     | -----------------------------------------------------------------
+    /**
+     * Lists the model attributes that store single-file images.
+     *
+     * @return string[] Array of attribute names used for image files (e.g., ['image']).
      */
 
     public function images(): array
@@ -69,14 +70,20 @@ class Post extends Model implements Commentable
         return ['image'];
     }
 
+    /**
+     * Get the storage directory name used for post-related files.
+     *
+     * @return string The directory name used for storing post assets (e.g., "posts").
+     */
     public function dir(): string
     {
         return 'posts';
     }
 
-    /* -----------------------------------------------------------------
-     |  Routing
-     | -----------------------------------------------------------------
+    /**
+     * Indicates which model attribute should be used for route model binding.
+     *
+     * @return string The database column name used as the route key, 'slug'.
      */
 
     public function getRouteKeyName(): string

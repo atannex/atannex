@@ -191,8 +191,12 @@ class RegionSectionWidgetForm
     }
 
     /**
-     * Status Flag Field
-     */
+         * Create the Select field used to choose the record's status flag.
+         *
+         * The field is searchable, preloaded, required, and defaults to Flag::DRAFT. Options are populated from Flag::asArray().
+         *
+         * @return Select The configured Select field for the flag.
+         */
     protected static function statusField(): Select
     {
         return Select::make('flag')

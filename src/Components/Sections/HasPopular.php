@@ -10,7 +10,10 @@ use Illuminate\Support\Collection;
 trait HasPopular
 {
     /**
-     * Get the top popular posts using the Post model's scopePopular().
+     * Retrieve the top popular posts.
+     *
+     * @param int $limit The maximum number of posts to return; defaults to 5.
+     * @return Collection A collection of popular Post models.
      */
     public function hasPopularPosts(int $limit = 5): Collection
     {

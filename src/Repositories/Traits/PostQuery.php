@@ -20,7 +20,11 @@ trait PostQuery
     protected const RECENT_LIMIT = 5;
 
     /**
-     * Paginate posts assigned to the given Category and its full subtree.
+     * Retrieve paginated published posts that belong to the given category and its descendant categories.
+     *
+     * @param Category $category The root category whose subtree will be included in the query.
+     * @param int $limit The number of posts per page.
+     * @return \Illuminate\Pagination\LengthAwarePaginator A paginator containing published posts from the category subtree with content relations loaded.
      */
     public function postsByCategory(
         Category $category,
@@ -35,7 +39,13 @@ trait PostQuery
     }
 
     /**
-     * Recent posts from within same tree — excluding the current post.
+     * Fetches recently published posts, optionally limited to the same category tree as a given post.
+     *
+     * When $post is provided, results are restricted to posts whose category is in the root category's subtree of the given post and the given post itself is excluded.
+     *
+     * @param Post|null $post Optional post whose category tree will be used to restrict results.
+     * @param int $limit Maximum number of posts to return.
+     * @return \Illuminate\Support\Collection A collection of published Post models ordered by `published_at` descending.
      */
     public function recentPosts(
         ?Post $post = null,
@@ -60,7 +70,11 @@ trait PostQuery
     }
 
     /**
-     * Paginate posts under a Region tree.
+     * Retrieve paginated published posts associated with the given region's subtree.
+     *
+     * @param Region $region The root region whose subtree will be used to match post regions.
+     * @param int $limit The number of posts per page.
+     * @return LengthAwarePaginator A paginator of published posts that are linked to any region within the given region's subtree, with content relations eager loaded.
      */
     public function postsByRegion(
         Region $region,
@@ -82,7 +96,15 @@ trait PostQuery
     }
 
     /**
-     * Paginate posts by archive year and/or month.
+     * Retrieve paginated published posts filtered by archive year and/or month.
+     *
+     * The $yearMonth string is parsed to extract year and optional month; when provided,
+     * the query is restricted to posts published in that year and/or month. The result
+     * includes content relations.
+     *
+     * @param string $yearMonth Archive string in `YYYY` or `YYYY-MM` format used to filter posts.
+     * @param int $limit Maximum number of posts per page.
+     * @return \Illuminate\Pagination\LengthAwarePaginator Paginated published posts matching the year/month filter with content relations loaded.
      */
     public function postsByDate(
         string $yearMonth,
@@ -106,9 +128,15 @@ trait PostQuery
     }
 
     /**
-     * Paginate posts by author slug.
+     * Retrieve paginated published posts for the author identified by the given user slug.
      *
-     * Uses HasResolver strictly for detection.
+     * Searches for an Employee whose related user record has the provided slug, aborts with 404 if not found,
+     * and returns the author's published posts with content relations loaded, ordered by the model's default ordering.
+     *
+     * @param string $slug The user slug that identifies the author.
+     * @param int $limit The number of posts per page.
+     * @return \Illuminate\Pagination\LengthAwarePaginator A paginator of published Post models with their content relations loaded.
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException If no author exists with the given slug.
      */
     public function postsByAuthor(
         string $slug,

@@ -22,17 +22,11 @@ class BreakingCommand extends Command
     protected $description = 'Clear expired breaking news posts';
 
     /**
-     * Execute the console command.
+     * Clear expired breaking news flags from posts.
      *
-     * This command:
-     * - Finds posts currently marked as breaking
-     * - Checks whether their breaking expiration time has passed
-     * - Resets all breaking-related fields in a single atomic update
+     * Finds posts whose breaking_expires timestamp has passed and resets their breaking-related fields in a single atomic update.
      *
-     * Why a command (instead of inline scheduler logic):
-     * - Keeps Console\Kernel clean
-     * - Allows manual execution for maintenance/debugging
-     * - Improves testability and reuse
+     * @return int Exit status code; `Command::SUCCESS` on success.
      */
     public function handle(): int
     {

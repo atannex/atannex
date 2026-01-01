@@ -11,7 +11,10 @@ use Illuminate\Support\Collection;
 trait HasMostRead
 {
     /**
-     * Get the most-read posts based on the number of views.
+     * Retrieve published posts limited to the specified count.
+     *
+     * @param int $limit Maximum number of posts to return; defaults to 5.
+     * @return Collection A collection of Post models containing up to `$limit` published posts.
      */
     public function hasMostReadPosts(int $limit = 5): Collection
     {

@@ -12,8 +12,12 @@ use Illuminate\Support\Facades\Date;
 trait HasPastWeek
 {
     /**
-     * Get posts from the past 7 days,
-     * ordered strictly by highest comment count to least.
+     * Retrieve posts published within the past seven days ordered by comment count descending.
+     *
+     * If $limit is greater than 0, the result is limited to that many posts; if 0, no limit is applied.
+     *
+     * @param int $limit Number of posts to return; 0 to return all matching posts.
+     * @return \Illuminate\Support\Collection Collection of Post models with a `comments_count` attribute, ordered by `comments_count` descending.
      */
     public function hasPastWeekPosts(int $limit = 5): Collection
     {
