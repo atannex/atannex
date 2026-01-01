@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models\Posts;
 
 use App\Contracts\Commentable;
-use Atannex\Concerns\HasBreaking;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Relations\PostRelation;
@@ -15,7 +14,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model implements Commentable
 {
-    use HasBreaking;
     use HasCleaning;
     use PostRelation;
     use Scoping;
@@ -24,10 +22,12 @@ class Post extends Model implements Commentable
 
     protected string $slugSource = 'title';
 
+    /**
+     * Mass assignable attributes.
+     */
     protected $fillable = [
         'title',
         'slug',
-        'flag',
         'category_id',
         'author_id',
         'updated_by',
@@ -35,39 +35,49 @@ class Post extends Model implements Commentable
         'image',
         'published_at',
         'slug_path',
+
+        'is_breaking',
+        'breaking_at',
+        'breaking_expires',
+
+        'is_editor_pick',
+        'editor_pick_at',
+        'editor_pick_expires',
     ];
 
+    /**
+     * Attribute casting.
+     */
     protected $casts = [
-        'published_at'    => 'datetime',
-    ];
+        'published_at'        => 'datetime',
+        'is_breaking'         => 'boolean',
+        'breaking_at'         => 'datetime',
+        'breaking_expires'    => 'datetime',
 
-    protected $dates = [
-        'deleted_at',
-        'created_at',
-        'updated_at',
+        'is_editor_pick'      => 'boolean',
+        'editor_pick_at'      => 'datetime',
+        'editor_pick_expires' => 'datetime',
     ];
 
     /* -----------------------------------------------------------------
-     |  Image Handling (Universal)
+     |  Image Handling
      | -----------------------------------------------------------------
      */
 
-    /**
-     * Returns the image attributes for the model.
-     * Can add more image fields here if needed.
-     */
     public function images(): array
     {
         return ['image'];
     }
 
-    /**
-     * Returns the directory where images should be stored.
-     */
     public function dir(): string
     {
         return 'posts';
     }
+
+    /* -----------------------------------------------------------------
+     |  Routing
+     | -----------------------------------------------------------------
+     */
 
     public function getRouteKeyName(): string
     {

@@ -4,72 +4,31 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use Atannex\Filters\GetEnum;
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
 /**
- * Gender Enum (string values for gender options)
+ * Gender Enum
  *
  * Represents multiple gender identity options.
  */
 final class Gender extends Enum
 {
-    use GetEnum;
-
+    #[Description('Male')]
     public const MALE = 'male';
 
+    #[Description('Female')]
     public const FEMALE = 'female';
 
+    #[Description('Non-Binary')]
     public const NON_BINARY = 'non_binary';
 
+    #[Description('Transgender')]
     public const TRANSGENDER = 'transgender';
 
+    #[Description('Other')]
     public const OTHER = 'other';
 
+    #[Description('Prefer Not to Say')]
     public const PREFER_NOT_TO_SAY = 'prefer_not_to_say';
-
-    /**
-     * Boot method to define metadata for each gender option.
-     */
-    public static function boot(): void
-    {
-        self::setMetadata([
-            self::MALE => [
-                'label' => 'Male',
-                'description' => 'Male gender identity',
-                'color' => 'blue',
-                'icon' => 'heroicon-o-user',
-            ],
-            self::FEMALE => [
-                'label' => 'Female',
-                'description' => 'Female gender identity',
-                'color' => 'pink',
-                'icon' => 'heroicon-o-user',
-            ],
-            self::NON_BINARY => [
-                'label' => 'Non-Binary',
-                'description' => 'Non-binary or genderqueer identity',
-                'color' => 'purple',
-                'icon' => 'heroicon-o-sparkles',
-            ],
-            self::TRANSGENDER => [
-                'label' => 'Transgender',
-                'description' => 'Transgender identity',
-                'color' => 'teal',
-                'icon' => 'heroicon-o-adjustments',
-            ],
-            self::OTHER => [
-                'label' => 'Other',
-                'description' => 'Other gender identity not listed',
-                'color' => 'gray',
-                'icon' => 'heroicon-o-ellipsis-horizontal',
-            ],
-            self::PREFER_NOT_TO_SAY => [
-                'label' => 'Prefer Not to Say',
-                'description' => 'Chose not to disclose gender identity',
-                'color' => 'neutral',
-                'icon' => 'heroicon-o-eye-slash',
-            ],
-        ]);
-    }
 }

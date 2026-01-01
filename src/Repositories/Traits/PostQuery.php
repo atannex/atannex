@@ -2,7 +2,6 @@
 
 namespace Atannex\Repositories\Traits;
 
-use App\Enums\Flag;
 use App\Models\Posts\Post;
 use App\Models\Regions\Category;
 use App\Models\Regions\Region;
@@ -28,9 +27,9 @@ trait PostQuery
         int $limit = self::PAGINATION_LIMIT
     ): LengthAwarePaginator {
         return Post::query()
-            ->flagged(Flag::PUBLISHED)
+            ->published()
             ->whereIn('category_id', $this->getTreeIds($category))
-            ->with($this->postRelations())
+            ->with($this->contentRelations())
             ->latest()
             ->paginate($limit);
     }
@@ -43,8 +42,8 @@ trait PostQuery
         int $limit = self::RECENT_LIMIT
     ): Collection {
         $query = Post::query()
-            ->flagged(Flag::PUBLISHED)
-            ->with($this->postRelations())
+            ->published()
+            ->with($this->contentRelations())
             ->latest('published_at')
             ->limit($this->sanitizeLimit($limit));
 
@@ -52,9 +51,7 @@ trait PostQuery
             $query
                 ->whereIn(
                     'category_id',
-                    $this->getTreeIds(
-                        $this->getRoot($post->category)
-                    )
+                    $this->getTreeIds($this->getRoot($post->category))
                 )
                 ->where('id', '!=', $post->id);
         }
@@ -71,7 +68,7 @@ trait PostQuery
     ): LengthAwarePaginator {
         return $this->paginate(
             Post::query()
-                ->flagged(Flag::PUBLISHED)
+                ->published()
                 ->whereHas(
                     'regions',
                     fn($q) => $q->whereIn(
@@ -79,7 +76,7 @@ trait PostQuery
                         $this->getTreeIds($region)
                     )
                 )
-                ->with($this->postRelations()),
+                ->with($this->contentRelations()),
             $limit
         );
     }
@@ -94,7 +91,7 @@ trait PostQuery
         [$year, $month] = $this->extractDateParts($yearMonth);
 
         $query = Post::query()
-            ->flagged(Flag::PUBLISHED)
+            ->published()
             ->when(
                 $year,
                 fn($q) => $q->whereYear('published_at', $year)
@@ -103,7 +100,7 @@ trait PostQuery
                 $month,
                 fn($q) => $q->whereMonth('published_at', $month)
             )
-            ->with($this->postRelations());
+            ->with($this->contentRelations());
 
         return $this->paginate($query, $limit);
     }
@@ -128,7 +125,7 @@ trait PostQuery
 
         return $this->paginate(
             Post::query()
-                ->flagged(Flag::PUBLISHED)
+                ->published()
                 ->where('author_id', $authorId)
                 ->with($this->postRelations()),
             $limit

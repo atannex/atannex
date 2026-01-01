@@ -5,73 +5,75 @@ declare(strict_types=1);
 namespace App\Enums;
 
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
 /**
- * Enum representing message subjects.
+ * Subject Enum
  *
- * @method static static WritingArticle()
- * @method static static BecomeAuthor()
- * @method static static GuestPosting()
- * @method static static PersonalQuestion()
- * @method static static CollaborationRequest()
- * @method static static Feedback()
- * @method static static TechnicalSupport()
- * @method static static PartnershipInquiry()
- * @method static static SponsorshipRequest()
- * @method static static ContentSubmission()
- * @method static static MediaInquiry()
- * @method static static EventInvitation()
- * @method static static AdvertisingInquiry()
- * @method static static JobApplication()
- * @method static static InternshipApplication()
- * @method static static PressRelease()
- * @method static static ProductInquiry()
- * @method static static Complaint()
- * @method static static Suggestion()
- * @method static static Testimonial()
- * @method static static Other()
+ * Represents message or contact form subjects.
  */
 final class Subject extends Enum
 {
-    const WritingArticle = 'Writing Article';
+    #[Description('Writing Article')]
+    public const WRITING_ARTICLE = 'writing_article';
 
-    const BecomeAuthor = 'Become Author';
+    #[Description('Become Author')]
+    public const BECOME_AUTHOR = 'become_author';
 
-    const GuestPosting = 'Guest Posting';
+    #[Description('Guest Posting')]
+    public const GUEST_POSTING = 'guest_posting';
 
-    const PersonalQuestion = 'Personal Question';
+    #[Description('Personal Question')]
+    public const PERSONAL_QUESTION = 'personal_question';
 
-    const CollaborationRequest = 'Collaboration Request';
+    #[Description('Collaboration Request')]
+    public const COLLABORATION_REQUEST = 'collaboration_request';
 
-    const Feedback = 'Feedback';
+    #[Description('Feedback')]
+    public const FEEDBACK = 'feedback';
 
-    const TechnicalSupport = 'Technical Support';
+    #[Description('Technical Support')]
+    public const TECHNICAL_SUPPORT = 'technical_support';
 
-    const PartnershipInquiry = 'Partnership Inquiry';
+    #[Description('Partnership Inquiry')]
+    public const PARTNERSHIP_INQUIRY = 'partnership_inquiry';
 
-    const SponsorshipRequest = 'Sponsorship Request';
+    #[Description('Sponsorship Request')]
+    public const SPONSORSHIP_REQUEST = 'sponsorship_request';
 
-    const ContentSubmission = 'Content Submission';
+    #[Description('Content Submission')]
+    public const CONTENT_SUBMISSION = 'content_submission';
 
-    const MediaInquiry = 'Media Inquiry';
+    #[Description('Media Inquiry')]
+    public const MEDIA_INQUIRY = 'media_inquiry';
 
-    const EventInvitation = 'Event Invitation';
+    #[Description('Event Invitation')]
+    public const EVENT_INVITATION = 'event_invitation';
 
-    const AdvertisingInquiry = 'Advertising Inquiry';
+    #[Description('Advertising Inquiry')]
+    public const ADVERTISING_INQUIRY = 'advertising_inquiry';
 
-    const JobApplication = 'Job Application';
+    #[Description('Job Application')]
+    public const JOB_APPLICATION = 'job_application';
 
-    const InternshipApplication = 'Internship Application';
+    #[Description('Internship Application')]
+    public const INTERNSHIP_APPLICATION = 'internship_application';
 
-    const PressRelease = 'Press Release';
+    #[Description('Press Release')]
+    public const PRESS_RELEASE = 'press_release';
 
-    const ProductInquiry = 'Product Inquiry';
+    #[Description('Product Inquiry')]
+    public const PRODUCT_INQUIRY = 'product_inquiry';
 
-    const Complaint = 'Complaint';
+    #[Description('Complaint')]
+    public const COMPLAINT = 'complaint';
 
-    const Suggestion = 'Suggestion';
+    #[Description('Suggestion')]
+    public const SUGGESTION = 'suggestion';
 
-    const Testimonial = 'Testimonial';
+    #[Description('Testimonial')]
+    public const TESTIMONIAL = 'testimonial';
 
-    const Other = 'Other';
+    #[Description('Other')]
+    public const OTHER = 'other';
 }

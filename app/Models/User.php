@@ -7,7 +7,8 @@ use App\Enums\Gender;
 use App\Enums\Status;
 use Atannex\Enables\Slugging;
 use Atannex\Traits\HasCleaning;
-use Atannex\Relations\UserRelation;
+use App\Models\Comments\Comment;
+use App\Models\Regions\Employee;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
@@ -15,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Notifications\VerifyEmailNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
@@ -24,13 +27,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     use Notifiable;
     use Slugging;
     use SoftDeletes;
-    use UserRelation;
 
-    /**
-     * The attribute used as the slug source.
-     *
-     * Used by EnableSlug trait to generate human-readable slugs.
-     */
     protected string $slugSource = 'name';
 
     protected $fillable = [
@@ -62,27 +59,24 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         ];
     }
 
-       /* -----------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Image Handling (Universal)
      | -----------------------------------------------------------------
-     */
-
-    /**
-     * Return the image attributes for this model.
      */
     public function images(): array
     {
         return ['image'];
     }
 
-    /**
-     * Return the storage directory for images.
-     */
     public function dir(): string
     {
         return 'users';
     }
 
+    /* -----------------------------------------------------------------
+     |  Filament Admin Access
+     | -----------------------------------------------------------------
+     */
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasVerifiedEmail()
@@ -100,5 +94,127 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    /* -----------------------------------------------------------------
+     |  Relationships
+     | -----------------------------------------------------------------
+     */
+    public function employee(): HasOne
+    {
+        return $this->hasOne(Employee::class);
+    }
+
+    public function activeEmployee(): HasOne
+    {
+        return $this->hasOne(Employee::class)->where('status', Status::ACTIVE);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    /* -----------------------------------------------------------------
+     |  Helper Methods
+     | -----------------------------------------------------------------
+     */
+    public function emailDomain(): string
+    {
+        return explode('@', $this->email)[1];
+    }
+
+    public function hasAllowedDomain(array $allowedDomains): bool
+    {
+        return in_array($this->emailDomain(), $allowedDomains, true);
+    }
+
+    public function isEmployee(): bool
+    {
+        return $this->hasVerifiedEmail()
+            && $this->activeEmployee()->exists()
+            && $this->roles()->exists();
+    }
+
+    /* -----------------------------------------------------------------
+     |  Status Lifecycle Helpers
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Get allowed status transitions for this user.
+     */
+    public function allowedStatusTransitions(): array
+    {
+        return Status::allowedTransitions($this->status);
+    }
+
+    /**
+     * Check if a status transition is allowed.
+     */
+    public function canTransitionTo(string $targetStatus): bool
+    {
+        return Status::canTransition($this->status, $targetStatus);
+    }
+
+    /**
+     * Safely update the user's status if allowed.
+     */
+    public function updateStatus(string $newStatus): bool
+    {
+        if (!$this->canTransitionTo($newStatus)) {
+            return false;
+        }
+
+        $this->status = $newStatus;
+        return $this->save();
+    }
+
+    /**
+     * Check if the user is active.
+     */
+    public function isActive(): bool
+    {
+        return $this->status === Status::ACTIVE;
+    }
+
+    /**
+     * Check if the user is restricted.
+     */
+    public function isRestricted(): bool
+    {
+        return $this->status === Status::RESTRICTED;
+    }
+
+    /**
+     * Check if the user is suspended.
+     */
+    public function isSuspended(): bool
+    {
+        return $this->status === Status::SUSPENDED;
+    }
+
+    /**
+     * Check if the user is banned.
+     */
+    public function isBanned(): bool
+    {
+        return $this->status === Status::BANNED;
+    }
+
+    /**
+     * Check if the user is pending approval.
+     */
+    public function isPending(): bool
+    {
+        return $this->status === Status::PENDING;
+    }
+
+    /**
+     * Check if the user is unverified.
+     */
+    public function isUnverified(): bool
+    {
+        return $this->status === Status::UNVERIFIED;
     }
 }

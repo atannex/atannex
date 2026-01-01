@@ -8,13 +8,14 @@ use Atannex\Helpers\HasMedia;
 use Atannex\Services\RegionService;
 use Atannex\Services\TagService;
 
-final class Lebialem extends HasPost
+final class Lebialem
 {
     use HasMedia;
 
     public function __construct(
         protected readonly RegionService $regionService,
         protected readonly TagService $tagService,
+        protected readonly HasPost $getPosts,
     ) {
     }
 
@@ -40,8 +41,8 @@ final class Lebialem extends HasPost
             'headerRegion'     => $regions->first(),
             'categoryRegions'  => $this->regionService->getRootCategoryRegions(),
 
-            'recentPosts' => $this->getRecentPosts(2),
-            'breaking'    => $this->getBreakingPosts(),
+            'recentPosts' => $this->getPosts->hasRecentPosts(2),
+            'breaking'    => $this->getPosts->hasBreakingPosts(),
         ];
     }
 }

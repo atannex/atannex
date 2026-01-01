@@ -15,7 +15,7 @@
                             {{ __('ALL') }}
                         </button>
 
-                        @foreach ($tab['entities'] as $region)
+                        @foreach ($tab['content'] as $region)
                         <button data-filter=".cat-region-{{ $region['id'] }}" class="tab-btn" type="button">
                             {{ $region['name'] }}
                         </button>
@@ -26,7 +26,7 @@
         </div>
 
         <div class="row gy-30 filter-active">
-            @foreach ($tab['entities'] as $region)
+            @foreach ($tab['content'] as $region)
             @foreach ($region['posts'] as $post)
             <div class="col-lg-6 two-column filter-item cat-region-{{ $region['id'] }}">
                 <div class="blog-style4">

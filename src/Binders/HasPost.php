@@ -2,40 +2,56 @@
 
 namespace Atannex\Binders;
 
-use Atannex\Sections\ByBreaking;
-use Atannex\Sections\ByEditorPick;
-use Atannex\Sections\ByFeatured;
-use Atannex\Sections\ByModule;
-use Atannex\Sections\ByMostRead;
-use Atannex\Sections\ByNavigation;
-use Atannex\Sections\ByPopular;
-use Atannex\Sections\ByRecent;
-use Atannex\Sections\ByRegion;
-use Atannex\Sections\ByRelated;
-use Atannex\Sections\ByPastWeek;
+use Atannex\Components\GetPosts\ByTag;
+use Atannex\Components\GetPosts\ByRegion;
+use Atannex\Components\Sections\HasModule;
+use Atannex\Components\Sections\HasRecent;
+use Atannex\Components\Sections\HasRegion;
+use Atannex\Components\GetPosts\ByBreaking;
+use Atannex\Components\GetPosts\ByCategory;
+use Atannex\Components\GetPosts\WithRegion;
+use Atannex\Components\Sections\HasPopular;
+use Atannex\Components\Sections\HasRelated;
+use Atannex\Components\Sections\HasBreaking;
+use Atannex\Components\Sections\HasMostRead;
+use Atannex\Components\Sections\HasPastWeek;
+use Atannex\Components\GetPosts\ByEditorPick;
+use Atannex\Components\GetPosts\WithCategory;
+use Atannex\Components\Sections\HasEditorPick;
+use Atannex\Components\Sections\HasNavigation;
+use Atannex\Components\GetEngagementsPosts\ByLiked;
+use Atannex\Components\GetEngagementsPosts\ByRated;
+use Atannex\Components\GetEngagementsPosts\ByShared;
+use Atannex\Components\GetEngagementsPosts\ByViewed;
+use Atannex\Components\GetEngagementsPosts\ByCommented;
+use Atannex\Components\Sections\HasCategory;
 
-/**
- * Class GetPost
- *
- * Centralized binder for post-related functionalities.
- * Aggregates various traits to handle different post sections and components,
- * such as recent posts, related posts, navigation, editor picks, weekly picks,
- * and most commented posts.
- *
- * This class acts as a unified entry point to fetch and prepare post data
- * for different sections of the application.
- */
-class HasPost
+final class HasPost
 {
     use ByBreaking;
+    use ByCategory;
+    use ByCommented;
     use ByEditorPick;
-    use ByFeatured;
-    use ByMostRead;
-    use ByNavigation;
-    use ByPopular;
-    use ByRecent;
+    use ByLiked;
+    use ByRated;
     use ByRegion;
-    use ByRelated;
-    use ByPastWeek;
-    use ByModule;
+    use ByShared;
+    use ByTag;
+    use ByViewed;
+    use ByEditorPick;
+
+    use WithCategory;
+    use WithRegion;
+
+    use HasMostRead;
+    use HasNavigation;
+    use HasPopular;
+    use HasRecent;
+    use HasRegion;
+    use HasPastWeek;
+    use HasModule;
+    use HasBreaking;
+    use HasEditorPick;
+    use HasRelated;
+    use HasCategory;
 }

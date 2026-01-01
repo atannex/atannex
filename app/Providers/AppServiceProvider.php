@@ -2,13 +2,6 @@
 
 namespace App\Providers;
 
-use App\Enums\Flag;
-use App\Enums\Image;
-use App\Enums\Title;
-use App\Enums\Entity;
-use App\Enums\Status;
-use App\Enums\Binding;
-use App\Enums\Classification;
 use App\Models\Regions\Widget;
 use App\Models\Regions\Section;
 use App\Observers\WidgetObserver;
@@ -34,7 +27,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerObservers();
-        $this->bootEnums();
     }
 
     /**
@@ -49,19 +41,5 @@ class AppServiceProvider extends ServiceProvider
         Widget::observe(
             new WidgetObserver(new WidgetAdapter())
         );
-    }
-
-    /**
-     * Boot all enum classes.
-     */
-    protected function bootEnums(): void
-    {
-        Flag::boot();
-        Entity::boot();
-        Image::boot();
-        Binding::boot();
-        Status::boot();
-        Title::boot();
-        Classification::boot();
     }
 }

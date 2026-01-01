@@ -15,7 +15,7 @@
                                 <button data-filter="*" class="tab-btn active" type="button">
                                     {{ __('ALL') }}
                                 </button>
-                                @foreach ($tab['entities'] as $region)
+                                @foreach ($tab['content'] as $region)
                                 <button data-filter=".cat-region-{{ $region['id'] }}" class="tab-btn" type="button">
                                     {{ $region['name'] }}
                                 </button>
@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="filter-active">
-                    @foreach ($tab['entities'] as $region)
+                    @foreach ($tab['content'] as $region)
                     @foreach ($region['posts'] as $post)
                     <div class="border-blog2 filter-item cat-region-{{ $region['id'] }}">
                         <div class="blog-style4">
@@ -47,11 +47,13 @@
                                 @include('partials.category', ['post' => $post])
 
                                 <h3 class="box-title-24">
-                                    @include('partials.title', ['post' => $post])
+                                    <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="hover-line">
+                                        {{ Str::limit($post->title, 110) }}
+                                    </a>
                                 </h3>
 
                                 <p class="blog-text">
-                                    {{ Str::limit($post->description, 200) }}
+                                    {{ Str::limit($post->description, 120) }}
                                 </p>
 
                                 <div class="blog-meta">

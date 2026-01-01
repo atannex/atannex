@@ -12,20 +12,21 @@ class Color extends Model
     ];
 
     /**
-     * Get hex code by color name without caching.
+     * Get hex code by color name.
+     * Assumes the color always exists.
      */
-    public static function hex(string $name, string $default = '#CCCCCC'): string
+    public static function hex(string $name): string
     {
-        return static::where('name', $name)->value('hex') ?? $default;
+        return static::where('name', $name)->value('hex');
     }
 
     /**
-     * Get a random hex code from all colors without caching.
+     * Get a random hex code from all colors.
+     * Assumes there is always at least one color in the table.
      */
-    public static function randomHex(string $fallback = '#CCCCCC'): string
+    public static function randomHex(): string
     {
         $colors = static::pluck('hex')->toArray();
-
-        return empty($colors) ? $fallback : $colors[array_rand($colors)];
+        return $colors[array_rand($colors)];
     }
 }

@@ -35,17 +35,10 @@
                             </a>
                             <div>
                                 <h6 class="mb-1" style="font-size: 0.95rem;">
-                                    <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }} class="text-white  text-decoration-none fw-semibold">
-                                        {{ \Illuminate\Support\Str::limit($post->title, 90) }}
+                                    <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }} class="text-white text-decoration-none fw-semibold">
+                                        {{ Str::limit($post->title, 90) }}
                                     </a>
                                 </h6>
-                                <div class="text-muted small">
-                                    <span>
-
-                                        @include('partials.date', ['post' => $post])
-
-                                    </span>
-                                </div>
                             </div>
                         </div>
                         @endforeach

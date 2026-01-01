@@ -13,11 +13,6 @@
                      @include('partials.title')
 
                  </h4>
-                 <div class="recent-post-meta">
-
-                     @include('partials.date')
-
-                 </div>
              </div>
          </div>
          @empty

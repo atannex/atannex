@@ -31,7 +31,6 @@ trait ByShared
 
         $query = Post::query()
             ->published()
-            ->flagged(Flag::PUBLISHED)
             ->when($categoryId, fn ($q) => $q->where('category_id', $categoryId))
             ->when($tagId, fn ($q) => $q->whereHas('tags', fn ($q) => $q->where('id', $tagId)))
             ->with($relations)

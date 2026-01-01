@@ -196,12 +196,12 @@ class RegionSectionWidgetForm
     protected static function statusField(): Select
     {
         return Select::make('flag')
-            ->label('Status')
-            ->options(Flag::labels())
+            ->label('Flag')
+            ->options(Flag::asArray())
             ->searchable()
             ->preload()
             ->required()
-            ->default(Flag::PENDING);
+            ->default(Flag::DRAFT);
     }
 
     /**

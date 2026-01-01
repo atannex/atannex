@@ -5,32 +5,20 @@ declare(strict_types=1);
 namespace App\Enums;
 
 use App\Models\Regions\Employee;
-use Atannex\Filters\GetEnum;
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
 /**
- * Enum representing media scopes, with UI metadata (label, color, icon).
+ * Binding Enum
  *
- * @method static static GLOBAL()
- * @method static static EMPLOYEE()
+ * Represents the binding scope or ownership
+ * context for a resource.
  */
 final class Binding extends Enum
 {
-    use GetEnum;
+    #[Description('Global')]
+    public const GLOBAL = 'global';
 
+    #[Description('Employee')]
     public const EMPLOYEE = Employee::class;
-
-    /**
-     * Set UI metadata for each media scope constant.
-     */
-    public static function boot(): void
-    {
-        self::setMetadata([
-            self::EMPLOYEE => [
-                'label' => 'Employee',
-                'color' => 'success',
-                'icon' => 'heroicon-o-user-circle',
-            ],
-        ]);
-    }
 }

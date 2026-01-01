@@ -5,194 +5,294 @@ declare(strict_types=1);
 namespace App\Enums\Auth;
 
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
+/**
+ * CommonPassword Enum
+ *
+ * Represents widely used or insecure passwords.
+ */
 final class CommonPassword extends Enum
 {
-    const PASSWORD = 'password';
+    #[Description('password')]
+    public const PASSWORD = 'password';
 
-    const _123456 = '123456';
+    #[Description('123456')]
+    public const PASSWORD_123456 = '123456';
 
-    const _123456789 = '123456789';
+    #[Description('123456789')]
+    public const PASSWORD_123456789 = '123456789';
 
-    const QWERTY = 'qwerty';
+    #[Description('qwerty')]
+    public const QWERTY = 'qwerty';
 
-    const ABC123 = 'abc123';
+    #[Description('abc123')]
+    public const ABC123 = 'abc123';
 
-    const _111111 = '111111';
+    #[Description('111111')]
+    public const REPEATED_1 = '111111';
 
-    const _12345678 = '12345678';
+    #[Description('12345678')]
+    public const PASSWORD_12345678 = '12345678';
 
-    const _12345 = '12345';
+    #[Description('12345')]
+    public const PASSWORD_12345 = '12345';
 
-    const _123123 = '123123';
+    #[Description('123123')]
+    public const PASSWORD_123123 = '123123';
 
-    const ADMIN = 'admin';
+    #[Description('admin')]
+    public const ADMIN = 'admin';
 
-    const WELCOME = 'welcome';
+    #[Description('welcome')]
+    public const WELCOME = 'welcome';
 
-    const MONKEY = 'monkey';
+    #[Description('monkey')]
+    public const MONKEY = 'monkey';
 
-    const DRAGON = 'dragon';
+    #[Description('dragon')]
+    public const DRAGON = 'dragon';
 
-    const LETMEIN = 'letmein';
+    #[Description('letmein')]
+    public const LETMEIN = 'letmein';
 
-    const BASEBALL = 'baseball';
+    #[Description('baseball')]
+    public const BASEBALL = 'baseball';
 
-    const FOOTBALL = 'football';
+    #[Description('football')]
+    public const FOOTBALL = 'football';
 
-    const MUSTANG = 'mustang';
+    #[Description('mustang')]
+    public const MUSTANG = 'mustang';
 
-    const SHADOW = 'shadow';
+    #[Description('shadow')]
+    public const SHADOW = 'shadow';
 
-    const MASTER = 'master';
+    #[Description('master')]
+    public const MASTER = 'master';
 
-    const MICHAEL = 'michael';
+    #[Description('michael')]
+    public const MICHAEL = 'michael';
 
-    const JENNIFER = 'jennifer';
+    #[Description('jennifer')]
+    public const JENNIFER = 'jennifer';
 
-    const JORDAN = 'jordan';
+    #[Description('jordan')]
+    public const JORDAN = 'jordan';
 
-    const HARLEY = 'harley';
+    #[Description('harley')]
+    public const HARLEY = 'harley';
 
-    const BATMAN = 'batman';
+    #[Description('batman')]
+    public const BATMAN = 'batman';
 
-    const SUPERMAN = 'superman';
+    #[Description('superman')]
+    public const SUPERMAN = 'superman';
 
-    const _1234 = '1234';
+    #[Description('1234')]
+    public const PASSWORD_1234 = '1234';
 
-    const GINGER = 'ginger';
+    #[Description('ginger')]
+    public const GINGER = 'ginger';
 
-    const MICKEY = 'mickey';
+    #[Description('mickey')]
+    public const MICKEY = 'mickey';
 
-    const CHARLIE = 'charlie';
+    #[Description('charlie')]
+    public const CHARLIE = 'charlie';
 
-    const DONALD = 'donald';
+    #[Description('donald')]
+    public const DONALD = 'donald';
 
-    const LOVER = 'lover';
+    #[Description('lover')]
+    public const LOVER = 'lover';
 
-    const PRINCESS = 'princess';
+    #[Description('princess')]
+    public const PRINCESS = 'princess';
 
-    const RANGER = 'ranger';
+    #[Description('ranger')]
+    public const RANGER = 'ranger';
 
-    const RAINBOW = 'rainbow';
+    #[Description('rainbow')]
+    public const RAINBOW = 'rainbow';
 
-    const BUSTER = 'buster';
+    #[Description('buster')]
+    public const BUSTER = 'buster';
 
-    const FISHING = 'fishing';
+    #[Description('fishing')]
+    public const FISHING = 'fishing';
 
-    const HOCKEY = 'hockey';
+    #[Description('hockey')]
+    public const HOCKEY = 'hockey';
 
-    const _123321 = '123321';
+    #[Description('123321')]
+    public const PASSWORD_123321 = '123321';
 
-    const _666666 = '666666';
+    #[Description('666666')]
+    public const PASSWORD_666666 = '666666';
 
-    const _654321 = '654321';
+    #[Description('654321')]
+    public const PASSWORD_654321 = '654321';
 
-    const SUPERMAN1 = 'superman1';
+    #[Description('superman1')]
+    public const SUPERMAN1 = 'superman1';
 
-    const _1Q2W3E4R = '1q2w3e4r';
+    #[Description('1q2w3e4r')]
+    public const PASSWORD_1Q2W3E4R = '1q2w3e4r';
 
-    const ZAQ12WSX = 'zaq12wsx';
+    #[Description('zaq12wsx')]
+    public const PASSWORD_ZAQ12WSX = 'zaq12wsx';
 
-    const PASSW0RD = 'passw0rd';
+    #[Description('passw0rd')]
+    public const PASSW0RD = 'passw0rd';
 
-    const _121212 = '121212';
+    #[Description('121212')]
+    public const PASSWORD_121212 = '121212';
 
-    const FREEDOM = 'freedom';
+    #[Description('freedom')]
+    public const FREEDOM = 'freedom';
 
-    const PASSWORD1 = 'password1';
+    #[Description('password1')]
+    public const PASSWORD1 = 'password1';
 
-    const QWERTY123 = 'qwerty123';
+    #[Description('qwerty123')]
+    public const QWERTY123 = 'qwerty123';
 
-    const SOCCER = 'soccer';
+    #[Description('soccer')]
+    public const SOCCER = 'soccer';
 
-    const MONEYMONEY = 'moneymoney';
+    #[Description('moneymoney')]
+    public const MONEYMONEY = 'moneymoney';
 
-    const CHARLIE123 = 'charlie123';
+    #[Description('charlie123')]
+    public const CHARLIE123 = 'charlie123';
 
-    const MICKEYMOUSE = 'mickeymouse';
+    #[Description('mickeymouse')]
+    public const MICKEYMOUSE = 'mickeymouse';
 
-    const _987654321 = '987654321';
+    #[Description('987654321')]
+    public const PASSWORD_987654321 = '987654321';
 
-    const BASEBALL1 = 'baseball1';
+    #[Description('baseball1')]
+    public const BASEBALL1 = 'baseball1';
 
-    const BUBBLES = 'bubbles';
+    #[Description('bubbles')]
+    public const BUBBLES = 'bubbles';
 
-    const SUNSHINE = 'sunshine';
+    #[Description('sunshine')]
+    public const SUNSHINE = 'sunshine';
 
-    const LOVEME = 'loveme';
+    #[Description('loveme')]
+    public const LOVEME = 'loveme';
 
-    const STARWARS = 'starwars';
+    #[Description('starwars')]
+    public const STARWARS = 'starwars';
 
-    const RONALDO = 'ronaldo';
+    #[Description('ronaldo')]
+    public const RONALDO = 'ronaldo';
 
-    const LIVERPOOL = 'liverpool';
+    #[Description('liverpool')]
+    public const LIVERPOOL = 'liverpool';
 
-    const FOOTBALL1 = 'football1';
+    #[Description('football1')]
+    public const FOOTBALL1 = 'football1';
 
-    const _7777777 = '7777777';
+    #[Description('7777777')]
+    public const PASSWORD_7777777 = '7777777';
 
-    const _88888888 = '88888888';
+    #[Description('88888888')]
+    public const PASSWORD_88888888 = '88888888';
 
-    const _999999 = '999999';
+    #[Description('999999')]
+    public const PASSWORD_999999 = '999999';
 
-    const TRUSTNO1 = 'trustno1';
+    #[Description('trustno1')]
+    public const TRUSTNO1 = 'trustno1';
 
-    const _1QAZ2WSX = '1qaz2wsx';
+    #[Description('1qaz2wsx')]
+    public const PASSWORD_1QAZ2WSX = '1qaz2wsx';
 
-    const ASDFGHJKL = 'asdfghjkl';
+    #[Description('asdfghjkl')]
+    public const ASDFGHJKL = 'asdfghjkl';
 
-    const WELCOME123 = 'welcome123';
+    #[Description('welcome123')]
+    public const WELCOME123 = 'welcome123';
 
-    const WELCOME1 = 'welcome1';
+    #[Description('welcome1')]
+    public const WELCOME1 = 'welcome1';
 
-    const HUNTER = 'hunter';
+    #[Description('hunter')]
+    public const HUNTER = 'hunter';
 
-    const TRUSTME = 'trustme';
+    #[Description('trustme')]
+    public const TRUSTME = 'trustme';
 
-    const ZXC123 = 'zxc123';
+    #[Description('zxc123')]
+    public const ZXC123 = 'zxc123';
 
-    const ZXC123456 = 'zxc123456';
+    #[Description('zxc123456')]
+    public const ZXC123456 = 'zxc123456';
 
-    const _123QWE = '123qwe';
+    #[Description('123qwe')]
+    public const PASSWORD_123QWE = '123qwe';
 
-    const PASSWORD123 = 'password123';
+    #[Description('password123')]
+    public const PASSWORD123 = 'password123';
 
-    const MASTER123 = 'master123';
+    #[Description('master123')]
+    public const MASTER123 = 'master123';
 
-    const GOD = 'god';
+    #[Description('god')]
+    public const GOD = 'god';
 
-    const LOVE = 'love';
+    #[Description('love')]
+    public const LOVE = 'love';
 
-    const WELCOME2 = 'welcome2';
+    #[Description('welcome2')]
+    public const WELCOME2 = 'welcome2';
 
-    const ILOVEYOU = 'iloveyou';
+    #[Description('iloveyou')]
+    public const ILOVEYOU = 'iloveyou';
 
-    const PUMPKIN = 'pumpkin';
+    #[Description('pumpkin')]
+    public const PUMPKIN = 'pumpkin';
 
-    const PASSWORD2 = 'password2';
+    #[Description('password2')]
+    public const PASSWORD2 = 'password2';
 
-    const LETMEIN123 = 'letmein123';
+    #[Description('letmein123')]
+    public const LETMEIN123 = 'letmein123';
 
-    const MONKEY123 = 'monkey123';
+    #[Description('monkey123')]
+    public const MONKEY123 = 'monkey123';
 
-    const ABCDEF = 'abcdef';
+    #[Description('abcdef')]
+    public const ABCDEF = 'abcdef';
 
-    const PASSWORD3 = 'password3';
+    #[Description('password3')]
+    public const PASSWORD3 = 'password3';
 
-    const HELLO = 'hello';
+    #[Description('hello')]
+    public const HELLO = 'hello';
 
-    const QWERTY1 = 'qwerty1';
+    #[Description('qwerty1')]
+    public const QWERTY1 = 'qwerty1';
 
-    const _1QAZXSW2 = '1qazxsw2';
+    #[Description('1qazxsw2')]
+    public const PASSWORD_1QAZXSW2 = '1qazxsw2';
 
-    const SUNSHINE1 = 'sunshine1';
+    #[Description('sunshine1')]
+    public const SUNSHINE1 = 'sunshine1';
 
-    const LOVEME123 = 'loveme123';
+    #[Description('loveme123')]
+    public const LOVEME123 = 'loveme123';
 
-    const MASTER1 = 'master1';
+    #[Description('master1')]
+    public const MASTER1 = 'master1';
 
-    const TRUSTNO123 = 'trustno123';
+    #[Description('trustno123')]
+    public const TRUSTNO123 = 'trustno123';
 
-    const _987654 = '987654';
+    #[Description('987654')]
+    public const PASSWORD_987654 = '987654';
 }

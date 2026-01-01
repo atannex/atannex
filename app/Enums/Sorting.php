@@ -5,46 +5,32 @@ declare(strict_types=1);
 namespace App\Enums;
 
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
 /**
- * Sorting options tailored for a News website.
+ * Sorting Enum
  *
- * @method static static PublishedAt()
- * @method static static CreatedAt()
- * @method static static UpdatedAt()
- * @method static static Views()
- * @method static static CommentsCount()
- * @method static static LikesCount()
- * @method static static SharesCount()
- * @method static static Rating()
- * @method static static Title()
- * @method static static Author()
- * @method static static Popularity()
- * @method static static Random()
- * @method static static Relevance()
- * @method static static Trending()
- * @method static static Featured()
- * @method static static Category()
- * @method static static ReadingTime()
- * @method static static BreakingPriority()
- * @method static static EditorPick()
- * @method static static SourceCredibility()
- * @method static static Region()
- * @method static static HeadlineLength()
+ * Defines sorting options tailored for a news or content website.
  */
 final class Sorting extends Enum
 {
-    const PUBLISHED_AT = 'published_at';
+    #[Description('Published Date')]
+    public const PUBLISHED_AT = 'published_at';
 
-    const CREATED_AT = 'created_at';
+    #[Description('Creation Date')]
+    public const CREATED_AT = 'created_at';
 
-    const UPDATED_AT = 'updated_at';
+    #[Description('Last Updated')]
+    public const UPDATED_AT = 'updated_at';
 
-    const COMMENTS = 'comments';
+    #[Description('Comments Count')]
+    public const COMMENTS = 'comments';
 
-    const CATEGORY = 'category';
+    #[Description('Category')]
+    public const CATEGORY = 'category';
 
-    const REGION = 'region';
+    #[Description('Region')]
+    public const REGION = 'region';
 
     /**
      * Return options formatted for Filament Select components.
@@ -54,11 +40,12 @@ final class Sorting extends Enum
     public static function options(): array
     {
         return [
-            self::PUBLISHED_AT => 'Published Date',
-            self::CREATED_AT => 'Creation Date',
-            self::UPDATED_AT => 'Last Updated',
-            self::CATEGORY => 'Category',
-            self::REGION => 'Region',
+            self::PUBLISHED_AT => self::getDescription(self::PUBLISHED_AT),
+            self::CREATED_AT => self::getDescription(self::CREATED_AT),
+            self::UPDATED_AT => self::getDescription(self::UPDATED_AT),
+            self::COMMENTS => self::getDescription(self::COMMENTS),
+            self::CATEGORY => self::getDescription(self::CATEGORY),
+            self::REGION => self::getDescription(self::REGION),
         ];
     }
 

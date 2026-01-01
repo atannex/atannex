@@ -2,7 +2,6 @@
 
 namespace Atannex\Repositories\Traits;
 
-use App\Enums\Flag;
 use App\Models\Regions\Category;
 use App\Models\Tags\Tag;
 use Atannex\Traits\HasTree;
@@ -22,7 +21,7 @@ trait TagQuery
     public function postsByTag(Tag $tag, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
     {
         return $tag->posts()
-            ->flagged(Flag::PUBLISHED)
+            ->published()
             ->latest()
             ->paginate($limit);
     }
@@ -39,12 +38,12 @@ trait TagQuery
             ->whereHas(
                 'posts',
                 fn($q) => $q
-                    ->flagged(Flag::PUBLISHED)
+                    ->published()
                     ->whereIn('category_id', $treeIds)
             )
             ->withCount([
                 'posts' => fn($q) => $q
-                    ->flagged(Flag::PUBLISHED)
+                    ->published()
                     ->whereIn('category_id', $treeIds),
             ])
             ->orderByDesc('posts_count')
@@ -60,7 +59,7 @@ trait TagQuery
         return $this->getLeafNodes(
             $this->getRoot($this->resolveTagCategory($tag)),
             'posts',
-            Flag::PUBLISHED,
+            'published',
             null,
             $limit
         );
@@ -72,7 +71,7 @@ trait TagQuery
     protected function resolveTagCategory(Tag $tag): Category
     {
         return $tag->posts()
-            ->flagged(Flag::PUBLISHED)
+            ->published()
             ->with('category.parent')
             ->firstOrFail()
             ->category;

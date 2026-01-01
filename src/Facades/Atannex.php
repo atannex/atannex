@@ -3,7 +3,6 @@
 namespace Atannex\Facades;
 
 use App\Enums\Traits\HasEntityMapping;
-use Atannex\Binders\HasComponent;
 use Illuminate\Support\Collection;
 
 /**
@@ -13,7 +12,7 @@ use Illuminate\Support\Collection;
  * Extends base Components class and uses HasEntityMapping trait
  * to dynamically resolve methods according to the entity type.
  */
-final class Atannex extends HasComponent
+final class Atannex
 {
     use HasEntityMapping;
 

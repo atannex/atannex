@@ -1,28 +1,28 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 
 if (! function_exists('displayGuestData')) {
-    function displayGuestData(array $global): array
+    function displayGuestData(Collection $mainRegions): array
     {
-        $mainRegion = $global['mainRegions']->first();
+        $mainRegion = $mainRegions->first();
 
         return [
             'currentRoute' => Route::currentRouteName(),
 
-            'homeRoute' => Auth::guest() || ! $mainRegion
-                ? route('home')
-                : route('page.index', ['slug' => $mainRegion->slug]),
+            'homeRoute' => $mainRegion
+                ? route('page.index', ['slug' => $mainRegion->slug])
+                : route('page.index'),
 
             'helpItems' => [
-                'help-center' => __('Help Center'),
-                'guidelines'  => __('Guidelines'),
+                'help-center' => __('navigation.help_center'),
+                'guidelines'  => __('navigation.guidelines'),
             ],
 
             'policyItems' => [
-                'privacy' => __('Privacy Policy'),
-                'terms'   => __('Terms & Conditions'),
+                'privacy' => __('navigation.privacy_policy'),
+                'terms'   => __('navigation.terms_conditions'),
             ],
         ];
     }

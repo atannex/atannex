@@ -7,44 +7,34 @@ namespace App\Models\Regions;
 use App\Contracts\Sluggable;
 use App\Enums\Flag;
 use App\Enums\Territories;
+use App\Models\Pivots\PostRegion;
+use App\Models\Pivots\RegionSectionWidget;
+use App\Models\Posts\Post;
+use App\Models\Regions\Ruler;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
-use Atannex\Filters\GetHierarchy;
-use Atannex\Relations\RegionRelation;
+use Atannex\Filters\Hierarchy;
 use Atannex\Traits\HasCleaning;
 use Atannex\Traits\HasSlugPath;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * Class Region
- *
- * Represents a hierarchical region with support for slug paths,
- * scoped queries, soft deletion, logo image handling, and custom metadata.
- */
 class Region extends Model implements Sluggable
 {
-    use GetHierarchy;
+    use Hierarchy;
     use HasSlugPath;
-    use RegionRelation;
     use Scoping;
     use Slugging;
-    use HasCleaning; // Added for automatic logo image cleanup
+    use HasCleaning;
     use SoftDeletes;
 
-    /**
-     * The table associated with this model.
-     */
     protected $table = 'regions';
 
-    /**
-     * Attribute used as the source when generating slugs.
-     */
     protected string $slugSource = 'name';
 
-    /**
-     * Attributes that can be mass-assigned.
-     */
     protected $fillable = [
         'name',
         'flag',
@@ -57,43 +47,70 @@ class Region extends Model implements Sluggable
         'parent_id',
     ];
 
-    /**
-     * Attribute casting rules for this model.
-     */
     protected $casts = [
         'flag'      => Flag::class,
         'metadata'  => 'array',
         'territory' => Territories::class,
     ];
 
-    /* -----------------------------------------------------------------
-     |  Image Handling
-     | -----------------------------------------------------------------
-     */
-
-    /**
-     * Return the image attributes for this model.
-     */
     public function images(): array
     {
         return ['logo'];
     }
 
-    /**
-     * Return the directory where logos should be stored.
-     */
     public function dir(): string
     {
         return 'regions/logos';
     }
 
-    /**
-     * Register model event hooks.
-     *
-     * Ensures HasSlugPath trait is properly initialized after booting.
-     */
     protected static function booted(): void
     {
         static::bootHasSlugPath();
+    }
+
+    public function childrenRecursive(): HasMany
+    {
+        return $this->children()->with('childrenRecursive');
+    }
+
+    public function ruler(): HasOne
+    {
+        return $this->hasOne(Ruler::class);
+    }
+
+    public function posts(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'post_region')
+            ->using(PostRegion::class)
+            ->withPivot(['region_id', 'post_id'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Published sections in this region, ordered by position.
+     */
+    public function sections(): BelongsToMany
+    {
+        return $this->belongsToMany(Section::class, 'region_section_widgets')
+            ->using(RegionSectionWidget::class)
+            ->as('pivot')
+            ->withPivot(['widget_id', 'position', 'config', 'flag', 'metadata'])
+            ->wherePivot('flag', Flag::PUBLISHED)
+            ->wherePivotNull('deleted_at')
+            ->orderByPivot('position');
+    }
+
+    /**
+     * Published widgets in this region, ordered by position.
+     */
+    public function widgets(): BelongsToMany
+    {
+        return $this->belongsToMany(Widget::class, 'region_section_widgets')
+            ->using(RegionSectionWidget::class)
+            ->as('pivot')
+            ->withPivot(['section_id', 'position', 'config', 'flag', 'metadata'])
+            ->wherePivot('flag', Flag::PUBLISHED)
+            ->wherePivotNull('deleted_at')
+            ->orderByPivot('position');
     }
 }

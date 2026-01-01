@@ -28,12 +28,6 @@ abstract class Searchable extends Component
     protected const DEFAULT_PER_PAGE = 6;
 
     /** --------------------
-     *  Internal cache
-     *  --------------------
-     */
-    protected array $cachedSearchableFields = [];
-
-    /** --------------------
      *  Abstract contracts
      *  --------------------
      */
@@ -95,7 +89,7 @@ abstract class Searchable extends Component
         }
 
         $like = '%' . $search . '%';
-        $fields = $this->getSearchableFields();
+        $fields = $this->searchableFields();
 
         $query->where(function (Builder $q) use ($fields, $like) {
             foreach ($fields as $index => $field) {
@@ -121,14 +115,14 @@ abstract class Searchable extends Component
         $column = array_pop($parts);
         $relation = implode('.', $parts);
 
-        $query->{$method . 'Has'}($relation, function (Builder $q) use ($column, $search) {
+        $query->{$method . 'Has'}($relation, function (Builder $q) use ($column, $search): void {
             $q->where($column, 'like', $search);
         });
     }
 
     protected function applySorting(Builder $query): void
     {
-        $sort = $this->isValidSortOption($this->sortBy)
+        $sort = in_array($this->sortBy, self::VALID_SORT_OPTIONS, true)
             ? $this->sortBy
             : self::DEFAULT_SORT;
 
@@ -142,20 +136,6 @@ abstract class Searchable extends Component
      *  Helpers
      *  --------------------
      */
-    protected function getSearchableFields(): array
-    {
-        if ($this->cachedSearchableFields === []) {
-            $this->cachedSearchableFields = $this->searchableFields();
-        }
-
-        return $this->cachedSearchableFields;
-    }
-
-    protected function isValidSortOption(string $option): bool
-    {
-        return in_array($option, self::VALID_SORT_OPTIONS, true);
-    }
-
     protected function sanitizePerPage(mixed $perPage): int
     {
         $perPage = (int) $perPage;

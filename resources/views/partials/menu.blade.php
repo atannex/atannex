@@ -1,24 +1,41 @@
 @php
-$menu = displayGuestData($global);
+$menu = displayGuestData($global['mainRegions']);
 @endphp
 
-<ul>
+<ul class="main-menu">
+
     <li>
-        <a href="{{ $menu['homeRoute'] }}">{{ __('Home') }}</a>
+        <a href="{{ $menu['homeRoute'] }}">
+            {{ __('navigation.home') }}
+        </a>
     </li>
 
-    <li><a href="{{ route('about') }}">{{ __('About Us') }}</a></li>
-    <li><a href="{{ route('page.index', ['slug' => 'faq']) }}">{{ __('FAQs') }}</a></li>
-    <li><a href="{{ route('page.index', ['slug' => 'testimonials']) }}">{{ __('Testimonials') }}</a></li>
+    <li>
+        <a href="{{ route('about') }}">
+            {{ __('navigation.about') }}
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ route('page.index', ['slug' => 'faq']) }}">
+            {{ __('navigation.faqs') }}
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ route('page.index', ['slug' => 'testimonials']) }}">
+            {{ __('navigation.testimonials') }}
+        </a>
+    </li>
 
     <li class="menu-item-has-children">
         <a href="{{ route('page.index', ['slug' => 'help-center']) }}">
-            {{ __('Help') }}
+            {{ __('navigation.help') }}
         </a>
         <ul class="sub-menu">
-            @foreach ($menu['helpItems'] as $type => $label)
+            @foreach ($menu['helpItems'] as $slug => $label)
             <li>
-                <a href="{{ route('page.index', ['slug' => $type]) }}">
+                <a href="{{ route('page.index', ['slug' => $slug]) }}">
                     {{ $label }}
                 </a>
             </li>
@@ -28,12 +45,13 @@ $menu = displayGuestData($global);
 
     <li class="menu-item-has-children">
         <a href="{{ route('page.index', ['slug' => 'privacy']) }}">
-            {{ __('Policy') }}
+            {{ __('navigation.policy') }}
         </a>
+
         <ul class="sub-menu">
-            @foreach ($menu['policyItems'] as $type => $label)
+            @foreach ($menu['policyItems'] as $slug => $label)
             <li>
-                <a href="{{ route('page.index', ['slug' => $type]) }}">
+                <a href="{{ route('page.index', ['slug' => $slug]) }}">
                     {{ $label }}
                 </a>
             </li>
@@ -41,22 +59,26 @@ $menu = displayGuestData($global);
         </ul>
     </li>
 
-    <li><a href="{{ route('contact') }}">{{ __('Contact Us') }}</a></li>
+    <li>
+        <a href="{{ route('contact') }}">
+            {{ __('navigation.contact') }}
+        </a>
+    </li>
 
     @guest
-    @if ($menu['currentRoute'] === 'login')
-    <li><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
-
-    @elseif ($menu['currentRoute'] === 'register')
-    <li><a href="{{ route('login') }}">{{ __('Login') }}</a></li>
-
-    @else
     <li class="menu-item-has-children">
-        <a href="{{ route('login') }}">{{ __('Login') }}</a>
+        <a href="{{ route('login') }}">
+            {{ __('navigation.login') }}
+        </a>
+
         <ul class="sub-menu">
-            <li><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
+            <li>
+                <a href="{{ route('register') }}">
+                    {{ __('navigation.register') }}
+                </a>
+            </li>
         </ul>
     </li>
-    @endif
     @endguest
+
 </ul>

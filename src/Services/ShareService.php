@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace Atannex\Services;
 
 use App\Enums\Icon;
-use Atannex\Concerns\HasPlatforms;
 use Jorenvh\Share\ShareFacade;
 
 class ShareService
 {
-    use HasPlatforms;
+    public const SUPPORTED_PLATFORMS = [
+        Icon::FACEBOOK,
+        Icon::TWITTER,
+        Icon::WHATSAPP,
+        Icon::TELEGRAM,
+    ];
 
     /**
      * Build shareable URLs for all supported platforms.

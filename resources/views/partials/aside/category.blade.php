@@ -4,7 +4,7 @@
     </h3>
     <ul>
         @foreach ($relatedCategories as $category)
-        @php($data = displayData($category))
+        @php($data = category_display_data($category))
         <li>
             <a href="{{ route('page.index', $category->slug_path) }}" @if($data['bgSrc']) data-bg-src="{{ $data['bgSrc'] }}" @endif>
                 {{ $data['label'] }}

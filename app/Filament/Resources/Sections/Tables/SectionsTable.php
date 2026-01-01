@@ -108,7 +108,7 @@ class SectionsTable
 
                 SelectFilter::make('flag')
                     ->label('Filter by Status')
-                    ->options(fn () => Flag::labels())
+                    ->options(fn () => Flag::asArray())
                     ->native(false)
                     ->multiple()
                     ->placeholder('All Statuses'),

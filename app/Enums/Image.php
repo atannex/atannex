@@ -4,112 +4,46 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use Atannex\Filters\GetEnum;
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
 /**
- * ImageType Enum
+ * Image Enum
  *
  * Defines various image types used in the application.
  */
 final class Image extends Enum
 {
-    use GetEnum;
-
+    #[Description('Logo')]
     public const LOGO = 'logo';
 
+    #[Description('Banner')]
     public const BANNER = 'banner';
 
+    #[Description('Thumbnail')]
     public const THUMBNAIL = 'thumbnail';
 
+    #[Description('Avatar')]
     public const AVATAR = 'avatar';
 
+    #[Description('Favicon')]
     public const FAVICON = 'favicon';
 
+    #[Description('Gallery')]
     public const GALLERY = 'gallery';
 
+    #[Description('Advertisement')]
     public const ADVERT = 'advert';
 
+    #[Description('Sponsor Logo')]
     public const SPONSOR_LOGO = 'sponsor_logo';
 
+    #[Description('Cover')]
     public const COVER = 'cover';
 
+    #[Description('Watermark')]
     public const WATERMARK = 'watermark';
 
+    #[Description('Subscription')]
     public const SUBSCRIPTION = 'subscription';
-
-    /**
-     * Boot method to set metadata for image types.
-     */
-    public static function boot(): void
-    {
-        self::setMetadata([
-            self::LOGO => [
-                'label' => 'Logo',
-                'description' => 'Company or brand logo image',
-                'color' => 'primary',
-                'icon' => 'heroicon-o-identification',
-            ],
-            self::BANNER => [
-                'label' => 'Banner',
-                'description' => 'Large banner image for headers or promotions',
-                'color' => 'info',
-                'icon' => 'heroicon-o-rectangle-stack',
-            ],
-            self::THUMBNAIL => [
-                'label' => 'Thumbnail',
-                'description' => 'Small preview image, often used in listings',
-                'color' => 'secondary',
-                'icon' => 'heroicon-o-cube',
-            ],
-            self::AVATAR => [
-                'label' => 'Avatar',
-                'description' => 'User or profile avatar image',
-                'color' => 'success',
-                'icon' => 'heroicon-o-user-circle',
-            ],
-            self::FAVICON => [
-                'label' => 'Favicon',
-                'description' => 'Small icon displayed in browser tabs',
-                'color' => 'warning',
-                'icon' => 'heroicon-o-globe-alt',
-            ],
-            self::GALLERY => [
-                'label' => 'Gallery',
-                'description' => 'Grouped gallery images',
-                'color' => 'amber',
-                'icon' => 'heroicon-o-photograph',
-            ],
-            self::ADVERT => [
-                'label' => 'Advertisement',
-                'description' => 'Images used for ads or sponsored content',
-                'color' => 'red',
-                'icon' => 'heroicon-o-badge-check',
-            ],
-            self::SPONSOR_LOGO => [
-                'label' => 'Sponsor Logo',
-                'description' => 'Logos for sponsors or partners',
-                'color' => 'teal',
-                'icon' => 'heroicon-o-handshake',
-            ],
-            self::COVER => [
-                'label' => 'Cover',
-                'description' => 'Cover image for reports, collections, or eBooks',
-                'color' => 'indigo',
-                'icon' => 'heroicon-o-book-open',
-            ],
-            self::WATERMARK => [
-                'label' => 'Watermark',
-                'description' => 'Transparent watermark images',
-                'color' => 'stone',
-                'icon' => 'heroicon-o-adjustments',
-            ],
-            self::SUBSCRIPTION => [
-                'label' => 'Subscription',
-                'description' => 'Images related to subscription plans or offers',
-                'color' => 'purple',
-                'icon' => 'heroicon-o-currency-dollar',
-            ],
-        ]);
-    }
 }

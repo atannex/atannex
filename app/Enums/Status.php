@@ -4,80 +4,69 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use Atannex\Filters\GetEnum;
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
 /**
- * UserStatus Enum (Filament Optimized with Bootstrap colors)
+ * UserStatus Enum
  *
- * Handles user account states in the system.
+ * Represents the global lifecycle and moderation state
+ * of a user account across the system.
  */
 final class Status extends Enum
 {
-    use GetEnum;
-
+    /** User created but not yet approved */
+    #[Description('Pending')]
     public const PENDING = 'pending';
 
-    public const VERIFY = 'verify';
+    /** User must verify account (email / phone / admin) */
+    #[Description('Unverified')]
+    public const UNVERIFIED = 'unverified';
 
+    /** Fully active user */
+    #[Description('Active')]
     public const ACTIVE = 'active';
 
-    public const SUSPENDED = 'suspended';
-
-    public const BANNED = 'banned';
-
-    public const DELETED = 'deleted';
-
+    /** Limited access (temporary or conditional) */
+    #[Description('Restricted')]
     public const RESTRICTED = 'restricted';
 
+    /** Temporarily disabled by system or admin */
+    #[Description('Suspended')]
+    public const SUSPENDED = 'suspended';
+
+    /** Permanently blocked */
+    #[Description('Banned')]
+    public const BANNED = 'banned';
+
+    /** Soft-deleted / no longer usable */
+    #[Description('Deleted')]
+    public const DELETED = 'deleted';
+
     /**
-     * Initialize metadata for all user status types with Filament/Bootstrap colors and icons.
+     * Returns the list of valid next states for a given status.
+     *
+     * @return array<int, string>
      */
-    public static function boot(): void
+    public static function allowedTransitions(string $currentStatus): array
     {
-        self::setMetadata([
-            self::PENDING => [
-                'label' => 'Pending',
-                'description' => 'User account awaiting activation or review',
-                'color' => 'info',
-                'icon' => 'heroicon-o-clock',
-            ],
-            self::VERIFY => [
-                'label' => 'Verify',
-                'description' => 'User account pending verification',
-                'color' => 'primary',
-                'icon' => 'heroicon-o-check',
-            ],
-            self::ACTIVE => [
-                'label' => 'Active',
-                'description' => 'User account is fully active',
-                'color' => 'success',
-                'icon' => 'heroicon-o-check-circle',
-            ],
-            self::SUSPENDED => [
-                'label' => 'Suspended',
-                'description' => 'User account temporarily disabled',
-                'color' => 'warning',
-                'icon' => 'heroicon-o-pause',
-            ],
-            self::BANNED => [
-                'label' => 'Banned',
-                'description' => 'User account permanently banned',
-                'color' => 'danger',
-                'icon' => 'heroicon-o-x-circle',
-            ],
-            self::DELETED => [
-                'label' => 'Deleted',
-                'description' => 'User account marked for deletion',
-                'color' => 'danger',
-                'icon' => 'heroicon-o-trash',
-            ],
-            self::RESTRICTED => [
-                'label' => 'Restricted',
-                'description' => 'User account with limited permissions',
-                'color' => 'warning',
-                'icon' => 'heroicon-o-lock-closed',
-            ],
-        ]);
+        return match ($currentStatus) {
+            self::PENDING => [self::UNVERIFIED, self::DELETED],
+            self::UNVERIFIED => [self::ACTIVE, self::DELETED],
+            self::ACTIVE => [self::RESTRICTED, self::SUSPENDED, self::DELETED],
+            self::RESTRICTED => [self::ACTIVE, self::SUSPENDED, self::DELETED],
+            self::SUSPENDED => [self::ACTIVE, self::BANNED, self::DELETED],
+            self::BANNED => [self::DELETED],
+            self::DELETED => [],
+            default => [],
+        };
+    }
+
+    /**
+     * Check if a transition from current status to target status is allowed.
+     */
+    public static function canTransition(string $currentStatus, string $targetStatus): bool
+    {
+        return in_array($targetStatus, self::allowedTransitions($currentStatus), true);
     }
 }

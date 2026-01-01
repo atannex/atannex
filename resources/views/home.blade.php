@@ -4,26 +4,28 @@
 
 @section('guest')
 
-<x-home.hero-slider :recentPosts="$recentPosts" />
+<x-home.recent :byRecent="$byRecent" />
 
-<x-home.editor-picks :editorPicks="$editorPicks" />
+<x-home.rulers :byRuler="$byRuler" />
 
-<x-home.regional-updates :regions="$regions" />
+<x-home.region :byRegion="$byRegion" />
 
-<x-home.featured-section :getPastWeekPosts="$getPastWeekPosts" :heroTitle="$heroTitle" :sideBlogs="$sideBlogs" :featuredBlog="$featuredBlog" />
+<x-home.news :byNews="$byNews" />
 
 <section class="space-bottom">
     <div class="container">
         <div class="row">
+
             <div class="col-xl-8">
 
-                <x-home.popular-news :popularPosts="$popularPosts" />
+                <x-home.environment :byEnvironment="$byEnvironment" />
 
+                <x-home.community :byCommunity="$byCommunity" />
 
-                <x-home.featured-news :featuredPosts="$featuredPosts" />
             </div>
 
-            <x-home.most-read-sidebar :mostReadPosts="$mostReadPosts" />
+            <x-home.history-sidebar :byHistory="$byHistory" />
+
         </div>
     </div>
 </section>

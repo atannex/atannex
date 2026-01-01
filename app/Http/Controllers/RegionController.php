@@ -11,7 +11,7 @@ use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
 use Atannex\Concerns\HasResolver;
 use Atannex\Services\RegionService;
-use Atannex\Traits\HasDocument;
+use Atannex\Concerns\HasDocument;
 use Atannex\Traits\HasGlobal;
 
 class RegionController extends Controller

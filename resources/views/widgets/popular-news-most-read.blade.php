@@ -29,12 +29,6 @@
                                 @include('partials.title', ['post' => $post])
 
                             </h3>
-
-                            <div class="blog-meta">
-
-                                @include('partials.date', ['post' => $post])
-
-                            </div>
                         </div>
                     </div>
                 </div>

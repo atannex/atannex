@@ -43,16 +43,9 @@
                 <div class="media-body">
                     <h4 class="text-sm font-semibold leading-tight post-title">
                         <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="hover:underline" aria-disabled="true">
-                            {{ Str::limit($post->title, 60) }}
+                            {{ Str::limit($post->title, 40) }}
                         </a>
                     </h4>
-
-                    <div class="mt-1 text-xs text-gray-500 recent-post-meta">
-                        <span>
-                            @include('partials.date', ['post' => $post])
-
-                        </span>
-                    </div>
                 </div>
             </article>
             @endforeach

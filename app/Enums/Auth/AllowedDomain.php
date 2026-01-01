@@ -5,26 +5,42 @@ declare(strict_types=1);
 namespace App\Enums\Auth;
 
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
+/**
+ * AllowedDomain Enum
+ *
+ * Represents email domains allowed for registration.
+ */
 final class AllowedDomain extends Enum
 {
-    const GMAIL_COM = 'gmail.com';
+    #[Description('Gmail')]
+    public const GMAIL_COM = 'gmail.com';
 
-    const YAHOO_COM = 'yahoo.com';
+    #[Description('Yahoo')]
+    public const YAHOO_COM = 'yahoo.com';
 
-    const OUTLOOK_COM = 'outlook.com';
+    #[Description('Outlook')]
+    public const OUTLOOK_COM = 'outlook.com';
 
-    const HOTMAIL_COM = 'hotmail.com';
+    #[Description('Hotmail')]
+    public const HOTMAIL_COM = 'hotmail.com';
 
-    const ICLOUD_COM = 'icloud.com';
+    #[Description('iCloud')]
+    public const ICLOUD_COM = 'icloud.com';
 
-    const AOL_COM = 'aol.com';
+    #[Description('AOL')]
+    public const AOL_COM = 'aol.com';
 
-    const YANDEX_COM = 'yandex.com';
+    #[Description('Yandex')]
+    public const YANDEX_COM = 'yandex.com';
 
-    const MAIL_RU = 'mail.ru';
+    #[Description('Mail.ru')]
+    public const MAIL_RU = 'mail.ru';
 
-    const GMX_COM = 'gmx.com';
+    #[Description('GMX')]
+    public const GMX_COM = 'gmx.com';
 
-    const PROTONMAIL_COM = 'protonmail.com';
+    #[Description('ProtonMail')]
+    public const PROTONMAIL_COM = 'protonmail.com';
 }

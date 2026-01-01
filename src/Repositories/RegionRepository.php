@@ -9,14 +9,14 @@ use Atannex\Contracts\RegionInterface;
 use Illuminate\Support\Collection;
 
 /**
- * Repository handling region and category retrieval.
+ * Repository for retrieving regions and categories.
  *
- * Designed to always return non-null results where required.
+ * Ensures only published content is returned with optimized eager loading.
  */
 class RegionRepository implements RegionInterface
 {
     /**
-     * Retrieve all published top-level region categories with their children.
+     * Get all published root categories with their immediate children.
      *
      * @return Collection<int, Category>
      */
@@ -25,13 +25,12 @@ class RegionRepository implements RegionInterface
         return Category::query()
             ->flagged(Flag::PUBLISHED)
             ->whereNull('parent_id')
-            ->with('children')
+            ->with('children') // Assumes Category has a hasMany 'children' relation
             ->get();
     }
 
     /**
-     * Retrieve all published top-level regions (main regions)
-     * with their nested children loaded recursively.
+     * Get all published top-level regions with fully recursive nested children.
      *
      * @return Collection<int, Region>
      */
@@ -45,8 +44,16 @@ class RegionRepository implements RegionInterface
     }
 
     /**
-     * Retrieve a single parent region by slug.
-     * Always returns a Region or throws an exception.
+     * Get a published region by its full slug path.
+     *
+     * Loads:
+     * - All published sections (ordered by position in this region)
+     * - All published widgets within those sections (ordered by position)
+     * - All pivot data (position, config, flag, metadata) is automatically included
+     *
+     * Ideal for rendering structured page layouts (sections → widgets).
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function getRegionBySlug(string $slug): Region
     {
@@ -54,8 +61,29 @@ class RegionRepository implements RegionInterface
             ->flagged(Flag::PUBLISHED)
             ->where('slug_path', $slug)
             ->with([
-                'sections',
-                'sections.widgets',
+                'sections' => fn($query) => $query->orderByPivot('position'),
+                'sections.widgets' => fn($query) => $query->orderByPivot('position'),
+            ])
+            ->firstOrFail();
+    }
+
+    /**
+     * Alternative: Get region with all published widgets directly attached.
+     *
+     * Widgets are ordered by position globally in the region.
+     * Each widget's pivot includes section_id, config, position, etc.
+     *
+     * Useful when you want a flat list of widgets (e.g., for dynamic rendering).
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function getRegionBySlugWithFlatWidgets(string $slug): Region
+    {
+        return Region::query()
+            ->flagged(Flag::PUBLISHED)
+            ->where('slug_path', $slug)
+            ->with([
+                'widgets' => fn($query) => $query->orderByPivot('position'),
             ])
             ->firstOrFail();
     }

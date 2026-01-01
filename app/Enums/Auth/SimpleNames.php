@@ -5,108 +5,165 @@ declare(strict_types=1);
 namespace App\Enums\Auth;
 
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
+/**
+ * SimpleNames Enum
+ *
+ * Represents common simple, generic, or system-related names.
+ */
 final class SimpleNames extends Enum
 {
-    const ABC = 'abc';
+    #[Description('abc')]
+    public const ABC = 'abc';
 
-    const TEST = 'test';
+    #[Description('test')]
+    public const TEST = 'test';
 
-    const NAME = 'name';
+    #[Description('name')]
+    public const NAME = 'name';
 
-    const ADMIN = 'admin';
+    #[Description('admin')]
+    public const ADMIN = 'admin';
 
-    const USER = 'user';
+    #[Description('user')]
+    public const USER = 'user';
 
-    const GUEST = 'guest';
+    #[Description('guest')]
+    public const GUEST = 'guest';
 
-    const FOO = 'foo';
+    #[Description('foo')]
+    public const FOO = 'foo';
 
-    const BAR = 'bar';
+    #[Description('bar')]
+    public const BAR = 'bar';
 
-    const BAZ = 'baz';
+    #[Description('baz')]
+    public const BAZ = 'baz';
 
-    const ROOT = 'root';
+    #[Description('root')]
+    public const ROOT = 'root';
 
-    const SYSTEM = 'system';
+    #[Description('system')]
+    public const SYSTEM = 'system';
 
-    const SUPERUSER = 'superuser';
+    #[Description('superuser')]
+    public const SUPERUSER = 'superuser';
 
-    const MODERATOR = 'moderator';
+    #[Description('moderator')]
+    public const MODERATOR = 'moderator';
 
-    const SUPPORT = 'support';
+    #[Description('support')]
+    public const SUPPORT = 'support';
 
-    const CLIENT = 'client';
+    #[Description('client')]
+    public const CLIENT = 'client';
 
-    const CUSTOMER = 'customer';
+    #[Description('customer')]
+    public const CUSTOMER = 'customer';
 
-    const MANAGER = 'manager';
+    #[Description('manager')]
+    public const MANAGER = 'manager';
 
-    const STAFF = 'staff';
+    #[Description('staff')]
+    public const STAFF = 'staff';
 
-    const EMPLOYEE = 'employee';
+    #[Description('employee')]
+    public const EMPLOYEE = 'employee';
 
-    const DIRECTOR = 'director';
+    #[Description('director')]
+    public const DIRECTOR = 'director';
 
-    const EXECUTIVE = 'executive';
+    #[Description('executive')]
+    public const EXECUTIVE = 'executive';
 
-    const LEADER = 'leader';
+    #[Description('leader')]
+    public const LEADER = 'leader';
 
-    const MEMBER = 'member';
+    #[Description('member')]
+    public const MEMBER = 'member';
 
-    const GUEST_USER = 'guest_user';
+    #[Description('guest_user')]
+    public const GUEST_USER = 'guest_user';
 
-    const TEMP_USER = 'temp_user';
+    #[Description('temp_user')]
+    public const TEMP_USER = 'temp_user';
 
-    const ACCOUNT = 'account';
+    #[Description('account')]
+    public const ACCOUNT = 'account';
 
-    const PROFILE = 'profile';
+    #[Description('profile')]
+    public const PROFILE = 'profile';
 
-    const SETTINGS = 'settings';
+    #[Description('settings')]
+    public const SETTINGS = 'settings';
 
-    const CONFIG = 'config';
+    #[Description('config')]
+    public const CONFIG = 'config';
 
-    const HELP = 'help';
+    #[Description('help')]
+    public const HELP = 'help';
 
-    const SUPPORT_USER = 'support_user';
+    #[Description('support_user')]
+    public const SUPPORT_USER = 'support_user';
 
-    const CONTACT = 'contact';
+    #[Description('contact')]
+    public const CONTACT = 'contact';
 
-    const OWNER = 'owner';
+    #[Description('owner')]
+    public const OWNER = 'owner';
 
-    const DEVELOPER = 'developer';
+    #[Description('developer')]
+    public const DEVELOPER = 'developer';
 
-    const DESIGNER = 'designer';
+    #[Description('designer')]
+    public const DESIGNER = 'designer';
 
-    const WRITER = 'writer';
+    #[Description('writer')]
+    public const WRITER = 'writer';
 
-    const EDITOR = 'editor';
+    #[Description('editor')]
+    public const EDITOR = 'editor';
 
-    const REVIEWER = 'reviewer';
+    #[Description('reviewer')]
+    public const REVIEWER = 'reviewer';
 
-    const SUBSCRIBER = 'subscriber';
+    #[Description('subscriber')]
+    public const SUBSCRIBER = 'subscriber';
 
-    const ADMINISTRATOR = 'administrator';
+    #[Description('administrator')]
+    public const ADMINISTRATOR = 'administrator';
 
-    const OPERATOR = 'operator';
+    #[Description('operator')]
+    public const OPERATOR = 'operator';
 
-    const ANALYST = 'analyst';
+    #[Description('analyst')]
+    public const ANALYST = 'analyst';
 
-    const CONSULTANT = 'consultant';
+    #[Description('consultant')]
+    public const CONSULTANT = 'consultant';
 
-    const CONTROLLER = 'controller';
+    #[Description('controller')]
+    public const CONTROLLER = 'controller';
 
-    const SUPERVISOR = 'supervisor';
+    #[Description('supervisor')]
+    public const SUPERVISOR = 'supervisor';
 
-    const COORDINATOR = 'coordinator';
+    #[Description('coordinator')]
+    public const COORDINATOR = 'coordinator';
 
-    const ENGINEER = 'engineer';
+    #[Description('engineer')]
+    public const ENGINEER = 'engineer';
 
-    const TECHNICIAN = 'technician';
+    #[Description('technician')]
+    public const TECHNICIAN = 'technician';
 
-    const INSTRUCTOR = 'instructor';
+    #[Description('instructor')]
+    public const INSTRUCTOR = 'instructor';
 
-    const TRAINER = 'trainer';
+    #[Description('trainer')]
+    public const TRAINER = 'trainer';
 
-    const PLANNER = 'planner';
+    #[Description('planner')]
+    public const PLANNER = 'planner';
 }

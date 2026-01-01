@@ -15,7 +15,6 @@ trait HasPostSearchFields
     {
         return Post::query()
             ->published()
-            ->flagged(Flag::PUBLISHED)
             ->with([
                 'author.user',
                 'category',

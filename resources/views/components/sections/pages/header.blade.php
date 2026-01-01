@@ -28,19 +28,20 @@
                 </div>
                 <div class="col-auto">
                     <div class="header-links">
-                        <ul>
+                        <ul class="mb-0 list-unstyled d-flex align-items-center">
 
                             @auth
-                            <li class="d-none d-sm-inline-block">
+                            <li class="d-none d-sm-inline-block me-3">
                                 <i class="fa fa-key" aria-hidden="true"></i>
-                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="text-decoration-none">
                                     {{ __('Logout') }}
                                 </a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                     @csrf
                                 </form>
                             </li>
-                            <li class="d-none d-sm-inline-block">
+
+                            <li class="d-none d-sm-inline-block me-3">
                                 <i class="far fa-user"></i>
                                 <a href="{{ Auth::user()->employee ? url('/admin') : route('home') }}" class="text-decoration-none">
                                     {{ Auth::user()->name }}
@@ -49,7 +50,7 @@
                             @endauth
 
                             @guest
-                            <li class="d-none d-sm-inline-block">
+                            <li class="d-none d-sm-inline-block me-3">
                                 <i class="far fa-user"></i>
                                 <a href="{{ route('home') }}" class="text-decoration-none">
                                     {{ __('Guest') }}
@@ -58,13 +59,13 @@
                             @endguest
 
                             <li>
-
                                 @include('partials.social-links')
-
                             </li>
+
                         </ul>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

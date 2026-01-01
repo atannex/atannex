@@ -5,198 +5,300 @@ declare(strict_types=1);
 namespace App\Enums\Auth;
 
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
 
+/**
+ * DictionaryWord Enum
+ *
+ * Represents common words, passwords, and terms for validation, security, or filtering.
+ */
 final class DictionaryWord extends Enum
 {
-    const USER = 'user';
+    #[Description('user')]
+    public const USER = 'user';
 
-    const ADMIN = 'admin';
+    #[Description('admin')]
+    public const ADMIN = 'admin';
 
-    const PASSWORD = 'password';
+    #[Description('password')]
+    public const PASSWORD = 'password';
 
-    const WELCOME = 'welcome';
+    #[Description('welcome')]
+    public const WELCOME = 'welcome';
 
-    const LOGIN = 'login';
+    #[Description('login')]
+    public const LOGIN = 'login';
 
-    const QWERTY = 'qwerty';
+    #[Description('qwerty')]
+    public const QWERTY = 'qwerty';
 
-    const ABC123 = 'abc123';
+    #[Description('abc123')]
+    public const ABC123 = 'abc123';
 
-    const LETMEIN = 'letmein';
+    #[Description('letmein')]
+    public const LETMEIN = 'letmein';
 
-    const FOOTBALL = 'football';
+    #[Description('football')]
+    public const FOOTBALL = 'football';
 
-    const DRAGON = 'dragon';
+    #[Description('dragon')]
+    public const DRAGON = 'dragon';
 
-    const MONKEY = 'monkey';
+    #[Description('monkey')]
+    public const MONKEY = 'monkey';
 
-    const SHADOW = 'shadow';
+    #[Description('shadow')]
+    public const SHADOW = 'shadow';
 
-    const MASTER = 'master';
+    #[Description('master')]
+    public const MASTER = 'master';
 
-    const MONEY = 'money';
+    #[Description('money')]
+    public const MONEY = 'money';
 
-    const HUNTER = 'hunter';
+    #[Description('hunter')]
+    public const HUNTER = 'hunter';
 
-    const TRUSTNO1 = 'trustno1';
+    #[Description('trustno1')]
+    public const TRUSTNO1 = 'trustno1';
 
-    const TWILIGHT = 'twilight';
+    #[Description('twilight')]
+    public const TWILIGHT = 'twilight';
 
-    const MUSTANG = 'mustang';
+    #[Description('mustang')]
+    public const MUSTANG = 'mustang';
 
-    const HOCKEY = 'hockey';
+    #[Description('hockey')]
+    public const HOCKEY = 'hockey';
 
-    const RANGER = 'ranger';
+    #[Description('ranger')]
+    public const RANGER = 'ranger';
 
-    const RAINBOW = 'rainbow';
+    #[Description('rainbow')]
+    public const RAINBOW = 'rainbow';
 
-    const COMPUTER = 'computer';
+    #[Description('computer')]
+    public const COMPUTER = 'computer';
 
-    const MICHAEL = 'michael';
+    #[Description('michael')]
+    public const MICHAEL = 'michael';
 
-    const JORDAN = 'jordan';
+    #[Description('jordan')]
+    public const JORDAN = 'jordan';
 
-    const COOKIE = 'cookie';
+    #[Description('cookie')]
+    public const COOKIE = 'cookie';
 
-    const CHOCOLATE = 'chocolate';
+    #[Description('chocolate')]
+    public const CHOCOLATE = 'chocolate';
 
-    const FLOWER = 'flower';
+    #[Description('flower')]
+    public const FLOWER = 'flower';
 
-    const PRINCESS = 'princess';
+    #[Description('princess')]
+    public const PRINCESS = 'princess';
 
-    const LOVER = 'lover';
+    #[Description('lover')]
+    public const LOVER = 'lover';
 
-    const SUNSHINE = 'sunshine';
+    #[Description('sunshine')]
+    public const SUNSHINE = 'sunshine';
 
-    const STARWARS = 'starwars';
+    #[Description('starwars')]
+    public const STARWARS = 'starwars';
 
-    const SUPERMAN = 'superman';
+    #[Description('superman')]
+    public const SUPERMAN = 'superman';
 
-    const BATMAN = 'batman';
+    #[Description('batman')]
+    public const BATMAN = 'batman';
 
-    const SPIDERMAN = 'spiderman';
+    #[Description('spiderman')]
+    public const SPIDERMAN = 'spiderman';
 
-    const NINJA = 'ninja';
+    #[Description('ninja')]
+    public const NINJA = 'ninja';
 
-    const PIRATE = 'pirate';
+    #[Description('pirate')]
+    public const PIRATE = 'pirate';
 
-    const GINGER = 'ginger';
+    #[Description('ginger')]
+    public const GINGER = 'ginger';
 
-    const MICKEY = 'mickey';
+    #[Description('mickey')]
+    public const MICKEY = 'mickey';
 
-    const DONALD = 'donald';
+    #[Description('donald')]
+    public const DONALD = 'donald';
 
-    const MINNIE = 'minnie';
+    #[Description('minnie')]
+    public const MINNIE = 'minnie';
 
-    const GOLFER = 'golfer';
+    #[Description('golfer')]
+    public const GOLFER = 'golfer';
 
-    const TIGER = 'tiger';
+    #[Description('tiger')]
+    public const TIGER = 'tiger';
 
-    const BEARS = 'bears';
+    #[Description('bears')]
+    public const BEARS = 'bears';
 
-    const EAGLES = 'eagles';
+    #[Description('eagles')]
+    public const EAGLES = 'eagles';
 
-    const HAWKS = 'hawks';
+    #[Description('hawks')]
+    public const HAWKS = 'hawks';
 
-    const PACKERS = 'packers';
+    #[Description('packers')]
+    public const PACKERS = 'packers';
 
-    const COWBOYS = 'cowboys';
+    #[Description('cowboys')]
+    public const COWBOYS = 'cowboys';
 
-    const FISHING = 'fishing';
+    #[Description('fishing')]
+    public const FISHING = 'fishing';
 
-    const GOLFING = 'golfing';
+    #[Description('golfing')]
+    public const GOLFING = 'golfing';
 
-    const DANCING = 'dancing';
+    #[Description('dancing')]
+    public const DANCING = 'dancing';
 
-    const RUNNING = 'running';
+    #[Description('running')]
+    public const RUNNING = 'running';
 
-    const SWIMMING = 'swimming';
+    #[Description('swimming')]
+    public const SWIMMING = 'swimming';
 
-    const CYCLING = 'cycling';
+    #[Description('cycling')]
+    public const CYCLING = 'cycling';
 
-    const READING = 'reading';
+    #[Description('reading')]
+    public const READING = 'reading';
 
-    const WRITING = 'writing';
+    #[Description('writing')]
+    public const WRITING = 'writing';
 
-    const SINGING = 'singing';
+    #[Description('singing')]
+    public const SINGING = 'singing';
 
-    const COOKING = 'cooking';
+    #[Description('cooking')]
+    public const COOKING = 'cooking';
 
-    const JUMPING = 'jumping';
+    #[Description('jumping')]
+    public const JUMPING = 'jumping';
 
-    const WALKING = 'walking';
+    #[Description('walking')]
+    public const WALKING = 'walking';
 
-    const CLIMBING = 'climbing';
+    #[Description('climbing')]
+    public const CLIMBING = 'climbing';
 
-    const SKIING = 'skiing';
+    #[Description('skiing')]
+    public const SKIING = 'skiing';
 
-    const SURFING = 'surfing';
+    #[Description('surfing')]
+    public const SURFING = 'surfing';
 
-    const SNOWBOARDING = 'snowboarding';
+    #[Description('snowboarding')]
+    public const SNOWBOARDING = 'snowboarding';
 
-    const SKATEBOARDING = 'skateboarding';
+    #[Description('skateboarding')]
+    public const SKATEBOARDING = 'skateboarding';
 
-    const TENNIS = 'tennis';
+    #[Description('tennis')]
+    public const TENNIS = 'tennis';
 
-    const SOCCER = 'soccer';
+    #[Description('soccer')]
+    public const SOCCER = 'soccer';
 
-    const BASEBALL = 'baseball';
+    #[Description('baseball')]
+    public const BASEBALL = 'baseball';
 
-    const BASKETBALL = 'basketball';
+    #[Description('basketball')]
+    public const BASKETBALL = 'basketball';
 
-    const VOLLEYBALL = 'volleyball';
+    #[Description('volleyball')]
+    public const VOLLEYBALL = 'volleyball';
 
-    const RUGBY = 'rugby';
+    #[Description('rugby')]
+    public const RUGBY = 'rugby';
 
-    const CRICKET = 'cricket';
+    #[Description('cricket')]
+    public const CRICKET = 'cricket';
 
-    const GOLF = 'golf';
+    #[Description('golf')]
+    public const GOLF = 'golf';
 
-    const CHESS = 'chess';
+    #[Description('chess')]
+    public const CHESS = 'chess';
 
-    const POKER = 'poker';
+    #[Description('poker')]
+    public const POKER = 'poker';
 
-    const BLACKJACK = 'blackjack';
+    #[Description('blackjack')]
+    public const BLACKJACK = 'blackjack';
 
-    const CASINO = 'casino';
+    #[Description('casino')]
+    public const CASINO = 'casino';
 
-    const JACKPOT = 'jackpot';
+    #[Description('jackpot')]
+    public const JACKPOT = 'jackpot';
 
-    const LOTTERY = 'lottery';
+    #[Description('lottery')]
+    public const LOTTERY = 'lottery';
 
-    const WINNER = 'winner';
+    #[Description('winner')]
+    public const WINNER = 'winner';
 
-    const LOSER = 'loser';
+    #[Description('loser')]
+    public const LOSER = 'loser';
 
-    const GAMBLE = 'gamble';
+    #[Description('gamble')]
+    public const GAMBLE = 'gamble';
 
-    const DOLLAR = 'dollar';
+    #[Description('dollar')]
+    public const DOLLAR = 'dollar';
 
-    const EURO = 'euro';
+    #[Description('euro')]
+    public const EURO = 'euro';
 
-    const POUND = 'pound';
+    #[Description('pound')]
+    public const POUND = 'pound';
 
-    const YEN = 'yen';
+    #[Description('yen')]
+    public const YEN = 'yen';
 
-    const GOLD = 'gold';
+    #[Description('gold')]
+    public const GOLD = 'gold';
 
-    const SILVER = 'silver';
+    #[Description('silver')]
+    public const SILVER = 'silver';
 
-    const BRONZE = 'bronze';
+    #[Description('bronze')]
+    public const BRONZE = 'bronze';
 
-    const COPPER = 'copper';
+    #[Description('copper')]
+    public const COPPER = 'copper';
 
-    const PLATINUM = 'platinum';
+    #[Description('platinum')]
+    public const PLATINUM = 'platinum';
 
-    const DIAMOND = 'diamond';
+    #[Description('diamond')]
+    public const DIAMOND = 'diamond';
 
-    const RUBY = 'ruby';
+    #[Description('ruby')]
+    public const RUBY = 'ruby';
 
-    const EMERALD = 'emerald';
+    #[Description('emerald')]
+    public const EMERALD = 'emerald';
 
-    const SAPPHIRE = 'sapphire';
+    #[Description('sapphire')]
+    public const SAPPHIRE = 'sapphire';
 
-    const OPAL = 'opal';
+    #[Description('opal')]
+    public const OPAL = 'opal';
 
-    const PEARL = 'pearl';
+    #[Description('pearl')]
+    public const PEARL = 'pearl';
 }
