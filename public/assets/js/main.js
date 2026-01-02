@@ -48,21 +48,19 @@
                         t.parent().addClass(s.subMenuParent),
                         t.prev("a").append(s.appendElement),
                         t.next("a").append(s.appendElement);
+                });
+                var i = "." + s.meanExpandClass;
+                e(i).each(function () {
+                    e(this).on("click", function (t) {
+                        var a, i;
+                        t.preventDefault(),
+                            (a = e(this).parent()),
+                            (i = a.next("ul, div.mega-menu")).length > 0 &&
+                                (a.parent().toggleClass(s.subMenuParentToggle),
+                                i.slideToggle(s.toggleSpeed),
+                                i.toggleClass(s.subMenuToggleClass));
+                    });
                 }),
-                    e("." + s.meanExpandClass).each(function () {
-                        e(this).on("click", function (t) {
-                            var a, i;
-                            t.preventDefault(),
-                                (i = (a = e(this).parent()).next(
-                                    "ul, div.mega-menu"
-                                )).length > 0 &&
-                                    (a
-                                        .parent()
-                                        .toggleClass(s.subMenuParentToggle),
-                                    i.slideToggle(s.toggleSpeed),
-                                    i.toggleClass(s.subMenuToggleClass));
-                        });
-                    }),
                     e(s.menuToggleBtn).each(function () {
                         e(this).on("click", function () {
                             a();
@@ -95,16 +93,16 @@
                 "stroke-dashoffset 10ms linear");
         var i = function () {
             var t = e(window).scrollTop(),
-                i = e(document).height() - e(window).height();
-            s.style.strokeDashoffset = a - (t * a) / i;
+                i = e(document).height() - e(window).height(),
+                n = a - (t * a) / i;
+            s.style.strokeDashoffset = n;
         };
-        i(),
-            e(window).scroll(i),
-            jQuery(window).on("scroll", function () {
-                jQuery(this).scrollTop() > 50
-                    ? jQuery(t).addClass("show")
-                    : jQuery(t).removeClass("show");
-            }),
+        i(), e(window).scroll(i);
+        jQuery(window).on("scroll", function () {
+            jQuery(this).scrollTop() > 50
+                ? jQuery(t).addClass("show")
+                : jQuery(t).removeClass("show");
+        }),
             jQuery(t).on("click", function (e) {
                 return (
                     e.preventDefault(),
@@ -213,11 +211,9 @@
                             settings: {
                                 arrows: !!s("xl-arrows"),
                                 dots: !!s("xl-dots"),
-                                slidesToShow: s(
-                                    s("xl-slide-show")
-                                        ? "xl-slide-show"
-                                        : "slide-show"
-                                ),
+                                slidesToShow: s("xl-slide-show")
+                                    ? s("xl-slide-show")
+                                    : s("slide-show"),
                                 centerMode: !!s("xl-center-mode"),
                                 centerPadding: "0",
                             },
@@ -227,11 +223,9 @@
                             settings: {
                                 arrows: !!s("ml-arrows"),
                                 dots: !!s("ml-dots"),
-                                slidesToShow: s(
-                                    s("ml-slide-show")
-                                        ? "ml-slide-show"
-                                        : "slide-show"
-                                ),
+                                slidesToShow: s("ml-slide-show")
+                                    ? s("ml-slide-show")
+                                    : s("slide-show"),
                                 centerMode: !!s("ml-center-mode"),
                                 centerPadding: 0,
                             },
@@ -241,11 +235,9 @@
                             settings: {
                                 arrows: !!s("lg-arrows"),
                                 dots: !!s("lg-dots"),
-                                slidesToShow: s(
-                                    s("lg-slide-show")
-                                        ? "lg-slide-show"
-                                        : "slide-show"
-                                ),
+                                slidesToShow: s("lg-slide-show")
+                                    ? s("lg-slide-show")
+                                    : s("slide-show"),
                                 centerMode:
                                     !!s("lg-center-mode") &&
                                     s("lg-center-mode"),
@@ -298,26 +290,26 @@
                         },
                     ],
                 });
-        }),
-        e(".slick-marquee").slick({
-            speed: 5e3,
-            autoplay: !0,
-            autoplaySpeed: 0,
-            cssEase: "linear",
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            variableWidth: !0,
-            infinite: !0,
-            arrows: !1,
-            buttons: !1,
-            pauseOnHover: !0,
-            pauseOnFocus: !0,
-            swipeToSlide: !0,
-        }),
-        e("[data-ani-duration]").each(function () {
-            var t = e(this).data("ani-duration");
-            e(this).css("animation-duration", t);
-        }),
+        });
+    e(".slick-marquee").slick({
+        speed: 5e3,
+        autoplay: !0,
+        autoplaySpeed: 0,
+        cssEase: "linear",
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        variableWidth: !0,
+        infinite: !0,
+        arrows: !1,
+        buttons: !1,
+        pauseOnHover: !0,
+        pauseOnFocus: !0,
+        swipeToSlide: !0,
+    });
+    e("[data-ani-duration]").each(function () {
+        var t = e(this).data("ani-duration");
+        e(this).css("animation-duration", t);
+    }),
         e("[data-ani-delay]").each(function () {
             var t = e(this).data("ani-delay");
             e(this).css("animation-delay", t);
@@ -338,63 +330,52 @@
         c = ".ajax-contact",
         d = '[name="email"]',
         u = e(".form-messages");
-    function p(t, s, a, i) {
-        e(s).on("click", function (s) {
-            s.preventDefault(), e(t).addClass(i);
-        }),
-            e(t).on("click", function (s) {
-                s.stopPropagation(), e(t).removeClass(i);
-            }),
-            e(t + " > div").on("click", function (s) {
-                s.stopPropagation(), e(t).addClass(i);
-            }),
-            e(a).on("click", function (s) {
-                s.preventDefault(), s.stopPropagation(), e(t).removeClass(i);
-            });
-    }
-    e(c).on("submit", function (t) {
-        var s, a, i;
-        t.preventDefault(),
-            (s = e(c).serialize()),
-            (i = !0),
-            (function t(s) {
-                s = s.split(",");
-                for (var n = 0; n < s.length; n++)
-                    e((a = c + " " + s[n])).val()
-                        ? (e(a).removeClass("is-invalid"), (i = !0))
-                        : (e(a).addClass("is-invalid"), (i = !1));
-            })(
+    function p() {
+        var t = e(c).serialize();
+        (function () {
+            var t,
+                s = !0;
+            function a(a) {
+                a = a.split(",");
+                for (var i = 0; i < a.length; i++)
+                    (t = c + " " + a[i]),
+                        e(t).val()
+                            ? (e(t).removeClass("is-invalid"), (s = !0))
+                            : (e(t).addClass("is-invalid"), (s = !1));
+            }
+            a(
                 '[name="name"],[name="email"],[name="subject"],[name="number"],[name="message"]'
             ),
-            e(d).val() &&
-            e(d)
-                .val()
-                .match(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/)
-                ? (e(d).removeClass("is-invalid"), (i = !0))
-                : (e(d).addClass("is-invalid"), (i = !1)),
-            i &&
-                jQuery
-                    .ajax({ url: e(c).attr("action"), data: s, type: "POST" })
-                    .done(function (t) {
-                        u.removeClass("error"),
-                            u.addClass("success"),
-                            u.text(t),
-                            e(
-                                c +
-                                    ' input:not([type="submit"]),' +
-                                    c +
-                                    " textarea"
-                            ).val("");
-                    })
-                    .fail(function (e) {
-                        u.removeClass("success"),
-                            u.addClass("error"),
-                            "" !== e.responseText
-                                ? u.html(e.responseText)
-                                : u.html(
-                                      "Oops! An error occured and your message could not be sent."
-                                  );
-                    });
+                e(d).val() &&
+                e(d)
+                    .val()
+                    .match(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/)
+                    ? (e(d).removeClass("is-invalid"), (s = !0))
+                    : (e(d).addClass("is-invalid"), (s = !1));
+            return s;
+        })() &&
+            jQuery
+                .ajax({ url: e(c).attr("action"), data: t, type: "POST" })
+                .done(function (t) {
+                    u.removeClass("error"),
+                        u.addClass("success"),
+                        u.text(t),
+                        e(
+                            c + ' input:not([type="submit"]),' + c + " textarea"
+                        ).val("");
+                })
+                .fail(function (e) {
+                    u.removeClass("success"),
+                        u.addClass("error"),
+                        "" !== e.responseText
+                            ? u.html(e.responseText)
+                            : u.html(
+                                  "Oops! An error occured and your message could not be sent."
+                              );
+                });
+    }
+    e(c).on("submit", function (e) {
+        e.preventDefault(), p();
     }),
         (n = ".popup-search-box"),
         (o = ".searchClose"),
@@ -420,11 +401,25 @@
         e("#destroyPopup").on("click", function () {
             e(".popup-subscribe-area").addClass("hide"),
                 localStorage.setItem("popupDestroyed", "true");
+        });
+    function h(t, s, a, i) {
+        e(s).on("click", function (s) {
+            s.preventDefault(), e(t).addClass(i);
         }),
-        "true" === localStorage.getItem("popupDestroyed") &&
-            e(".popup-subscribe-area").hide(),
-        p(".sidemenu-1", ".sideMenuToggler", ".sideMenuCls", "show"),
-        p(".cart-side-menu", ".cartToggler", ".sideMenuCls", "show"),
+            e(t).on("click", function (s) {
+                s.stopPropagation(), e(t).removeClass(i);
+            }),
+            e(t + " > div").on("click", function (s) {
+                s.stopPropagation(), e(t).addClass(i);
+            }),
+            e(a).on("click", function (s) {
+                s.preventDefault(), s.stopPropagation(), e(t).removeClass(i);
+            });
+    }
+    "true" === localStorage.getItem("popupDestroyed") &&
+        e(".popup-subscribe-area").hide(),
+        h(".sidemenu-1", ".sideMenuToggler", ".sideMenuCls", "show"),
+        h(".cart-side-menu", ".cartToggler", ".sideMenuCls", "show"),
         e(".popup-image").magnificPopup({
             type: "image",
             mainClass: "mfp-zoom-in",
@@ -435,13 +430,14 @@
         e(".popup-content").magnificPopup({ type: "inline", midClick: !0 }),
         e(".popup-content").on("click", function () {
             e(".slick-slider").slick("refresh");
-        }),
-        e("html").addClass("dark-theme").attr("data-theme", "dark"),
-        localStorage.setItem("themePreference", "dark"),
-        e(".theme-toggler, .theme-switcher").off("click").addClass("active"),
-        e(".print_btn").on("click", function (e) {
-            window.print();
-        }),
+        });
+    e("html").addClass("dark-theme").attr("data-theme", "dark");
+    localStorage.setItem("themePreference", "dark");
+    e(".theme-toggler, .theme-switcher").off("click").addClass("active");
+
+    e(".print_btn").on("click", function (e) {
+        window.print();
+    }),
         (e.fn.indicator = function () {
             e(this).each(function () {
                 var t = e(this),
@@ -675,11 +671,12 @@
         (document.onkeydown = function (e) {
             return (
                 123 != event.keyCode &&
-                (!e.ctrlKey || !e.shiftKey || 73 != e.keyCode) &&
-                (!e.ctrlKey || !e.shiftKey || 67 != e.keyCode) &&
-                (!e.ctrlKey || !e.shiftKey || 74 != e.keyCode) &&
-                (!e.ctrlKey || 85 != e.keyCode) &&
+                (!e.ctrlKey || !e.shiftKey || e.keyCode != "I".charCodeAt(0)) &&
+                (!e.ctrlKey || !e.shiftKey || e.keyCode != "C".charCodeAt(0)) &&
+                (!e.ctrlKey || !e.shiftKey || e.keyCode != "J".charCodeAt(0)) &&
+                (!e.ctrlKey || e.keyCode != "U".charCodeAt(0)) &&
                 void 0
             );
         });
 })(jQuery);
+
