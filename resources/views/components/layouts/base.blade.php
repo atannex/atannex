@@ -65,11 +65,11 @@
 
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v='1.0.1'">
-    <link rel="stylesheet" href="{{ asset('assets/css/image.css') }}?v='1.0.1'">
-    <link rel="stylesheet" href="{{ asset('assets/css/auth.css') }}?v='1.0.1'">
-    <link rel="stylesheet" href="{{ asset('assets/css/menu.css') }}?v='1.0.1'">
-    <link rel="stylesheet" href="{{ asset('assets/css/video.css') }}?v='1.0.1'">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=1.0.1">
+    <link rel="stylesheet" href="{{ asset('assets/css/image.css') }}?v=1.0.1">
+    <link rel="stylesheet" href="{{ asset('assets/css/auth.css') }}?v=1.0.1">
+    <link rel="stylesheet" href="{{ asset('assets/css/menu.css') }}?v=1.0.1">
+    <link rel="stylesheet" href="{{ asset('assets/css/video.css') }}?v=1.0.1">
 
     {{-- <script type="application/ld+json">
         {
