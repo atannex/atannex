@@ -63,15 +63,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
-
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/style.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/image.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/auth.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/menu.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/video.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v='1.0.1'">
+    <link rel="stylesheet" href="{{ asset('assets/css/image.css') }}?v='1.0.1'">
+    <link rel="stylesheet" href="{{ asset('assets/css/auth.css') }}?v='1.0.1'">
+    <link rel="stylesheet" href="{{ asset('assets/css/menu.css') }}?v='1.0.1'">
+    <link rel="stylesheet" href="{{ asset('assets/css/video.css') }}?v='1.0.1'">
 
     {{-- <script type="application/ld+json">
         {
@@ -118,14 +116,14 @@
 
     @livewireScripts
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js?v=1.0.1" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" defer></script>
 
+    <script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}" defer></script>
     <script src="{{ asset('assets/js/app.min.js') }}" defer></script>
-    <script src="{{ asset('assets/js/main.min.js') }}" defer></script>
-    <script src="{{ asset('assets/js/reset.min.js') }}" defer></script>
-    <script src="{{ asset('assets/js/share.min.js') }}" defer></script>
-    <script src="{{ asset('assets/js/video.min.js') }}" defer></script>
+    <script src="{{ asset('assets/js/main.js') }}" defer></script>
+    <script src="{{ asset('assets/js/auth/reset.js') }}" defer></script>
+    <script src="{{ asset('js/share.js') }}" defer></script>
+    <script src="{{ asset('assets/js/video.js') }}" defer></script>
 
 </body>
 </html>
