@@ -10,10 +10,10 @@
                 <div class="sec-btn">
                     <div class="icon-box">
                         <button data-slick-prev="#large-{{ $section->id }}-{{ $index }}" class="slick-arrow default">
-                            <i class="far fa-arrow-left"></i>
+                            <i class="fas fa-arrow-left"></i>
                         </button>
                         <button data-slick-next="#large-{{ $section->id }}-{{ $index }}" class="slick-arrow default">
-                            <i class="far fa-arrow-right"></i>
+                            <i class="fas fa-arrow-right"></i>
                         </button>
                     </div>
                 </div>

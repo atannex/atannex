@@ -2,12 +2,25 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "dev": "vite",
+        "build": "vite build",
         "dev:css": "tailwindcss -i ./resources/css/app.css -o ./public/css/app.css --watch",
         "build:css": "tailwindcss -i ./resources/css/app.css -o ./public/css/app.css --minify"
     },
     "devDependencies": {
         "autoprefixer": "^10.4.23",
+        "laravel-vite-plugin": "^2.0.1",
         "postcss": "^8.5.6",
-        "tailwindcss": "^3.4.17"
+        "tailwindcss": "^3.4.19",
+        "vite": "^7.3.0",
+        "vite-plugin-inspect": "^11.3.3",
+        "vite-plugin-static-copy": "^3.1.4"
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-free": "^7.1.0",
+        "@popperjs/core": "^2.11.8",
+        "axios": "^1.13.2",
+        "bootstrap": "^5.3.8",
+        "jquery": "^3.7.1"
     }
 }

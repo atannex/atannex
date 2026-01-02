@@ -7,10 +7,10 @@
             <div class="sec-btn">
                 <div class="icon-box">
                     <button data-slick-prev="#related-post-slide" class="slick-arrow default">
-                        <i class="far fa-arrow-left"></i>
+                        <i class="fas fa-arrow-left"></i>
                     </button>
                     <button data-slick-next="#related-post-slide" class="slick-arrow default">
-                        <i class="far fa-arrow-right"></i>
+                        <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
             </div>

@@ -1,5 +1,7 @@
 @extends('components.layouts.base')
 
+@section('og:title')
+
 @section('base')
 
 <x-sections.preloader />

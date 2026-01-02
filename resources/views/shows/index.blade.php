@@ -2,9 +2,7 @@
 
 @section('og:title', $module->post->title)
 @section('og:description', $module->post->description)
-
 @section('og:image', asset('storage/' . $module->post->image))
-
 @section('og:publishedAt', $module->post->published_at)
 @section('og:updatedAt', $module->post->updated_at)
 

@@ -1,17 +1,14 @@
-@import "tailwindcss";
-
 /* -------------------------------------------------
-   SOURCE SCANNING (Laravel)
+   TAILWIND BASE
 ------------------------------------------------- */
-@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
-@source "../../storage/framework/views/*.php";
-@source "../**/*.blade.php";
-@source "../**/*.js";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* -------------------------------------------------
    DESIGN TOKENS
 ------------------------------------------------- */
-@theme {
+:root {
     /* Fonts */
     --font-sans: "Instrument Sans", ui-sans-serif, system-ui, -apple-system,
         BlinkMacSystemFont, "Segoe UI", "Apple Color Emoji", "Segoe UI Emoji",
@@ -32,6 +29,6 @@
 
     .btn-primary {
         @apply btn bg-[rgb(var(--color-primary))] text-white
-           hover:bg-[rgb(var(--color-primary-dark))];
+               hover:bg-[rgb(var(--color-primary-dark))];
     }
 }

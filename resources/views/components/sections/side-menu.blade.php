@@ -2,7 +2,7 @@
     <div class="sidemenu-content">
 
         <button class="closeButton sideMenuCls" aria-label="Close Sidebar">
-            <i class="far fa-times"></i>
+            <i class="fas fa-times"></i>
         </button>
 
         <div class="widget">

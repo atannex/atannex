@@ -44,7 +44,7 @@
                     <div class="col-auto d-none d-lg-block">
                         <div class="header-button">
                             <a href="javascript:void(0)" class="simple-icon sideMenuToggler d-none d-lg-block">
-                                <i class="far fa-bars"></i>
+                                <i class="fas fa-bars"></i>
                             </a>
                         </div>
                     </div>
@@ -60,10 +60,10 @@
                     <div class="col-auto">
                         <div class="header-button">
                             <button type="button" class="simple-icon searchBoxToggler">
-                                <i class="far fa-search"></i>
+                                <i class="fas fa-search"></i>
                             </button>
                             <button type="button" class="th-menu-toggle d-block d-lg-none">
-                                <i class="far fa-bars"></i>
+                                <i class="fas fa-bars"></i>
                             </button>
                         </div>
                     </div>

@@ -42,7 +42,7 @@
                             </li>
 
                             <li class="d-none d-sm-inline-block me-3">
-                                <i class="far fa-user"></i>
+                                <i class="fas fa-user"></i>
                                 <a href="{{ Auth::user()->employee ? url('/admin') : route('home') }}" class="text-decoration-none">
                                     {{ Auth::user()->name }}
                                 </a>
@@ -51,7 +51,7 @@
 
                             @guest
                             <li class="d-none d-sm-inline-block me-3">
-                                <i class="far fa-user"></i>
+                                <i class="fas fa-user"></i>
                                 <a href="{{ route('home') }}" class="text-decoration-none">
                                     {{ __('Guest') }}
                                 </a>
@@ -112,13 +112,13 @@
                     <div class="col-auto">
                         <div class="header-button">
                             <button type="button" class="simple-icon searchBoxToggler">
-                                <i class="far fa-search"></i>
+                                <i class="fas fa-search"></i>
                             </button>
                             <a href="#" class="icon-btn sideMenuToggler d-none d-lg-block">
-                                <i class="far fa-bars"></i>
+                                <i class="fas fa-bars"></i>
                             </a>
                             <button type="button" class="th-menu-toggle d-block d-lg-none">
-                                <i class="far fa-bars"></i>
+                                <i class="fas fa-bars"></i>
                             </button>
                         </div>
                     </div>
