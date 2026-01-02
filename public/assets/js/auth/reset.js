@@ -54,7 +54,10 @@
     const el = (id) => document.getElementById(id);
 
     /**
-     * Initialize timezone field.
+     * Populate the input with id "timezone" with the user's IANA time zone.
+     *
+     * If the element is not present this function does nothing. If timezone
+     * detection fails, the error is logged and the input value is left unchanged.
      */
     function initializeTimezone() {
         const timezoneInput = el("timezone");
@@ -73,10 +76,10 @@
      * ---------------------------------------------------------------------- */
 
     /**
-     * Get password strength score using zxcvbn.
+     * Determine the zxcvbn analysis result for a given password.
      *
-     * @param {string} password
-     * @returns {object|null}
+     * @param {string} password - The password to analyze.
+     * @returns {object|null} The result object returned by zxcvbn, or `null` if no password is provided or zxcvbn is unavailable.
      */
     function analyzePassword(password) {
         if (!password || typeof zxcvbn !== "function") {
@@ -86,7 +89,15 @@
     }
 
     /**
-     * Update strength UI.
+     * Update the password strength progress bar and label to reflect a given score.
+     * 
+     * Selects the corresponding strength configuration for `score` (falls back to the weakest)
+     * and applies its percentage width and visual class to the progress `bar`, and sets the
+     * label text and text color class on `text`.
+     * 
+     * @param {number} score - Strength score (typically 0–4).
+     * @param {HTMLElement} bar - Progress bar element whose width and classes will be updated.
+     * @param {HTMLElement} text - Text element where the strength label and text color class will be set.
      */
     function updateStrengthUI(score, bar, text) {
         const config = STRENGTH_UI[score] || STRENGTH_UI[0];
@@ -99,7 +110,12 @@
     }
 
     /**
-     * Update password feedback text.
+     * Render password feedback (warning and suggestions) into the provided container element.
+     *
+     * If `result` or `feedbackEl` is falsy the element's text content is cleared.
+     *
+     * @param {Object|null} result - zxcvbn analysis result with a `feedback` object containing an optional `warning` string and `suggestions` array of strings.
+     * @param {HTMLElement} feedbackEl - DOM element to receive the rendered feedback; warning is wrapped in a `div.text-warning` and suggestions are rendered as a `ul.mb-0` list.
      */
     function updateFeedback(result, feedbackEl) {
         if (!result || !feedbackEl) {
@@ -122,7 +138,11 @@
     }
 
     /**
-     * Validate password confirmation.
+     * Checks whether the password and confirmation inputs contain identical values and updates the output element with a match message and styling.
+     * @param {HTMLInputElement} password - Password input element to compare.
+     * @param {HTMLInputElement} confirm - Password confirmation input element; empty value clears the output and returns false.
+     * @param {HTMLElement} output - Element where match/mismatch text and success/error styling will be written.
+     * @returns {boolean} `true` if the values are identical, `false` otherwise.
      */
     function checkPasswordMatch(password, confirm, output) {
         if (!confirm.value) {
@@ -158,9 +178,20 @@
         icon.classList.toggle("fa-eye-slash", isHidden);
     };
 
-    /* ----------------------------------------------------------------------
-     * Initialization
-     * ---------------------------------------------------------------------- */
+    /**
+     * Initialize live password validation UI and form enforcement for the current page.
+     *
+     * Sets up input listeners on the password and confirmation fields to:
+     * - Show or hide the strength UI based on whether a password is present.
+     * - Analyze the password strength and update the strength bar and label.
+     * - Render actionable feedback (warnings and suggestions) for the entered password.
+     * - Validate and display whether the password and confirmation match.
+     *
+     * If the required DOM elements are missing, logs an error and exits without attaching listeners.
+     * If the password fields belong to a form, attaches a submit handler that prevents submission
+     * and alerts the user when the password strength is below the configured minimum or the
+     * confirmation does not match.
+     */
 
     function initializePasswordValidation() {
         const password = el("password");
@@ -221,6 +252,9 @@
         }
     }
 
+    /**
+     * Initialize page features: populate the timezone field and set up password strength, feedback, match checks, and related form handlers.
+     */
     function initialize() {
         initializeTimezone();
         initializePasswordValidation();
