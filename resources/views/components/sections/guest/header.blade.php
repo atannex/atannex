@@ -75,7 +75,7 @@
                             <div class="col-auto">
                                 <div class="header-button">
                                     <button type="button" class="th-menu-toggle d-block d-lg-none">
-                                        <i class="far fa-bars"></i>
+                                        <i class="fas fa-bars"></i>
                                     </button>
                                 </div>
                             </div>

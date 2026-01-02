@@ -55,7 +55,7 @@
                     <ul>
                         @foreach($about->features as $feature)
                         <li>
-                            <i class="far fa-check-circle"></i>
+                            <i class="fas fa-check-circle"></i>
                             {{ $feature['text'] }}
                         </li>
                         @endforeach

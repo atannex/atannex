@@ -8,23 +8,23 @@
 
 <div class="blog-meta">
     <a class="author" href="{{ route('page.index', $module->post->author->user->slug) }}">
-        <i class="far fa-user"></i>
+        <i class="fas fa-user"></i>
         {{ __('By - ') . Str::title($module->post->author->user->name) }}
     </a>
 
     <a href="{{ route('page.index', $module->post->author->user->slug) }}">
-        <i class="fal fa-calendar-days"></i>
+        <i class="fas fa-calendar-days"></i>
         {{ $module->created_at->diffForHumans() }}
     </a>
 
     <a href="{{ route('page.index', $module->post->author->user->slug) }}">
-        <i class="far fa-comments"></i>
+        <i class="fas fa-comments"></i>
         ({{ format_count($module->post->comments->count()) }}
         {{ Str::plural('Comment', $module->post->comments->count()) }})
     </a>
 
     <span>
-        <i class="far fa-book-open"></i>
+        <i class="fas fa-book-open"></i>
         {{ $module->readingTime() }} {{ Str::plural('Min', $module->readingTime()) . __(" Read") }}
     </span>
 </div>

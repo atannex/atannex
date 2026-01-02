@@ -1,7 +1,7 @@
     <div class="th-menu-wrapper">
         <div class="text-center th-menu-area">
             <button class="th-menu-toggle">
-                <i class="fal fa-times"></i>
+                <i class="fas fa-times"></i>
             </button>
             <div class="mobile-logo">
 

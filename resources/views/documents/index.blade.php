@@ -27,20 +27,20 @@
                                 <div class="blog-meta">
                                     @if($post->updated_at->diffInMinutes($post->created_at) >= 2)
                                     <a href="javascript:void(0)">
-                                        <i class="far fa-user-edit"></i>
+                                        <i class="fas fa-user-edit"></i>
                                         {{ __('Updated by: ') . ($post->updated_by?->user?->name ?? $post->author->user->name) }}
                                     </a>
                                     <a href="{{ route('page.index', ['slug' => $post->slug_path]) }}">
-                                        <i class="fal fa-calendar-edit"></i>
+                                        <i class="fas fa-calendar-edit"></i>
                                         {{ __('Updated: ') . $post->updated_at->format('d M, Y') }}
                                     </a>
                                     @else
                                     <a href="javascript:void(0)">
-                                        <i class="far fa-user"></i>
+                                        <i class="fas fa-user"></i>
                                         {{ __('By: ') . $post->author->user->name }}
                                     </a>
                                     <a href="{{ route('page.index', ['slug' => $post->slug_path]) }}">
-                                        <i class="fal fa-calendar-days"></i>
+                                        <i class="fas fa-calendar-days"></i>
                                         {{ __('Published: ') . $post->created_at->format('d M, Y') }}
                                     </a>
                                     @endif
@@ -86,11 +86,11 @@
 
                     <div class="blog-meta">
                         <a href="{{ route('page.index', ['slug' => $post->slug_path]) }}">
-                            <i class="far fa-user"></i>
+                            <i class="fas fa-user"></i>
                             {{ __('By: ') . $post->author->user->name }}
                         </a>
                         <a href="{{ route('page.index', ['slug' => $post->slug_path]) }}">
-                            <i class="fal fa-calendar-days"></i>
+                            <i class="fas fa-calendar-days"></i>
                             {{ __('Published: ') . $post->created_at->format('d M, Y') }}
                         </a>
                     </div>

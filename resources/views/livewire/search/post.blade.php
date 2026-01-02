@@ -10,7 +10,7 @@
             <input id="search-input" type="text" wire:model.live="query" placeholder="Enter keyword" class="form-control" aria-describedby="search-button">
 
             <button id="search-button" type="button" disabled aria-disabled="true" class="ml-2">
-                <i class="far fa-search" aria-hidden="true"></i>
+                <i class="fas fa-search" aria-hidden="true"></i>
                 <span class="sr-only">
                     {{ __('Search') }}
                 </span>
