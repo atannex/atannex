@@ -22,7 +22,9 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap application services.
+     * Bootstrap application services by registering model observers.
+     *
+     * Attaches observers for Eloquent models used by the application (for example, Section and Widget).
      */
     public function boot(): void
     {
@@ -30,7 +32,10 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register model observers.
+     * Attach observers to Eloquent models so their lifecycle events are handled.
+     *
+     * Specifically registers SectionObserver for App\Models\Regions\Section and
+     * WidgetObserver for App\Models\Regions\Widget.
      */
     protected function registerObservers(): void
     {
