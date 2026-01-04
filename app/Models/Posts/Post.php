@@ -8,13 +8,11 @@ use App\Contracts\Commentable;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Relations\PostRelation;
-use Atannex\Traits\HasCleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model implements Commentable
 {
-    use HasCleaning;
     use PostRelation;
     use Scoping;
     use Slugging;
@@ -59,11 +57,6 @@ class Post extends Model implements Commentable
         'editor_pick_expires' => 'datetime',
     ];
 
-    /* -----------------------------------------------------------------
-     |  Image Handling
-     | -----------------------------------------------------------------
-     */
-
     public function images(): array
     {
         return ['image'];
@@ -73,11 +66,6 @@ class Post extends Model implements Commentable
     {
         return 'posts';
     }
-
-    /* -----------------------------------------------------------------
-     |  Routing
-     | -----------------------------------------------------------------
-     */
 
     public function getRouteKeyName(): string
     {

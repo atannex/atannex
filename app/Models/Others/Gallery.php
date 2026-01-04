@@ -5,13 +5,11 @@ namespace App\Models\Others;
 use App\Enums\Flag;
 use App\Enums\Image;
 use Atannex\Enables\Scoping;
-use Atannex\Traits\HasCleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Gallery extends Model
 {
-    use HasCleaning;
     use Scoping;
     use SoftDeletes;
 
@@ -33,7 +31,7 @@ class Gallery extends Model
      */
     public function images(): array
     {
-        return ['logo'];
+        return ['image'];
     }
 
     /**

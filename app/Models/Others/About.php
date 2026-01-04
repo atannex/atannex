@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class About extends Model
 {
-    use HasCleaning;
     use SoftDeletes;
 
     protected $table = 'abouts';

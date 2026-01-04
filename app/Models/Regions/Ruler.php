@@ -3,7 +3,6 @@
 namespace App\Models\Regions;
 
 use Atannex\Enables\Slugging;
-use Atannex\Traits\HasCleaning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,7 +10,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Ruler extends Model
 {
     use Slugging;
-    use HasCleaning;
     use SoftDeletes;
 
     protected string $slugSource = 'name';
