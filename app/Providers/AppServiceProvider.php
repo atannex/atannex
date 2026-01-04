@@ -39,12 +39,13 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-         * Register model observers used by the application.
-         *
-         * Attaches the ImageObserver to each model returned by imageCleanupModels(), registers a SectionObserver
-         * (constructed with a SectionAdapter) for the Section model, and registers a WidgetObserver
-         * (constructed with a WidgetAdapter) for the Widget model.
-         */
+    /**
+     * Register model observers used by the application.
+     *
+     * Attaches the ImageObserver to each model returned by imageCleanupModels(), registers a SectionObserver
+     * (constructed with a SectionAdapter) for the Section model, and registers a WidgetObserver
+     * (constructed with a WidgetAdapter) for the Widget model.
+     */
     protected function registerObservers(): void
     {
         foreach ($this->imageCleanupModels() as $model) {
