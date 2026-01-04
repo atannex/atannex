@@ -57,6 +57,11 @@ class Post extends Model implements Commentable
         'editor_pick_expires' => 'datetime',
     ];
 
+    /**
+     * List image-related attribute keys for the model.
+     *
+     * @return string[] An array of attribute names representing image fields (e.g., `['image']`).
+     */
     public function images(): array
     {
         return ['image'];
@@ -72,6 +77,11 @@ class Post extends Model implements Commentable
         return 'posts';
     }
 
+    /**
+     * Determines the model attribute used for route model binding.
+     *
+     * @return string The attribute name used as the route key, 'slug'.
+     */
     public function getRouteKeyName(): string
     {
         return 'slug';

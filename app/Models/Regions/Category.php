@@ -45,6 +45,11 @@ class Category extends Model implements Sluggable
 
     protected string $slugSource = 'name';
 
+    /**
+     * List the model's image attribute keys.
+     *
+     * @return string[] An array of attribute keys that store image filenames or paths (e.g. `['image']`).
+     */
     public function images(): array
     {
         return ['image'];

@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\Storage;
 class ImageObserver
 {
     /**
-     * Handle the "saving" event.
-     * Deletes old images if they are being replaced.
+     * Handle model saving by replacing changed image attributes:
+     * delete the previous file and store any UploadedFile, updating the attribute with the stored path.
+     *
+     * @param Model $model The model instance being saved.
      */
     public function saving(Model $model): void
     {
@@ -30,8 +32,11 @@ class ImageObserver
     }
 
     /**
-     * Handle the "deleted" event.
-     * Deletes all associated images.
+     * Remove all image files referenced by the model when the model is deleted.
+     *
+     * For each attribute name returned by $model->images(), deletes the stored file if the attribute contains a path.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $model The model instance being deleted.
      */
     public function deleted(Model $model): void
     {
@@ -44,7 +49,9 @@ class ImageObserver
     }
 
     /**
-     * Delete a file from storage.
+     * Remove a file from the public storage disk if it exists.
+     *
+     * @param string $file The file path relative to the public disk.
      */
     protected function deleteFile(string $file): void
     {

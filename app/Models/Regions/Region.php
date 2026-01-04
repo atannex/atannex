@@ -62,9 +62,9 @@ class Region extends Model implements Sluggable
     }
 
     /**
-     * Get the storage directory path for region logos.
+     * Get the relative storage directory for region logos.
      *
-     * @return string The relative directory path where region logos are stored.
+     * @return string The relative directory path where region logos are stored (e.g. "regions").
      */
     public function dir(): string
     {
