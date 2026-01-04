@@ -47,6 +47,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'remember_token',
     ];
 
+    /**
+     * Define the model's attribute cast mappings.
+     *
+     * @return array Associative array mapping attribute names to cast types or enum/class names (e.g., `'email_verified_at' => 'datetime'`).
+     */
     protected function casts(): array
     {
         return [
@@ -58,23 +63,34 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         ];
     }
 
-    /* -----------------------------------------------------------------
-     |  Image Handling (Universal)
-     | -----------------------------------------------------------------
+    /**
+     * List image field names used by the model.
+     *
+     * @return string[] Array of image attribute keys.
      */
     public function images(): array
     {
         return ['image'];
     }
 
+    /**
+     * Get the storage directory name used for user files.
+     *
+     * @return string The storage directory for users (e.g., "users").
+     */
     public function dir(): string
     {
         return 'users';
     }
 
-    /* -----------------------------------------------------------------
-     |  Filament Admin Access
-     | -----------------------------------------------------------------
+    /**
+     * Determine whether the user is allowed to access the given Filament admin panel.
+     *
+     * Access is granted only when the user's email is verified, their email domain is in the allowed
+     * domains list, and the user is associated with an employee record.
+     *
+     * @param Panel $panel The Filament panel being accessed.
+     * @return bool `true` if access is permitted, `false` otherwise.
      */
     public function canAccessPanel(Panel $panel): bool
     {
@@ -90,44 +106,72 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         $this->notify(new VerifyEmailNotification());
     }
 
+    /**
+     * Sends the password reset notification to the user.
+     *
+     * @param string $token The password reset token included in the notification.
+     */
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
     }
 
-    /* -----------------------------------------------------------------
-     |  Relationships
-     | -----------------------------------------------------------------
+    /**
+     * Get the user's associated Employee record.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne HasOne relationship to the Employee model.
      */
     public function employee(): HasOne
     {
         return $this->hasOne(Employee::class);
     }
 
+    /**
+     * Defines a one-to-one relationship to the user's active Employee record.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne The relation scoped to the Employee model where `status` equals `Status::ACTIVE`.
+     */
     public function activeEmployee(): HasOne
     {
         return $this->hasOne(Employee::class)->where('status', Status::ACTIVE);
     }
 
+    /**
+     * Get the user's comments.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany A relationship returning Comment models associated with the user.
+     */
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
 
-    /* -----------------------------------------------------------------
-     |  Helper Methods
-     | -----------------------------------------------------------------
+    /**
+     * Get the domain part of the user's email address.
+     *
+     * @return string The substring after the '@' character in the user's email.
      */
     public function emailDomain(): string
     {
         return explode('@', $this->email)[1];
     }
 
+    /**
+     * Checks whether the user's email domain is within a set of allowed domains.
+     *
+     * @param array $allowedDomains List of allowed email domain strings (e.g., `['example.com', 'gmail.com']`).
+     * @return bool `true` if the user's email domain is in `$allowedDomains`, `false` otherwise.
+     */
     public function hasAllowedDomain(array $allowedDomains): bool
     {
         return in_array($this->emailDomain(), $allowedDomains, true);
     }
 
+    /**
+     * Determine whether the user is considered an employee.
+     *
+     * @return bool `true` if the user has a verified email, an active employee record, and at least one role; `false` otherwise.
+     */
     public function isEmployee(): bool
     {
         return $this->hasVerifiedEmail()
@@ -141,7 +185,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
      */
 
     /**
-     * Get allowed status transitions for this user.
+     * Determine which status values the user may transition to from their current status.
+     *
+     * @return string[] Array of status identifiers the user can transition to.
      */
     public function allowedStatusTransitions(): array
     {
@@ -149,15 +195,21 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     }
 
     /**
-     * Check if a status transition is allowed.
-     */
+         * Determine whether the user may transition from their current status to the given target status.
+         *
+         * @param string $targetStatus The desired status to transition to.
+         * @return bool `true` if the transition from the user's current status to `$targetStatus` is allowed, `false` otherwise.
+         */
     public function canTransitionTo(string $targetStatus): bool
     {
         return Status::canTransition($this->status, $targetStatus);
     }
 
     /**
-     * Safely update the user's status if allowed.
+     * Update the user's status when the transition to the given status is permitted.
+     *
+     * @param string $newStatus The target status to transition the user to.
+     * @return bool `true` if the status was changed and the model was saved, `false` if the transition is not allowed or saving failed.
      */
     public function updateStatus(string $newStatus): bool
     {
@@ -170,7 +222,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     }
 
     /**
-     * Check if the user is active.
+     * Determine whether the user's status is active.
+     *
+     * @return bool `true` if the user's status equals `Status::ACTIVE`, `false` otherwise.
      */
     public function isActive(): bool
     {
@@ -178,7 +232,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     }
 
     /**
-     * Check if the user is restricted.
+     * Determine whether the user has status RESTRICTED.
+     *
+     * @return bool `true` if the user's status is `Status::RESTRICTED`, `false` otherwise.
      */
     public function isRestricted(): bool
     {
@@ -186,7 +242,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     }
 
     /**
-     * Check if the user is suspended.
+     * Determine whether the user is suspended.
+     *
+     * @return bool `true` if the user's status is `Status::SUSPENDED`, `false` otherwise.
      */
     public function isSuspended(): bool
     {
@@ -194,7 +252,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     }
 
     /**
-     * Check if the user is banned.
+     * Determine whether the user's status is banned.
+     *
+     * @return bool `true` if the user's status equals `Status::BANNED`, `false` otherwise.
      */
     public function isBanned(): bool
     {
@@ -202,7 +262,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     }
 
     /**
-     * Check if the user is pending approval.
+     * Determines whether the user's status is pending approval.
+     *
+     * @return bool `true` if the user's status equals `Status::PENDING`, `false` otherwise.
      */
     public function isPending(): bool
     {
@@ -210,7 +272,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     }
 
     /**
-     * Check if the user is unverified.
+     * Determine whether the user's status is UNVERIFIED.
+     *
+     * @return bool `true` if the user's status is Status::UNVERIFIED, `false` otherwise.
      */
     public function isUnverified(): bool
     {

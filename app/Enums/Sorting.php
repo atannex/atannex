@@ -33,9 +33,9 @@ final class Sorting extends Enum
     public const REGION = 'region';
 
     /**
-     * Return options formatted for Filament Select components.
+     * Provide options for Filament Select by mapping each sorting value to its description.
      *
-     * @return array<string, string>
+     * @return array<string, string> Associative array where keys are sorting values and values are their human-readable labels.
      */
     public static function options(): array
     {

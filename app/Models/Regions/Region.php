@@ -51,31 +51,63 @@ class Region extends Model implements Sluggable
         'territory' => Territories::class,
     ];
 
+    /**
+     * Provide the model's image attribute names.
+     *
+     * @return string[] Attribute names that represent image fields (e.g., `['logo']`).
+     */
     public function images(): array
     {
         return ['logo'];
     }
 
+    /**
+     * Get the storage directory path for region logos.
+     *
+     * @return string The relative directory path where region logos are stored.
+     */
     public function dir(): string
     {
         return 'regions';
     }
 
+    /**
+     * Initialize boot callbacks required for managing the model's slug path.
+     */
     protected static function booted(): void
     {
         static::bootHasSlugPath();
     }
 
+    /**
+     * Gets the relationship for this region's child regions and their descendants.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany The has-many relationship for this region's direct children; descendants are eager-loaded recursively.
+     */
     public function childrenRecursive(): HasMany
     {
         return $this->children()->with('childrenRecursive');
     }
 
+    /**
+     * Get the region's ruler.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne The one-to-one relationship to the Ruler model.
+     */
     public function ruler(): HasOne
     {
         return $this->hasOne(Ruler::class);
     }
 
+    /**
+     * Get the posts associated with this region.
+     *
+     * The many-to-many relationship to Post models via the `post_region` pivot table.
+     * Uses `PostRegion` as the custom pivot model and includes the `region_id` and
+     * `post_id` pivot attributes as well as pivot timestamps.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany The many-to-many relation to Post.
+     */
     public function posts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class, 'post_region')
@@ -85,7 +117,12 @@ class Region extends Model implements Sluggable
     }
 
     /**
-     * Published sections in this region, ordered by position.
+     * Get this region's published sections ordered by the pivot `position`.
+     *
+     * The relationship uses the `region_section_widgets` pivot (RegionSectionWidget) and exposes pivot
+     * fields `widget_id`, `position`, `config`, `flag`, and `metadata` on the `pivot` property.
+     *
+     * @return BelongsToMany Published Section models for this region, ordered by the pivot `position`.
      */
     public function sections(): BelongsToMany
     {
@@ -100,6 +137,8 @@ class Region extends Model implements Sluggable
 
     /**
      * Published widgets in this region, ordered by position.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany A relation for the region's published widgets, ordered by the pivot `position`.
      */
     public function widgets(): BelongsToMany
     {

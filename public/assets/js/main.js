@@ -330,6 +330,13 @@
         c = ".ajax-contact",
         d = '[name="email"]',
         u = e(".form-messages");
+    /**
+     * Validate the contact form fields, submit the form via AJAX if validation passes, and update the UI with success or error messages.
+     *
+     * Validates the name, email, subject, number, and message fields and the email format; on successful validation performs a POST to the form's action, clears form inputs on success, and toggles success/error classes and message text based on the response.
+     *
+     * @returns {jQuery.jqXHR|false} The jqXHR object for the AJAX request if submission was initiated, `false` if validation failed and no request was made.
+     */
     function p() {
         var t = e(c).serialize();
         (function () {
@@ -402,6 +409,14 @@
             e(".popup-subscribe-area").addClass("hide"),
                 localStorage.setItem("popupDestroyed", "true");
         });
+    /**
+     * Wire click handlers to toggle a CSS class on a panel container to manage show/hide behavior.
+     *
+     * @param {string} t - Selector for the panel container element (e.g., ".side-menu").
+     * @param {string} s - Selector for the element(s) that open the panel (clicking adds the class).
+     * @param {string} a - Selector for the element(s) that close the panel (clicking removes the class).
+     * @param {string} i - CSS class name to add to or remove from the panel container to represent the visible state.
+     */
     function h(t, s, a, i) {
         e(s).on("click", function (s) {
             s.preventDefault(), e(t).addClass(i);
@@ -679,4 +694,3 @@
             );
         });
 })(jQuery);
-

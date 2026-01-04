@@ -10,11 +10,12 @@ use Illuminate\Support\Collection;
 trait HasRegion
 {
     /**
-     * Retrieve top-level regions with their published posts
-     * and posts from all leaf descendant regions.
+     * Retrieve top-level regions and attach their recent published posts including posts from all leaf descendant regions.
      *
-     * @param int $limit Maximum posts per region
-     * @return Collection<int, Region>
+     * For each returned Region, an `allPosts` Collection is added containing up to `$limit` published posts aggregated from the region itself and all of its leaf descendants, sorted by `published_at` in descending order.
+     *
+     * @param int $limit Maximum number of posts to include per region.
+     * @return Collection<int, Region> A collection of top-level Region instances, each augmented with an `allPosts` collection of up to `$limit` most recent published posts.
      */
     public function hasRegionWithPost(int $limit = 5): Collection
     {

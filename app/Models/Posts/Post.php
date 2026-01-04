@@ -62,6 +62,11 @@ class Post extends Model implements Commentable
         return ['image'];
     }
 
+    /**
+     * Get the storage directory name used for post-related files.
+     *
+     * @return string The directory name used for storing post assets (e.g., "posts").
+     */
     public function dir(): string
     {
         return 'posts';

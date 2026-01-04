@@ -29,7 +29,9 @@ use Atannex\Adapters\SectionAdapter;
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap application services.
+     * Bootstrap application services by registering model observers.
+     *
+     * Attaches observers for Eloquent models used by the application (for example, Section and Widget).
      */
     public function boot(): void
     {
