@@ -22,7 +22,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
-    use HasCleaning;
     use HasRoles;
     use Notifiable;
     use Slugging;

@@ -63,8 +63,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}?v=1.0.1">
+    <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}?v=1.0.1">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=1.0.1">
     <link rel="stylesheet" href="{{ asset('assets/css/image.css') }}?v=1.0.1">
     <link rel="stylesheet" href="{{ asset('assets/css/auth.css') }}?v=1.0.1">

@@ -6,7 +6,6 @@ namespace App\Models\Modules;
 
 use App\Enums\PostType;
 use App\Models\Posts\Post;
-use Atannex\Traits\HasCleaning;
 use Atannex\Traits\HasReading;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +14,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class PostModule extends Model
 {
     use HasReading;
-    use HasCleaning;
     use SoftDeletes;
 
     protected $table = 'post_modules';

@@ -14,7 +14,6 @@ use Atannex\Concerns\HasResolver;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Filters\Hierarchy;
-use Atannex\Traits\HasCleaning;
 use Atannex\Traits\HasSlugPath;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -22,7 +21,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Category extends Model implements Sluggable
 {
     use Hierarchy;
-    use HasCleaning;
     use HasResolver;
     use Slugging;
     use HasSlugPath;
@@ -47,15 +45,6 @@ class Category extends Model implements Sluggable
 
     protected string $slugSource = 'name';
 
-    /* -----------------------------------------------------------------
-     |  Image Handling (Universal)
-     | -----------------------------------------------------------------
-     */
-
-    /**
-     * Return the image attributes for this model.
-     * Add more fields if needed in the future.
-     */
     public function images(): array
     {
         return ['image'];

@@ -14,7 +14,6 @@ use App\Models\Regions\Ruler;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Filters\Hierarchy;
-use Atannex\Traits\HasCleaning;
 use Atannex\Traits\HasSlugPath;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -28,7 +27,6 @@ class Region extends Model implements Sluggable
     use HasSlugPath;
     use Scoping;
     use Slugging;
-    use HasCleaning;
     use SoftDeletes;
 
     protected $table = 'regions';
@@ -70,7 +68,7 @@ class Region extends Model implements Sluggable
      */
     public function dir(): string
     {
-        return 'regions/logos';
+        return 'regions';
     }
 
     /**

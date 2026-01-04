@@ -8,6 +8,9 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
 
 class GalleryForm
 {
@@ -15,45 +18,117 @@ class GalleryForm
     {
         return $schema
             ->components([
-                TextInput::make('original_name')
-                    ->default(null),
+                Grid::make(['default' => 1, 'lg' => 2])
+                    ->schema([
+                        Group::make()
+                            ->schema([
+                                Section::make('Image Configuration')
+                                    ->description('Define image type and classification')
+                                    ->icon('heroicon-o-cog-6-tooth')
+                                    ->schema([
+                                        Grid::make(1)
+                                            ->schema([
+                                                Select::make('type')
+                                                    ->label('Image Type')
+                                                    ->options(Image::asSelectArray())
+                                                    ->searchable()
+                                                    ->required()
+                                                    ->preload()
+                                                    ->native(false)
+                                                    ->default(Image::LOGO)
+                                                    ->prefixIcon('heroicon-o-tag')
+                                                    ->helperText('Categorize this image by its intended use')
+                                                    ->columnSpanFull(),
 
-                Select::make('type')
-                    ->options(Image::asSelectArray())
-                    ->label('Choose Your Image Type')
-                    ->searchable()
-                    ->required()
-                    ->preload()
-                    ->default(Image::LOGO),
+                                                TextInput::make('original_name')
+                                                    ->label('Original Filename')
+                                                    ->placeholder('Auto-captured from upload')
+                                                    ->default(null)
+                                                    ->dehydrated()
+                                                    ->disabled()
+                                                    ->prefixIcon('heroicon-o-document')
+                                                    ->helperText('Original name preserved for reference')
+                                                    ->columnSpanFull(),
+                                            ]),
+                                    ])
+                                    ->compact()
+                                    ->collapsible()
+                                    ->persistCollapsed(),
 
-                FileUpload::make('image')
-                    ->label('Featured Image')
-                    ->disk('public')
-                    ->visibility('public')
-                    ->directory(fn ($record) => $record?->getImageDirectory())
-                    ->image()
-                    ->imageEditor()
-                    ->imageEditorAspectRatios([
-                        '16:9' => '16:9 (Recommended)',
-                        '4:3' => '4:3 (Standard)',
-                        '1:1' => '1:1 (Square)',
+                                Section::make('Status Management')
+                                    ->description('Control visibility and publication status')
+                                    ->icon('heroicon-o-flag')
+                                    ->schema([
+                                        Grid::make(1)
+                                            ->schema([
+                                                Select::make('flag')
+                                                    ->label('Publication Status')
+                                                    ->options(Flag::asSelectArray())
+                                                    ->searchable()
+                                                    ->required()
+                                                    ->preload()
+                                                    ->native(false)
+                                                    ->default(Flag::DRAFT)
+                                                    ->prefixIcon('heroicon-o-flag')
+                                                    ->helperText('Current publication state of this image')
+                                                    ->columnSpanFull(),
+                                            ]),
+                                    ])
+                                    ->compact()
+                                    ->collapsible()
+                                    ->persistCollapsed(),
+                            ])
+                            ->columnSpan(['default' => 1, 'lg' => 1]),
+
+                        Group::make()
+                            ->schema([
+                                Section::make('Image Upload')
+                                    ->description('Upload and manage your gallery image')
+                                    ->icon('heroicon-o-photo')
+                                    ->schema([
+                                        Grid::make(1)
+                                            ->schema([
+                                                FileUpload::make('image')
+                                                    ->label('Gallery Image')
+                                                    ->disk('public')
+                                                    ->visibility('public')
+                                                    ->directory(fn($record) => $record->dir() ?? 'gallery')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->imageEditorAspectRatios([
+                                                        '16:9' => '16:9 (Widescreen)',
+                                                        '4:3' => '4:3 (Standard)',
+                                                        '1:1' => '1:1 (Square)',
+                                                        '3:2' => '3:2 (Classic)',
+                                                        '21:9' => '21:9 (Ultrawide)',
+                                                    ])
+                                                    ->maxSize(5120)
+                                                    ->acceptedFileTypes([
+                                                        'image/jpeg',
+                                                        'image/png',
+                                                        'image/jpg',
+                                                        'image/webp',
+                                                        'image/gif',
+                                                        'image/svg+xml',
+                                                    ])
+                                                    ->helperText('Recommended: 1920×1080px (16:9) | Max size: 5MB | Formats: JPG, PNG, WebP, GIF, SVG')
+                                                    ->imagePreviewHeight('320')
+                                                    ->panelLayout('integrated')
+                                                    ->panelAspectRatio('16:9')
+                                                    ->uploadingMessage('Uploading your image...')
+                                                    ->removeUploadedFileButtonPosition('top-right')
+                                                    ->uploadProgressIndicatorPosition('center')
+                                                    ->loadingIndicatorPosition('center')
+                                                    ->required()
+                                                    ->columnSpanFull(),
+                                            ]),
+                                    ])
+                                    ->collapsible()
+                                    ->persistCollapsed(),
+                            ])
+                            ->columnSpan(['default' => 1, 'lg' => 1]),
                     ])
-                    ->maxSize(5120)
-                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                    ->helperText('Recommended size: 1200x675px (16:9 ratio)')
-                    ->imagePreviewHeight('250')
-                    ->uploadingMessage('Uploading your image...')
                     ->columnSpanFull(),
-
-                Select::make('flag')
-                    ->label('Status Flag')
-                    ->helperText('Current status of this account')
-                    ->options(Flag::asSelectArray())
-                    ->searchable()
-                    ->required()
-                    ->preload()
-                    ->columnSpan(['default' => 12, 'md' => 4, 'lg' => 3])
-                    ->default(Flag::PENDING),
             ]);
     }
 }
