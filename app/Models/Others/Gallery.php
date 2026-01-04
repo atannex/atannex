@@ -27,7 +27,9 @@ class Gallery extends Model
     ];
 
     /**
-     * Return the image attributes for this model.
+     * Get the model's image attribute keys.
+     *
+     * @return string[] The list of attribute names that store images (e.g., ['image']).
      */
     public function images(): array
     {
