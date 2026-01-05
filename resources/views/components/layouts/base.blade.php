@@ -112,9 +112,8 @@
 
     </script> --}}
 
-
-    @livewireStyles
     <x-layouts.googletagmanager />
+
 </head>
 <body>
     @yield('base')

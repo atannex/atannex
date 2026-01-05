@@ -6,7 +6,6 @@ use Filament\Panel;
 use App\Enums\Gender;
 use App\Enums\Status;
 use Atannex\Enables\Slugging;
-use Atannex\Traits\HasCleaning;
 use App\Models\Comments\Comment;
 use App\Models\Regions\Employee;
 use Spatie\Permission\Traits\HasRoles;
@@ -16,11 +15,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Notifications\VerifyEmailNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
+use Atannex\Contracts\HasImages;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable implements FilamentUser, MustVerifyEmail
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasImages
 {
     use HasRoles;
     use Notifiable;

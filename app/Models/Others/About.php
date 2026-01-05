@@ -2,11 +2,11 @@
 
 namespace App\Models\Others;
 
-use Atannex\Traits\HasCleaning;
+use Atannex\Contracts\HasImages;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class About extends Model
+class About extends Model implements HasImages
 {
     use SoftDeletes;
 
