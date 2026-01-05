@@ -35,10 +35,10 @@ class TagRepository implements TagInterface
     }
 
     /**
-     * Retrieves all blog posts associated with a tag (using the tag's slug),
-     * ordered by published date descending.
+     * Retrieve all posts tagged with the given tag slug, ordered by `published_at` descending.
      *
-     * @return Collection<Post>
+     * @param string $tagSlug The slug identifying the tag.
+     * @return \Illuminate\Support\Collection|array<int,\App\Models\Post> A collection of Post models ordered by `published_at` descending.
      */
     public function getPostsForTag(string $tagSlug): Collection
     {
@@ -64,10 +64,10 @@ class TagRepository implements TagInterface
     }
 
     /**
-     * Retrieves the most popular tags based on the number
-     * of associated published posts.
+     * Retrieve the most popular tags by number of published posts.
      *
-     * @return Collection<Tag>
+     * @param int $limit The maximum number of tags to return.
+     * @return Collection<Tag> Collection of Tag models that have at least 2 published posts, ordered by published posts count descending.
      */
     public function getPopularTags(int $limit = 10): Collection
     {
@@ -89,7 +89,11 @@ class TagRepository implements TagInterface
     }
 
     /**
-     * Finds a published post by ID or fails.
+     * Retrieve a published Post by its ID or throw an exception if none exists.
+     *
+     * @param int $postId The ID of the post to find (must be published).
+     * @return Post The found Post model.
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If no published post with the given ID exists.
      */
     private function findPost(int $postId): Post
     {

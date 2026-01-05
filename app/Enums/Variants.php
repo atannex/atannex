@@ -44,9 +44,9 @@ final class Variants extends Enum
     private static ?array $escaped = null;
 
     /**
-     * Get all leetspeak variants for regex use.
+     * Return a map of leetspeak variants escaped for safe use in regular expressions.
      *
-     * @return array<string, array<string>>
+     * @return array<string, array<string>> An associative array where each key is a lowercase letter and each value is an array of the letter's leetspeak variants with regex metacharacters escaped.
      */
     public static function getLeetspeakValues(): array
     {
@@ -61,10 +61,10 @@ final class Variants extends Enum
     }
 
     /**
-     * Build a regex pattern for a given letter's variants.
+     * Constructs a regex character class that matches any leetspeak variant for the specified letter.
      *
-     * @param string $letter
-     * @return string
+     * @param string $letter The lowercase letter key whose variants to include (one of 'a', 'e', 'i', 'o', 's', 't').
+     * @return string A regex character class containing the escaped variants for the given letter (for example: `[4@\/\\^...]`).
      */
     public static function getRegexPattern(string $letter): string
     {

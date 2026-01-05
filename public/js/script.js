@@ -29,8 +29,9 @@ function initDropdownPositioning() {
 }
 
 /**
- * Initialize all toggle password visibility icons with a common data attribute.
- * This binds click events to toggle password fields on demand.
+ * Bind click handlers to elements with `data-toggle-password` to toggle visibility of their target password inputs.
+ *
+ * Each handler reads the target input ID from the element's `data-toggle-password` attribute and toggles that input's type and the toggle icon's classes to reflect visibility.
  */
 function initPasswordToggle() {
     // Assuming you might want to handle multiple password toggles dynamically
@@ -45,9 +46,10 @@ function initPasswordToggle() {
 }
 
 /**
- * Toggle password input visibility and switch icon class accordingly.
- * @param {string} inputId - The ID of the password input element
- * @param {HTMLElement} toggleIcon - The icon element toggling the visibility
+ * Toggle a password input between masked and visible and update the toggle icon classes.
+ *
+ * @param {string} inputId - ID of the target input element; no action is taken if no element with this ID exists.
+ * @param {HTMLElement} toggleIcon - Icon element whose classes `fa-eye` and `fa-eye-slash` will be swapped to reflect visibility.
  */
 function togglePasswordVisibility(inputId, toggleIcon) {
     const passwordInput = document.getElementById(inputId);
