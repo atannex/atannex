@@ -3,6 +3,51 @@
         <h2 class="comments-title">
             Comments ({{ $comments->total() }})
         </h2>
+    </div>
+
+    <div class="comment-form">
+        <h3 class="form-title">
+            {{ $replyingTo ? 'Reply to ' . $replyingTo['username'] : __('Leave a Comment') }}
+        </h3>
+
+        <form wire:submit="submit">
+            @guest
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" wire:model.defer="guest_name" placeholder="Your Name*" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <input type="email" wire:model.defer="guest_email" placeholder="Your Email*" class="form-input">
+                </div>
+            </div>
+            @endguest
+
+            <input type="text" wire:model.defer="website" class="d-none" tabindex="-1" autocomplete="off">
+
+            <div class="form-group">
+                <textarea wire:model="comment" placeholder="Write a comment..." class="form-textarea"></textarea>
+
+                @error('comment')
+                <small class="error-message">{{ $message }}</small>
+                @enderror
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">
+                    {{ __("Post Comment") }}
+                </button>
+
+                @if ($replyingTo)
+                <button type="button" wire:click="cancelReply" class="cancel-btn">
+                    {{ __("Cancel Reply") }}
+                </button>
+                @endif
+            </div>
+        </form>
+    </div>
+
+    <div class="comments-wrap">
 
         <ul class="comment-list">
             @forelse ($comments as $comment)
@@ -117,45 +162,4 @@
         @endif
     </div>
 
-    <div class="comment-form">
-        <h3 class="form-title">
-            {{ $replyingTo ? 'Reply to ' . $replyingTo['username'] : __('Leave a Comment') }}
-        </h3>
-
-        <form wire:submit="submit">
-            @guest
-            <div class="form-row">
-                <div class="form-group">
-                    <input type="text" wire:model.defer="guest_name" placeholder="Your Name*" class="form-input">
-                </div>
-
-                <div class="form-group">
-                    <input type="email" wire:model.defer="guest_email" placeholder="Your Email*" class="form-input">
-                </div>
-            </div>
-            @endguest
-
-            <input type="text" wire:model.defer="website" class="d-none" tabindex="-1" autocomplete="off">
-
-            <div class="form-group">
-                <textarea wire:model="comment" placeholder="Write a comment..." class="form-textarea"></textarea>
-
-                @error('comment')
-                <small class="error-message">{{ $message }}</small>
-                @enderror
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="submit-btn">
-                    {{ __("Post Comment") }}
-                </button>
-
-                @if ($replyingTo)
-                <button type="button" wire:click="cancelReply" class="cancel-btn">
-                    {{ __("Cancel Reply") }}
-                </button>
-                @endif
-            </div>
-        </form>
-    </div>
 </div>

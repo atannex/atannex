@@ -69,4 +69,9 @@ final class Status extends Enum
     {
         return in_array($targetStatus, self::allowedTransitions($currentStatus), true);
     }
+
+    public static function describe(?string $value): string
+    {
+        return $value ? self::getDescription($value) : 'N/A';
+    }
 }

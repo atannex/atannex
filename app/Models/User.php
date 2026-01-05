@@ -22,10 +22,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasImages
 {
-    use HasRoles;
-    use Notifiable;
-    use Slugging;
-    use SoftDeletes;
+    use HasRoles, Notifiable, Slugging, SoftDeletes;
 
     protected string $slugSource = 'name';
 
@@ -39,7 +36,15 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'phone',
         'status',
         'slug',
+        'locale',
         'timezone',
+        'address',
+        'city',
+        'state',
+        'country',
+        'zip_code',
+        'bio',
+        'metadata',
     ];
 
     protected $hidden = [
@@ -55,11 +60,12 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
             'date_of_birth' => 'date',
             'gender' => Gender::class,
             'status' => Status::class,
+            'metadata' => 'array', // cast JSON to array
         ];
     }
 
     /* -----------------------------------------------------------------
-     |  Image Handling (Universal)
+     |  Image Handling
      | -----------------------------------------------------------------
      */
     public function images(): array
@@ -139,26 +145,16 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
      |  Status Lifecycle Helpers
      | -----------------------------------------------------------------
      */
-
-    /**
-     * Get allowed status transitions for this user.
-     */
     public function allowedStatusTransitions(): array
     {
         return Status::allowedTransitions($this->status);
     }
 
-    /**
-     * Check if a status transition is allowed.
-     */
     public function canTransitionTo(string $targetStatus): bool
     {
         return Status::canTransition($this->status, $targetStatus);
     }
 
-    /**
-     * Safely update the user's status if allowed.
-     */
     public function updateStatus(string $newStatus): bool
     {
         if (!$this->canTransitionTo($newStatus)) {
@@ -169,49 +165,31 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         return $this->save();
     }
 
-    /**
-     * Check if the user is active.
-     */
     public function isActive(): bool
     {
         return $this->status === Status::ACTIVE;
     }
 
-    /**
-     * Check if the user is restricted.
-     */
     public function isRestricted(): bool
     {
         return $this->status === Status::RESTRICTED;
     }
 
-    /**
-     * Check if the user is suspended.
-     */
     public function isSuspended(): bool
     {
         return $this->status === Status::SUSPENDED;
     }
 
-    /**
-     * Check if the user is banned.
-     */
     public function isBanned(): bool
     {
         return $this->status === Status::BANNED;
     }
 
-    /**
-     * Check if the user is pending approval.
-     */
     public function isPending(): bool
     {
         return $this->status === Status::PENDING;
     }
 
-    /**
-     * Check if the user is unverified.
-     */
     public function isUnverified(): bool
     {
         return $this->status === Status::UNVERIFIED;
