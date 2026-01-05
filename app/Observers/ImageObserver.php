@@ -87,6 +87,7 @@ class ImageObserver
             }
 
             // Compute final path using model ID
+            // Compute final path using model's dir() method
             $finalPath = str_replace(
                 '/temp/',
                 '/' . $model->getKey() . '/',
