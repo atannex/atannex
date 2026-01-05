@@ -7,12 +7,16 @@ namespace Atannex\Contracts;
 interface HasImages
 {
     /**
-     * Image attributes handled by the observer.
-     */
+ * List image attribute names that the observer should manage.
+ *
+ * @return string[] Array of image attribute keys expected on the implementing model.
+ */
     public function images(): array;
 
     /**
-     * Directory where images are stored.
-     */
+ * Get the directory where images are stored.
+ *
+ * @return string The filesystem path to the images directory.
+ */
     public function dir(): string;
 }

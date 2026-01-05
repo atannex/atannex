@@ -157,8 +157,18 @@ trait HasPostsForHierarchy
     }
 
     /**
-     * Build base post query
-     */
+         * Create a base Eloquent query for posts constrained to the provided leaf IDs and prepared for sorting and thresholds.
+         *
+         * The query is scoped to published posts, includes a `comments_count` aggregate, and is restricted to the supplied
+         * leaf IDs either by applying a `whereIn` on the provided foreign key or by using `whereHas` on the given relation.
+         *
+         * @param int[] $leafIds IDs of leaf items used to restrict which posts are considered.
+         * @param string|null $foreignKey Optional posts table foreign key column that references leaf items; when provided the query uses `whereIn` on this column.
+         * @param string $relationName Name of the relation on the Post model that links to leaf items; used when `$foreignKey` is null.
+         * @param string $sortBy Sorting key (one of the allowed sortable columns) to apply via sorting/threshold rules.
+         * @param string $sortDir Sorting direction, either 'asc' or 'desc'.
+         * @return Builder The configured post query builder with published scope, comment counts, leaf filters, and sorting/thresholds applied.
+         */
     protected function buildPostQuery(
         array $leafIds,
         ?string $foreignKey,

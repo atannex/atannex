@@ -12,6 +12,9 @@ final class Lebialem
 {
     use HasMedia;
 
+    /**
+     * Initialize the Lebialem facade with its required services.
+     */
     public function __construct(
         protected readonly RegionService $regionService,
         protected readonly TagService $tagService,
@@ -20,9 +23,20 @@ final class Lebialem
     }
 
     /**
-     * Prepare shared view data for public-facing layouts.
+     * Assemble shared data used by public-facing layouts.
      *
-     * @return array<string, mixed>
+     * The returned array contains view-ready resources and collections required by
+     * public layouts:
+     * - `logo`, `favicon`, `banner`: URLs or media entries for site branding.
+     * - `global_icons`: social media icon set.
+     * - `popularTags`: top tags (limited to 10).
+     * - `mainRegions`: collection of root regions.
+     * - `headerRegion`: the first region from `mainRegions`.
+     * - `categoryRegions`: root category regions.
+     * - `recentPosts`: recent posts as provided by the injected HasPost service (2 units).
+     * - `breaking`: breaking posts indicator from the injected HasPost service.
+     *
+     * @return array<string, mixed> Associative array of layout data keyed as described above.
      */
     public function getGlobalData(): array
     {
