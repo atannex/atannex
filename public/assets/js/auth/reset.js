@@ -1,264 +1,253 @@
 /**
- * Form Utilities
- * -----------------------------
- * - Timezone auto-detection
- * - Real-time password entropy analysis (zxcvbn)
- * - Password match validation
- * - Password visibility toggle
- * - Submit-time enforcement
- *
- * @module FormUtilities
+ * Manages password input validation, strength checking, and timezone initialization for a form.
+ * @module PasswordValidation
  */
 
-(() => {
-    "use strict";
-
-    /* ----------------------------------------------------------------------
-     * Configuration
-     * ---------------------------------------------------------------------- */
-
-    const PASSWORD_POLICY = {
-        MIN_SCORE: 3, // zxcvbn score (0–4)
-    };
-
-    const STRENGTH_UI = [
-        {
-            label: "Very Weak",
-            class: "bg-danger",
-            text: "text-danger",
-            percent: 20,
-        },
-        { label: "Weak", class: "bg-danger", text: "text-danger", percent: 40 },
-        {
-            label: "Fair",
-            class: "bg-warning",
-            text: "text-warning",
-            percent: 60,
-        },
-        { label: "Good", class: "bg-info", text: "text-info", percent: 80 },
-        {
-            label: "Strong",
-            class: "bg-success",
-            text: "text-success",
-            percent: 100,
-        },
-    ];
-
-    /* ----------------------------------------------------------------------
-     * Utilities
-     * ---------------------------------------------------------------------- */
-
-    /**
-     * Safely get DOM element by ID.
-     */
-    const el = (id) => document.getElementById(id);
-
-    /**
-     * Populate the input with id "timezone" with the user's IANA time zone.
-     *
-     * If the element is not present this function does nothing. If timezone
-     * detection fails, the error is logged and the input value is left unchanged.
-     */
-    function initializeTimezone() {
-        const timezoneInput = el("timezone");
-        if (!timezoneInput) return;
-
-        try {
-            timezoneInput.value =
-                Intl.DateTimeFormat().resolvedOptions().timeZone;
-        } catch (error) {
-            console.error("Timezone detection failed:", error);
-        }
+/**
+ * Set the element with id "timezone" to the user's IANA timezone.
+ *
+ * If the element is missing, no change is made and a warning is logged.
+ * If determining the timezone fails, an error is logged.
+ * @private
+ */
+function initializeTimezone() {
+    const timezoneInput = document.getElementById("timezone");
+    if (!timezoneInput) {
+        console.warn("Timezone input element not found");
+        return;
     }
-
-    /* ----------------------------------------------------------------------
-     * Password Strength (zxcvbn)
-     * ---------------------------------------------------------------------- */
-
-    /**
-     * Determine the zxcvbn analysis result for a given password.
-     *
-     * @param {string} password - The password to analyze.
-     * @returns {object|null} The result object returned by zxcvbn, or `null` if no password is provided or zxcvbn is unavailable.
-     */
-    function analyzePassword(password) {
-        if (!password || typeof zxcvbn !== "function") {
-            return null;
-        }
-        return zxcvbn(password);
+    try {
+        timezoneInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    } catch (error) {
+        console.error("Error setting timezone:", error);
     }
+}
 
-    /**
-     * Update the password strength progress bar and label to reflect a given score.
-     * 
-     * Selects the corresponding strength configuration for `score` (falls back to the weakest)
-     * and applies its percentage width and visual class to the progress `bar`, and sets the
-     * label text and text color class on `text`.
-     * 
-     * @param {number} score - Strength score (typically 0–4).
-     * @param {HTMLElement} bar - Progress bar element whose width and classes will be updated.
-     * @param {HTMLElement} text - Text element where the strength label and text color class will be set.
-     */
-    function updateStrengthUI(score, bar, text) {
-        const config = STRENGTH_UI[score] || STRENGTH_UI[0];
+/**
+ * Calculates a password strength score based on length and character variety.
+ * @param {string} password - The password to evaluate.
+ * @returns {number} A number between 0 and 5 inclusive where higher values indicate stronger passwords.
+ * @private
+ */
+function calculatePasswordStrength(password) {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[\W_]/.test(password)) strength++;
+    return strength;
+}
 
-        bar.style.width = `${config.percent}%`;
-        bar.className = `progress-bar ${config.class}`;
+/**
+ * Update UI elements to reflect a password strength score.
+ *
+ * @param {number} strength - Strength score from 0 to 5 where higher is stronger.
+ * @param {HTMLElement} strengthBar - Progress indicator element whose width and styling will reflect strength.
+ * @param {HTMLElement} strengthText - Text element that will display the strength label and receive styling.
+ * @private
+ */
+function updateStrengthUI(strength, strengthBar, strengthText) {
+    const percentage = (strength / 5) * 100;
+    strengthBar.style.width = `${percentage}%`;
 
-        text.textContent = config.label;
-        text.className = `form-text ${config.text}`;
+    if (strength <= 2) {
+        strengthBar.className = "progress-bar bg-danger";
+        strengthText.textContent = "Weak";
+        strengthText.className = "form-text text-danger";
+        return;
     }
-
-    /**
-     * Render password feedback (warning and suggestions) into the provided container element.
-     *
-     * If `result` or `feedbackEl` is falsy the element's text content is cleared.
-     *
-     * @param {Object|null} result - zxcvbn analysis result with a `feedback` object containing an optional `warning` string and `suggestions` array of strings.
-     * @param {HTMLElement} feedbackEl - DOM element to receive the rendered feedback; warning is wrapped in a `div.text-warning` and suggestions are rendered as a `ul.mb-0` list.
-     */
-    function updateFeedback(result, feedbackEl) {
-        if (!result || !feedbackEl) {
-            feedbackEl.textContent = "";
-            return;
-        }
-
-        const { warning, suggestions } = result.feedback;
-
-        feedbackEl.innerHTML = `
-            ${warning ? `<div class="text-warning">${warning}</div>` : ""}
-            ${
-                suggestions.length
-                    ? `<ul class="mb-0">${suggestions
-                          .map((s) => `<li>${s}</li>`)
-                          .join("")}</ul>`
-                    : ""
-            }
-        `;
+    if (strength <= 4) {
+        strengthBar.className = "progress-bar bg-warning";
+        strengthText.textContent = "Moderate";
+        strengthText.className = "form-text text-warning";
+        return;
     }
+    strengthBar.className = "progress-bar bg-success";
+    strengthText.textContent = "Strong";
+    strengthText.className = "form-text text-success";
+}
 
-    /**
-     * Checks whether the password and confirmation inputs contain identical values and updates the output element with a match message and styling.
-     * @param {HTMLInputElement} password - Password input element to compare.
-     * @param {HTMLInputElement} confirm - Password confirmation input element; empty value clears the output and returns false.
-     * @param {HTMLElement} output - Element where match/mismatch text and success/error styling will be written.
-     * @returns {boolean} `true` if the values are identical, `false` otherwise.
-     */
-    function checkPasswordMatch(password, confirm, output) {
-        if (!confirm.value) {
-            output.textContent = "";
-            return false;
-        }
-
-        const match = password.value === confirm.value;
-
-        output.textContent = match
+/**
+ * Update the provided status element to indicate whether the password and confirmation values match.
+ * If the confirmation is empty, the status element is cleared.
+ * @param {HTMLInputElement} passwordInput - The password input element whose value is compared.
+ * @param {HTMLInputElement} passwordConfirm - The confirmation input element to compare against the password.
+ * @param {HTMLElement} matchText - The element used to display the match status; text and color classes will be set.
+ */
+function checkPasswordMatch(passwordInput, passwordConfirm, matchText) {
+    if (!passwordConfirm.value.length) {
+        matchText.textContent = "";
+        return;
+    }
+    matchText.textContent =
+        passwordInput.value === passwordConfirm.value
             ? "Passwords match"
             : "Passwords do not match";
+    matchText.className = `mt-1 form-text ${
+        passwordInput.value === passwordConfirm.value
+            ? "text-success"
+            : "text-danger"
+    }`;
+}
 
-        output.className = `mt-1 form-text ${
-            match ? "text-success" : "text-danger"
-        }`;
+/**
+ * Toggles password visibility for an input field.
+ * @function togglePasswordVisibility
+ * @param {string} inputId - The ID of the password input element
+ * @param {string} iconId - The ID of the toggle icon element
+ * @global
+ */
+function togglePasswordVisibility(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
 
-        return match;
+    if (!input || !icon) {
+        console.warn(`Element not found: ${!input ? "input" : "icon"}`);
+        return;
     }
 
-    /**
-     * Toggle password visibility.
-     */
-    window.togglePasswordVisibility = function (inputId, iconId) {
-        const input = el(inputId);
-        const icon = el(iconId);
-        if (!input || !icon) return;
+    const isPassword = input.type === "password";
+    input.type = isPassword ? "text" : "password";
+    icon.classList.toggle("fa-eye", !isPassword);
+    icon.classList.toggle("fa-eye-slash", isPassword);
+}
 
-        const isHidden = input.type === "password";
-        input.type = isHidden ? "text" : "password";
-
-        icon.classList.toggle("fa-eye", !isHidden);
-        icon.classList.toggle("fa-eye-slash", isHidden);
+/**
+ * Set up password-strength UI and password confirmation checking by attaching input event handlers.
+ *
+ * Ensures the required DOM elements are present; if any are missing, logs an error and aborts.
+ * When active, shows or hides the strength container, updates the strength bar and text based on
+ * the current password, and updates the match message and styling for the password confirmation.
+ *
+ * Required element IDs: "password", "password-strength-container", "password-strength-text",
+ * "password-strength-bar", "password-confirm", "password-match-text".
+ *
+ * @private
+ */
+function initializePasswordValidation() {
+    const elements = {
+        passwordInput: document.getElementById("password"),
+        strengthContainer: document.getElementById(
+            "password-strength-container"
+        ),
+        strengthText: document.getElementById("password-strength-text"),
+        strengthBar: document.getElementById("password-strength-bar"),
+        passwordConfirm: document.getElementById("password-confirm"),
+        matchText: document.getElementById("password-match-text"),
     };
 
-    /**
-     * Initialize live password validation UI and form enforcement for the current page.
-     *
-     * Sets up input listeners on the password and confirmation fields to:
-     * - Show or hide the strength UI based on whether a password is present.
-     * - Analyze the password strength and update the strength bar and label.
-     * - Render actionable feedback (warnings and suggestions) for the entered password.
-     * - Validate and display whether the password and confirmation match.
-     *
-     * If the required DOM elements are missing, logs an error and exits without attaching listeners.
-     * If the password fields belong to a form, attaches a submit handler that prevents submission
-     * and alerts the user when the password strength is below the configured minimum or the
-     * confirmation does not match.
-     */
-
-    function initializePasswordValidation() {
-        const password = el("password");
-        const confirm = el("password-confirm");
-        const bar = el("password-strength-bar");
-        const text = el("password-strength-text");
-        const container = el("password-strength-container");
-        const matchText = el("password-match-text");
-        const feedback = el("password-feedback");
-        const form = password?.closest("form");
-
-        if (
-            !password ||
-            !confirm ||
-            !bar ||
-            !text ||
-            !container ||
-            !matchText
-        ) {
-            console.error("Password validation elements missing.");
-            return;
-        }
-
-        let currentScore = 0;
-
-        password.addEventListener("input", () => {
-            container.style.display = password.value ? "block" : "none";
-
-            const result = analyzePassword(password.value);
-            currentScore = result ? result.score : 0;
-
-            updateStrengthUI(currentScore, bar, text);
-            updateFeedback(result, feedback);
-            checkPasswordMatch(password, confirm, matchText);
-        });
-
-        confirm.addEventListener("input", () => {
-            checkPasswordMatch(password, confirm, matchText);
-        });
-
-        if (form) {
-            form.addEventListener("submit", (e) => {
-                const isStrongEnough =
-                    currentScore >= PASSWORD_POLICY.MIN_SCORE;
-                const isMatch = checkPasswordMatch(
-                    password,
-                    confirm,
-                    matchText
-                );
-
-                if (!isStrongEnough || !isMatch) {
-                    e.preventDefault();
-                    alert(
-                        "Please choose a stronger password and ensure both fields match."
-                    );
-                }
-            });
-        }
+    // Validate required elements
+    if (!Object.values(elements).every((el) => el)) {
+        console.error("One or more required form elements are missing");
+        return;
     }
 
-    /**
-     * Initialize page features: populate the timezone field and set up password strength, feedback, match checks, and related form handlers.
-     */
-    function initialize() {
+    // Password input event listener
+    elements.passwordInput.addEventListener("input", () => {
+        elements.strengthContainer.style.display =
+            elements.passwordInput.value.length > 0 ? "block" : "none";
+
+        const strength = calculatePasswordStrength(
+            elements.passwordInput.value
+        );
+        updateStrengthUI(strength, elements.strengthBar, elements.strengthText);
+        checkPasswordMatch(
+            elements.passwordInput,
+            elements.passwordConfirm,
+            elements.matchText
+        );
+    });
+
+    // Password confirmation event listener
+    elements.passwordConfirm.addEventListener("input", () => {
+        checkPasswordMatch(
+            elements.passwordInput,
+            elements.passwordConfirm,
+            elements.matchText
+        );
+    });
+}
+
+/**
+ * Initializes all form functionality when the DOM is fully loaded.
+ * @function initialize
+ * @private
+ */
+function initialize() {
+    try {
         initializeTimezone();
         initializePasswordValidation();
+    } catch (error) {
+        console.error("Initialization error:", error);
     }
+}
 
-    document.addEventListener("DOMContentLoaded", initialize);
-})();
+// Initialize when DOM is fully loaded
+document.addEventListener("DOMContentLoaded", initialize);
+
+/**
+ * Create a manager for controlling a subscription popup's visibility and persistence.
+ *
+ * @param {boolean} alreadySubscribed - If true, prevents the popup from being shown.
+ * @returns {{open: boolean, alreadySubscribed: boolean, HIDE_DURATION: number, SHOW_DELAY: number, SCROLL_THRESHOLD: number, init: function(): void, closePopup: function(): void, permanentlyHide: function(): void}} An object that tracks popup state and provides methods to initialize display triggers, close the popup (with short-term hide), and permanently hide it; the object persists hide choices in localStorage. 
+ */
+function popupSubscribe(alreadySubscribed) {
+    return {
+        open: false,
+        alreadySubscribed: alreadySubscribed,
+        HIDE_DURATION: 7 * 24 * 60 * 60 * 1000,
+        SHOW_DELAY: 10000,
+        SCROLL_THRESHOLD: 0.5,
+
+        init() {
+            const hideUntil = localStorage.getItem("hideSubscribePopup");
+            const now = Date.now();
+
+            if (
+                this.alreadySubscribed ||
+                hideUntil === "permanent" ||
+                (hideUntil && now < Number(hideUntil))
+            ) {
+                return;
+            }
+
+            let isTriggered = false;
+
+            const showPopup = () => {
+                if (isTriggered) return;
+                this.open = true;
+                isTriggered = true;
+                window.removeEventListener("scroll", handleScroll);
+            };
+
+            const handleScroll = () => {
+                const scrollPosition = window.scrollY + window.innerHeight;
+                const pageHeight = document.documentElement.scrollHeight;
+                if (scrollPosition / pageHeight >= this.SCROLL_THRESHOLD)
+                    showPopup();
+            };
+
+            setTimeout(showPopup, this.SHOW_DELAY);
+            window.addEventListener("scroll", handleScroll);
+
+            window.addEventListener("subscription-success", () => {
+                this.closePopup();
+                localStorage.setItem(
+                    "hideSubscribePopup",
+                    now + this.HIDE_DURATION
+                );
+            });
+        },
+
+        closePopup() {
+            this.open = false;
+            localStorage.setItem("hideSubscribePopup", Date.now());
+        },
+
+        permanentlyHide() {
+            this.open = false;
+            localStorage.setItem("hideSubscribePopup", "permanent");
+        },
+    };
+}

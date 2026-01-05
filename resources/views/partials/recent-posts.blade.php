@@ -18,14 +18,6 @@
                     @include('partials.title', ['post' => $post])
 
                 </h4>
-
-                <div class="recent-post-meta">
-                    <span>
-
-                        @include('partials.date', ['post' => $post])
-
-                    </span>
-                </div>
             </div>
         </div>
         @endforeach
