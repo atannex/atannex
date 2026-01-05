@@ -155,7 +155,7 @@ trait PostQuery
             Post::query()
                 ->published()
                 ->where('author_id', $authorId)
-                ->with($this->postRelations()),
+                ->with($this->contentRelations()),
             $limit
         );
     }
