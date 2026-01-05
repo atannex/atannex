@@ -109,8 +109,13 @@ final class Icon extends Enum
     ];
 
     /**
-     * Get a metadata value by key for this icon.
-     */
+         * Retrieve a metadata field for this enum instance by key.
+         *
+         * Valid keys: 'label', 'icon', 'color'.
+         *
+         * @param string $key The metadata key to retrieve ('label', 'icon', or 'color').
+         * @return string The metadata value for the given key.
+         */
     private function meta(string $key): string
     {
         return self::$data[$this->value][$key];
@@ -126,13 +131,21 @@ final class Icon extends Enum
         return $this->meta('icon');
     }
 
+    /**
+     * Get the hex color code associated with this icon.
+     *
+     * @return string The color hex code for the icon, including the leading '#' (e.g., '#1877F2').
+     */
     public function color(): string
     {
         return $this->meta('color');
     }
 
     /**
-     * Get all metadata for a given icon constant.
+     * Retrieve the metadata array associated with the specified icon constant.
+     *
+     * @param string $icon The enum value key for the icon (e.g., self::FACEBOOK).
+     * @return array Associative array with keys `label`, `icon`, and `color` for the specified icon.
      */
     public static function getData(string $icon): array
     {
@@ -140,7 +153,9 @@ final class Icon extends Enum
     }
 
     /**
-     * Get metadata for all icons.
+     * Retrieve metadata for all icons.
+     *
+     * @return array<string, array{label: string, icon: string, color: string}> Associative array keyed by icon value, each containing 'label', 'icon', and 'color'.
      */
     public static function all(): array
     {

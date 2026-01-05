@@ -14,7 +14,13 @@ use Filament\Schemas\Components\Utilities\Get;
 class ContentFiltering
 {
     /**
-     * Get the schema for the Content Filtering section.
+     * Builds the Filament form Section containing controls for content filtering.
+     *
+     * The section includes Select controls for choosing content type and for filtering by
+     * region, tag, category, or specific entities. Visibility and options of the filters
+     * are driven by the selected content type.
+     *
+     * @return \Filament\Forms\Components\Section The constructed Section configured for content filtering.
      */
     public static function make(): Section
     {

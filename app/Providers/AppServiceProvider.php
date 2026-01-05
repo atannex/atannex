@@ -29,7 +29,9 @@ use Atannex\Adapters\SectionAdapter;
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap application services.
+     * Register model observers used by the application.
+     *
+     * Registers observers for Eloquent models that require lifecycle handling, such as image cleanup and Section/Widget observers.
      */
     public function boot(): void
     {
@@ -37,7 +39,12 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Centralized observer registration.
+    /**
+     * Register model observers used by the application.
+     *
+     * Attaches the ImageObserver to each model returned by imageCleanupModels(), registers a SectionObserver
+     * (constructed with a SectionAdapter) for the Section model, and registers a WidgetObserver
+     * (constructed with a WidgetAdapter) for the Widget model.
      */
     protected function registerObservers(): void
     {
@@ -55,7 +62,9 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Models requiring automatic image cleanup.
+     * List model class names that require automatic image cleanup.
+     *
+     * @return string[] Fully-qualified model class names that require automatic image cleanup.
      */
     protected function imageCleanupModels(): array
     {

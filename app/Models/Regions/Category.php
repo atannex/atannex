@@ -46,13 +46,20 @@ class Category extends Model implements Sluggable, HasImages
 
     protected string $slugSource = 'name';
 
+    /**
+     * List the model's image attribute keys.
+     *
+     * @return string[] An array of attribute keys that store image filenames or paths (e.g. `['image']`).
+     */
     public function images(): array
     {
         return ['image'];
     }
 
     /**
-     * Return the storage directory for images.
+     * Storage directory name for this model's images.
+     *
+     * @return string Directory name used to store category images.
      */
     public function dir(): string
     {
@@ -70,8 +77,9 @@ class Category extends Model implements Sluggable, HasImages
     }
 
     /**
-     * Posts under this category.
-     * Standard one-to-many relationship.
+     * Get posts that belong to this category.
+     *
+     * @return HasMany The related Post models.
      */
     public function posts(): HasMany
     {
@@ -79,9 +87,12 @@ class Category extends Model implements Sluggable, HasImages
     }
 
     /**
-     * Sections associated with this category via the pivot table `category_section`.
-     * Includes pivot fields `config` and `flag`.
-     * Uses timestamps on the pivot table and a custom pivot model `CategorySection`.
+     * Get sections associated with this category via the `category_section` pivot table.
+     *
+     * The relation uses the custom pivot model `CategorySection`, includes the `flag` pivot
+     * attribute, and maintains `created_at`/`updated_at` on the pivot.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany BelongsToMany relation to Section.
      */
     public function sections(): BelongsToMany
     {

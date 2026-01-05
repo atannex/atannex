@@ -11,6 +11,11 @@ use Illuminate\Database\Eloquent\Builder;
  */
 trait HasPostSearchFields
 {
+    /**
+     * Create a query builder for published Post models with specific relations eager-loaded.
+     *
+     * @return Builder A query builder for Post models with the `published` scope applied and the `author.user`, `category`, `tags`, and `regions` relationships eager-loaded.
+     */
     protected function newModelQuery(): Builder
     {
         return Post::query()

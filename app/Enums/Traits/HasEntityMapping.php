@@ -57,9 +57,10 @@ trait HasEntityMapping
     ];
 
     /**
-     * Retrieve the mapping configuration for a given entity.
+     * Retrieve the mapping sub-array for the specified entity.
      *
-     * @return array<string, mixed>
+     * @param string $entity The entity key to look up in the mappings.
+     * @return array<string,mixed> The mapping sub-array associated with the entity.
      */
     public static function getMapping(string $entity): array
     {
@@ -67,7 +68,12 @@ trait HasEntityMapping
     }
 
     /**
-     * Resolve the method name for a given entity.
+     * Get the configured handler method name for the specified entity.
+     *
+     * Assumes the provided entity key exists in the internal mappings.
+     *
+     * @param string $entity The entity mapping key.
+     * @return string The method name associated with the entity.
      */
     public static function resolveMethod(string $entity): string
     {
@@ -75,7 +81,10 @@ trait HasEntityMapping
     }
 
     /**
-     * Check if the given entity requires an ID key in its mapping.
+     * Determine whether a mapping for the given entity includes an identifier key.
+     *
+     * @param string $entity The mapping key identifying the entity.
+     * @return bool `true` if the entity's mapping contains an `idKey`, `false` otherwise.
      */
     public static function requiresIdKey(string $entity): bool
     {

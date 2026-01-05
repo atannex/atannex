@@ -7,6 +7,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Create the `posts` database table with its columns, foreign keys, indexes, timestamps, and soft delete support.
+     *
+     * The table includes: an auto-incrementing `id`, `title`, unique `slug`, foreign keys `category_id` and `author_id`
+     * (both cascade on delete), nullable `updated_by` (set to null on delete), `description`, nullable `image`,
+     * `published_at`, `slug_path` (indexed), Laravel `created_at`/`updated_at` timestamps, and `deleted_at` for soft deletes.
+     * Indexes are added for `category_id`, `author_id`, and `published_at`.
+     *
+     * @return void
+     */
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {

@@ -17,6 +17,15 @@ use Filament\Tables\Table;
 
 class GalleriesTable
 {
+    /**
+     * Configure and return a Filament table for displaying Gallery records.
+     *
+     * Configures columns, default sorting, filters, record actions, toolbar bulk actions,
+     * empty state, visuals (striped rows, pagination), and polling behavior for the galleries table.
+     *
+     * @param \Filament\Tables\Table $table The Filament Table instance to configure for the galleries resource.
+     * @return \Filament\Tables\Table The configured Table instance.
+     */
     public static function configure(Table $table): Table
     {
         return $table

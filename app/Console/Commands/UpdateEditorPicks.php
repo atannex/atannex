@@ -22,7 +22,11 @@ class UpdateEditorPicks extends Command
     protected $description = 'Deactivate expired editor picks';
 
     /**
-     * Execute the console command.
+     * Deactivate expired editor picks on posts.
+     *
+     * Updates posts where `is_editor_pick` is true and `editor_pick_expires` is set and
+     * less than or equal to the current time, setting `is_editor_pick` to `false`.
+     * After updating, writes an informational message to the console.
      */
     public function handle()
     {
