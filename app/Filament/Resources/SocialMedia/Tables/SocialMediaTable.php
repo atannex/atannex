@@ -125,14 +125,14 @@ class SocialMediaTable
                     ->preload(),
                 SelectFilter::make('flag')
                     ->label('Status')
-                    ->options(Flag::labels())
+                    ->options(Flag::asSelectArray())
                     ->multiple()
                     ->searchable()
                     ->preload(),
 
                 SelectFilter::make('owner_type')
                     ->label('Owner Type')
-                    ->options(Binding::labels())
+                    ->options(Binding::asSelectArray())
                     ->multiple(),
 
                 Filter::make('created_at')
