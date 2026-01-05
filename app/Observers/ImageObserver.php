@@ -48,10 +48,9 @@ class ImageObserver
     protected string $disk = 'public';
 
     /**
-     * Handle the "saving" event.
-     * Deletes replaced images before model is saved.
+     * Remove image files that were previously associated with attributes being changed when the model is saved.
      *
-     * @param Model&HasImages $model
+     * @param Model&HasImages $model The model instance whose image attributes are being saved.
      */
     public function saving(Model&HasImages $model): void
     {
@@ -71,11 +70,12 @@ class ImageObserver
     }
 
     /**
-     * Handle the "saved" event.
-     * Moves files from temporary storage to the final model directory.
-     *
-     * @param Model&HasImages $model
-     */
+         * Move image files referenced by the model from a temporary '/temp/' path into the model's final directory and update the corresponding attributes.
+         *
+         * Processes each attribute returned by the model's images() method; if an attribute's value contains '/temp/' it is moved to a path with the model's primary key in place of the 'temp' segment and the attribute is updated to the new path (saved quietly).
+         *
+         * @param Model&HasImages $model The Eloquent model that implements HasImages and exposes image attribute names via images().
+         */
     public function saved(Model&HasImages $model): void
     {
         foreach ($model->images() as $attribute) {
@@ -102,11 +102,10 @@ class ImageObserver
     }
 
     /**
-     * Handle the "deleted" event.
-     * Deletes all images associated with the model.
-     *
-     * @param Model&HasImages $model
-     */
+         * Remove all image files referenced by the model when it is deleted.
+         *
+         * @param Model&HasImages $model The Eloquent model implementing HasImages whose image attributes will be removed from storage.
+         */
     public function deleted(Model&HasImages $model): void
     {
         foreach ($model->images() as $attribute) {
@@ -115,9 +114,9 @@ class ImageObserver
     }
 
     /**
-     * Delete a file from storage if it exists.
+     * Deletes the file at the given storage path if it exists on the configured disk.
      *
-     * @param string $path
+     * @param string $path Storage path of the file to delete.
      */
     protected function delete(string $path): void
     {
