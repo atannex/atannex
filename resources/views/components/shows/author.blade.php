@@ -1,5 +1,5 @@
 <div class="blog-author">
-    <div class="author-img">
+    <div class="auhtor-img">
         <img src="{{ asset('storage/' . $post->author->user->image) }}" alt="{{ $post->author->user->name }}" class="rounded-circle img-fluid author-image">
     </div>
     <div class="media-body">

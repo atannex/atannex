@@ -113,8 +113,7 @@
 .primary-news-section,
 .content-filter-section,
 .page-banner,
-.subscription,
-.author-image {
+.subscription {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
