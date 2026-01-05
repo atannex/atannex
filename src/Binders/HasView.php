@@ -123,8 +123,6 @@ final class HasView
      */
     public function renderRegionView(Region $region): View
     {
-        // Trust the passed model — it's likely already resolved by route model binding
-        // Remove redundant fetch unless you specifically need fresh data with relations
         abort_unless($region->exists, 404);
 
         $this->resolveSection($region);
@@ -170,7 +168,6 @@ final class HasView
      */
     public function renderAuthorView(Employee $author): View
     {
-        // Guard against missing user relationship
         if (!$author->user) {
             abort(404, 'Author not found');
         }
@@ -273,7 +270,6 @@ final class HasView
 
         $post = $module->post;
 
-        // Safety: ensure author exists
         if (!$post->author) {
             abort(500, 'Post missing author');
         }
@@ -286,7 +282,7 @@ final class HasView
 
         return $this->renderView($viewTemplate, [
             'module' => $module,
-            'post' => $post, // Optional: pass post separately if needed in view
+            'post' => $post,
             'popularTags' => $this->tagService->getPopularTags(),
             'relatedTags' => $this->tagService->getTagsForPost($post->id),
             'navigation' => $this->getPost->hasPostNavigation($post),
