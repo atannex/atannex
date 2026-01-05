@@ -5,49 +5,17 @@ declare(strict_types=1);
 namespace App\Observers;
 
 use Atannex\Contracts\HasImages;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
-/*
-|--------------------------------------------------------------------------
-| Image Observer
-|--------------------------------------------------------------------------
-|
-| Manages image lifecycle for any model implementing HasImages.
-| Responsibilities:
-|  - Deletes replaced images before save
-|  - Moves files from temp storage to final directories post-save
-|  - Cleans up all associated files when the model is deleted
-|
-| Key Notes:
-| - Intersection type Model&HasImages ensures:
-|     1. Eloquent functionality (isDirty, getOriginal)
-|     2. HasImages contract (images(), dir())
-| - Compatible with Filament Admin, API uploads, and native Eloquent workflows
-| - Supports single or multiple image attributes (arrays/JSON)
-| - $disk property configurable; default is 'public'
-|
-| Best Practices:
-| - Models must implement HasImages to opt-in
-| - image attributes must return **attribute names**, not file paths
-| - Observer is universal and can handle temp-to-final migration for new records
-*/
-
 class ImageObserver
 {
-    /**
-     * Storage disk used for image operations.
-     *
-     * @var string
-     */
     protected string $disk = 'public';
 
     /**
-     * Handle the "saving" event.
-     * Deletes replaced images before the model is saved.
-     *
-     * @param Model&HasImages $model
+     * Deletes replaced images before saving.
      */
     public function saving(Model&HasImages $model): void
     {
@@ -56,104 +24,122 @@ class ImageObserver
                 continue;
             }
 
-            $original = $model->getOriginal($attribute);
-            $current  = $model->{$attribute};
-
-            // Handle arrays (JSON columns) or single file paths
-            $originalFiles = is_array($original) ? $original : [$original];
-            $currentFiles  = is_array($current) ? $current : [$current];
+            $originalFiles = (array) $model->getOriginal($attribute);
+            $currentFiles  = (array) $model->{$attribute};
 
             foreach ($originalFiles as $file) {
                 if ($file !== '' && ! in_array($file, $currentFiles, true)) {
-                    $this->delete((string) $file);
+                    $this->delete($file);
                 }
             }
         }
     }
 
     /**
-     * Handle the "saved" event.
-     * Moves temp files to final directories and updates model attributes.
-     *
-     * @param Model&HasImages $model
+     * Moves all temp files to final directories post-save, atomically with DB.
      */
     public function saved(Model&HasImages $model): void
     {
-        foreach ($model->images() as $attribute) {
-            $value = $model->{$attribute};
+        $movedFiles = []; // Track successful file moves for rollback
 
-            // Skip if empty
-            if ($value === '' || $value === null) {
-                continue;
+        try {
+            DB::transaction(function () use ($model, &$movedFiles) {
+                $changes = [];
+
+                // Step 1: Prepare mapping of old => new paths
+                foreach ($model->images() as $attribute) {
+                    $value = $model->{$attribute};
+                    if (empty($value)) {
+                        continue;
+                    }
+
+                    $files = (array) $value;
+                    $updatedFiles = [];
+
+                    foreach ($files as $file) {
+                        if (! str_contains($file, '/temp/')) {
+                            $updatedFiles[] = $file;
+                            continue;
+                        }
+
+                        $finalPath = str_replace('/temp/', '/' . $model->getKey() . '/', $file);
+
+                        if (! Storage::disk($this->disk)->exists($file)) {
+                            Log::warning("ImageObserver: Temp file missing: {$file}", [
+                                'model' => get_class($model),
+                                'id'    => $model->getKey(),
+                            ]);
+                            $updatedFiles[] = $file;
+                            continue;
+                        }
+
+                        $updatedFiles[] = $finalPath;
+                    }
+
+                    if ($files !== $updatedFiles) {
+                        $changes[$attribute] = $updatedFiles;
+                    }
+                }
+
+                if (empty($changes)) {
+                    return;
+                }
+
+                // Step 2: Move all temp files and track them for rollback
+                foreach ($changes as $attribute => $updated) {
+                    $originalFiles = (array) $model->{$attribute};
+
+                    foreach ($originalFiles as $index => $file) {
+                        $finalPath = $updated[$index] ?? $file;
+
+                        if ($file === $finalPath) {
+                            continue;
+                        }
+
+                        Storage::disk($this->disk)->move($file, $finalPath);
+                        $movedFiles[$finalPath] = $file; // Track new => old for rollback
+                    }
+                }
+
+                // Step 3: Update model attributes
+                foreach ($changes as $attribute => $updated) {
+                    $model->forceFill([$attribute => is_array($model->{$attribute}) ? $updated : $updated[0]])
+                        ->saveQuietly();
+                }
+            }, 3); // Retry up to 3 times on deadlocks
+        } catch (\Exception $e) {
+            // Rollback any moved files
+            foreach ($movedFiles as $new => $original) {
+                if (Storage::disk($this->disk)->exists($new)) {
+                    Storage::disk($this->disk)->move($new, $original);
+                }
             }
 
-            // Handle multiple images stored in array
-            $files = is_array($value) ? $value : [$value];
-            $updatedFiles = [];
+            Log::error("ImageObserver: Transaction failed and files rolled back", [
+                'model' => get_class($model),
+                'id'    => $model->getKey(),
+                'error' => $e->getMessage(),
+            ]);
 
-            foreach ($files as $file) {
-                if (! str_contains($file, '/temp/')) {
-                    $updatedFiles[] = $file;
-                    continue; // Already in final directory
-                }
-
-                $finalPath = str_replace('/temp/', '/' . $model->getKey() . '/', $file);
-
-                if (! Storage::disk($this->disk)->exists($file)) {
-                    Log::warning(
-                        "ImageObserver: Temp file does not exist: {$file}",
-                        ['model' => get_class($model), 'id' => $model->getKey()]
-                    );
-                    $updatedFiles[] = $file;
-                    continue;
-                }
-
-                $success = Storage::disk($this->disk)->move($file, $finalPath);
-
-                if ($success) {
-                    $updatedFiles[] = $finalPath;
-                } else {
-                    Log::warning(
-                        "ImageObserver: Failed to move file from {$file} to {$finalPath}",
-                        ['model' => get_class($model), 'id' => $model->getKey()]
-                    );
-                    $updatedFiles[] = $file; // Keep original path to avoid losing reference
-                }
-            }
-
-            // Save updated paths quietly
-            $model->forceFill([$attribute => is_array($value) ? $updatedFiles : $updatedFiles[0]])
-                ->saveQuietly();
+            throw $e; // Re-throw so the error can be handled upstream
         }
     }
 
     /**
-     * Handle the "deleted" event.
-     * Deletes all images associated with the model.
-     *
-     * @param Model&HasImages $model
+     * Deletes all images when the model is deleted.
      */
     public function deleted(Model&HasImages $model): void
     {
         foreach ($model->images() as $attribute) {
-            $value = $model->{$attribute};
-
-            if ($value === '' || $value === null) {
-                continue;
-            }
-
-            $files = is_array($value) ? $value : [$value];
-
+            $files = (array) $model->{$attribute};
             foreach ($files as $file) {
-                $this->delete((string) $file);
+                $this->delete($file);
             }
         }
     }
 
     /**
      * Delete a file from storage if it exists.
-     *
-     * @param string $path
      */
     protected function delete(string $path): void
     {

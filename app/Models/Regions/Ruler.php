@@ -2,12 +2,13 @@
 
 namespace App\Models\Regions;
 
+use Atannex\Contracts\HasImages;
 use Atannex\Enables\Slugging;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Ruler extends Model
+class Ruler extends Model implements HasImages
 {
     use Slugging;
     use SoftDeletes;

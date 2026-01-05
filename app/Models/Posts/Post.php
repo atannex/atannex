@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Models\Posts;
 
 use App\Contracts\Commentable;
+use Atannex\Contracts\HasImages;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Relations\PostRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Post extends Model implements Commentable
+class Post extends Model implements Commentable, HasImages
 {
     use PostRelation;
     use Scoping;

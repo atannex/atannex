@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Enums\Flag;
 use Atannex\Concerns\HasResolver;
+use Atannex\Contracts\HasImages;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Filters\Hierarchy;
@@ -18,7 +19,7 @@ use Atannex\Traits\HasSlugPath;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Category extends Model implements Sluggable
+class Category extends Model implements Sluggable, HasImages
 {
     use Hierarchy;
     use HasResolver;

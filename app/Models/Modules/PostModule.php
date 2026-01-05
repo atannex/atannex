@@ -6,12 +6,13 @@ namespace App\Models\Modules;
 
 use App\Enums\PostType;
 use App\Models\Posts\Post;
+use Atannex\Contracts\HasImages;
 use Atannex\Traits\HasReading;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PostModule extends Model
+class PostModule extends Model implements HasImages
 {
     use HasReading;
     use SoftDeletes;

@@ -11,6 +11,7 @@ use App\Models\Pivots\PostRegion;
 use App\Models\Pivots\RegionSectionWidget;
 use App\Models\Posts\Post;
 use App\Models\Regions\Ruler;
+use Atannex\Contracts\HasImages;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Filters\Hierarchy;
@@ -21,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Region extends Model implements Sluggable
+class Region extends Model implements Sluggable, HasImages
 {
     use Hierarchy;
     use HasSlugPath;
