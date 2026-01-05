@@ -129,7 +129,7 @@ class SocialMediaForm
             ->preload()
             ->searchable()
             ->options(Flag::asSelectArray())
-            ->default(Flag::PENDING)
+            ->default(Flag::DRAFT)
             ->label('Status Flag')
             ->helperText('Current status of this account');
     }
