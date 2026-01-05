@@ -21,9 +21,9 @@ class CommentForm extends Component
      | Configuration
      | -----------------------------------------------------------------
      */
-    protected const COMMENTS_PER_LOAD = 10;
-    protected const REPLIES_PER_LOAD  = 4;
-    protected const RATE_LIMIT_MAX    = 5;
+    protected const COMMENTS_PER_LOAD = 4;
+    protected const REPLIES_PER_LOAD  = 2;
+    protected const RATE_LIMIT_MAX    = 3;
 
     public const EVENT_COMMENT_POSTED  = 'comment-posted';
     public const EVENT_COMMENT_DELETED = 'comment-deleted';
@@ -44,10 +44,10 @@ class CommentForm extends Component
     /** @var array<int,int> */
     public array $shownRepliesCount = [];
 
-    /* Honeypot (spam) */
+    /* Honeypot field for spam protection */
     public ?string $website = null;
 
-    /* Guest fields - needed for binding in guest mode */
+    /* Guest fields - required for two-way binding in guest mode */
     public ?string $guest_name = null;
     public ?string $guest_email = null;
 
@@ -59,7 +59,7 @@ class CommentForm extends Component
     {
         $this->commentable = $commentable;
 
-        // Pre-fill guest name/email from session if available
+        // Pre-fill guest name and email from session if available
         if (Auth::guest()) {
             $this->guest_name  = session('guest_name');
             $this->guest_email = session('guest_email');
@@ -100,7 +100,7 @@ class CommentForm extends Component
     {
         $this->validate();
 
-        // Store guest info in session before submitting (for future comments)
+        // Persist guest information in session for future comments
         if (Auth::guest()) {
             session([
                 'guest_name'  => $this->guest_name,
@@ -108,12 +108,12 @@ class CommentForm extends Component
             ]);
         }
 
-        /* Spam protection (honeypot) */
+        /* Spam protection via honeypot field */
         if ($this->isSpam()) {
             abort(403);
         }
 
-        /* Rate limiting */
+        /* Rate limiting per user or IP address */
         $key = 'comments:' . (Auth::id() ?? request()->ip());
         RateLimiter::hit($key);
 

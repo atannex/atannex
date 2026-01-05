@@ -7,7 +7,7 @@
 
     <div class="comment-form">
         <h3 class="form-title">
-            {{ $replyingTo ? 'Reply to ' . $replyingTo['username'] : __('Leave a Comment') }}
+            {{ ucwords(strtolower($replyingTo ? 'Reply to ' . $replyingTo['username'] : __('Leave a Comment'))) }}
         </h3>
 
         <form wire:submit="submit">
@@ -48,23 +48,22 @@
     </div>
 
     <div class="comments-wrap">
-
         <ul class="comment-list">
             @forelse ($comments as $comment)
             <li class="comment-item">
                 <div class="post-comment">
                     <div class="comment-avatar">
-                        <img src="{{ asset('assets/img/comment.jpg') }}" alt="Comment Author">
+                        <img src="{{ asset('logo.jpg') }}" alt="Comment Author">
                     </div>
 
                     <div class="comment-content">
                         <div class="comment-bubble">
                             <h3 class="author-name">
-                                {{ $comment->author_name }}
+                                {{ ucwords(strtolower($comment->author_name)) }}
                             </h3>
 
                             <p class="comment-text">
-                                {{ $comment->comment }}
+                                {!! nl2br(e($comment->comment)) !!}
                             </p>
                         </div>
 
@@ -74,12 +73,12 @@
                             </span>
 
                             <a href="javascript:void(0)" wire:click="$dispatch('reply-to-comment', { commentId: {{ $comment->id }} })" class="meta-link">
-                                {{ __("Reply") }}
+                                <i class="fas fa-reply"></i> {{ __("Reply") }}
                             </a>
 
                             @can('delete', $comment)
                             <a href="javascript:void(0)" wire:click="$dispatch('delete-comment', { commentId: {{ $comment->id }} })" class="meta-link">
-                                Delete
+                                <i class="fas fa-trash"></i> {{ __("Delete") }}
                             </a>
                             @endcan
                         </div>
@@ -89,25 +88,26 @@
                 @php
                 $shown = $shownRepliesCount[$comment->id] ?? 0;
                 $totalReplies = $comment->replies->count();
+                $visibleReplies = $comment->replies->take($shown);
                 @endphp
 
                 @if ($totalReplies > 0)
                 <ul class="replies-list">
-                    @foreach ($comment->replies->take($shown) as $reply)
+                    @foreach ($visibleReplies as $reply)
                     <li class="comment-item">
                         <div class="post-comment">
                             <div class="comment-avatar">
-                                <img src="{{ asset('assets/img/comment.jpg') }}" alt="Reply Author">
+                                <img src="{{ asset('logo.jpg') }}" alt="Reply Author">
                             </div>
 
                             <div class="comment-content">
                                 <div class="comment-bubble">
                                     <h3 class="author-name">
-                                        {{ $reply->author_name }}
+                                        {{ ucwords(strtolower($reply->author_name)) }}
                                     </h3>
 
                                     <p class="comment-text">
-                                        {{ $reply->comment }}
+                                        {!! nl2br(e($reply->comment)) !!}
                                     </p>
                                 </div>
 
@@ -117,12 +117,12 @@
                                     </span>
 
                                     <a href="javascript:void(0)" wire:click="$dispatch('reply-to-comment', { commentId: {{ $reply->id }} })" class="meta-link">
-                                        {{ __('Reply') }}
+                                        <i class="fas fa-reply"></i> {{ __('Reply') }}
                                     </a>
 
                                     @can('delete', $reply)
                                     <a href="javascript:void(0)" wire:click="$dispatch('delete-comment', { commentId: {{ $reply->id }} })" class="meta-link">
-                                        Delete
+                                        <i class="fas fa-trash"></i> {{ __("Delete") }}
                                     </a>
                                     @endcan
                                 </div>
@@ -133,13 +133,16 @@
 
                     @if ($shown < $totalReplies) <li class="load-more-replies">
                         <a href="javascript:void(0)" wire:click="loadMoreReplies({{ $comment->id }})" class="meta-link">
-                            {{ __('Load more replies') }}
+                            <i class="fas fa-chevron-down"></i>
+                            {{ $totalReplies }} {{ Str::plural('reply', $totalReplies) }}
                         </a>
             </li>
             @elseif ($shown > 0)
             <li class="load-more-replies">
                 <a href="javascript:void(0)" wire:click="collapseReplies({{ $comment->id }})" class="meta-link">
-                    {{ __("Collapse replies") }}
+                    <i class="fas fa-chevron-up"></i>
+                    {{ Str::plural('Hide reply', $totalReplies) }}
+
                 </a>
             </li>
             @endif
@@ -156,10 +159,9 @@
         @if ($comments->hasMorePages())
         <div class="load-more-comments">
             <button wire:click="loadMoreComments" class="load-btn">
-                {{ __("Load more comments") }}
+                <i class="fas fa-chevron-down"></i> {{ __("Load More") }}
             </button>
         </div>
         @endif
     </div>
-
 </div>
