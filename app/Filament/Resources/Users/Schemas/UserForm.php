@@ -121,7 +121,9 @@ class UserForm
 
                                                         Select::make('gender')
                                                             ->label('Gender')
-                                                            ->options(Gender::asArray())
+                                                            ->searchable()
+                                                            ->preload()
+                                                            ->options(Gender::asSelectArray())
                                                             ->placeholder('Select gender')
                                                             ->prefixIcon('heroicon-o-user-circle'),
                                                     ]),
@@ -265,11 +267,13 @@ class UserForm
                                             ->dehydrated(false),
                                     ]),
 
-                                Grid::make(2)
+                                Grid::make(1)
                                     ->schema([
                                         Select::make('status')
-                                            ->label('Account Status')
-                                            ->options(Status::asArray())
+                                            ->label('Status')
+                                            ->options(Status::asSelectArray())
+                                            ->preload()
+                                            ->searchable()
                                             ->required()
                                             ->helperText('Controls user access')
                                             ->prefixIcon('heroicon-o-signal')
