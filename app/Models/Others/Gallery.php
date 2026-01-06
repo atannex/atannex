@@ -73,10 +73,9 @@ class Gallery extends Model implements HasImages
     ];
 
     /**
-     * Returns the list of attributes that represent image files.
-     * Used by ImageObserver to manage file uploads and deletions.
+     * List model attributes that are treated as image files.
      *
-     * @return string[]
+     * @return string[] Array of attribute names that are managed as image files.
      */
     public function images(): array
     {
@@ -84,14 +83,11 @@ class Gallery extends Model implements HasImages
     }
 
     /**
-     * Returns the directory path where gallery images should be stored.
-     * Handles new records (pre-ID) using 'temp' to prevent broken paths.
+     * Get storage directory path for this gallery's images.
      *
-     * Example:
-     * - Before model save: gallery/temp/2026/01
-     * - After model save: gallery/12/2026/01
+     * The path uses the model's primary key or `temp` when no key exists, and includes the current year and month.
      *
-     * @return string
+     * @return string The directory path in the form "gallery/{id_or_temp}/YYYY/MM".
      */
     public function dir(): string
     {

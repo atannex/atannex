@@ -29,7 +29,9 @@ class Section extends Model
     ];
 
     /**
-     * Helper attribute for DOM ID when accessed through pivot (e.g., in a region).
+     * Produce a DOM id for this section when accessed via a pivot (for example within a region).
+     *
+     * @return string The DOM id in the format 'section-{pivot_id}', where {pivot_id} is the pivot record's id.
      */
     protected function getDomIdAttribute(): string
     {
@@ -37,7 +39,9 @@ class Section extends Model
     }
 
     /**
-     * Regions that use this section.
+     * Get regions that include this section.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany BelongsToMany relation to Region including pivot columns widget_id, position, config, flag, and metadata.
      */
     public function regions(): BelongsToMany
     {
@@ -47,7 +51,9 @@ class Section extends Model
     }
 
     /**
-     * Widgets placed in this section (across all regions).
+     * Get widgets placed in this section across all regions.
+     *
+     * @return BelongsToMany BelongsToMany relation to Widget with pivot columns `region_id`, `position`, `config`, `flag`, and `metadata`.
      */
     public function widgets(): BelongsToMany
     {

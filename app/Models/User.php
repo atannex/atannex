@@ -52,6 +52,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'remember_token',
     ];
 
+    /**
+     * Define the model's attribute cast mappings.
+     *
+     * @return array Associative array mapping attribute names to cast types or enum/class names (e.g., `'email_verified_at' => 'datetime'`).
+     */
     protected function casts(): array
     {
         return [
@@ -73,14 +78,24 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         return ['image'];
     }
 
+    /**
+     * Get the storage directory name used for user files.
+     *
+     * @return string The storage directory for users (e.g., "users").
+     */
     public function dir(): string
     {
         return 'users';
     }
 
-    /* -----------------------------------------------------------------
-     |  Filament Admin Access
-     | -----------------------------------------------------------------
+    /**
+     * Determine whether the user is allowed to access the given Filament admin panel.
+     *
+     * Access is granted only when the user's email is verified, their email domain is in the allowed
+     * domains list, and the user is associated with an employee record.
+     *
+     * @param Panel $panel The Filament panel being accessed.
+     * @return bool `true` if access is permitted, `false` otherwise.
      */
     public function canAccessPanel(Panel $panel): bool
     {
@@ -96,44 +111,72 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         $this->notify(new VerifyEmailNotification());
     }
 
+    /**
+     * Sends the password reset notification to the user.
+     *
+     * @param string $token The password reset token included in the notification.
+     */
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
     }
 
-    /* -----------------------------------------------------------------
-     |  Relationships
-     | -----------------------------------------------------------------
+    /**
+     * Get the user's associated Employee record.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne HasOne relationship to the Employee model.
      */
     public function employee(): HasOne
     {
         return $this->hasOne(Employee::class);
     }
 
+    /**
+     * Defines a one-to-one relationship to the user's active Employee record.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne The relation scoped to the Employee model where `status` equals `Status::ACTIVE`.
+     */
     public function activeEmployee(): HasOne
     {
         return $this->hasOne(Employee::class)->where('status', Status::ACTIVE);
     }
 
+    /**
+     * Get the user's comments.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany A relationship returning Comment models associated with the user.
+     */
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
 
-    /* -----------------------------------------------------------------
-     |  Helper Methods
-     | -----------------------------------------------------------------
+    /**
+     * Get the domain part of the user's email address.
+     *
+     * @return string The substring after the '@' character in the user's email.
      */
     public function emailDomain(): string
     {
         return explode('@', $this->email)[1];
     }
 
+    /**
+     * Checks whether the user's email domain is within a set of allowed domains.
+     *
+     * @param array $allowedDomains List of allowed email domain strings (e.g., `['example.com', 'gmail.com']`).
+     * @return bool `true` if the user's email domain is in `$allowedDomains`, `false` otherwise.
+     */
     public function hasAllowedDomain(array $allowedDomains): bool
     {
         return in_array($this->emailDomain(), $allowedDomains, true);
     }
 
+    /**
+     * Determine whether the user is considered an employee.
+     *
+     * @return bool `true` if the user has a verified email, an active employee record, and at least one role; `false` otherwise.
+     */
     public function isEmployee(): bool
     {
         return $this->hasVerifiedEmail()
