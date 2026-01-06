@@ -3,7 +3,7 @@
 @if($byRegion->isNotEmpty())
 <section class="space">
     <div class="container">
-        <div class="mb-4 row align-items-center">
+        <div class="row align-items-center">
             <div class="col">
                 <h2 class="sec-title has-line">{{ __("Updates") }}</h2>
             </div>

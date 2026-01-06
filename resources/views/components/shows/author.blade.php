@@ -1,25 +1,51 @@
-<div class="blog-author">
-    <div class="auhtor-img">
-        <img src="{{ asset('storage/' . $post->author->user->image) }}" alt="{{ $post->author->user->name }}" class="rounded-circle img-fluid author-image">
+<div class="gap-3 blog-author d-flex">
+    <div class="flex-shrink-0 author-img">
+        <img
+            src="{{ asset('storage/' . ($module->post->author->user->image ?? 'default-avatar.png')) }}"
+            alt="{{ $module->post->author->user->name ?? 'Author' }}"
+            class="rounded-circle img-fluid author-image"
+        >
     </div>
+
     <div class="media-body">
-        <div class="author-top">
+        <div class="flex-wrap gap-3 author-top d-flex justify-content-between align-items-start">
             <div>
-                <h3 class="author-name name-text">
-                    <a class="text-inherit" href="{{ route('page.index', ['slug' => $post->author->user->slug]) }}">
-                        {{ Str::title($post->author->user->name) }}
+                <h3 class="mb-1 author-name name-text">
+                    <a
+                        class="text-inherit"
+                        href="{{ route('page.index', ['slug' => $module->post->author->user->slug]) }}"
+                    >
+                        {{ Str::title($module->post->author->user->name) }}
                     </a>
                 </h3>
-                <span class="author-desig">{!! $post->author->user->getRoleNames()->first() !!}</span>
+
+                <span class="author-desig text-muted small">
+                    {{ $module->post->author->user->getRoleNames()->first() }}
+                </span>
             </div>
-            <div class="gap-2 social-links d-flex">
-                @foreach($medias as $media)
-                <a href="{{ $media['url'] }}" target="_blank" rel="noopener" class="d-inline-flex align-items-center justify-content-center rounded-circle me-1 social-icon" style="width: 2.5rem; height: 2.5rem; background-color: {{ $media['color'] }};">
-                    <i class="{{ $media['icon'] }} text-white"></i>
-                </a>
-                @endforeach
-            </div>
+
+            @if(!empty($medias))
+                <div class="gap-2 social-links d-flex">
+                    @foreach($medias as $media)
+                        <a
+                            href="{{ $media['url'] }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="d-inline-flex align-items-center justify-content-center rounded-circle social-icon"
+                            style="width: 2.5rem; height: 2.5rem; background-color: {{ $media['color'] }};"
+                            aria-label="{{ $media['name'] ?? 'Social link' }}"
+                        >
+                            <i class="{{ $media['icon'] }} text-white"></i>
+                        </a>
+                    @endforeach
+                </div>
+            @endif
         </div>
-        <p class="mt-3 author-text">{!! $post->author->user->bio !!}</p>
+
+        @if(!empty($module->post->author->user->bio))
+            <p class="mt-3 author-text">
+                {!! $module->post->author->user->bio !!}
+            </p>
+        @endif
     </div>
 </div>
