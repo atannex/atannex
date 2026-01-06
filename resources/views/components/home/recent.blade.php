@@ -1,7 +1,7 @@
 @props(['byRecent'])
 
 @if($byRecent->isNotEmpty())
-<div class="mb-4 th-hero-wrapper hero-1" id="hero" style="position:relative; overflow:visible;">
+<div class="mb-2 th-hero-wrapper hero-1" id="hero" style="position:relative; overflow:visible;">
 
     <div class="hero-slider-1 th-carousel" data-fade="true" data-slide-show="1" data-md-slide-show="1" data-adaptive-height="false">
 

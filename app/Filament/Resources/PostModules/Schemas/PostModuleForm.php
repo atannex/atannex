@@ -21,10 +21,6 @@ class PostModuleForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-
-            // ============================================
-            // MODULE CONFIGURATION
-            // ============================================
             Group::make()
                 ->schema([
                     Section::make('Module Configuration')
@@ -63,9 +59,6 @@ class PostModuleForm
                 ])
                 ->columnSpanFull(),
 
-            // ============================================
-            // VIDEO CONTENT SECTION
-            // ============================================
             Group::make()
                 ->schema([
                     Section::make('Video Content')
@@ -74,7 +67,7 @@ class PostModuleForm
                         ->schema([
                             Grid::make(['default' => 1, 'lg' => 2])
                                 ->schema([
-                                    // Left Column: Uploaded Video
+
                                     Group::make()
                                         ->schema([
                                             Section::make('Direct Video Upload')
@@ -177,9 +170,6 @@ class PostModuleForm
                 ])
                 ->columnSpanFull(),
 
-            // ============================================
-            // CONTENT BUILDER
-            // ============================================
             Group::make()
                 ->schema([
                     Section::make('Content Builder')
@@ -192,9 +182,6 @@ class PostModuleForm
                                         ->columnSpanFull()
                                         ->blocks([
 
-                                            // ========================================
-                                            // BLOCK: VIDEO GRID
-                                            // ========================================
                                             Block::make('video_grid')
                                                 ->label('Video Grid')
                                                 ->icon('heroicon-o-film')

@@ -53,7 +53,7 @@
 
                 <x-shows.navigation :navigation="$navigation" />
 
-                <x-shows.author :post="$post" :medias="$medias" />
+                <x-shows.author :module="$module" :medias="$medias" />
 
                 <livewire:forms.comment-form wire:key="comments-{{ $module->post->id }}" :commentable="$module->post" />
 

@@ -6,9 +6,9 @@
 
 <x-home.recent :byRecent="$byRecent" />
 
-<x-home.rulers :byRuler="$byRuler" />
-
 <x-home.region :byRegion="$byRegion" />
+
+<x-home.rulers :byRuler="$byRuler" />
 
 <x-home.news :byNews="$byNews" />
 

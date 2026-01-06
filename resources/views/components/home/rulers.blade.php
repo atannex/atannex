@@ -7,7 +7,7 @@
         <div class="row align-items-center">
             <div class="col">
                 <h2 class="sec-title has-line">
-                    {{ __("Traditional Rulers") }}
+                    {{ __(" Custodians ") }}
                 </h2>
             </div>
             <div class="col-auto">
