@@ -16,7 +16,11 @@ trait TagQuery
     protected const POPULAR_LIMIT = 12;
 
     /**
-     * Get posts filtered by tag.
+     * Retrieve published posts associated with a given tag, ordered newest first.
+     *
+     * @param Tag $tag The tag whose posts to retrieve.
+     * @param int $limit Maximum number of posts per page.
+     * @return LengthAwarePaginator A paginator of the tag's published posts ordered by newest first.
      */
     public function postsByTag(Tag $tag, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
     {
@@ -27,7 +31,13 @@ trait TagQuery
     }
 
     /**
-     * Popular tags inside the Tag's category tree.
+     * Get popular tags within the tag's category tree.
+     *
+     * Tags are ordered by descending count of published posts scoped to the resolved category tree.
+     *
+     * @param Tag $tag The tag whose category tree defines the scope for popularity.
+     * @param int $limit Maximum number of tags to return.
+     * @return Collection Collection of Tag models with a `posts_count` attribute representing the number of published posts for each tag inside the category tree.
      */
     public function popularTags(Tag $tag, int $limit = self::POPULAR_LIMIT): Collection
     {
@@ -52,7 +62,11 @@ trait TagQuery
     }
 
     /**
-     * Leaf category list under tag's category tree.
+     * Retrieve leaf categories under the tag's category tree that have published posts.
+     *
+     * @param Tag $tag The tag whose category tree is used to find related leaf categories.
+     * @param int $limit The maximum number of categories to return.
+     * @return Collection A collection of leaf Category models related to the tag's category tree.
      */
     public function relatedCategoriesByTag(Tag $tag, int $limit = self::PAGINATION_LIMIT): Collection
     {
@@ -66,7 +80,10 @@ trait TagQuery
     }
 
     /**
-     * A tag resolves its primary category via its first associated post.
+     * Determine the tag's primary Category from its first published post.
+     *
+     * @return Category The Category associated with the tag's first published post.
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If the tag has no published posts.
      */
     protected function resolveTagCategory(Tag $tag): Category
     {

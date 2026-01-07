@@ -21,6 +21,15 @@ use Filament\Tables\Table;
 
 class SectionsTable
 {
+    /**
+     * Configure the Sections resource table with columns, filters, record and toolbar actions, default sorting, pagination, and UI behaviors.
+     *
+     * This method defines the table's columns (including display, formatting, and interactivity), filter controls, per-record action group,
+     * bulk toolbar actions, default sort order, persistence settings, empty state content, deferred loading, and pagination options.
+     *
+     * @param Table $table The Filament Table instance to configure.
+     * @return Table The configured Table instance.
+     */
     public static function configure(Table $table): Table
     {
         return $table

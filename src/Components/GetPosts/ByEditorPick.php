@@ -8,15 +8,12 @@ use Illuminate\Support\Collection;
 trait ByEditorPick
 {
     /**
-     * Retrieve editor's picks.
+     * Retrieve posts marked as editor's picks, limited and ordered by most recent publication.
      *
-     * This method fetches posts flagged as editorial picks, ensuring
-     * only published posts are returned. Results are ordered by
-     * the most recently updated posts.
-     *
-     * @param  array  $config  Optional configuration:
-     *                         - 'limit' => int Number of posts to retrieve (default 5)
-     * @return Collection<int, Post>
+     * @param array $config Optional configuration. Recognized key:
+     *                      - 'limit' => int Number of posts to retrieve (required).
+     *                        If omitted, accessing this key will cause an undefined index notice.
+     * @return Collection<int, Post> Collection of Post models flagged as editor's picks, filtered to published posts and ordered by `published_at` descending.
      */
     public function getEditorPicks(array $config = []): Collection
     {

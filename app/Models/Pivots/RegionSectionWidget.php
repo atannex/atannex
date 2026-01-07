@@ -49,7 +49,9 @@ class RegionSectionWidget extends Pivot
     ];
 
     /**
-     * Region relationship.
+     * Get the region associated with this pivot.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The region relationship.
      */
     public function region(): BelongsTo
     {
@@ -65,7 +67,9 @@ class RegionSectionWidget extends Pivot
     }
 
     /**
-     * Widget relationship.
+     * Get the widget associated with this pivot.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The BelongsTo relationship to the Widget model.
      */
     public function widget(): BelongsTo
     {

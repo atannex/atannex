@@ -2,10 +2,13 @@
 
 if (!function_exists('normalizeIds')) {
     /**
-     * Normalize any scalar or iterable of IDs into a flat array.
+     * Normalize a scalar ID or an iterable of IDs into a flat, zero-based indexed array.
      *
-     * @param  int|string|iterable<int|string>  $ids
-     * @return array<int|string>
+     * Iterable inputs are converted to a reindexed array of their values (iterable keys are discarded).
+     * Non-iterable inputs are wrapped into a single-element array.
+     *
+     * @param int|string|iterable<int|string> $ids The ID or iterable of IDs to normalize; if iterable, only its values are preserved.
+     * @return array<int|string> A zero-based indexed array containing the ID values.
      */
     function normalizeIds(int|string|iterable $ids): array
     {

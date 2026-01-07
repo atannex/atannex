@@ -8,13 +8,13 @@ use Illuminate\Support\Collection;
 trait ByBreaking
 {
     /**
-     * Retrieve breaking posts with explicit sorting, limit, and user timezone.
+     * Retrieve published breaking posts ordered and limited per configuration.
      *
-     * @param  array  $config  Configuration:
-     *                         - 'limit'    : int    Maximum number of posts to return
-     *                         - 'sort'     : string Column to sort by
-     *                         - 'order'    : string Sorting direction 'asc' or 'desc'
-     * @return Collection Returns a collection of breaking posts.
+     * @param array $config Configuration options:
+     *                      - 'limit': int Maximum number of posts to return.
+     *                      - 'sort': string Column name to sort by.
+     *                      - 'order': string Sorting direction, 'asc' or 'desc'.
+     * @return Collection Collection of Post models matching the breaking and published criteria.
      */
     public function getBreakingPosts(array $config): Collection
     {
