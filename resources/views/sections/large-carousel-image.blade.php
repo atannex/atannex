@@ -26,7 +26,9 @@
                 <div class="blog-style1">
                     <div class="blog-img">
 
-                        @include('partials.image',['class'=> 'large-carousel-image'])
+                        <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}">
+                            <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}" class="img-fluid large-carousel-image">
+                        </a>
 
                         @include('partials.category')
 

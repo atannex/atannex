@@ -64,7 +64,7 @@ class TabBasicInformation
 
                         Select::make('sort')
                             ->label('Sort By')
-                            ->options(Sorting::options())
+                            ->options(Sorting::asSelectArray())
                             ->default(Sorting::CREATED_AT)
                             ->preload()
                             ->searchable()
@@ -72,6 +72,8 @@ class TabBasicInformation
 
                         Select::make('order')
                             ->label('Sort Order')
+                            ->searchable()
+                            ->preload()
                             ->options([
                                 'asc' => 'Ascending',
                                 'desc' => 'Descending',

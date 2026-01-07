@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Atannex\Components\Sections;
 
-use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 

@@ -2,7 +2,7 @@
 
     <img src="{{ $post->author->user->image
         ? asset('storage/' . $post->author->user->image)
-        : asset('assets/img/user_comment_img.jpg') }}" alt="{{ Str::lower($post->author->user->name) }}" class="author-avatar">
+        : asset('logo.jpg') }}" alt="{{ Str::lower($post->author->user->name) }}" class="author-avatar">
 
-    {{ Str::limit(Str::lower($post->author->user->name), 15) }}
+    {{ Str::limit(Str::lower($post->author->user->name), 10) }}
 </a>

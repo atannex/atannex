@@ -4,11 +4,9 @@ namespace App\Filament\Resources\RegionSectionWidgets\Schemas;
 
 use App\Enums\Flag;
 use App\Filament\Traits\ContentFiltering;
-use App\Filament\Traits\EngagementWeightsSection;
 use App\Filament\Traits\TabBasicInformation;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid as SchemaGrid;
 use Filament\Schemas\Components\Group;
@@ -86,7 +84,6 @@ class RegionSectionWidgetForm
             ->schema([
                 self::positionField(),
                 self::statusField(),
-                self::metadataField(),
             ])
             ->collapsible()
             ->collapsed()
@@ -122,7 +119,7 @@ class RegionSectionWidgetForm
             ->schema([
                 self::tabRepeater('config.widget_tab', 'widget'),
             ])
-            ->visible(fn ($get) => filled($get('widget_id')))
+            ->visible(fn($get) => filled($get('widget_id')))
             ->collapsible()
             ->collapsed()
             ->persistCollapsed();
@@ -153,7 +150,7 @@ class RegionSectionWidgetForm
             ->required()
             ->searchable()
             ->preload()
-            ->getOptionLabelFromRecordUsing(fn ($record) => sprintf(
+            ->getOptionLabelFromRecordUsing(fn($record) => sprintf(
                 '#%s: %s',
                 $record->slug,
                 $record->name
@@ -172,7 +169,7 @@ class RegionSectionWidgetForm
             ->searchable()
             ->preload()
             ->reactive()
-            ->afterStateUpdated(fn ($state, callable $set) => $set('selected_widget', $state))
+            ->afterStateUpdated(fn($state, callable $set) => $set('selected_widget', $state))
             ->helperText('Select the widget to load its specific configuration');
     }
 
@@ -197,23 +194,11 @@ class RegionSectionWidgetForm
     {
         return Select::make('flag')
             ->label('Flag')
-            ->options(Flag::asArray())
+            ->options(Flag::asSelectArray())
             ->searchable()
             ->preload()
             ->required()
             ->default(Flag::DRAFT);
-    }
-
-    /**
-     * Metadata Field
-     */
-    protected static function metadataField(): Textarea
-    {
-        return Textarea::make('metadata')
-            ->label('Additional Metadata')
-            ->rows(3)
-            ->placeholder('Optional JSON or key-value metadata')
-            ->default(null);
     }
 
     /**
@@ -234,10 +219,9 @@ class RegionSectionWidgetForm
                 ->schema([
                     TabBasicInformation::make(),
                     ContentFiltering::make(),
-                    EngagementWeightsSection::make(),
                 ])
                 ->columns(1)
-                ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Untitled Tab')
+                ->itemLabel(fn(array $state): ?string => $state['title'] ?? 'Untitled Tab')
                 ->addActionLabel('Add New Tab')
                 ->reorderable()
                 ->cloneable()
