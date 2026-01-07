@@ -63,52 +63,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}?v=1.0.2">
-    <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}?v=1.0.2">
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=1.0.2">
-    <link rel="stylesheet" href="{{ asset('assets/css/image.css') }}?v=1.0.2">
-    <link rel="stylesheet" href="{{ asset('assets/css/auth.css') }}?v=1.0.2">
-    <link rel="stylesheet" href="{{ asset('assets/css/menu.css') }}?v=1.0.2">
-    <link rel="stylesheet" href="{{ asset('assets/css/video.css') }}?v=1.0.2">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
     @livewireStyles
-
-
-    {{-- <script type="application/ld+json">
-        {
-            "@context": "https://schema.org"
-            , "@type": "NewsArticle"
-            , "mainEntityOfPage": {
-                "@type": "WebPage"
-                , "@id": "{{ url()->current() }}"
-    }
-    , "headline": "@yield('og:title', \"{{ config('app.title') }}\")"
-    , "image": [
-    "@yield('og:image', \"{{ asset(config('app.image')) }}\")"
-    ]
-    , "datePublished": "@yield('og:publishedAt', \"{{ now()->toIso8601String() }}\")"
-    , "dateModified": "@yield('og:updatedAt', \"{{ now()->toIso8601String() }}\")"
-    , "author": {
-    "@type": "Person"
-    , "name": "@yield('article:author', \"{{ config('app.name') }}\")"
-    , "url": "@yield('article:author_url', \"{{ config('app.url') }}\")"
-    , "sameAs": [
-    "@yield('article:author_social', \"{{ config('app.url') }}\")"
-    ]
-    }
-    , "publisher": {
-    "@type": "Organization"
-    , "name": "{{ config('app.name') }}"
-    , "logo": {
-    "@type": "ImageObject"
-    , "url": "{{ asset('favicon/android-chrome-192x192.png') }}"
-    }
-    }
-    , "description": "@yield('og:description', \"{{ config('app.description') }}\")"
-    , "copyrightNotice": "© {{ now()->year }} {{ config('app.name') }}. All rights reserved."
-    }
-
-    </script> --}}
 
     <x-layouts.googletagmanager />
 
@@ -123,9 +84,6 @@
     <script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}" defer></script>
     <script src="{{ asset('assets/js/app.min.js') }}" defer></script>
     <script src="{{ asset('assets/js/main.js') }}" defer></script>
-    <script src="{{ asset('assets/js/auth/reset.js') }}" defer></script>
-    <script src="{{ asset('js/share.js') }}" defer></script>
-    <script src="{{ asset('assets/js/video.js') }}" defer></script>
 
 </body>
 </html>
