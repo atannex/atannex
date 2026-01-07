@@ -5,10 +5,18 @@ use Illuminate\Support\Facades\Route;
 
 if (!function_exists('displayGuestData')) {
     /**
-     * Prepare guest display data including routes and navigation items.
+     * Build navigation data for guest-facing views.
      *
-     * @param Collection $mainRegions
-     * @return array
+     * Returns an associative array containing the current route name, an optional home route
+     * URL derived from the first main region's slug, and localized help and policy navigation items.
+     *
+     * @param Collection $mainRegions Collection of main region models; the first item's `slug` is used to compute `homeRoute` when present.
+     * @return array{
+     *     currentRoute: string|null,
+     *     homeRoute: string|null,
+     *     helpItems: array{ 'help-center': string, 'guidelines': string },
+     *     policyItems: array{ 'privacy': string, 'terms': string }
+     * }
      */
     function displayGuestData(Collection $mainRegions): array
     {

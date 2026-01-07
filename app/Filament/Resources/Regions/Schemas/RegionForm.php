@@ -17,6 +17,15 @@ use Illuminate\Support\Str;
 
 class RegionForm
 {
+    /**
+     * Configure and return a Filament Schema for the Region form.
+     *
+     * Adds grouped sections, fields, and layout optimized for creating and editing regions,
+     * including basic information, classification and hierarchy, media, and metadata.
+     *
+     * @param Schema $schema The base schema to augment with Region form components.
+     * @return Schema The configured Schema containing the form components and a 3-column layout.
+     */
     public static function configure(Schema $schema): Schema
     {
         return $schema

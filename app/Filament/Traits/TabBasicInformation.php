@@ -15,7 +15,12 @@ use Filament\Schemas\Components\Section;
 class TabBasicInformation
 {
     /**
-     * Build the Basic Information section schema.
+     * Create the "Basic Information" Section schema for the form.
+     *
+     * The returned Section contains a two-column Grid with fields:
+     * `title`, `sub_title`, `limit`, `relation_limit`, `leaf_relation_limit`, `sort`, and `order`.
+     *
+     * @return Section The configured Section instance representing the Basic Information tab.
      */
     public static function make(): Section
     {

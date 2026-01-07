@@ -73,9 +73,10 @@ class RegionSectionWidgetForm
     }
 
     /**
-     * Display Options Configuration Section
-     * Control widget visibility and behavior
-     */
+         * Builds the "Display Options" form section for configuring a widget's display order and flag.
+         *
+         * @return \Filament\Forms\Components\Section A Section containing the display order and flag fields.
+         */
     protected static function displayOptionsConfiguration(): Section
     {
         return Section::make('Display Options')
@@ -108,8 +109,11 @@ class RegionSectionWidgetForm
     }
 
     /**
-     * Widget Tabs Configuration
-     * Configuration specific to the selected widget
+     * Builds the form section for widget-specific tab configuration.
+     *
+     * The section contains a repeater for widget tabs and is visible only when a widget is selected (`widget_id` is filled).
+     *
+     * @return \Filament\Forms\Components\Section The Section configured for widget-specific tab settings.
      */
     protected static function widgetTabsConfiguration(): Section
     {
@@ -140,8 +144,13 @@ class RegionSectionWidgetForm
     }
 
     /**
-     * Section Selection Field
-     */
+         * Creates a Select field for choosing a section within the page.
+         *
+         * The field presents sections by name with option labels formatted as `#<slug>: <name>`,
+         * is required, searchable, and preloaded, and includes helper text explaining its purpose.
+         *
+         * @return \Filament\Forms\Components\Select The configured select field for `section_id`.
+         */
     protected static function sectionField(): Select
     {
         return Select::make('section_id')
@@ -159,7 +168,11 @@ class RegionSectionWidgetForm
     }
 
     /**
-     * Widget Selection Field
+     * Builds the "Widget" select used to choose a widget for the region section.
+     *
+     * The field is searchable, preloaded, and reactive; changing its value updates the form state key `selected_widget`.
+     *
+     * @return Select The configured Select component for selecting a widget by name.
      */
     protected static function widgetField(): Select
     {
@@ -188,12 +201,13 @@ class RegionSectionWidgetForm
     }
 
     /**
-         * Create the Select field used to choose the record's status flag.
-         *
-         * The field is searchable, preloaded, required, and defaults to Flag::DRAFT. Options are populated from Flag::asArray().
-         *
-         * @return Select The configured Select field for the flag.
-         */
+     * Create the Select field for selecting the record's status flag.
+     *
+     * The field's options are populated from Flag::asSelectArray(), is searchable, preloaded,
+     * required, and defaults to Flag::DRAFT.
+     *
+     * @return Select The Select field configured for the record's status flag.
+     */
     protected static function statusField(): Select
     {
         return Select::make('flag')
@@ -206,11 +220,16 @@ class RegionSectionWidgetForm
     }
 
     /**
-     * Reusable Tab Repeater Component
-     *
-     * @param  string  $name  The field name
-     * @param  string  $type  The tab type (section or widget)
-     */
+         * Create a collapsible repeater for configuring tabs of a specific type.
+         *
+         * The repeater contains basic tab information and content-filtering blocks, applies a single-column layout,
+         * and enforces item behavior (reorderable, cloneable) and limits (minimum 1, maximum 6, default 1). The provided
+         * `$type` selects context-specific helper text.
+         *
+         * @param string $name The field name.
+         * @param string $type The tab type; expected values are `'section'` or `'widget'`, which determine helper text.
+         * @return Repeater The configured Repeater instance.
+         */
     protected static function tabRepeater(string $name, string $type): Repeater
     {
         $helperTexts = [

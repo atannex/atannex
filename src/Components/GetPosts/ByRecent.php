@@ -8,13 +8,15 @@ use Illuminate\Support\Collection;
 trait ByRecent
 {
     /**
-     * Retrieve recent posts with configurable sorting and limit.
+     * Fetch recent published posts that have an author, sorted and limited by the provided configuration.
      *
-     * @param  array  $config  Configuration options:
-     *                         - 'limit' : int    Maximum number of posts to return (default: 10)
-     *                         - 'sort'  : string Column to sort by (default: 'published_at')
-     *                         - 'order' : string Sorting direction 'asc' or 'desc' (default: 'desc')
-     * @return Collection
+     * The method expects the `$config` array to contain the keys 'limit', 'sort', and 'order'.
+     *
+     * @param array $config Configuration options:
+     *                      - 'limit' : int    Maximum number of posts to return.
+     *                      - 'sort'  : string Column to sort by.
+     *                      - 'order' : string Sorting direction ('asc' or 'desc').
+     * @return Collection Collection of Post models matching the query.
      */
     public function getRecentPosts(array $config = []): Collection
     {
