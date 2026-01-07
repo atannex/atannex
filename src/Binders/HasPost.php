@@ -24,6 +24,7 @@ use Atannex\Components\GetEngagementsPosts\ByRated;
 use Atannex\Components\GetEngagementsPosts\ByShared;
 use Atannex\Components\GetEngagementsPosts\ByViewed;
 use Atannex\Components\GetEngagementsPosts\ByCommented;
+use Atannex\Components\GetPosts\ByRecent;
 use Atannex\Components\Sections\HasCategory;
 
 final class HasPost
@@ -39,6 +40,7 @@ final class HasPost
     use ByTag;
     use ByViewed;
     use ByEditorPick;
+    use ByRecent;
 
     use WithCategory;
     use WithRegion;

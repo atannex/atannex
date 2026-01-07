@@ -2,7 +2,6 @@
 
 namespace Atannex\Components\GetPosts;
 
-use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 
@@ -19,7 +18,7 @@ trait ByBreaking
      */
     public function getBreakingPosts(array $config): Collection
     {
-        return Post::activeBreaking()
+        return Post::breaking()
             ->published()
             ->orderBy($config['sort'], $config['order'])
             ->limit($config['limit'])

@@ -74,7 +74,7 @@ class RegionForm
                                             ->options(Flag::asSelectArray())
                                             ->searchable()
                                             ->preload()
-                                            ->default('pending')
+                                            ->default(Flag::DRAFT)
                                             ->native(false)
                                             ->placeholder('Select a status')
                                             ->helperText('Current operational status')
