@@ -44,9 +44,10 @@ final class Status extends Enum
     public const DELETED = 'deleted';
 
     /**
-     * Returns the list of valid next states for a given status.
+     * Get the valid next states for a given status.
      *
-     * @return array<int, string>
+     * @param string $currentStatus The current status value.
+     * @return array<int, string> An array of allowed next status values (each as a string).
      */
     public static function allowedTransitions(string $currentStatus): array
     {
@@ -63,7 +64,11 @@ final class Status extends Enum
     }
 
     /**
-     * Check if a transition from current status to target status is allowed.
+     * Determine whether transitioning from one status to another is permitted.
+     *
+     * @param string $currentStatus The current status identifier.
+     * @param string $targetStatus The desired target status identifier.
+     * @return bool `true` if the transition from `$currentStatus` to `$targetStatus` is allowed, `false` otherwise.
      */
     public static function canTransition(string $currentStatus, string $targetStatus): bool
     {

@@ -7,7 +7,12 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Add editor-pick columns to the posts table.
+     *
+     * Adds the following columns to support editor-pick functionality:
+     * - `is_editor_pick` (boolean) default false, placed after `is_breaking`.
+     * - `editor_pick_at` (timestamp) nullable, placed after `is_editor_pick`.
+     * - `editor_pick_expires` (timestamp) nullable, placed after `editor_pick_at`.
      */
     public function up(): void
     {
@@ -19,7 +24,9 @@ return new class extends Migration
     }
 
     /**
-     * Reverse the migrations.
+     * Revert the posts table schema by removing editor-pick fields.
+     *
+     * Removes the `is_editor_pick`, `editor_pick_at`, and `editor_pick_expires` columns from the `posts` table.
      */
     public function down(): void
     {

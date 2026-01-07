@@ -12,10 +12,23 @@ class HomeController extends Controller
     use HasAbout;
     use HasContact;
 
+    /**
+     * Instantiate the HomeController with its post service dependency.
+     *
+     * @param HasPost $postService Service used to fetch and query posts for the controller.
+     */
     public function __construct(
         protected readonly HasPost $postService
     ) {}
 
+    /**
+     * Render the home view populated with categorized post collections.
+     *
+     * The view data includes the following keys populated from the post service:
+     * `byRecent`, `byRegion`, `byEnvironment`, `byHistory`, `byCommunity`, `byNews`, and `byRuler`.
+     *
+     * @return \Illuminate\View\View The rendered 'home' view populated with the categorized post data.
+     */
     public function index(): View
     {
         $postsData = $this->getPostsData();
@@ -31,6 +44,21 @@ class HomeController extends Controller
         ]);
     }
 
+    /**
+     * Assembles categorized post collections for the home view.
+     *
+     * Returns an associative array keyed for the view where each value is a collection
+     * or iterable of posts constrained by category or other criteria:
+     * - `byRecent`: recent posts limited to 6.
+     * - `byRegion`: regions that have posts limited to 6.
+     * - `byEnvironment`: posts in the "Environment" category limited to 5.
+     * - `byHistory`: posts in the "History" category limited to 20.
+     * - `byNews`: posts intended for the News section (currently sourced from "Community") limited to 3.
+     * - `byCommunity`: posts in the "Community" category limited to 10.
+     * - `byRuler`: posts intended for the Rulers section (currently sourced from "Community") limited to 10.
+     *
+     * @return array<string, mixed> Associative array of categorized post collections for the view.
+     */
     private function getPostsData(): array
     {
         return [

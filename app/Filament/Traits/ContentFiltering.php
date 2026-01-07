@@ -15,7 +15,13 @@ use Filament\Schemas\Components\Utilities\Get;
 class ContentFiltering
 {
     /**
-     * Get the schema for the Content Filtering section.
+     * Builds the Filament form Section containing controls for content filtering.
+     *
+     * The section includes Select controls for choosing content type and for filtering by
+     * region, tag, category, or specific entities. Visibility and options of the filters
+     * are driven by the selected content type.
+     *
+     * @return \Filament\Forms\Components\Section The constructed Section configured for content filtering.
      */
     public static function make(): Section
     {
@@ -106,7 +112,11 @@ class ContentFiltering
             ->compact();
     }
 
-    /** @return array<int, string> */
+    /**
+     * Map region IDs to their names.
+     *
+     * @return array<int, string> An associative array where keys are region IDs and values are region names.
+     */
     private static function regions(): array
     {
         return Region::pluck('name', 'id')->toArray();
@@ -118,20 +128,35 @@ class ContentFiltering
         return Tag::pluck('name', 'id')->toArray();
     }
 
-    /** @return array<int, string> */
+    /**
+     * An associative array mapping category IDs to category names.
+     *
+     * @return array<int,string> Mapping of category `id` => `name`.
+     */
     private static function categories(): array
     {
         return Category::pluck('name', 'id')->toArray();
     }
 
-    /** @return array<int, string> */
+    /**
+     * Get available author options keyed by user id.
+     *
+     * @return array<int, string> Mapping of user id to user name.
+     */
     private static function authors(): array
     {
         return User::pluck('name', 'id')->toArray();
     }
 
     /**
-     * Return options for `posts_with_id` based on entity type.
+     * Selects the option list appropriate for the given content entity type.
+     *
+     * Returns an associative array of id => display name for the entity type:
+     * tags for POSTS_BY_TAG, categories for CATEGORIES_WITH_POSTS, regions for REGIONS_WITH_POSTS,
+     * authors for POSTS_BY_AUTHOR, or an empty array for other types.
+     *
+     * @param string $type The entity type identifier.
+     * @return array<int|string,string> Associative array mapping option id to display name.
      */
     private static function entityOptions(string $type): array
     {

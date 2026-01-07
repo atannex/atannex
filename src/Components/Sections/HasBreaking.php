@@ -10,15 +10,10 @@ use Illuminate\Support\Collection;
 trait HasBreaking
 {
     /**
-     * Retrieve multiple active breaking posts.
+     * Retrieve up to the given number of published posts marked as breaking, ordered by most recent `breaking_at`.
      *
-     * - Returns posts marked as breaking
-     * - Only includes posts that are published and flagged as PUBLISHED
-     * - Sorted by latest `breaking_at`
-     * - Supports optional limit (default 10)
-     *
-     * @param int $limit Maximum number of breaking posts to return
-     * @return Collection<Post>
+     * @param int $limit Maximum number of breaking posts to return (default 10).
+     * @return Collection<Post> Collection of breaking Post models.
      */
     public function hasBreakingPosts(int $limit = 10): Collection
     {
