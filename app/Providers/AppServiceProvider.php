@@ -41,8 +41,8 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function registerObservers(): void
     {
+        PostModule::observe(PostModuleObserver::class);
         Section::observe(new SectionObserver(new SectionAdapter()));
         Widget::observe(new WidgetObserver(new WidgetAdapter()));
-        PostModule::observe(PostModuleObserver::class);
     }
 }
