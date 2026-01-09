@@ -63,11 +63,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-<<<<<<< HEAD
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-=======
     @vite(['resources/js/app.js'])
->>>>>>> development
 
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
@@ -88,9 +84,5 @@
     <script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}" defer></script>
     <script src="{{ asset('assets/js/app.min.js') }}" defer></script>
     <script src="{{ asset('assets/js/main.js') }}" defer></script>
-<<<<<<< HEAD
-
-=======
->>>>>>> development
 </body>
 </html>

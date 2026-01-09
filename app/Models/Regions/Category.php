@@ -45,39 +45,6 @@ class Category extends Model implements Sluggable
 
     protected string $slugSource = 'name';
 
-<<<<<<< HEAD
-    /**
-     * List the model's image attribute keys.
-     *
-     * @return string[] An array of attribute keys that store image filenames or paths (e.g. `['image']`).
-     */
-    public function images(): array
-    {
-        return ['image'];
-    }
-
-    /**
-     * Storage directory name for this model's images.
-     *
-     * @return string Directory name used to store category images.
-     */
-    public function dir(): string
-    {
-        return 'category';
-    }
-
-    /**
-     * Register model event hooks.
-     *
-     * Ensures HasSlugPath trait is properly initialized after booting.
-     */
-    protected static function booted(): void
-    {
-        static::bootHasSlugPath();
-    }
-
-=======
->>>>>>> development
     /**
      * Get posts that belong to this category.
      *
