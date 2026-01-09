@@ -9,18 +9,16 @@ use Illuminate\Support\Collection;
 trait ByCommented
 {
     /**
-     * Retrieve the most commented posts.
+     * Get posts ordered by comment count in descending order.
      *
-     * Fetches posts ordered by comment count in descending order.
-     * Supports optional filtering by category or tag, eager loading,
-     * and configurable limit.
+     * Supports optional filtering by category or tag and eager loading of relations via the `$config` array.
      *
-     * @param  array  $config  Optional configuration:
-     *                         - 'limit' => int Number of posts to retrieve (default 5)
-     *                         - 'category_id' => int Filter by category ID
-     *                         - 'tag_id' => int Filter by tag ID
-     *                         - 'with' => array Eager load relations (default ['category', 'tags'])
-     * @return Collection<int, Post>
+     * @param array $config Optional configuration keys:
+     *                      - 'limit' => int Number of posts to retrieve.
+     *                      - 'category_id' => int Filter by category ID.
+     *                      - 'tag_id' => int Filter by tag ID.
+     *                      - 'with' => array Relations to eager load.
+     * @return Collection<int, Post> The collection of Post models ordered by comment count (descending).
      */
     public function getMostCommentedPosts(array $config = []): Collection
     {

@@ -20,6 +20,17 @@ use Illuminate\Support\Str;
 
 class PostsTable
 {
+    /**
+     * Configure and return a Filament table for displaying and managing posts.
+     *
+     * The table is configured with columns (images, badges, timestamps, relations, counters),
+     * filters (category, author, breaking/editor picks, archived, recently published),
+     * toolbar actions (individual edit/delete and grouped bulk actions), empty state,
+     * pagination, styling, and polling behavior.
+     *
+     * @param \Filament\Tables\Table $table The Filament Table instance to configure.
+     * @return \Filament\Tables\Table The configured Table instance.
+     */
     public static function configure(Table $table): Table
     {
         return $table

@@ -16,6 +16,15 @@ use Illuminate\Support\Str;
 
 class SectionForm
 {
+    /**
+     * Builds and returns a Filament form schema for creating and editing a Section.
+     *
+     * Augments the provided Schema with grouped sections, form fields, and info entries
+     * used to manage section details, configuration, quick info, and metadata.
+     *
+     * @param Schema $schema The Schema instance to augment with the Section form components.
+     * @return Schema The same Schema instance populated with the section form layout and controls.
+     */
     public static function configure(Schema $schema): Schema
     {
         return $schema

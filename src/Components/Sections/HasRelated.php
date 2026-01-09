@@ -17,11 +17,13 @@ use Illuminate\Support\Collection;
 trait HasRelated
 {
     /**
-     * Retrieve related posts based on the same category or shared tags.
+     * Get posts related to the given post by category or shared tags.
      *
-     * @param  Post  $post  The reference post.
-     * @param  int  $limit  Number of posts to retrieve (default: 3).
-     * @return Collection<Post>
+     * Returns up to the specified limit of published posts (excluding the reference post) that share the same category or at least one tag.
+     *
+     * @param Post $post The reference post to find related posts for.
+     * @param int $limit Maximum number of related posts to return.
+     * @return Collection<Post> A collection of related Post models.
      */
     public function hasRelatedPosts(Post $post, int $limit = 3): Collection
     {

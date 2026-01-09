@@ -51,6 +51,32 @@ class Region extends Model implements Sluggable
         'territory' => Territories::class,
     ];
 
+<<<<<<< HEAD
+    /**
+     * Provide the model's image attribute names.
+     *
+     * @return string[] Attribute names that represent image fields (e.g., `['logo']`).
+     */
+    public function images(): array
+    {
+        return ['logo'];
+    }
+
+    /**
+     * Get the relative storage directory for region logos.
+     *
+     * @return string The relative directory path where region logos are stored (e.g. "regions").
+     */
+    public function dir(): string
+    {
+        return 'regions';
+    }
+
+    /**
+     * Initialize boot callbacks required for managing the model's slug path.
+     */
+=======
+>>>>>>> development
     protected static function booted(): void
     {
         static::bootHasSlugPath();
