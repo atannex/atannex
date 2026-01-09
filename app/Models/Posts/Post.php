@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace App\Models\Posts;
 
-use App\Contracts\Commentable;
-use Atannex\Contracts\HasImages;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
-use Atannex\Relations\PostRelation;
+use App\Contracts\Commentable;
+use App\Models\Traits\HandlePost;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Post extends Model implements Commentable, HasImages
+class Post extends Model implements Commentable
 {
-    use PostRelation;
+    use HandlePost;
     use Scoping;
     use Slugging;
     use SoftDeletes;
 
+    /**
+     * Slug source field.
+     */
     protected string $slugSource = 'title';
 
     /**
@@ -58,16 +60,9 @@ class Post extends Model implements Commentable, HasImages
         'editor_pick_expires' => 'datetime',
     ];
 
-    public function images(): array
-    {
-        return ['image'];
-    }
-
-    public function dir(): string
-    {
-        return 'posts';
-    }
-
+    /**
+     * Use slug as route key.
+     */
     public function getRouteKeyName(): string
     {
         return 'slug';

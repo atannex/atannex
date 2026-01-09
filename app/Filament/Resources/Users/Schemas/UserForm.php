@@ -11,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Textarea;
+use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Spatie\Permission\Models\Permission;
@@ -41,7 +42,7 @@ class UserForm
                                         FileUpload::make('image')
                                             ->label('Profile Picture')
                                             ->disk('public')
-                                            ->directory(fn($record) => $record?->dir() ?? 'users')
+                                            ->directory('users')
                                             ->visibility('public')
                                             ->image()
                                             ->imageEditor()
@@ -62,6 +63,11 @@ class UserForm
                                             ->removeUploadedFileButtonPosition('top-right')
                                             ->avatar()
                                             ->alignCenter()
+                                            ->afterStateUpdated(function ($state, $record) {
+                                                if ($record && $record->image && $record->image !== $state) {
+                                                    Storage::disk('public')->delete($record->image);
+                                                }
+                                            })
                                             ->columnSpan(3),
 
                                         Group::make()

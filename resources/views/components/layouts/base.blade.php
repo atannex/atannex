@@ -84,6 +84,5 @@
     <script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}" defer></script>
     <script src="{{ asset('assets/js/app.min.js') }}" defer></script>
     <script src="{{ asset('assets/js/main.js') }}" defer></script>
-
 </body>
 </html>

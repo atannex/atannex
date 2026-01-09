@@ -1,31 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
-use Filament\Panel;
 use App\Enums\Gender;
 use App\Enums\Status;
+use App\Models\Traits\HandleUser;
 use Atannex\Enables\Slugging;
-use App\Models\Comments\Comment;
-use App\Models\Regions\Employee;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
-use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Notifications\VerifyEmailNotification;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Notifications\ResetPasswordNotification;
-use Atannex\Contracts\HasImages;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasImages
+/**
+ * Core User entity.
+ *
+ * Handles authentication, authorization, and Filament access.
+ * Domain-specific behavior is delegated to traits.
+ */
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
-    use HasRoles, Notifiable, Slugging, SoftDeletes;
+    use HasRoles;
+    use Slugging;
+    use SoftDeletes;
+    use Notifiable;
+    use HandleUser;
 
+    /**
+     * Attribute used as the source for slug generation.
+     */
     protected string $slugSource = 'name';
 
+    /**
+     * Mass assignable attributes.
+     *
+     * Validation and data integrity are enforced upstream.
+     */
     protected $fillable = [
         'name',
         'email',
@@ -47,40 +61,35 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'metadata',
     ];
 
+    /**
+     * Attributes excluded from serialization.
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    /**
+     * Attribute casting rules.
+     *
+     * Enums are treated as authoritative domain values.
+     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'date_of_birth' => 'date',
-            'gender' => Gender::class,
-            'status' => Status::class,
-            'metadata' => 'array', // cast JSON to array
+            'password'          => 'hashed',
+            'date_of_birth'     => 'date',
+            'gender'            => Gender::class,
+            'status'            => Status::class,
         ];
     }
 
-    /* -----------------------------------------------------------------
-     |  Image Handling
-     | -----------------------------------------------------------------
-     */
-    public function images(): array
-    {
-        return ['image'];
-    }
-
-    public function dir(): string
-    {
-        return 'users';
-    }
-
-    /* -----------------------------------------------------------------
-     |  Filament Admin Access
-     | -----------------------------------------------------------------
+    /**
+     * Determine whether the user may access a Filament panel.
+     *
+     * Access is granted only to verified users with
+     * an allowed email domain and an active employee record.
      */
     public function canAccessPanel(Panel $panel): bool
     {
@@ -89,109 +98,5 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
                 config('filament.allowed_email_domains', ['gmail.com', 'atannex.org', 'atannex.com'])
             )
             && $this->isEmployee();
-    }
-
-    public function sendEmailVerificationNotification()
-    {
-        $this->notify(new VerifyEmailNotification());
-    }
-
-    public function sendPasswordResetNotification($token)
-    {
-        $this->notify(new ResetPasswordNotification($token));
-    }
-
-    /* -----------------------------------------------------------------
-     |  Relationships
-     | -----------------------------------------------------------------
-     */
-    public function employee(): HasOne
-    {
-        return $this->hasOne(Employee::class);
-    }
-
-    public function activeEmployee(): HasOne
-    {
-        return $this->hasOne(Employee::class)->where('status', Status::ACTIVE);
-    }
-
-    public function comments(): HasMany
-    {
-        return $this->hasMany(Comment::class);
-    }
-
-    /* -----------------------------------------------------------------
-     |  Helper Methods
-     | -----------------------------------------------------------------
-     */
-    public function emailDomain(): string
-    {
-        return explode('@', $this->email)[1];
-    }
-
-    public function hasAllowedDomain(array $allowedDomains): bool
-    {
-        return in_array($this->emailDomain(), $allowedDomains, true);
-    }
-
-    public function isEmployee(): bool
-    {
-        return $this->hasVerifiedEmail()
-            && $this->activeEmployee()->exists()
-            && $this->roles()->exists();
-    }
-
-    /* -----------------------------------------------------------------
-     |  Status Lifecycle Helpers
-     | -----------------------------------------------------------------
-     */
-    public function allowedStatusTransitions(): array
-    {
-        return Status::allowedTransitions($this->status);
-    }
-
-    public function canTransitionTo(string $targetStatus): bool
-    {
-        return Status::canTransition($this->status, $targetStatus);
-    }
-
-    public function updateStatus(string $newStatus): bool
-    {
-        if (!$this->canTransitionTo($newStatus)) {
-            return false;
-        }
-
-        $this->status = $newStatus;
-        return $this->save();
-    }
-
-    public function isActive(): bool
-    {
-        return $this->status === Status::ACTIVE;
-    }
-
-    public function isRestricted(): bool
-    {
-        return $this->status === Status::RESTRICTED;
-    }
-
-    public function isSuspended(): bool
-    {
-        return $this->status === Status::SUSPENDED;
-    }
-
-    public function isBanned(): bool
-    {
-        return $this->status === Status::BANNED;
-    }
-
-    public function isPending(): bool
-    {
-        return $this->status === Status::PENDING;
-    }
-
-    public function isUnverified(): bool
-    {
-        return $this->status === Status::UNVERIFIED;
     }
 }

@@ -16,8 +16,7 @@ final class Lebialem
         protected readonly RegionService $regionService,
         protected readonly TagService $tagService,
         protected readonly HasPost $getPosts,
-    ) {
-    }
+    ) {}
 
     /**
      * Prepare shared view data for public-facing layouts.
@@ -28,21 +27,24 @@ final class Lebialem
     {
         $regions = $this->regionService->getRootRegions();
 
+        $recentPosts = $this->getPosts->hasRecentPosts(2);
+        $breakingPosts = $this->getPosts->hasBreakingPosts();
+
         return [
+            'logo'            => $this->getGalleryImage(Image::LOGO()),
+            'favicon'         => $this->getGalleryImage(Image::FAVICON()),
+            'banner'          => $this->getGalleryImage(Image::BANNER()),
 
-            'logo'         => $this->getGalleryImage(Image::LOGO()),
-            'favicon'      => $this->getGalleryImage(Image::FAVICON()),
-            'banner'       => $this->getGalleryImage(Image::BANNER()),
+            'global_icons'    => $this->getSocialMediaIcons(),
+            'popularTags'     => $this->tagService->getPopularTags(10),
 
-            'global_icons' => $this->getSocialMediaIcons(),
-            'popularTags'  => $this->tagService->getPopularTags(10),
+            'mainRegions'     => $regions,
+            'headerRegion'    => $regions->first(),
+            'categoryRegions' => $this->regionService->getRootCategoryRegions(),
 
-            'mainRegions'      => $regions,
-            'headerRegion'     => $regions->first(),
-            'categoryRegions'  => $this->regionService->getRootCategoryRegions(),
+            'recentPosts' => $recentPosts,
 
-            'recentPosts' => $this->getPosts->hasRecentPosts(2),
-            'breaking'    => $this->getPosts->hasBreakingPosts(),
+            'breaking'    => $breakingPosts->isNotEmpty() ? $breakingPosts : $recentPosts,
         ];
     }
 }

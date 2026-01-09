@@ -9,10 +9,11 @@ if (! function_exists('get_posts_from_tabs')) {
     function get_posts_from_tabs(array $tabs): Collection
     {
         return collect($tabs)
-            ->flatMap(fn ($tab) =>
+            ->flatMap(
+                fn($tab) =>
                 $tab['content']
-                ?? collect($tab['entities'])
-                    ->flatMap(fn ($region) => $region['posts'])
+                    ?? collect($tab['entities'])
+                    ->flatMap(fn($region) => $region['posts'])
             )
             ->unique('id')
             ->values();

@@ -13,8 +13,9 @@ import '../css/app.css';
 ------------------------------------------------- */
 import 'jquery';
 
-import './bootstrap';
+import './video';
 import './reset';
 import './script';
 import './share';
-import './video';
+
+import './bootstrap';

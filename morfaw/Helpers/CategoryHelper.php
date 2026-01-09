@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Str;
-
 if (! function_exists('category_display_data')) {
     /**
      * Get display data for a category (label and background image).

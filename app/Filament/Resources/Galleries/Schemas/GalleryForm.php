@@ -4,13 +4,14 @@ namespace App\Filament\Resources\Galleries\Schemas;
 
 use App\Enums\Flag;
 use App\Enums\Image;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
+use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\FileUpload;
 
 class GalleryForm
 {
@@ -92,9 +93,15 @@ class GalleryForm
                                                     ->label('Gallery Image')
                                                     ->disk('public')
                                                     ->visibility('public')
-                                                    ->directory(fn($record) => $record->dir() ?? 'gallery')
+                                                    ->directory('gallery')
                                                     ->image()
                                                     ->imageEditor()
+
+                                                    ->afterStateUpdated(function ($state, $record) {
+                                                        if ($record && $record->image && $record->image !== $state) {
+                                                            Storage::disk('public')->delete($record->image);
+                                                        }
+                                                    })
                                                     ->imageEditorAspectRatios([
                                                         '16:9' => '16:9 (Widescreen)',
                                                         '4:3' => '4:3 (Standard)',
