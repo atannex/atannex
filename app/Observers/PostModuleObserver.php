@@ -4,6 +4,27 @@ namespace App\Observers;
 
 use App\Models\Modules\PostModule;
 use Illuminate\Support\Facades\Storage;
+/**
+ * Observer for the PostModule model.
+ *
+ * Responsibilities:
+ * 1. Automatically manages file cleanup when a PostModule is updated or deleted.
+ * 2. Tracks files referenced in the module's content blocks (images, videos, side-by-side layouts, etc.).
+ * 3. Detects changes in video-related fields and removes old files from storage.
+ * 4. Ensures no orphaned files remain in the public storage disk.
+ *
+ * Key Components:
+ * - $blockFileMap: Maps block types to the keys that store file paths.
+ * - $videoFields: List of nested video fields to monitor for changes and deletion.
+ * - updating(): Deletes old content files that are no longer used.
+ * - deleting(): Deletes all content files if the model is force deleted.
+ * - extractFilePaths(): Utility to extract all file paths from content blocks.
+ * - handleVideoFieldUpdates() & deleteVideoFieldFiles(): Manage video-specific file cleanup.
+ *
+ * Usage:
+ * Register this observer in the PostModule model or service provider to handle file cleanup automatically
+ * on model updates and deletions.
+ */
 
 class PostModuleObserver
 {
@@ -71,20 +92,13 @@ class PostModuleObserver
         foreach ($content as $block) {
             $type = $block['type'];
 
-            if (!isset($this->blockFileMap[$type])) {
-                continue;
-            }
+            if (!empty($this->blockFileMap[$type])) {
+                $mapping = $this->blockFileMap[$type];
 
-            $mapping = $this->blockFileMap[$type];
-
-            if (is_array($mapping)) {
-                [$subArray, $subKey] = $mapping;
-
-                if (isset($block['data'][$subArray]) && is_array($block['data'][$subArray])) {
+                if (is_array($mapping)) {
+                    [$subArray, $subKey] = $mapping;
                     $files = array_merge($files, array_column($block['data'][$subArray], $subKey));
-                }
-            } else {
-                if (isset($block['data'][$mapping])) {
+                } else {
                     $files[] = $block['data'][$mapping];
                 }
             }
@@ -92,6 +106,7 @@ class PostModuleObserver
 
         return array_values(array_unique(array_filter($files)));
     }
+
 
     private function deleteFiles(array $files): void
     {
