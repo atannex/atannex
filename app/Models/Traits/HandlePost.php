@@ -1,6 +1,6 @@
 <?php
 
-namespace Atannex\Relations;
+namespace App\Models\Traits;
 
 use App\Models\Comments\Comment;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  *
  * Defines all Eloquent relationships and slug logic for the Post model.
  */
-trait PostRelation
+trait HandlePost
 {
     /**
      * Many-to-Many relationship with Tags.

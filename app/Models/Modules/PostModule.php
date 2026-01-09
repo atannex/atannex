@@ -6,13 +6,12 @@ namespace App\Models\Modules;
 
 use App\Enums\PostType;
 use App\Models\Posts\Post;
-use Atannex\Contracts\HasImages;
 use Atannex\Traits\HasReading;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class PostModule extends Model implements HasImages
+class PostModule extends Model
 {
     use HasReading;
     use SoftDeletes;
@@ -35,21 +34,5 @@ class PostModule extends Model implements HasImages
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class, 'post_id');
-    }
-
-    /**
-     * Extract all image paths from content JSON.
-     */
-    public function images(): array
-    {
-        return ['image'];
-    }
-
-    /**
-     * Directory for storing module images.
-     */
-    public function dir(): string
-    {
-        return 'modules';
     }
 }

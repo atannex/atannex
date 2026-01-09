@@ -3,639 +3,478 @@
 namespace App\Filament\Resources\PostModules\Schemas;
 
 use App\Enums\PostType;
-use Filament\Forms\Components\Builder;
-use Filament\Forms\Components\Builder\Block;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\RichEditor;
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Tabs;
+use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Group;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Builder\Block;
 
 class PostModuleForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-            Group::make()
+            Section::make('Essential Configuration')
+                ->description('Link this module to a post and define its content type')
+                ->icon('heroicon-o-cog-6-tooth')
                 ->schema([
-                    Section::make('Module Configuration')
-                        ->description('Essential settings for this post module')
-                        ->icon('heroicon-o-cog-6-tooth')
+                    Grid::make(['default' => 1, 'md' => 2])
                         ->schema([
-                            Grid::make(2)
-                                ->schema([
-                                    Select::make('post_id')
-                                        ->label('Associated Post')
-                                        ->relationship('post', 'title')
-                                        ->searchable()
-                                        ->preload()
-                                        ->placeholder('Search and select a post')
-                                        ->helperText('Connect this module to an existing post')
-                                        ->required()
-                                        ->native(false)
-                                        ->prefixIcon('heroicon-o-link')
-                                        ->columnSpan(1),
+                            Select::make('post_id')
+                                ->label('Associated Post')
+                                ->relationship('post', 'title')
+                                ->searchable()
+                                ->preload()
+                                ->placeholder('Select a post to associate with this module')
+                                ->helperText('This module will be attached to the selected post')
+                                ->required()
+                                ->native(false)
+                                ->prefixIcon('heroicon-o-document-text')
+                                ->columnSpan(['default' => 'full', 'md' => 1]),
 
-                                    Select::make('type')
-                                        ->label('Content Type')
-                                        ->options(PostType::asSelectArray())
-                                        ->default(PostType::ARTICLE)
-                                        ->preload()
-                                        ->searchable()
-                                        ->required()
-                                        ->native(false)
-                                        ->prefixIcon('heroicon-o-tag')
-                                        ->helperText('Defines how content is displayed and categorized')
-                                        ->columnSpan(1),
-                                ]),
-                        ])
-                        ->collapsible()
-                        ->persistCollapsed(),
+                            Select::make('type')
+                                ->label('Module Type')
+                                ->options(PostType::asSelectArray())
+                                ->default(PostType::ARTICLE)
+                                ->searchable()
+                                ->required()
+                                ->native(false)
+                                ->prefixIcon('heroicon-o-tag')
+                                ->helperText('Determines how this content is displayed and categorized')
+                                ->columnSpan(['default' => 'full', 'md' => 1]),
+                        ]),
                 ])
                 ->columnSpanFull(),
 
-            Group::make()
+            Section::make('Primary Media')
+                ->description('Configure the main video content for this module')
+                ->icon('heroicon-o-film')
                 ->schema([
-                    Section::make('Video Content')
-                        ->description('Add video content via upload or YouTube embed')
-                        ->icon('heroicon-o-play-circle')
-                        ->schema([
-                            Grid::make(['default' => 1, 'lg' => 2])
+                    Tabs::make('media_source')
+                        ->tabs([
+                            Tabs\Tab::make('YouTube Embed')
+                                ->icon('heroicon-o-play-circle')
                                 ->schema([
-
-                                    Group::make()
+                                    Grid::make(['default' => 1, 'lg' => 2])
                                         ->schema([
-                                            Section::make('Direct Video Upload')
-                                                ->schema([
-                                                    Grid::make(1)
-                                                        ->schema([
-                                                            FileUpload::make('video.path')
-                                                                ->label('Video File')
-                                                                ->disk('public')
-                                                                ->visibility('public')
-                                                                ->directory(fn($record) => $record?->dir() ?? 'post_modules/videos')
-                                                                ->acceptedFileTypes([
-                                                                    'video/mp4',
-                                                                    'video/webm',
-                                                                    'video/ogg',
-                                                                ])
-                                                                ->maxSize(51200)
-                                                                ->helperText('Upload MP4, WebM, or OGG • Max: 50MB')
-                                                                ->imagePreviewHeight('220')
-                                                                ->panelLayout('integrated')
-                                                                ->panelAspectRatio('16:9')
-                                                                ->columnSpanFull(),
+                                            TextInput::make('video.id')
+                                                ->label('YouTube Video ID')
+                                                ->placeholder('dQw4w9WgXcQ')
+                                                ->default('')
+                                                ->dehydrated()
+                                                ->prefix('youtube.com/watch?v=')
+                                                ->suffixIcon('heroicon-o-video-camera')
+                                                ->helperText('Enter the video ID from the YouTube URL (e.g., the part after "v=")')
+                                                ->columnSpan(['default' => 'full', 'lg' => 1]),
 
-                                                            FileUpload::make('video.poster')
-                                                                ->label('Video Poster (Thumbnail)')
-                                                                ->disk('public')
-                                                                ->directory(fn($record) => $record?->dir() ?? 'post_modules/posters')
-                                                                ->visibility('public')
-                                                                ->image()
-                                                                ->imageEditor()
-                                                                ->imageEditorAspectRatios([
-                                                                    '16:9' => '16:9 (Recommended)',
-                                                                    '4:3' => '4:3 (Standard)',
-                                                                    '1:1' => '1:1 (Square)',
-                                                                ])
-                                                                ->imagePreviewHeight('180')
-                                                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                                                ->maxSize(2048)
-                                                                ->helperText('Thumbnail shown before playback • Max: 2MB')
-                                                                ->panelLayout('integrated')
-                                                                ->columnSpanFull(),
-                                                        ]),
-                                                ])
-                                                ->compact(),
+                                            TextInput::make('video.signature')
+                                                ->label('Video Signature')
+                                                ->placeholder('jNoRG1I7lZ_eJnLp')
+                                                ->default('')
+                                                ->dehydrated()
+                                                ->suffixIcon('heroicon-o-key')
+                                                ->helperText('Optional signature for enhanced embed features')
+                                                ->columnSpan(['default' => 'full', 'lg' => 1]),
+                                        ]),
+
+                                    FileUpload::make('video.thumbnail')
+                                        ->label('Custom Video Thumbnail')
+                                        ->image()
+                                        ->disk('public')
+                                        ->visibility('public')
+                                        ->directory('content/thumbnails')
+                                        ->imageEditor()
+                                        ->imageEditorAspectRatios([
+                                            '16:9' => '16:9 (YouTube Standard)',
                                         ])
-                                        ->columnSpan(['default' => 1, 'lg' => 1]),
+                                        ->imagePreviewHeight('200')
+                                        ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
+                                        ->maxSize(2048)
+                                        ->helperText('Upload a custom thumbnail to override YouTube\'s default (JPG, PNG, WebP • Max 2MB) • Old files deleted on update')
+                                        ->panelLayout('integrated')
+                                        ->columnSpanFull()
+                                        ->deletable(true)
+                                        ->deleteUploadedFileUsing(function ($file) {
+                                            return true;
+                                        }),
+                                ]),
 
-                                    // Right Column: YouTube Video
-                                    Group::make()
+                            Tabs\Tab::make('Direct Upload')
+                                ->icon('heroicon-o-arrow-up-tray')
+                                ->schema([
+                                    Grid::make(['default' => 1, 'lg' => 2])
                                         ->schema([
-                                            Section::make('YouTube Embed')
+                                            FileUpload::make('video.path')
+                                                ->label('Video File')
+                                                ->disk('public')
+                                                ->visibility('public')
+                                                ->directory('content/videos')
+                                                ->acceptedFileTypes([
+                                                    'video/mp4',
+                                                    'video/webm',
+                                                    'video/ogg',
+                                                ])
+                                                ->maxSize(51200)
+                                                ->helperText('Upload your video file (MP4, WebM, or OGG • Max 50MB) • Old files deleted on update')
+                                                ->imagePreviewHeight('240')
+                                                ->panelLayout('integrated')
+                                                ->panelAspectRatio('16:9')
+                                                ->columnSpan(['default' => 'full', 'lg' => 1])
+                                                ->deletable(true)
+                                                ->deleteUploadedFileUsing(function ($file) {
+                                                    return true;
+                                                }),
+
+                                            FileUpload::make('video.poster')
+                                                ->label('Video Poster Image')
+                                                ->disk('public')
+                                                ->directory('content/posters')
+                                                ->visibility('public')
+                                                ->image()
+                                                ->imageEditor()
+                                                ->imageEditorAspectRatios([
+                                                    '16:9' => '16:9 (Recommended)',
+                                                    '4:3' => '4:3 (Standard)',
+                                                    '1:1' => '1:1 (Square)',
+                                                ])
+                                                ->imagePreviewHeight('200')
+                                                ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
+                                                ->maxSize(2048)
+                                                ->helperText('Thumbnail image shown before video playback (JPG, PNG, WebP • Max 2MB) • Old files deleted on update')
+                                                ->panelLayout('integrated')
+                                                ->columnSpan(['default' => 'full', 'lg' => 1])
+                                                ->deletable(true)
+                                                ->deleteUploadedFileUsing(function ($file) {
+                                                    return true;
+                                                }),
+                                        ]),
+                                ]),
+                        ])
+                        ->columnSpanFull(),
+                ])
+                ->collapsible()
+                ->collapsed()
+                ->persistCollapsed()
+                ->columnSpanFull(),
+
+            Section::make('Content Builder')
+                ->description('Build your post content using flexible, drag-and-drop blocks')
+                ->icon('heroicon-o-squares-plus')
+                ->schema([
+                    Builder::make('content')
+                        ->columnSpanFull()
+                        ->blocks([
+
+                            Block::make('paragraph')
+                                ->label('Paragraph')
+                                ->icon('heroicon-o-bars-3-bottom-left')
+                                ->schema([
+                                    RichEditor::make('content')
+                                        ->label('Content')
+                                        ->placeholder('Write your paragraph content here...')
+                                        ->required()
+                                        ->columnSpanFull()
+                                        ->disableToolbarButtons(['codeBlock'])
+                                        ->toolbarButtons([
+                                            'bold',
+                                            'italic',
+                                            'link',
+                                            'bulletList',
+                                            'orderedList',
+                                        ]),
+                                ]),
+
+                            Block::make('heading')
+                                ->label('Heading')
+                                ->icon('heroicon-o-bars-3')
+                                ->schema([
+                                    Grid::make(3)
+                                        ->schema([
+                                            Select::make('level')
+                                                ->label('Level')
+                                                ->options([
+                                                    'h2' => 'H2 - Section Title',
+                                                    'h3' => 'H3 - Subsection',
+                                                    'h4' => 'H4 - Minor Heading',
+                                                ])
+                                                ->default('h2')
+                                                ->required()
+                                                ->native(false)
+                                                ->columnSpan(1),
+
+                                            TextInput::make('content')
+                                                ->label('Heading Text')
+                                                ->placeholder('Enter your heading')
+                                                ->required()
+                                                ->columnSpan(2),
+                                        ]),
+                                ]),
+
+                            Block::make('blockquote')
+                                ->label('Blockquote')
+                                ->icon('heroicon-o-chat-bubble-left-right')
+                                ->schema([
+                                    Textarea::make('content')
+                                        ->label('Quote')
+                                        ->placeholder('Enter the quote text...')
+                                        ->required()
+                                        ->rows(3)
+                                        ->columnSpanFull(),
+
+                                    TextInput::make('attribution')
+                                        ->label('Attribution')
+                                        ->placeholder('— Author Name, Source')
+                                        ->helperText('Optional: Author or source of the quote'),
+                                ]),
+
+                            Block::make('divider')
+                                ->label('Divider')
+                                ->icon('heroicon-o-minus')
+                                ->schema([
+                                    Select::make('style')
+                                        ->label('Style')
+                                        ->options([
+                                            'default' => 'Default Line',
+                                            'thick' => 'Thick Line',
+                                            'dotted' => 'Dotted Line',
+                                        ])
+                                        ->default('default')
+                                        ->native(false),
+                                ]),
+
+                            Block::make('image')
+                                ->label('Image')
+                                ->icon('heroicon-o-photo')
+                                ->schema([
+                                    FileUpload::make('src')
+                                        ->label('Image File')
+                                        ->disk('public')
+                                        ->visibility('public')
+                                        ->directory('content/images')
+                                        ->image()
+                                        ->imageEditor()
+                                        ->imageEditorAspectRatios([
+                                            null => 'Free Form',
+                                            '16:9' => '16:9 (Landscape)',
+                                            '4:3' => '4:3 (Standard)',
+                                            '1:1' => '1:1 (Square)',
+                                            '9:16' => '9:16 (Portrait)',
+                                        ])
+                                        ->imagePreviewHeight('320')
+                                        ->maxSize(5120)
+                                        ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
+                                        ->helperText('JPG, PNG, or WebP • Max 5MB • Previous images are automatically deleted on update')
+                                        ->required()
+                                        ->deletable(true)
+                                        ->deleteUploadedFileUsing(function ($file) {
+                                            return true;
+                                        })
+                                        ->columnSpanFull(),
+
+                                    Grid::make(2)
+                                        ->schema([
+                                            TextInput::make('alt')
+                                                ->label('Alt Text')
+                                                ->placeholder('Describe the image for accessibility')
+                                                ->helperText('Important for SEO and screen readers')
+                                                ->columnSpan(1),
+
+                                            Textarea::make('caption')
+                                                ->label('Caption')
+                                                ->placeholder('Optional caption or description')
+                                                ->rows(2)
+                                                ->columnSpan(1),
+                                        ]),
+                                ]),
+
+                            Block::make('video')
+                                ->label('Featured Video')
+                                ->icon('heroicon-o-video-camera')
+                                ->schema([
+                                    Grid::make(['default' => 1, 'lg' => 2])
+                                        ->schema([
+                                            FileUpload::make('cover')
+                                                ->label('Video Thumbnail')
+                                                ->image()
+                                                ->disk('public')
+                                                ->visibility('public')
+                                                ->directory('content/featured')
+                                                ->imageEditor()
+                                                ->imageEditorAspectRatios([
+                                                    '16:9' => '16:9 (Recommended)',
+                                                ])
+                                                ->imagePreviewHeight('240')
+                                                ->required()
+                                                ->deletable(true)
+                                                ->deleteUploadedFileUsing(function ($file) {
+                                                    return true;
+                                                })
+                                                ->helperText('Upload a thumbnail for this video')
+                                                ->columnSpan(['default' => 'full', 'lg' => 1]),
+
+                                            Grid::make(1)
                                                 ->schema([
+                                                    TextInput::make('video.id')
+                                                        ->label('YouTube Video ID')
+                                                        ->placeholder('dQw4w9WgXcQ')
+                                                        ->required()
+                                                        ->suffixIcon('heroicon-o-link')
+                                                        ->helperText('The ID from the YouTube URL'),
+
+                                                    TextInput::make('video.signature')
+                                                        ->label('Video Signature')
+                                                        ->placeholder('jNoRG1I7lZ_eJnLp')
+                                                        ->required()
+                                                        ->suffixIcon('heroicon-o-key')
+                                                        ->helperText('Signature for enhanced features'),
+                                                ])
+                                                ->columnSpan(['default' => 'full', 'lg' => 1]),
+                                        ]),
+                                ]),
+
+                            Block::make('video_grid')
+                                ->label('Video Grid')
+                                ->icon('heroicon-o-film')
+                                ->schema([
+                                    Repeater::make('items')
+                                        ->label('Video Collection')
+                                        ->schema([
+                                            Grid::make(['default' => 1, 'md' => 2])
+                                                ->schema([
+                                                    FileUpload::make('cover')
+                                                        ->label('Thumbnail')
+                                                        ->image()
+                                                        ->disk('public')
+                                                        ->visibility('public')
+                                                        ->directory('content/videos')
+                                                        ->imageEditor()
+                                                        ->imageEditorAspectRatios([
+                                                            '16:9' => '16:9 (YouTube Standard)',
+                                                        ])
+                                                        ->imagePreviewHeight('160')
+                                                        ->required()
+                                                        ->deletable(true)
+                                                        ->deleteUploadedFileUsing(function ($file) {
+                                                            return true;
+                                                        })
+                                                        ->columnSpan(['default' => 'full', 'md' => 1]),
+
                                                     Grid::make(1)
                                                         ->schema([
                                                             TextInput::make('video.id')
                                                                 ->label('YouTube Video ID')
+                                                                ->required()
                                                                 ->placeholder('dQw4w9WgXcQ')
-                                                                ->default('')
-                                                                ->dehydrated()
-                                                                ->prefix('youtube.com/watch?v=')
-                                                                ->suffixIcon('heroicon-o-video-camera')
-                                                                ->helperText('Extract ID from YouTube URL')
-                                                                ->columnSpanFull(),
+                                                                ->suffixIcon('heroicon-o-video-camera'),
 
                                                             TextInput::make('video.signature')
-                                                                ->label('YouTube Signature')
+                                                                ->label('Signature')
+                                                                ->required()
                                                                 ->placeholder('jNoRG1I7lZ_eJnLp')
-                                                                ->default('')
-                                                                ->dehydrated()
-                                                                ->suffixIcon('heroicon-o-key')
-                                                                ->helperText('Required for enhanced embedded features')
-                                                                ->columnSpanFull(),
+                                                                ->suffixIcon('heroicon-o-key'),
+                                                        ])
+                                                        ->columnSpan(['default' => 'full', 'md' => 1]),
+                                                ]),
+                                        ])
+                                        ->defaultItems(3)
+                                        ->minItems(1)
+                                        ->maxItems(12)
+                                        ->collapsible()
+                                        ->itemLabel(fn(array $state): ?string => '🎥 ' . ($state['video']['id'] ?? 'New Video'))
+                                        ->addActionLabel('+ Add Video')
+                                        ->reorderable()
+                                        ->cloneable()
+                                        ->reorderableWithButtons()
+                                        ->columnSpanFull(),
+                                ]),
 
-                                                            FileUpload::make('video.thumbnail')
-                                                                ->label('Custom Thumbnail (Optional)')
-                                                                ->image()
-                                                                ->disk('public')
-                                                                ->visibility('public')
-                                                                ->directory(fn($record) => $record?->dir() ?? 'post_modules/thumbnails')
-                                                                ->imageEditor()
-                                                                ->imageEditorAspectRatios([
-                                                                    '16:9' => '16:9 (YouTube Standard)',
-                                                                ])
-                                                                ->imagePreviewHeight('180')
-                                                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                                                ->maxSize(2048)
-                                                                ->helperText('Override YouTube default • Max: 2MB')
-                                                                ->panelLayout('integrated')
-                                                                ->columnSpanFull(),
+                            Block::make('side-by-side')
+                                ->label('Side-by-Side Layout')
+                                ->icon('heroicon-o-rectangle-group')
+                                ->schema([
+                                    Grid::make(['default' => 1, 'lg' => 2])
+                                        ->schema([
+                                            FileUpload::make('image')
+                                                ->label('Section Image')
+                                                ->disk('public')
+                                                ->visibility('public')
+                                                ->directory('content/layouts')
+                                                ->image()
+                                                ->imageEditor()
+                                                ->imageEditorAspectRatios([
+                                                    '1:1' => '1:1 (Square)',
+                                                    '4:3' => '4:3 (Standard)',
+                                                    '16:9' => '16:9 (Wide)',
+                                                ])
+                                                ->imagePreviewHeight('280')
+                                                ->maxSize(5120)
+                                                ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
+                                                ->required()
+                                                ->helperText('Image for this section (JPG, PNG, WebP • Max 5MB)')
+                                                ->deletable(true)
+                                                ->deleteUploadedFileUsing(function ($file) {
+                                                    return true;
+                                                })
+                                                ->columnSpan(['default' => 'full', 'lg' => 1]),
+
+                                            Grid::make(1)
+                                                ->schema([
+                                                    TextInput::make('heading')
+                                                        ->label('Section Heading')
+                                                        ->placeholder('Enter the section title')
+                                                        ->required(),
+
+                                                    RichEditor::make('content')
+                                                        ->label('Section Content')
+                                                        ->placeholder('Write your content here...')
+                                                        ->required()
+                                                        ->disableToolbarButtons(['codeBlock'])
+                                                        ->toolbarButtons([
+                                                            'bold',
+                                                            'italic',
+                                                            'link',
+                                                            'bulletList',
                                                         ]),
                                                 ])
-                                                ->compact(),
+                                                ->columnSpan(['default' => 'full', 'lg' => 1]),
+                                        ]),
+
+                                    Repeater::make('highlights')
+                                        ->label('Key Highlights')
+                                        ->schema([
+                                            TextInput::make('text')
+                                                ->label('Highlight')
+                                                ->required()
+                                                ->placeholder('Enter a key point or feature')
+                                                ->columnSpanFull(),
                                         ])
-                                        ->columnSpan(['default' => 1, 'lg' => 1]),
-                                ]),
-                        ])
-                        ->collapsible()
-                        ->collapsed()
-                        ->persistCollapsed(),
-                ])
-                ->columnSpanFull(),
-
-            Group::make()
-                ->schema([
-                    Section::make('Content Builder')
-                        ->description('Compose your post using flexible, drag-and-drop content blocks')
-                        ->icon('heroicon-o-squares-plus')
-                        ->schema([
-                            Grid::make(1)
-                                ->schema([
-                                    Builder::make('content')
-                                        ->columnSpanFull()
-                                        ->blocks([
-
-                                            Block::make('video_grid')
-                                                ->label('Video Grid')
-                                                ->icon('heroicon-o-film')
-                                                ->schema([
-                                                    Repeater::make('items')
-                                                        ->label('Video Collection')
-                                                        ->schema([
-                                                            Grid::make(2)
-                                                                ->schema([
-                                                                    Group::make()
-                                                                        ->schema([
-                                                                            Section::make('Cover Image')
-                                                                                ->schema([
-                                                                                    Grid::make(1)
-                                                                                        ->schema([
-                                                                                            FileUpload::make('cover')
-                                                                                                ->label('Thumbnail')
-                                                                                                ->image()
-                                                                                                ->disk('public')
-                                                                                                ->visibility('public')
-                                                                                                ->directory(fn($record) => $record?->dir() ?? 'content/videos')
-                                                                                                ->imageEditor()
-                                                                                                ->imageEditorAspectRatios([
-                                                                                                    '16:9' => '16:9 (YouTube Standard)',
-                                                                                                ])
-                                                                                                ->imagePreviewHeight('160')
-                                                                                                ->required()
-                                                                                                ->panelLayout('integrated')
-                                                                                                ->columnSpanFull(),
-                                                                                        ]),
-                                                                                ])
-                                                                                ->compact()
-                                                                                ->hiddenLabel(),
-                                                                        ])
-                                                                        ->columnSpan(1),
-
-                                                                    Group::make()
-                                                                        ->schema([
-                                                                            Section::make('Video Information')
-                                                                                ->schema([
-                                                                                    Grid::make(1)
-                                                                                        ->schema([
-                                                                                            TextInput::make('video.id')
-                                                                                                ->label('YouTube Video ID')
-                                                                                                ->required()
-                                                                                                ->placeholder('dQw4w9WgXcQ')
-                                                                                                ->suffixIcon('heroicon-o-video-camera')
-                                                                                                ->columnSpanFull(),
-
-                                                                                            TextInput::make('video.signature')
-                                                                                                ->label('Signature')
-                                                                                                ->required()
-                                                                                                ->placeholder('jNoRG1I7lZ_eJnLp')
-                                                                                                ->suffixIcon('heroicon-o-key')
-                                                                                                ->columnSpanFull(),
-                                                                                        ]),
-                                                                                ])
-                                                                                ->compact()
-                                                                                ->hiddenLabel(),
-                                                                        ])
-                                                                        ->columnSpan(1),
-                                                                ]),
-                                                        ])
-                                                        ->columns(1)
-                                                        ->defaultItems(3)
-                                                        ->minItems(1)
-                                                        ->maxItems(12)
-                                                        ->collapsible()
-                                                        ->itemLabel(fn(array $state): ?string => '🎥 Video ' . ($state['video']['id'] ?? 'Item'))
-                                                        ->addActionLabel('+ Add Video')
-                                                        ->reorderable()
-                                                        ->cloneable()
-                                                        ->reorderableWithButtons(),
-                                                ]),
-
-                                            // ========================================
-                                            // BLOCK: FEATURED VIDEO
-                                            // ========================================
-                                            Block::make('video')
-                                                ->label('Featured Video')
-                                                ->icon('heroicon-o-video-camera')
-                                                ->schema([
-                                                    Grid::make(2)
-                                                        ->schema([
-                                                            Group::make()
-                                                                ->schema([
-                                                                    Section::make('Video Cover')
-                                                                        ->schema([
-                                                                            Grid::make(1)
-                                                                                ->schema([
-                                                                                    FileUpload::make('cover')
-                                                                                        ->label('Thumbnail')
-                                                                                        ->image()
-                                                                                        ->disk('public')
-                                                                                        ->visibility('public')
-                                                                                        ->directory(fn($record) => $record?->dir() ?? 'content/featured-videos')
-                                                                                        ->imageEditor()
-                                                                                        ->imageEditorAspectRatios([
-                                                                                            '16:9' => '16:9 (Recommended)',
-                                                                                        ])
-                                                                                        ->imagePreviewHeight('240')
-                                                                                        ->required()
-                                                                                        ->panelLayout('integrated')
-                                                                                        ->columnSpanFull(),
-                                                                                ]),
-                                                                        ])
-                                                                        ->compact()
-                                                                        ->hiddenLabel(),
-                                                                ])
-                                                                ->columnSpan(1),
-
-                                                            Group::make()
-                                                                ->schema([
-                                                                    Section::make('Video Details')
-                                                                        ->schema([
-                                                                            Grid::make(1)
-                                                                                ->schema([
-                                                                                    TextInput::make('video.id')
-                                                                                        ->label('YouTube Video ID')
-                                                                                        ->placeholder('dQw4w9WgXcQ')
-                                                                                        ->required()
-                                                                                        ->suffixIcon('heroicon-o-link')
-                                                                                        ->columnSpanFull(),
-
-                                                                                    TextInput::make('video.signature')
-                                                                                        ->label('Video Signature')
-                                                                                        ->placeholder('jNoRG1I7lZ_eJnLp')
-                                                                                        ->required()
-                                                                                        ->suffixIcon('heroicon-o-key')
-                                                                                        ->columnSpanFull(),
-                                                                                ]),
-                                                                        ])
-                                                                        ->compact()
-                                                                        ->hiddenLabel(),
-                                                                ])
-                                                                ->columnSpan(1),
-                                                        ]),
-                                                ]),
-
-                                            // ========================================
-                                            // BLOCK: RICH TEXT CONTENT
-                                            // ========================================
-                                            Block::make('paragraphs')
-                                                ->label('Rich Text Content')
-                                                ->icon('heroicon-o-document-text')
-                                                ->schema([
-                                                    Repeater::make('content')
-                                                        ->label('Text Sections')
-                                                        ->schema([
-                                                            RichEditor::make('value')
-                                                                ->label('Content')
-                                                                ->placeholder('Write your content here...')
-                                                                ->toolbarButtons([
-                                                                    'bold',
-                                                                    'italic',
-                                                                    'underline',
-                                                                    'link',
-                                                                    'bulletList',
-                                                                    'orderedList',
-                                                                    'h2',
-                                                                    'h3',
-                                                                    'blockquote',
-                                                                    'codeBlock',
-                                                                ])
-                                                                ->disableToolbarButtons([
-                                                                    'strike',
-                                                                ])
-                                                                ->columnSpanFull(),
-                                                        ])
-                                                        ->addActionLabel('+ Add Text Section')
-                                                        ->collapsible()
-                                                        ->cloneable()
-                                                        ->reorderable()
-                                                        ->reorderableWithButtons()
-                                                        ->itemLabel(fn(array $state): ?string => '📝 ' . str($state['value'] ?? 'Text Section')->stripTags()->limit(50))
-                                                        ->columnSpanFull()
-                                                        ->defaultItems(1),
-                                                ]),
-
-                                            // ========================================
-                                            // BLOCK: SECTION HEADING
-                                            // ========================================
-                                            Block::make('heading')
-                                                ->label('Section Heading')
-                                                ->icon('heroicon-o-bars-3-bottom-left')
-                                                ->schema([
-                                                    TextInput::make('title')
-                                                        ->label('Heading Text')
-                                                        ->required()
-                                                        ->placeholder('Enter your section heading')
-                                                        ->suffixIcon('heroicon-o-h1')
-                                                        ->columnSpanFull(),
-                                                ]),
-
-                                            // ========================================
-                                            // BLOCK: IMAGE
-                                            // ========================================
-                                            Block::make('image')
-                                                ->label('Image')
-                                                ->icon('heroicon-o-photo')
-                                                ->schema([
-                                                    Grid::make(2)
-                                                        ->schema([
-                                                            Group::make()
-                                                                ->schema([
-                                                                    Section::make('Image Upload')
-                                                                        ->schema([
-                                                                            Grid::make(1)
-                                                                                ->schema([
-                                                                                    FileUpload::make('src')
-                                                                                        ->label('Image')
-                                                                                        ->disk('public')
-                                                                                        ->visibility('public')
-                                                                                        ->directory(fn($record) => $record?->dir() ?? 'content/images')
-                                                                                        ->image()
-                                                                                        ->imageEditor()
-                                                                                        ->imageEditorAspectRatios([
-                                                                                            null => 'Free Form',
-                                                                                            '16:9' => '16:9 (Landscape)',
-                                                                                            '4:3' => '4:3 (Standard)',
-                                                                                            '1:1' => '1:1 (Square)',
-                                                                                            '9:16' => '9:16 (Portrait)',
-                                                                                        ])
-                                                                                        ->imagePreviewHeight('320')
-                                                                                        ->maxSize(5120)
-                                                                                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                                                                        ->helperText('JPG, PNG, WebP • Max: 5MB')
-                                                                                        ->required()
-                                                                                        ->panelLayout('integrated')
-                                                                                        ->columnSpanFull(),
-                                                                                ]),
-                                                                        ])
-                                                                        ->compact()
-                                                                        ->hiddenLabel(),
-                                                                ])
-                                                                ->columnSpan(1),
-
-                                                            Group::make()
-                                                                ->schema([
-                                                                    Section::make('Image Information')
-                                                                        ->schema([
-                                                                            Grid::make(1)
-                                                                                ->schema([
-                                                                                    TextInput::make('alt')
-                                                                                        ->label('Alt Text (SEO)')
-                                                                                        ->placeholder('Describe the image')
-                                                                                        ->helperText('Important for accessibility and SEO')
-                                                                                        ->suffixIcon('heroicon-o-eye')
-                                                                                        ->columnSpanFull(),
-
-                                                                                    TextInput::make('caption')
-                                                                                        ->label('Caption')
-                                                                                        ->placeholder('Add a caption')
-                                                                                        ->helperText('Displayed beneath the image')
-                                                                                        ->suffixIcon('heroicon-o-chat-bubble-bottom-center-text')
-                                                                                        ->columnSpanFull(),
-                                                                                ]),
-                                                                        ])
-                                                                        ->compact()
-                                                                        ->hiddenLabel(),
-                                                                ])
-                                                                ->columnSpan(1),
-                                                        ]),
-                                                ]),
-
-                                            // ========================================
-                                            // BLOCK: BLOCKQUOTE
-                                            // ========================================
-                                            Block::make('blockquote')
-                                                ->label('Quote Block')
-                                                ->icon('heroicon-o-chat-bubble-left-ellipsis')
-                                                ->schema([
-                                                    Grid::make(1)
-                                                        ->schema([
-                                                            Textarea::make('quote')
-                                                                ->label('Quote Text')
-                                                                ->required()
-                                                                ->rows(4)
-                                                                ->placeholder('"Enter the inspirational or notable quote here..."')
-                                                                ->helperText('The main quotation text')
-                                                                ->columnSpanFull(),
-                                                        ]),
-
-                                                    Grid::make(2)
-                                                        ->schema([
-                                                            TextInput::make('author')
-                                                                ->label('Author Name')
-                                                                ->placeholder('e.g., Jane Smith')
-                                                                ->suffixIcon('heroicon-o-user')
-                                                                ->columnSpan(1),
-
-                                                            TextInput::make('author_title')
-                                                                ->label('Author Title / Role')
-                                                                ->placeholder('e.g., CEO at Tech Company')
-                                                                ->suffixIcon('heroicon-o-briefcase')
-                                                                ->columnSpan(1),
-                                                        ]),
-                                                ]),
-
-                                            // ========================================
-                                            // BLOCK: SIDE-BY-SIDE LAYOUT
-                                            // ========================================
-                                            Block::make('side-by-side')
-                                                ->label('Side-by-Side Layout')
-                                                ->icon('heroicon-o-rectangle-group')
-                                                ->schema([
-                                                    Grid::make(2)
-                                                        ->schema([
-                                                            Group::make()
-                                                                ->schema([
-                                                                    Section::make('Visual Element')
-                                                                        ->schema([
-                                                                            Grid::make(1)
-                                                                                ->schema([
-                                                                                    FileUpload::make('image')
-                                                                                        ->label('Image')
-                                                                                        ->disk('public')
-                                                                                        ->visibility('public')
-                                                                                        ->directory(fn($record) => $record?->dir() ?? 'content/layouts')
-                                                                                        ->image()
-                                                                                        ->imageEditor()
-                                                                                        ->imageEditorAspectRatios([
-                                                                                            '1:1' => '1:1 (Square)',
-                                                                                            '4:3' => '4:3 (Standard)',
-                                                                                            '16:9' => '16:9 (Wide)',
-                                                                                        ])
-                                                                                        ->imagePreviewHeight('280')
-                                                                                        ->maxSize(5120)
-                                                                                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                                                                        ->required()
-                                                                                        ->panelLayout('integrated')
-                                                                                        ->helperText('Display image for this section')
-                                                                                        ->columnSpanFull(),
-                                                                                ]),
-                                                                        ])
-                                                                        ->compact()
-                                                                        ->hiddenLabel(),
-                                                                ])
-                                                                ->columnSpan(1),
-
-                                                            Group::make()
-                                                                ->schema([
-                                                                    Section::make('Text Content')
-                                                                        ->schema([
-                                                                            Grid::make(1)
-                                                                                ->schema([
-                                                                                    TextInput::make('heading')
-                                                                                        ->label('Section Heading')
-                                                                                        ->placeholder('Enter a compelling heading')
-                                                                                        ->suffixIcon('heroicon-o-h2')
-                                                                                        ->columnSpanFull(),
-
-                                                                                    Textarea::make('paragraph')
-                                                                                        ->label('Description')
-                                                                                        ->rows(6)
-                                                                                        ->placeholder('Provide detailed information')
-                                                                                        ->helperText('Supporting content for this section')
-                                                                                        ->columnSpanFull(),
-                                                                                ]),
-                                                                        ])
-                                                                        ->compact()
-                                                                        ->hiddenLabel(),
-                                                                ])
-                                                                ->columnSpan(1),
-                                                        ]),
-
-                                                    Grid::make(1)
-                                                        ->schema([
-                                                            Group::make()
-                                                                ->schema([
-                                                                    Section::make('Key Highlights')
-                                                                        ->schema([
-                                                                            Grid::make(1)
-                                                                                ->schema([
-                                                                                    Repeater::make('list')
-                                                                                        ->label('Bullet Points')
-                                                                                        ->schema([
-                                                                                            Grid::make(6)
-                                                                                                ->schema([
-                                                                                                    TextInput::make('value')
-                                                                                                        ->label('Point')
-                                                                                                        ->placeholder('Enter a key point')
-                                                                                                        ->required()
-                                                                                                        ->columnSpan(5),
-
-                                                                                                    Select::make('icon')
-                                                                                                        ->label('Icon')
-                                                                                                        ->preload()
-                                                                                                        ->searchable()
-                                                                                                        ->native(false)
-                                                                                                        ->options([
-                                                                                                            'check' => '✓ Check',
-                                                                                                            'star' => '★ Star',
-                                                                                                            'arrow' => '→ Arrow',
-                                                                                                            'dot' => '• Bullet',
-                                                                                                        ])
-                                                                                                        ->default('check')
-                                                                                                        ->columnSpan(1),
-                                                                                                ]),
-                                                                                        ])
-                                                                                        ->itemLabel(fn(array $state): ?string => '• ' . str($state['value'] ?? 'Highlight')->limit(60))
-                                                                                        ->addActionLabel('+ Add Point')
-                                                                                        ->collapsible()
-                                                                                        ->reorderable()
-                                                                                        ->reorderableWithButtons()
-                                                                                        ->cloneable()
-                                                                                        ->defaultItems(3)
-                                                                                        ->columnSpanFull(),
-                                                                                ]),
-                                                                        ])
-                                                                        ->compact()
-                                                                        ->hiddenLabel(),
-                                                                ])
-                                                                ->columnSpanFull(),
-                                                        ]),
-                                                ]),
-
-                                            // ========================================
-                                            // BLOCK: DIVIDER
-                                            // ========================================
-                                            Block::make('divider')
-                                                ->label('Visual Separator')
-                                                ->icon('heroicon-o-minus')
-                                                ->schema([
-                                                    Select::make('style')
-                                                        ->label('Separator Style')
-                                                        ->preload()
-                                                        ->searchable()
-                                                        ->native(false)
-                                                        ->options([
-                                                            'line' => '━ Solid Line',
-                                                            'dashed' => '╍ Dashed Line',
-                                                            'dotted' => '┅ Dotted Line',
-                                                            'space' => '⎯ Empty Space',
-                                                        ])
-                                                        ->default('line')
-                                                        ->helperText('Visual separation between sections')
-                                                        ->columnSpanFull(),
-                                                ]),
-                                        ])
-                                        ->blockNumbers(false)
-                                        ->addActionLabel('+ Add Content Block')
+                                        ->addActionLabel('+ Add Highlight')
                                         ->collapsible()
-                                        ->cloneable()
+                                        ->itemLabel(fn(array $state): ?string => '✓ ' . ($state['text'] ?? 'New Highlight'))
+                                        ->defaultItems(0)
                                         ->reorderable()
-                                        ->reorderableWithButtons()
-                                        ->blockPickerColumns(3)
-                                        ->blockPickerWidth('3xl')
                                         ->columnSpanFull(),
                                 ]),
                         ])
+                        ->blockNumbers(false)
+                        ->addActionLabel('+ Add Content Block')
                         ->collapsible()
-                        ->persistCollapsed(),
+                        ->cloneable()
+                        ->reorderable()
+                        ->reorderableWithButtons()
+                        ->blockPickerColumns(['default' => 2, 'lg' => 3])
+                        ->blockPickerWidth('4xl')
+                        ->columnSpanFull(),
                 ])
+                ->collapsible()
+                ->persistCollapsed()
                 ->columnSpanFull(),
         ]);
     }

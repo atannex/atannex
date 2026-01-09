@@ -5,29 +5,20 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Abouts\Schemas;
 
 use App\Enums\Flag;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\RichEditor;
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
+use Filament\Forms\Components\Repeater;
+use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Schema;
 
-/**
- * Form schema for the About resource.
- *
- * Defines the structure and validation rules for managing
- * organization information, company history, contact details,
- * media assets, and statistics.
- */
 class AboutForm
 {
-    /**
-     * Configure the About form schema.
-     */
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -38,9 +29,6 @@ class AboutForm
             ]);
     }
 
-    /**
-     * Get the main content group (left column).
-     */
     private static function getMainContentGroup(): Group
     {
         return Group::make()
@@ -51,9 +39,6 @@ class AboutForm
             ]);
     }
 
-    /**
-     * Get the sidebar group (right column).
-     */
     private static function getSidebarGroup(): Group
     {
         return Group::make()
@@ -68,9 +53,6 @@ class AboutForm
             ]);
     }
 
-    /**
-     * Basic information section.
-     */
     private static function getBasicInformationSection(): Section
     {
         return Section::make('Basic Information')
@@ -100,9 +82,6 @@ class AboutForm
             ]);
     }
 
-    /**
-     * Company history timeline section.
-     */
     private static function getCompanyHistorySection(): Section
     {
         return Section::make('Company History')
@@ -142,16 +121,11 @@ class AboutForm
                     ->addActionLabel('Add Timeline Event')
                     ->reorderable()
                     ->collapsed()
-                    ->itemLabel(
-                        fn (array $state): ?string => ($state['year'] ?? '').' - '.($state['title'] ?? 'New Event')
-                    )
+                    ->itemLabel(fn(array $state): ?string => ($state['year'] ?? '') . ' - ' . ($state['title'] ?? 'New Event'))
                     ->orderColumn('year'),
             ]);
     }
 
-    /**
-     * Publication status section.
-     */
     private static function getStatusSection(): Section
     {
         return Section::make('Status & Map')
@@ -165,7 +139,7 @@ class AboutForm
                     ->options(Flag::asSelectArray())
                     ->preload()
                     ->searchable()
-                    ->default(Flag::PENDING)
+                    ->default(Flag::DRAFT)
                     ->required()
                     ->native(false),
                 TextInput::make('map')
@@ -174,9 +148,6 @@ class AboutForm
             ]);
     }
 
-    /**
-     * Contact information section.
-     */
     private static function getContactSection(): Section
     {
         return Section::make('Contact')
@@ -190,12 +161,10 @@ class AboutForm
                     ->collapsible()
                     ->collapsed()
                     ->addActionLabel('Add New Contact')
-                    ->itemLabel(
-                        fn (array $state): ?string => $state['title'] ?? 'New Contact'
-                    )
+                    ->itemLabel(fn(array $state): ?string => $state['title'] ?? 'New Contact')
                     ->reorderable()
                     ->schema([
-                        self::createImageUpload('icon', 'icons')
+                        self::createImageUpload('icon', 'abouts/icons')
                             ->label('Contact Icon'),
 
                         TextInput::make('title')
@@ -208,9 +177,7 @@ class AboutForm
                             ->label('Contact Details')
                             ->collapsible()
                             ->collapsed()
-                            ->itemLabel(
-                                fn (array $state): ?string => ($state['type'] ?? 'New').': '.($state['value'] ?? 'Detail')
-                            )
+                            ->itemLabel(fn(array $state): ?string => ($state['type'] ?? 'New') . ': ' . ($state['value'] ?? 'Detail'))
                             ->schema([
                                 Select::make('type')
                                     ->label('Type')
@@ -235,9 +202,6 @@ class AboutForm
             ]);
     }
 
-    /**
-     * Call-to-action section.
-     */
     private static function getCtaSection(): Section
     {
         return Section::make('CTA Section')
@@ -246,7 +210,7 @@ class AboutForm
             ->collapsible()
             ->collapsed()
             ->schema([
-                self::createImageUpload('cta.bg_image', 'cta')
+                self::createImageUpload('cta.bg_image', 'abouts/cta')
                     ->label('Background Image'),
 
                 TextInput::make('cta.title')
@@ -262,9 +226,6 @@ class AboutForm
             ]);
     }
 
-    /**
-     * Media assets section (images and videos).
-     */
     private static function getMediaAssetsSection(): Section
     {
         return Section::make('Media Assets')
@@ -276,15 +237,13 @@ class AboutForm
                 Repeater::make('image')
                     ->label('Image Gallery')
                     ->schema([
-                        self::createImageUpload('path', 'abouts/images')
+                        self::createImageUpload('path', 'abouts')
                             ->label('Image'),
                     ])
                     ->addActionLabel('Add Image')
                     ->reorderable()
                     ->collapsed()
-                    ->itemLabel(
-                        fn (array $state): ?string => 'Image '.($state['path'] ? '(Uploaded)' : '(New)')
-                    )
+                    ->itemLabel(fn(array $state): ?string => 'Image ' . ($state['path'] ? '(Uploaded)' : '(New)'))
                     ->grid(1),
 
                 TextInput::make('video_url')
@@ -296,9 +255,6 @@ class AboutForm
             ]);
     }
 
-    /**
-     * Key features section.
-     */
     private static function getKeyFeaturesSection(): Section
     {
         return Section::make('Key Features')
@@ -319,16 +275,11 @@ class AboutForm
                     ->addActionLabel('Add Feature')
                     ->reorderable()
                     ->collapsed()
-                    ->itemLabel(
-                        fn (array $state): ?string => $state['text'] ?? 'New Feature'
-                    )
+                    ->itemLabel(fn(array $state): ?string => $state['text'] ?? 'New Feature')
                     ->grid(1),
             ]);
     }
 
-    /**
-     * Statistics and counters section.
-     */
     private static function getStatisticsSection(): Section
     {
         return Section::make('Statistics & Counters')
@@ -369,7 +320,7 @@ class AboutForm
                             ->numeric()
                             ->placeholder('100')
                             ->helperText('Enter the counter value')
-                            ->visible(fn (Get $get): bool => $get('type') === 'manual'),
+                            ->visible(fn(Get $get): bool => $get('type') === 'manual'),
 
                         TextInput::make('base_year')
                             ->label('Base Year')
@@ -378,14 +329,12 @@ class AboutForm
                             ->minValue(1900)
                             ->maxValue(2100)
                             ->helperText('Year when experience started')
-                            ->visible(fn (Get $get): bool => $get('type') === 'years_experience'),
+                            ->visible(fn(Get $get): bool => $get('type') === 'years_experience'),
                     ])
                     ->addActionLabel('Add Counter')
                     ->reorderable()
                     ->collapsed()
-                    ->itemLabel(
-                        fn (array $state): ?string => $state['label'] ?? 'New Counter'
-                    ),
+                    ->itemLabel(fn(array $state): ?string => $state['label'] ?? 'New Counter'),
             ]);
     }
 
@@ -397,14 +346,18 @@ class AboutForm
         return FileUpload::make($name)
             ->disk('public')
             ->image()
+            ->directory($directory)
             ->imageEditor()
             ->imageEditorAspectRatios([
                 '16:9',
                 '4:3',
                 '1:1',
-            ])
+            ])->afterStateUpdated(function ($state, $record) use ($name) {
+                if ($record && $record->$name && $record->$name !== $state) {
+                    Storage::disk('public')->delete($record->$name);
+                }
+            })
             ->maxSize(5120)
-            ->directory($directory)
             ->required();
     }
 }

@@ -2,13 +2,12 @@
 
 namespace App\Models\Regions;
 
-use Atannex\Contracts\HasImages;
 use Atannex\Enables\Slugging;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Ruler extends Model implements HasImages
+class Ruler extends Model
 {
     use Slugging;
     use SoftDeletes;
@@ -53,34 +52,8 @@ class Ruler extends Model implements HasImages
         'deleted_at',
     ];
 
-    /* -----------------------------------------------------------------
-     |  Relationships
-     | -----------------------------------------------------------------
-     */
-
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
-    }
-
-    /* -----------------------------------------------------------------
-     |  Image Handling (Universal)
-     | -----------------------------------------------------------------
-     */
-
-    /**
-     * Return the image attributes for this model.
-     */
-    public function images(): array
-    {
-        return ['image'];
-    }
-
-    /**
-     * Return the storage directory for images.
-     */
-    public function dir(): string
-    {
-        return 'rulers';
     }
 }

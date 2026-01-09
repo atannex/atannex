@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Str;
-
 if (! function_exists('category_display_data')) {
     /**
      * Produce display values for a category: a human-readable label and a background image URL.

@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\Rulers\Schemas;
 
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
+use App\Enums\Flag;
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Schema;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 
 class RulerForm
 {
@@ -20,6 +22,11 @@ class RulerForm
                 TextInput::make('slug')
                     ->required(),
                 FileUpload::make('image')
+                    ->afterStateUpdated(function ($state, $record) {
+                        if ($record && $record->image && $record->image !== $state) {
+                            Storage::disk('public')->delete($record->image);
+                        }
+                    })
                     ->image(),
                 TextInput::make('dynasty')
                     ->default(null),
@@ -51,7 +58,7 @@ class RulerForm
                     ->columnSpanFull(),
                 TextInput::make('flag')
                     ->required()
-                    ->default('pending'),
+                    ->default(Flag::DRAFT),
             ]);
     }
 }

@@ -1,31 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
-use Filament\Panel;
 use App\Enums\Gender;
 use App\Enums\Status;
+use App\Models\Traits\HandleUser;
 use Atannex\Enables\Slugging;
-use App\Models\Comments\Comment;
-use App\Models\Regions\Employee;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
-use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Notifications\VerifyEmailNotification;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Notifications\ResetPasswordNotification;
-use Atannex\Contracts\HasImages;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasImages
+/**
+ * Core User entity.
+ *
+ * Handles authentication, authorization, and Filament access.
+ * Domain-specific behavior is delegated to traits.
+ */
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
-    use HasRoles, Notifiable, Slugging, SoftDeletes;
+    use HasRoles;
+    use Slugging;
+    use SoftDeletes;
+    use Notifiable;
+    use HandleUser;
 
+    /**
+     * Attribute used as the source for slug generation.
+     */
     protected string $slugSource = 'name';
 
+    /**
+     * Mass assignable attributes.
+     *
+     * Validation and data integrity are enforced upstream.
+     */
     protected $fillable = [
         'name',
         'email',
@@ -47,28 +61,37 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'metadata',
     ];
 
+    /**
+     * Attributes excluded from serialization.
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
     /**
+<<<<<<< HEAD
      * Define the model's attribute cast mappings.
      *
      * @return array Associative array mapping attribute names to cast types or enum/class names (e.g., `'email_verified_at' => 'datetime'`).
+=======
+     * Attribute casting rules.
+     *
+     * Enums are treated as authoritative domain values.
+>>>>>>> development
      */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'date_of_birth' => 'date',
-            'gender' => Gender::class,
-            'status' => Status::class,
-            'metadata' => 'array', // cast JSON to array
+            'password'          => 'hashed',
+            'date_of_birth'     => 'date',
+            'gender'            => Gender::class,
+            'status'            => Status::class,
         ];
     }
 
+<<<<<<< HEAD
     /* -----------------------------------------------------------------
      |  Image Handling
      | -----------------------------------------------------------------
@@ -96,6 +119,13 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
      *
      * @param Panel $panel The Filament panel being accessed.
      * @return bool `true` if access is permitted, `false` otherwise.
+=======
+    /**
+     * Determine whether the user may access a Filament panel.
+     *
+     * Access is granted only to verified users with
+     * an allowed email domain and an active employee record.
+>>>>>>> development
      */
     public function canAccessPanel(Panel $panel): bool
     {
@@ -105,6 +135,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
             )
             && $this->isEmployee();
     }
+<<<<<<< HEAD
 
     public function sendEmailVerificationNotification()
     {
@@ -238,3 +269,6 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         return $this->status === Status::UNVERIFIED;
     }
 }
+=======
+}
+>>>>>>> development

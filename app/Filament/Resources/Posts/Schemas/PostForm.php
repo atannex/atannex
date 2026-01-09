@@ -11,6 +11,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Textarea;
+use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\FileUpload;
@@ -209,8 +210,8 @@ class PostForm
                                         FileUpload::make('image')
                                             ->label('Featured Image')
                                             ->disk('public')
+                                            ->directory('posts')
                                             ->visibility('public')
-                                            ->directory(fn($record) => $record?->dir() ?? 'posts')
                                             ->image()
                                             ->imageEditor()
                                             ->imageEditorAspectRatios([
@@ -230,14 +231,20 @@ class PostForm
                                                 'image/heic',
                                                 'image/heif',
                                             ])
-                                            ->helperText('Recommended: 1920×1080px (16:9) | Max size: 5MB | Formats: JPG, PNG, WebP, GIF')
-                                            ->imagePreviewHeight('280')
+                                            ->helperText('Recommended: 1920×1080px | Max size: 5MB | Formats: JPG, PNG, WebP, GIF')
+                                            ->imagePreviewHeight(280)
                                             ->loadingIndicatorPosition('center')
                                             ->panelAspectRatio('16:9')
                                             ->panelLayout('integrated')
                                             ->removeUploadedFileButtonPosition('top-right')
                                             ->uploadProgressIndicatorPosition('center')
-                                            ->columnSpanFull(),
+                                            ->columnSpanFull()
+                                            ->afterStateUpdated(function ($state, $record) {
+                                                if ($record && $record->image && $record->image !== $state) {
+                                                    Storage::disk('public')->delete($record->image);
+                                                }
+                                            })
+
                                     ])
                                     ->compact()
                                     ->collapsible()

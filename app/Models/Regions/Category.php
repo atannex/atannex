@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace App\Models\Regions;
 
-use App\Contracts\Sluggable;
-use App\Models\Pivots\CategorySection;
-use App\Models\Posts\Post;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Enums\Flag;
-use Atannex\Concerns\HasResolver;
-use Atannex\Contracts\HasImages;
+use App\Models\Posts\Post;
+use App\Contracts\Sluggable;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Filters\Hierarchy;
 use Atannex\Traits\HasSlugPath;
+use Atannex\Concerns\HasResolver;
+use App\Models\Pivots\CategorySection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Category extends Model implements Sluggable, HasImages
+class Category extends Model implements Sluggable
 {
     use Hierarchy;
     use HasResolver;
@@ -46,6 +45,7 @@ class Category extends Model implements Sluggable, HasImages
 
     protected string $slugSource = 'name';
 
+<<<<<<< HEAD
     /**
      * List the model's image attribute keys.
      *
@@ -76,6 +76,8 @@ class Category extends Model implements Sluggable, HasImages
         static::bootHasSlugPath();
     }
 
+=======
+>>>>>>> development
     /**
      * Get posts that belong to this category.
      *

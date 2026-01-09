@@ -24,7 +24,7 @@
 
                       @if(in_array($categoryName, ['fons', 'fon']))
                       <p class="blog-text">
-                          {!! Str::limit($post->description, 200) !!}
+                          {!! Str::limit($post->description, 150) !!}
                       </p>
                       @endif
 

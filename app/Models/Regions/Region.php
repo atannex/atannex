@@ -4,25 +4,24 @@ declare(strict_types=1);
 
 namespace App\Models\Regions;
 
-use App\Contracts\Sluggable;
 use App\Enums\Flag;
 use App\Enums\Territories;
-use App\Models\Pivots\PostRegion;
-use App\Models\Pivots\RegionSectionWidget;
 use App\Models\Posts\Post;
-use App\Models\Regions\Ruler;
-use Atannex\Contracts\HasImages;
+use App\Contracts\Sluggable;
 use Atannex\Enables\Scoping;
+use App\Models\Regions\Ruler;
 use Atannex\Enables\Slugging;
 use Atannex\Filters\Hierarchy;
 use Atannex\Traits\HasSlugPath;
+use App\Models\Pivots\PostRegion;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Pivots\RegionSectionWidget;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Region extends Model implements Sluggable, HasImages
+class Region extends Model implements Sluggable
 {
     use Hierarchy;
     use HasSlugPath;
@@ -52,6 +51,7 @@ class Region extends Model implements Sluggable, HasImages
         'territory' => Territories::class,
     ];
 
+<<<<<<< HEAD
     /**
      * Provide the model's image attribute names.
      *
@@ -75,6 +75,8 @@ class Region extends Model implements Sluggable, HasImages
     /**
      * Initialize boot callbacks required for managing the model's slug path.
      */
+=======
+>>>>>>> development
     protected static function booted(): void
     {
         static::bootHasSlugPath();
