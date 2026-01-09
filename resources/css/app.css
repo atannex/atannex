@@ -1,13 +1,5 @@
-/* -------------------------------------------------
-   IMPORT OTHER CSS FILES
-   (must come before Tailwind layers)
-------------------------------------------------- */
-/* -------------------------------------------------
-   IMPORT OTHER CSS FILES
-   (must come before Tailwind directives)
-------------------------------------------------- */
+
+@import "./video.css";
 @import "./image.css";
 @import "./auth.css";
 @import "./menu.css";
-@import "./video.css";
-
