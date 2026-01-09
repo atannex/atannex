@@ -67,7 +67,7 @@
     @if(
     !empty($block['data']['image']) &&
     !empty($block['data']['heading']) &&
-    !empty($block['data']['paragraph'])
+    !empty($block['data']['content'])
     )
     <div class="mb-4 row pb-lg-2 pt-xl-2 gy-4">
 
@@ -77,14 +77,14 @@
 
         <div class="col-md">
             <h3 class="box-title-24">{{ $block['data']['heading'] }}</h3>
-            <p>{{ $block['data']['paragraph'] }}</p>
+            <p>{!! $block['data']['content'] !!}</p>
 
-            @if(!empty($block['data']['list']) && is_array($block['data']['list']))
+            @if(!empty($block['data']['highlights']) && is_array($block['data']['highlights']))
             <div class="blog-inner-list">
                 <ul>
-                    @foreach ($block['data']['list'] as $listItem)
-                    @if(!empty($listItem['value']))
-                    <li>{{ $listItem['value'] }}</li>
+                    @foreach ($block['data']['highlights'] as $listItem)
+                    @if(!empty($listItem['text']))
+                    <li>{!! $listItem['text'] !!}</li>
                     @endif
                     @endforeach
                 </ul>

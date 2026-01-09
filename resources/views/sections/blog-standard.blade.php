@@ -30,7 +30,7 @@
                         </h3>
 
                         <p class="blog-text">
-                            {!! Str::limit($post->description, 200) !!}
+                            {!! Str::limit($post->description, 150) !!}
                         </p>
 
                         <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="th-btn style2">

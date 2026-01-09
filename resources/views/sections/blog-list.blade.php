@@ -21,13 +21,14 @@
 
                                 </h3>
                                 <p class="blog-text">
-                                    {!! Str::limit($post->description, 200) !!}
+                                    {!! Str::limit($post->description, 150) !!}
                                 </p>
                                 <div class="blog-meta">
 
                                     @include('partials.author')
 
                                     @include('partials.date')
+
                                 </div>
                                 <a href="{{ route('page.index', $post->slug_path)}}" class="th-btn style2">
                                     {{ __("Read More") }}

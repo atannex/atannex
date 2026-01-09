@@ -3,17 +3,10 @@
 namespace App\Providers;
 
 use App\Models\Modules\PostModule;
-use App\Models\User;
-use App\Models\Others\About;
 use Illuminate\Support\ServiceProvider;
-use App\Models\Others\Gallery;
-use App\Models\Posts\Post;
-use App\Models\Regions\Category;
-use App\Models\Regions\Region;
-use App\Models\Regions\Ruler;
 use App\Models\Regions\Widget;
 use App\Models\Regions\Section;
-use App\Observers\ImageObserver;
+use App\Observers\PostModuleObserver;
 use App\Observers\WidgetObserver;
 use App\Observers\SectionObserver;
 use Atannex\Adapters\WidgetAdapter;
@@ -48,35 +41,8 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function registerObservers(): void
     {
-        foreach ($this->imageCleanupModels() as $model) {
-            $model::observe(ImageObserver::class);
-        }
-
-        Section::observe(
-            new SectionObserver(new SectionAdapter())
-        );
-
-        Widget::observe(
-            new WidgetObserver(new WidgetAdapter())
-        );
-    }
-
-    /**
-     * List model class names that require automatic image cleanup.
-     *
-     * @return string[] Fully-qualified model class names that require automatic image cleanup.
-     */
-    protected function imageCleanupModels(): array
-    {
-        return [
-            Gallery::class,
-            Region::class,
-            Post::class,
-            Category::class,
-            About::class,
-            PostModule::class,
-            Ruler::class,
-            User::class,
-        ];
+        Section::observe(new SectionObserver(new SectionAdapter()));
+        Widget::observe(new WidgetObserver(new WidgetAdapter()));
+        PostModule::observe(PostModuleObserver::class);
     }
 }

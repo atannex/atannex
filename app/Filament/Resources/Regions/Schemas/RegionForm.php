@@ -4,16 +4,17 @@ namespace App\Filament\Resources\Regions\Schemas;
 
 use App\Enums\Flag;
 use App\Enums\Territories;
-use Filament\Forms\Components\FileUpload;
+use Illuminate\Support\Str;
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
+use Filament\Forms\Components\Textarea;
+use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
-use Illuminate\Support\Str;
+use Filament\Forms\Components\FileUpload;
+use Filament\Infolists\Components\TextEntry;
 
 class RegionForm
 {
@@ -129,6 +130,7 @@ class RegionForm
                                     ->label('Region Logo')
                                     ->image()
                                     ->imageEditor()
+                                    ->directory('region')
                                     ->imageEditorAspectRatios([
                                         '1:1',
                                         '16:9',
@@ -139,6 +141,11 @@ class RegionForm
                                     ->visibility('public')
                                     ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/svg+xml'])
                                     ->helperText('PNG, JPG, or SVG. Max 2MB.')
+                                    ->afterStateUpdated(function ($state, $record) {
+                                        if ($record && $record->logo && $record->logo !== $state) {
+                                            Storage::disk('public')->delete($record->logo);
+                                        }
+                                    })
                                     ->columnSpanFull(),
                             ])
                             ->collapsible(),

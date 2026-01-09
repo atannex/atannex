@@ -3,20 +3,21 @@
 namespace App\Filament\Resources\Categories\Schemas;
 
 use App\Enums\Flag;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
+use Illuminate\Support\Str;
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
+use Filament\Forms\Components\Textarea;
+use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\FileUpload;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
-use Filament\Schemas\Schema;
-use Illuminate\Support\Str;
 
 class CategoryForm
 {
@@ -126,7 +127,7 @@ class CategoryForm
                                 FileUpload::make('image')
                                     ->label('Category Image')
                                     ->disk('public')
-                                    ->directory(fn($record) => $record?->dir() ?? 'category')
+                                    ->directory('category')
                                     ->visibility('public')
                                     ->image()
                                     ->imageEditor()
@@ -148,6 +149,11 @@ class CategoryForm
                                     ->imagePreviewHeight('300')
                                     ->loadingIndicatorPosition('center')
                                     ->panelAspectRatio('16:9')
+                                    ->afterStateUpdated(function ($state, $record) {
+                                        if ($record && $record->image && $record->image !== $state) {
+                                            Storage::disk('public')->delete($record->image);
+                                        }
+                                    })
                                     ->panelLayout('integrated')
                                     ->removeUploadedFileButtonPosition('top-right')
                                     ->uploadButtonPosition('left')
