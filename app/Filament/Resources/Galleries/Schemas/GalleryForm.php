@@ -15,6 +15,17 @@ use Filament\Forms\Components\FileUpload;
 
 class GalleryForm
 {
+    /**
+     * Configure and return a Filament form Schema for gallery image management.
+     *
+     * Populates the provided Schema with a responsive two-column layout containing:
+     * - Image Configuration (type, original filename),
+     * - Status Management (publication status),
+     * - Image Upload (file upload with editor and validations).
+     *
+     * @param Schema $schema The Schema instance to configure.
+     * @return Schema The configured Schema containing gallery form components.
+     */
     public static function configure(Schema $schema): Schema
     {
         return $schema

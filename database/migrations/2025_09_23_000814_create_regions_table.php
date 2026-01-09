@@ -9,7 +9,12 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Create the `regions` table with its columns, constraints, defaults, and soft deletes.
+     *
+     * The table includes an auto-increment `id`; `name` and `slug` (unique); nullable `description` and `logo`;
+     * `flag` defaulting to `Flag::DRAFT`; unsigned `position` defaulting to 0; nullable indexed `slug_path`;
+     * `territory` defaulting to `Territories::QUARTER`; nullable `parent_id` referencing `regions.id` (cascade on update, set null on delete);
+     * nullable JSON `metadata`; automatic `created_at`/`updated_at` timestamps; and a `deleted_at` soft delete column.
      */
     public function up(): void
     {

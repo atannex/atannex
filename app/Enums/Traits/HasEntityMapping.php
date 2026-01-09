@@ -119,16 +119,34 @@ trait HasEntityMapping
         ],
     ];
 
+    /**
+     * Retrieve the mapping entry for a given entity key.
+     *
+     * @param string $entity The entity key used to look up the mapping in the trait's internal mapping table.
+     * @return array The mapping array containing keys such as 'entity', 'method', and an optional 'idKey'.
+     */
     public static function getMapping(string $entity): array
     {
         return self::$mappings[$entity];
     }
 
+    /**
+     * Get the configured method name for a given entity mapping.
+     *
+     * @param string $entity The mapping key identifying the entity.
+     * @return string The method name associated with the specified entity.
+     */
     public static function resolveMethod(string $entity): string
     {
         return self::$mappings[$entity]['method'];
     }
 
+    /**
+     * Determine whether the mapping for the given entity includes an `idKey`.
+     *
+     * @param string $entity The mapping key identifying an entity in this trait's mapping table.
+     * @return bool `true` if the entity's mapping defines an `idKey`, `false` otherwise.
+     */
     public static function requiresIdKey(string $entity): bool
     {
         return isset(self::$mappings[$entity]['idKey']);

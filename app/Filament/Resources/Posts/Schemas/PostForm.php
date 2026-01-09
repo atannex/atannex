@@ -20,6 +20,17 @@ use Filament\Forms\Components\DateTimePicker;
 
 class PostForm
 {
+    /**
+     * Builds and returns a Filament form Schema configured for creating and editing posts.
+     *
+     * Configures form components for post content, organization & assignment, publishing schedule,
+     * featured media, editor's pick, and breaking news — including title, slug/path, meta description,
+     * category and author selectors (with create-option support), publish date/time, update tracking,
+     * image upload, toggles and associated date ranges, and related reactive behaviors.
+     *
+     * @param Schema $schema The base Schema instance to augment with post form components.
+     * @return Schema The configured Schema containing the complete post form. 
+     */
     public static function configure(Schema $schema): Schema
     {
         return $schema

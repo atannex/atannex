@@ -69,11 +69,6 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'remember_token',
     ];
 
-    /**
-     * Attribute casting rules.
-     *
-     * Enums are treated as authoritative domain values.
-     */
     protected function casts(): array
     {
         return [
@@ -85,12 +80,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         ];
     }
 
-    /**
-     * Determine whether the user may access a Filament panel.
-     *
-     * Access is granted only to verified users with
-     * an allowed email domain and an active employee record.
-     */
+
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasVerifiedEmail()

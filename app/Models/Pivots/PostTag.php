@@ -42,7 +42,9 @@ class PostTag extends Pivot
     public $timestamps = true;
 
     /**
-     * Get the post that owns this pivot record.
+     * Get the post associated with this pivot.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The related Post model.
      */
     public function post(): BelongsTo
     {
@@ -50,8 +52,10 @@ class PostTag extends Pivot
     }
 
     /**
-     * Get the tag that owns this pivot record.
-     */
+         * Get the tag that owns this pivot record.
+         *
+         * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The tag relationship instance.
+         */
     public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class);

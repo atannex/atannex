@@ -11,19 +11,23 @@ use Illuminate\Database\Eloquent\Model;
 trait WithHierarchicalPosts
 {
     /**
-     * Retrieve hierarchical models along with their latest posts.
+     * Retrieve hierarchical models by ID and attach their merged, sorted posts.
      *
-     * @param  string  $modelClass  Fully qualified class name of the Eloquent model.
-     * @param  array<string,mixed>  $config  Configuration array:
-     *                                       - 'posts_with_id': array<int>
-     *                                       - 'limit': int
-     *                                       - 'relation_limit': int
-     *                                       - 'leaf_relation_limit': int
-     *                                       - 'sort': string
-     *                                       - 'order': string ('asc'|'desc')
-     * @param  string  $childrenRelation  Child relation name.
-     * @param  string  $postsRelation  Post relation name.
-     * @return Collection<int, Model> Collection of models with merged posts.
+     * The returned models have their specified posts relation replaced with a collection that
+     * combines the model's own posts and posts from its leaf descendants, sorted by the
+     * configured field and limited to the configured counts.
+     *
+     * @param string $modelClass Fully qualified Eloquent model class name.
+     * @param array<string,mixed> $config Configuration options:
+     *                                  - 'posts_with_id': array<int> IDs of root models to fetch.
+     *                                  - 'limit': int Maximum number of root models to return.
+     *                                  - 'relation_limit': int Maximum number of posts attached per model.
+     *                                  - 'leaf_relation_limit': int Maximum number of posts taken from each leaf descendant.
+     *                                  - 'sort': string Post field to sort by.
+     *                                  - 'order': string 'asc' or 'desc' sort direction.
+     * @param string $childrenRelation Name of the children relation on the model.
+     * @param string $postsRelation Name of the posts relation on the model.
+     * @return \Illuminate\Support\Collection<int,\Illuminate\Database\Eloquent\Model> Collection of models with the posts relation updated to the merged, sorted, and limited posts collection.
      */
     public function getHierarchicalWithPosts(
         string $modelClass,
@@ -64,7 +68,18 @@ trait WithHierarchicalPosts
     }
 
     /**
-     * Fetch models with their children and post relationships.
+     * Retrieve hierarchical models by ID with their children and related posts preloaded and constrained.
+     *
+     * @param string $modelClass Fully-qualified model class name to query.
+     * @param array<int|string> $ids List of model IDs to fetch.
+     * @param int $limit Maximum number of root models to return.
+     * @param string $childrenRelation Name of the children relation on the model.
+     * @param string $postsRelation Name of the posts relation on the model.
+     * @param string $sortField Field name to sort models and posts by.
+     * @param string $order Sort direction, either 'asc' or 'desc'.
+     * @param int $leafPostLimit Maximum number of posts to load per leaf descendant.
+     * @param int $postLimit Maximum number of posts to load for the root model.
+     * @return \Illuminate\Support\Collection Collection of models with the specified relations preloaded.
      */
     protected function fetchHierarchicalModels(
         string $modelClass,
