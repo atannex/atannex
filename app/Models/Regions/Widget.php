@@ -22,6 +22,11 @@ class Widget extends Model
         'metadata',
     ];
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     protected $casts = [
         'metadata' => 'array',
     ];

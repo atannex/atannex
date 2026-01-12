@@ -28,6 +28,11 @@ class Section extends Model
         'metadata' => 'array',
     ];
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     /**
      * Produce a DOM id for this section when accessed via a pivot (for example within a region).
      *

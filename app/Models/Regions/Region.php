@@ -51,6 +51,11 @@ class Region extends Model implements Sluggable
         'territory' => Territories::class,
     ];
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     protected static function booted(): void
     {
         static::bootHasSlugPath();

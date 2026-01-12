@@ -89,4 +89,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
             )
             && $this->isEmployee();
     }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 }

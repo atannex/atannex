@@ -19,6 +19,7 @@ class Tag extends Model
      */
     protected string $slugMode = 'mixed';
 
+
     protected string $slugSource = 'name';
 
     /**
@@ -40,5 +41,10 @@ class Tag extends Model
         return $this->belongsToMany(Post::class)
             ->using(PostTag::class)
             ->withTimestamps();
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 }

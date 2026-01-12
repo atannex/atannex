@@ -8,7 +8,7 @@
 
     @switch($block['type'])
 
-    {{-- Paragraphs --}}
+    {{-- cc --}}
     @case('paragraphs')
     @if(!empty($block['data']['content']) && is_array($block['data']['content']))
     @foreach ($block['data']['content'] as $item)

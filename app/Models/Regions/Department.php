@@ -38,6 +38,12 @@ class Department extends Model
     protected $casts = [
         'status' => Status::class,
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     /**
      * Get the parent department of the current department.
      *
