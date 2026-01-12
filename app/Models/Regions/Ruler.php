@@ -34,6 +34,11 @@ class Ruler extends Model
         'flag',
     ];
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     /**
      * The attributes that should be cast.
      */

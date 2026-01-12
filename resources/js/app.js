@@ -1,4 +1,6 @@
-import 'jquery';
+import $ from 'jquery';
+
+window.$ = window.jQuery = $;
 
 import './video';
 import './reset';

@@ -45,6 +45,11 @@ class Category extends Model implements Sluggable
 
     protected string $slugSource = 'name';
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     /**
      * Get posts that belong to this category.
      *

@@ -264,7 +264,10 @@ final class HasView
      */
     public function renderPostShow(Category $category, string $slug): View
     {
-        $module = PostModule::with(['post.author.user', 'post.tags', 'post.category'])
+        $module = PostModule::with([
+            'post' => fn($q) => $q->withCount('comments')
+                ->with(['author.user', 'tags', 'category'])
+        ])
             ->whereHas('post', fn($q) => $q->where('slug_path', $slug))
             ->firstOrFail();
 

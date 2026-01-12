@@ -91,7 +91,7 @@ class PostModuleForm
                                         ->visibility('public')
                                         ->directory('content/thumbnails')
                                         ->imageEditor()
-                                        ->imageEditorAspectRatios([
+                                        ->imageEditorAspectRatioOptions([
                                             '16:9' => '16:9 (YouTube Standard)',
                                         ])
                                         ->imagePreviewHeight('200')
@@ -139,7 +139,7 @@ class PostModuleForm
                                                 ->visibility('public')
                                                 ->image()
                                                 ->imageEditor()
-                                                ->imageEditorAspectRatios([
+                                                ->imageEditorAspectRatioOptions([
                                                     '16:9' => '16:9 (Recommended)',
                                                     '4:3' => '4:3 (Standard)',
                                                     '1:1' => '1:1 (Square)',
@@ -172,7 +172,7 @@ class PostModuleForm
                         ->columnSpanFull()
                         ->blocks([
 
-                            Block::make('paragraph')
+                            Block::make('paragraphs')
                                 ->label('Paragraph')
                                 ->icon('heroicon-o-bars-3-bottom-left')
                                 ->schema([
@@ -260,7 +260,7 @@ class PostModuleForm
                                         ->directory('content/images')
                                         ->image()
                                         ->imageEditor()
-                                        ->imageEditorAspectRatios([
+                                        ->imageEditorAspectRatioOptions([
                                             null => 'Free Form',
                                             '16:9' => '16:9 (Landscape)',
                                             '4:3' => '4:3 (Standard)',
@@ -307,7 +307,7 @@ class PostModuleForm
                                                 ->visibility('public')
                                                 ->directory('content/featured')
                                                 ->imageEditor()
-                                                ->imageEditorAspectRatios([
+                                                ->imageEditorAspectRatioOptions([
                                                     '16:9' => '16:9 (Recommended)',
                                                 ])
                                                 ->imagePreviewHeight('240')
@@ -355,7 +355,7 @@ class PostModuleForm
                                                         ->visibility('public')
                                                         ->directory('content/videos')
                                                         ->imageEditor()
-                                                        ->imageEditorAspectRatios([
+                                                        ->imageEditorAspectRatioOptions([
                                                             '16:9' => '16:9 (YouTube Standard)',
                                                         ])
                                                         ->imagePreviewHeight('160')
@@ -408,7 +408,7 @@ class PostModuleForm
                                                 ->directory('content/layouts')
                                                 ->image()
                                                 ->imageEditor()
-                                                ->imageEditorAspectRatios([
+                                                ->imageEditorAspectRatioOptions([
                                                     '1:1' => '1:1 (Square)',
                                                     '4:3' => '4:3 (Standard)',
                                                     '16:9' => '16:9 (Wide)',
