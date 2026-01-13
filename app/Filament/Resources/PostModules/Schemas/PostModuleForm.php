@@ -173,7 +173,7 @@ class PostModuleForm
                         ->blocks([
 
                             Block::make('paragraphs')
-                                ->label('Paragraph')
+                                ->label('Paragraphs')
                                 ->icon('heroicon-o-bars-3-bottom-left')
                                 ->schema([
                                     RichEditor::make('content')
@@ -198,17 +198,21 @@ class PostModuleForm
                                     Grid::make(3)
                                         ->schema([
                                             Select::make('level')
-                                                ->label('Level')
+                                                ->label('Heading Level')
                                                 ->options([
-                                                    'h2' => 'H2 - Section Title',
-                                                    'h3' => 'H3 - Subsection',
-                                                    'h4' => 'H4 - Minor Heading',
+                                                    'h1' => 'H1 – Page Title',
+                                                    'h2' => 'H2 – Section Title',
+                                                    'h3' => 'H3 – Subsection',
+                                                    'h4' => 'H4 – Minor Heading',
+                                                    'h5' => 'H5 – Small Heading',
+                                                    'h6' => 'H6 – Caption / Label',
                                                 ])
                                                 ->default('h2')
                                                 ->required()
+                                                ->searchable()
+                                                ->preload()
                                                 ->native(false)
                                                 ->columnSpan(1),
-
                                             TextInput::make('content')
                                                 ->label('Heading Text')
                                                 ->placeholder('Enter your heading')
@@ -232,21 +236,6 @@ class PostModuleForm
                                         ->label('Attribution')
                                         ->placeholder('— Author Name, Source')
                                         ->helperText('Optional: Author or source of the quote'),
-                                ]),
-
-                            Block::make('divider')
-                                ->label('Divider')
-                                ->icon('heroicon-o-minus')
-                                ->schema([
-                                    Select::make('style')
-                                        ->label('Style')
-                                        ->options([
-                                            'default' => 'Default Line',
-                                            'thick' => 'Thick Line',
-                                            'dotted' => 'Dotted Line',
-                                        ])
-                                        ->default('default')
-                                        ->native(false),
                                 ]),
 
                             Block::make('image')
