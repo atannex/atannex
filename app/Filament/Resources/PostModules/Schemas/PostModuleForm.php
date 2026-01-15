@@ -3,11 +3,11 @@
 namespace App\Filament\Resources\PostModules\Schemas;
 
 use App\Enums\HeadingLevel;
+use Filament\Forms\Components\Radio;
 use App\Enums\PostType;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Tabs;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
@@ -22,6 +22,9 @@ class PostModuleForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
+            // ============================================================================
+            // SECTION 1: Essential Configuration
+            // ============================================================================
             Section::make('Essential Configuration')
                 ->description('Link this module to a post and define its content type')
                 ->icon('heroicon-o-cog-6-tooth')
@@ -49,122 +52,15 @@ class PostModuleForm
                                 ->native(false)
                                 ->prefixIcon('heroicon-o-tag')
                                 ->helperText('Determines how this content is displayed and categorized')
+                                ->live()
                                 ->columnSpan(['default' => 'full', 'md' => 1]),
                         ]),
                 ])
                 ->columnSpanFull(),
 
-            Section::make('Primary Media')
-                ->description('Configure the main video content for this module')
-                ->icon('heroicon-o-film')
-                ->schema([
-                    Tabs::make('media_source')
-                        ->tabs([
-                            Tabs\Tab::make('YouTube Embed')
-                                ->icon('heroicon-o-play-circle')
-                                ->schema([
-                                    Grid::make(['default' => 1, 'lg' => 2])
-                                        ->schema([
-                                            TextInput::make('video.id')
-                                                ->label('YouTube Video ID')
-                                                ->placeholder('dQw4w9WgXcQ')
-                                                ->default('')
-                                                ->dehydrated()
-                                                ->prefix('youtube.com/watch?v=')
-                                                ->suffixIcon('heroicon-o-video-camera')
-                                                ->helperText('Enter the video ID from the YouTube URL (e.g., the part after "v=")')
-                                                ->columnSpan(['default' => 'full', 'lg' => 1]),
-
-                                            TextInput::make('video.signature')
-                                                ->label('Video Signature')
-                                                ->placeholder('jNoRG1I7lZ_eJnLp')
-                                                ->default('')
-                                                ->dehydrated()
-                                                ->suffixIcon('heroicon-o-key')
-                                                ->helperText('Optional signature for enhanced embed features')
-                                                ->columnSpan(['default' => 'full', 'lg' => 1]),
-                                        ]),
-
-                                    FileUpload::make('video.thumbnail')
-                                        ->label('Custom Video Thumbnail')
-                                        ->image()
-                                        ->disk('public')
-                                        ->visibility('public')
-                                        ->directory('content/thumbnails')
-                                        ->imageEditor()
-                                        ->imageEditorAspectRatioOptions([
-                                            '16:9' => '16:9 (YouTube Standard)',
-                                        ])
-                                        ->imagePreviewHeight('200')
-                                        ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
-                                        ->maxSize(2048)
-                                        ->helperText('Upload a custom thumbnail to override YouTube\'s default (JPG, PNG, WebP • Max 2MB) • Old files deleted on update')
-                                        ->panelLayout('integrated')
-                                        ->columnSpanFull()
-                                        ->deletable(true)
-                                        ->deleteUploadedFileUsing(function ($file) {
-                                            return true;
-                                        }),
-                                ]),
-
-                            Tabs\Tab::make('Direct Upload')
-                                ->icon('heroicon-o-arrow-up-tray')
-                                ->schema([
-                                    Grid::make(['default' => 1, 'lg' => 2])
-                                        ->schema([
-                                            FileUpload::make('video.path')
-                                                ->label('Video File')
-                                                ->disk('public')
-                                                ->visibility('public')
-                                                ->directory('content/videos')
-                                                ->acceptedFileTypes([
-                                                    'video/mp4',
-                                                    'video/webm',
-                                                    'video/ogg',
-                                                ])
-                                                ->maxSize(51200)
-                                                ->helperText('Upload your video file (MP4, WebM, or OGG • Max 50MB) • Old files deleted on update')
-                                                ->imagePreviewHeight('240')
-                                                ->panelLayout('integrated')
-                                                ->panelAspectRatio('16:9')
-                                                ->columnSpan(['default' => 'full', 'lg' => 1])
-                                                ->deletable(true)
-                                                ->deleteUploadedFileUsing(function ($file) {
-                                                    return true;
-                                                }),
-
-                                            FileUpload::make('video.poster')
-                                                ->label('Video Poster Image')
-                                                ->disk('public')
-                                                ->directory('content/posters')
-                                                ->visibility('public')
-                                                ->image()
-                                                ->imageEditor()
-                                                ->imageEditorAspectRatioOptions([
-                                                    '16:9' => '16:9 (Recommended)',
-                                                    '4:3' => '4:3 (Standard)',
-                                                    '1:1' => '1:1 (Square)',
-                                                ])
-                                                ->imagePreviewHeight('200')
-                                                ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
-                                                ->maxSize(2048)
-                                                ->helperText('Thumbnail image shown before video playback (JPG, PNG, WebP • Max 2MB) • Old files deleted on update')
-                                                ->panelLayout('integrated')
-                                                ->columnSpan(['default' => 'full', 'lg' => 1])
-                                                ->deletable(true)
-                                                ->deleteUploadedFileUsing(function ($file) {
-                                                    return true;
-                                                }),
-                                        ]),
-                                ]),
-                        ])
-                        ->columnSpanFull(),
-                ])
-                ->collapsible()
-                ->collapsed()
-                ->persistCollapsed()
-                ->columnSpanFull(),
-
+            // ============================================================================
+            // SECTION 2: Content Builder (Primary Content)
+            // ============================================================================
             Section::make('Content Builder')
                 ->description('Build your post content using flexible, drag-and-drop blocks')
                 ->icon('heroicon-o-squares-plus')
@@ -212,6 +108,7 @@ class PostModuleForm
                                                 ->preload()
                                                 ->native(false)
                                                 ->columnSpan(1),
+
                                             TextInput::make('content')
                                                 ->label('Heading Text')
                                                 ->placeholder('Enter your heading')
@@ -261,9 +158,7 @@ class PostModuleForm
                                         ->helperText('JPG, PNG, or WebP • Max 5MB • Previous images are automatically deleted on update')
                                         ->required()
                                         ->deletable(true)
-                                        ->deleteUploadedFileUsing(function ($file) {
-                                            return true;
-                                        })
+                                        ->deleteUploadedFileUsing(fn($file) => true)
                                         ->columnSpanFull(),
 
                                     Grid::make(2)
@@ -301,9 +196,7 @@ class PostModuleForm
                                                 ->imagePreviewHeight('240')
                                                 ->required()
                                                 ->deletable(true)
-                                                ->deleteUploadedFileUsing(function ($file) {
-                                                    return true;
-                                                })
+                                                ->deleteUploadedFileUsing(fn($file) => true)
                                                 ->helperText('Upload a thumbnail for this video')
                                                 ->columnSpan(['default' => 'full', 'lg' => 1]),
 
@@ -349,9 +242,7 @@ class PostModuleForm
                                                         ->imagePreviewHeight('160')
                                                         ->required()
                                                         ->deletable(true)
-                                                        ->deleteUploadedFileUsing(function ($file) {
-                                                            return true;
-                                                        })
+                                                        ->deleteUploadedFileUsing(fn($file) => true)
                                                         ->columnSpan(['default' => 'full', 'md' => 1]),
 
                                                     Grid::make(1)
@@ -407,9 +298,7 @@ class PostModuleForm
                                                 ->required()
                                                 ->helperText('Image for this section (JPG, PNG, WebP • Max 5MB)')
                                                 ->deletable(true)
-                                                ->deleteUploadedFileUsing(function ($file) {
-                                                    return true;
-                                                })
+                                                ->deleteUploadedFileUsing(fn($file) => true)
                                                 ->columnSpan(['default' => 'full', 'lg' => 1]),
 
                                             Grid::make(1)
@@ -464,6 +353,105 @@ class PostModuleForm
                 ->collapsible()
                 ->persistCollapsed()
                 ->columnSpanFull(),
+
+            // ============================================================================
+            // SECTION 3: Primary Media (Video-Specific Configuration)
+            // ============================================================================
+            Section::make('Primary Media')
+                ->description('Configure the main video content for this module')
+                ->icon('heroicon-o-film')
+                ->schema([
+                    Radio::make('video.source')
+                        ->label('Media Source')
+                        ->options([
+                            'youtube' => 'YouTube Embed',
+                            'upload' => 'Direct Upload',
+                        ])
+                        ->default('youtube')
+                        ->inline()
+                        ->live(),
+
+                    Grid::make(['default' => 1, 'lg' => 2])
+                        ->schema([
+                            TextInput::make('video.id')
+                                ->label('YouTube Video ID')
+                                ->placeholder('dQw4w9WgXcQ')
+                                ->prefix('youtube.com/watch?v=')
+                                ->suffixIcon('heroicon-o-video-camera')
+                                ->helperText('Enter the video ID from the YouTube URL (the part after "v=")')
+                                ->required(fn($get) => $get('video.source') === 'youtube')
+                                ->columnSpan(['default' => 'full', 'lg' => 1]),
+
+                            TextInput::make('video.signature')
+                                ->label('Video Signature')
+                                ->placeholder('jNoRG1I7lZ_eJnLp')
+                                ->suffixIcon('heroicon-o-key')
+                                ->helperText('Optional signature for enhanced embed features')
+                                ->columnSpan(['default' => 'full', 'lg' => 1]),
+                        ])
+                        ->visible(fn($get) => $get('video.source') === 'youtube'),
+
+                    FileUpload::make('video.thumbnail')
+                        ->label('Custom Video Thumbnail')
+                        ->image()
+                        ->disk('public')
+                        ->directory('content/thumbnails')
+                        ->imageEditor()
+                        ->imageEditorAspectRatioOptions([
+                            '16:9' => '16:9 (YouTube Standard)',
+                        ])
+                        ->imagePreviewHeight('200')
+                        ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
+                        ->maxSize(2048)
+                        ->helperText('Upload a custom thumbnail to override YouTube\'s default (Max 2MB)')
+                        ->deletable()
+                        ->deleteUploadedFileUsing(fn($file) => true)
+                        ->columnSpanFull()
+                        ->visible(fn($get) => $get('video.source') === 'youtube'),
+
+                    Grid::make(['default' => 1, 'lg' => 2])
+                        ->schema([
+                            FileUpload::make('video.path')
+                                ->label('Video File')
+                                ->disk('public')
+                                ->directory('content/videos')
+                                ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/ogg'])
+                                ->maxSize(51200)
+                                ->helperText('Upload your video file (Max 50MB)')
+                                ->imagePreviewHeight('240')
+                                ->panelLayout('integrated')
+                                ->panelAspectRatio('16:9')
+                                ->required(fn($get) => $get('video.source') === 'upload')
+                                ->deletable()
+                                ->deleteUploadedFileUsing(fn($file) => true)
+                                ->columnSpan(['default' => 'full', 'lg' => 1]),
+
+                            FileUpload::make('video.poster')
+                                ->label('Video Poster Image')
+                                ->disk('public')
+                                ->directory('content/posters')
+                                ->image()
+                                ->imageEditor()
+                                ->imageEditorAspectRatioOptions([
+                                    '16:9' => '16:9 (Recommended)',
+                                    '4:3' => '4:3 (Standard)',
+                                    '1:1' => '1:1 (Square)',
+                                ])
+                                ->imagePreviewHeight('200')
+                                ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
+                                ->maxSize(2048)
+                                ->helperText('Thumbnail image shown before video playback (Max 2MB)')
+                                ->deletable()
+                                ->deleteUploadedFileUsing(fn($file) => true)
+                                ->columnSpan(['default' => 'full', 'lg' => 1]),
+                        ])
+                        ->visible(fn($get) => $get('video.source') === 'upload'),
+                ])
+                ->collapsible()
+                ->collapsed()
+                ->persistCollapsed()
+                ->columnSpanFull()
+                ->visible(fn($get) => $get('type') == PostType::VIDEO),
         ]);
     }
 }
