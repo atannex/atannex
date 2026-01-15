@@ -34,7 +34,7 @@
                                     {{ __('Your email address') }}
                                     <span class="text-danger">*</span>
                                 </label>
-                                <input type="email" id="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="{{ __('Enter your best email address') }}" value="{{ old('email') }}" required>
+                                <input type="email" id="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="{{ __('Enter your best email address') }}" value="{{ old('email') }}" >
                                 <div class="form-text">{{ __('We\'ll send you a quick confirmation email - check your spam folder too!') }}</div>
                                 @error('email')
                                 <div class="invalid-feedback d-block"><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</div>
@@ -49,7 +49,7 @@
                                 </label>
 
                                 <div class="input-group position-relative">
-                                    <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ __('Make it strong and memorable') }}" autocomplete="new-password" required />
+                                    <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ __('Make it strong and memorable') }}" autocomplete="new-password" />
 
                                     <button type="button" class="p-0 bg-transparent border-0 btn position-absolute top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password', 'toggle-icon-password')" aria-label="{{ __('Toggle password visibility') }}">
                                         <i class="fas fa-eye text-muted fs-5" id="toggle-icon-password"></i>
@@ -86,7 +86,7 @@
                                 </label>
 
                                 <div class="input-group position-relative">
-                                    <input type="password" id="password-confirm" name="password_confirmation" class="form-control" placeholder="{{ __('Type your password again') }}" autocomplete="new-password" required />
+                                    <input type="password" id="password-confirm" name="password_confirmation" class="form-control" placeholder="{{ __('Type your password again') }}" autocomplete="new-password" />
 
                                     <button type="button" class="p-0 bg-transparent border-0 btn position-absolute top-50 end-0 translate-middle-y me-3" onclick="togglePasswordVisibility('password-confirm', 'toggle-icon-confirm')" aria-label="{{ __('Toggle password visibility') }}">
                                         <i class="fas fa-eye text-muted fs-5" id="toggle-icon-confirm"></i>
@@ -98,7 +98,7 @@
 
                             <div class="mb-4 form-group">
                                 <div class="form-check align-items-start">
-                                    <input class="form-check-input mt-1 @error('terms') is-invalid @enderror" type="checkbox" name="terms" id="terms" {{ old('terms') ? 'checked' : '' }} required>
+                                    <input class="form-check-input mt-1 @error('terms') is-invalid @enderror" type="checkbox" name="terms" id="terms" {{ old('terms') ? 'checked' : '' }}>
                                     <label class="form-check-label form-text" for="terms">
                                         <i class="fas fa-handshake me-1 text-muted"></i>
                                         {{ __('I agree to the') }}

@@ -1,47 +1,39 @@
 <div class="content">
-    @foreach ($module->content as $block)
+    @foreach ($module['content'] as $block)
 
     @switch($block['type'])
 
     @case('paragraphs')
-    @if (!empty($block['data']['content']))
-    {!! $block['data']['content'] !!}
+    @if (!empty($block['data']['content']) && is_array($block['data']['content']))
+    @foreach ($block['data']['content'] as $item)
+    {!! $item['value'] !!}
+    @endforeach
     @endif
     @break
 
     @case('heading')
-    @php
-    $tag = in_array($block['data']['level'], ['h1','h2','h3','h4','h5','h6'])
-    ? $block['data']['level']
-    : 'h2';
-    @endphp
-
     @if (!empty($block['data']['content']))
-    <{{ $tag }} class="heading {{ $tag }}">
+    @php($level = $block['data']['level'] ?? 'h2')
+
+    <{{ array_key_exists($level, $headingLevels) ? $level : 'h2' }} class="heading {{ array_key_exists($level, $headingLevels) ? $level : 'h2' }}">
         {!! $block['data']['content'] !!}
-    </{{ $tag }}>
+    </{{ array_key_exists($level, $headingLevels) ? $level : 'h2' }}>
     @endif
     @break
+
+     @yield('content')
 
     @case('image')
     @if (!empty($block['data']['src']))
-    <div class="my-4 py-lg-2">
-        <img class="w-100" src="{{ asset('storage/' . $block['data']['src']) }}" alt="image-{{ e($block['data']['title'] ?? '') }}">
-    </div>
-    @endif
-    @break
+    <figure class="my-4 py-lg-2">
+        <img src="{{ asset('storage/' . $block['data']['src']) }}" alt="{{ e($block['data']['alt'] ?? '') }}" class="w-100 img-fluid" loading="lazy">
 
-    @case('ad-banner')
-    @if (!empty($block['data']['href']) && !empty($block['data']['images']))
-    <div class="my-4 py-lg-2">
-        <a href="{{ $block['data']['href'] }}">
-            @foreach ($block['data']['images'] as $image)
-            @if (!empty($image['path']))
-            <img class="{{ $image['mode'] ?? '' }}-img w-100" src="{{ asset('storage/' . $image['path']) }}" alt="advertisement-{{ e($block['data']['title'] ?? '') }}">
-            @endif
-            @endforeach
-        </a>
-    </div>
+        @if (!empty($block['data']['caption']))
+        <figcaption class="mt-2 text-muted small">
+            {{ e($block['data']['caption']) }}
+        </figcaption>
+        @endif
+    </figure>
     @endif
     @break
 
@@ -61,7 +53,7 @@
     <div class="mb-4 row pb-lg-2 pt-xl-2 gy-4">
         @if (!empty($block['data']['image']))
         <div class="col-md-auto">
-            <img class="w-100" src="{{ asset('storage/' . $block['data']['image']) }}" alt="side-by-side-{{ e($block['data']['heading'] ?? '') }}">
+            <img src="{{ asset('storage/' . $block['data']['image']) }}" alt="side-by-side-{{ e($block['data']['heading'] ?? '') }}" class="img-fluid" style="width:306px; height:auto; aspect-ratio:306/320; object-fit:cover;">
         </div>
         @endif
 

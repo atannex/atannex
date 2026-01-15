@@ -66,9 +66,9 @@ class HomeController extends Controller
             'byRegion' => $this->postService->hasRegionWithPost(6),
             'byEnvironment' => $this->postService->categoriesWithPostsByName('Environment', 5),
             'byHistory' => $this->postService->categoriesWithPostsByName('History', 20),
-            'byNews' => $this->postService->categoriesWithPostsByName('Community', 3),//News Category
+            'byNews' => $this->postService->categoriesWithPostsByName('News', 3),
             'byCommunity' => $this->postService->categoriesWithPostsByName('Community', 10),
-            'byRuler' => $this->postService->categoriesWithPostsByName('Community', 10), // Rulers Category
+            'byRuler' => $this->postService->categoriesWithPostsByName('Rulers', 10),
         ];
     }
 }

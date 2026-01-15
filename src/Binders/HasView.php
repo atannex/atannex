@@ -3,6 +3,7 @@
 namespace Atannex\Binders;
 
 use Atannex\Facades\Atannex;
+use App\Enums\HeadingLevel;
 use Atannex\Services\CategoryService;
 use Atannex\Services\RegionService;
 use Atannex\Services\ShareService;
@@ -283,7 +284,10 @@ final class HasView
             default => 'shows.index',
         };
 
+        $levels     = HeadingLevel::asSelectArray();
+
         return $this->renderView($viewTemplate, [
+            'headingLevels'      => $levels,
             'module' => $module,
             'post' => $post,
             'popularTags' => $this->tagService->getPopularTags(),

@@ -43,7 +43,7 @@
 
                         <div class="blog-content">
 
-                            <x-shows.content :module="$module" />
+                            <x-shows.content :module="$module" :headingLevels="$headingLevels" />
 
                             <x-shows.related-tag :relatedTags="$relatedTags" />
 

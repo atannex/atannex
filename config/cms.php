@@ -20,8 +20,8 @@ return [
         'email',
         'verification',
 
-        'about-us',
-        'contact-us',
+        'about-atannex',
+        'contact-atannex',
         'user',
         'share',
     ],
