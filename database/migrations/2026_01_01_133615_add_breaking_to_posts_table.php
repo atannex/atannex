@@ -18,7 +18,7 @@ return new class extends Migration
             $table->boolean('is_breaking')
                 ->default(false)
                 ->index()
-                ->after('flag');
+                ->after('slug');
 
             $table->timestamp('breaking_at')
                 ->nullable()
