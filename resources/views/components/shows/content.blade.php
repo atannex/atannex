@@ -1,97 +1,80 @@
 <div class="content">
-    @if(isset($module, $module->content) && is_iterable($module->content))
-    @foreach ($module->content as $block)
-
-    @if(!isset($block['type'], $block['data']) || !is_array($block['data']))
-    @continue
-    @endif
+    @foreach ($module['content'] as $block)
 
     @switch($block['type'])
 
-    {{-- cc --}}
     @case('paragraphs')
-    @if(!empty($block['data']['content']) && is_array($block['data']['content']))
+    @if (!empty($block['data']['content']) && is_array($block['data']['content']))
     @foreach ($block['data']['content'] as $item)
-    @if(!empty($item['value']))
-    <p>{!! $item['value'] !!}</p>
-    @endif
+    {!! $item['value'] !!}
     @endforeach
     @endif
     @break
 
-    {{-- Heading --}}
     @case('heading')
-    @if(!empty($block['data']['title']))
-    <h3 class="h4">{!! $block['data']['title'] !!}</h3>
+    @if (!empty($block['data']['content']))
+    @php($level = $block['data']['level'] ?? 'h2')
+
+    <{{ array_key_exists($level, $headingLevels) ? $level : 'h2' }} class="heading {{ array_key_exists($level, $headingLevels) ? $level : 'h2' }}">
+        {!! $block['data']['content'] !!}
+    </{{ array_key_exists($level, $headingLevels) ? $level : 'h2' }}>
     @endif
     @break
 
-    {{-- Image --}}
+     @yield('content')
+
     @case('image')
-    @if(!empty($block['data']['src']))
-    <div class="my-4 py-lg-2">
-        <img class="w-100" src="{{ asset('storage/' . $block['data']['src']) }}" alt="{{ !empty($block['data']['title']) ? 'image-' . e($block['data']['title']) : 'image' }}">
-    </div>
+    @if (!empty($block['data']['src']))
+    <figure class="my-4 py-lg-2">
+        <img src="{{ asset('storage/' . $block['data']['src']) }}" alt="{{ e($block['data']['alt'] ?? '') }}" class="w-100 img-fluid" loading="lazy">
+
+        @if (!empty($block['data']['caption']))
+        <figcaption class="mt-2 text-muted small">
+            {{ e($block['data']['caption']) }}
+        </figcaption>
+        @endif
+    </figure>
     @endif
     @break
 
-    {{-- Ad Banner --}}
-    @case('ad-banner')
-    @if(!empty($block['data']['href']) && !empty($block['data']['images']) && is_array($block['data']['images']))
-    <div class="my-4 py-lg-2">
-        <a href="{{ $block['data']['href'] }}">
-            @foreach ($block['data']['images'] as $image)
-            @if(!empty($image['path']) && !empty($image['mode']))
-            <img class="{{ $image['mode'] }}-img w-100" src="{{ asset('storage/' . $image['path']) }}" alt="{{ !empty($block['data']['title']) ? 'advertisement-' . e($block['data']['title']) : 'advertisement' }}">
-            @endif
-            @endforeach
-        </a>
-    </div>
-    @endif
-    @break
-
-    {{-- Blockquote --}}
     @case('blockquote')
-    @if(!empty($block['data']['quote']))
+    @if (!empty($block['data']['content']))
     <blockquote>
-        <p>{{ $block['data']['quote'] }}</p>
-        @if(!empty($block['data']['author']))
-        <cite>{{ $block['data']['author'] }}</cite>
+        <p>{{ $block['data']['content'] }}</p>
+        @if (!empty($block['data']['attribution']))
+        <cite>{{ $block['data']['attribution'] }}</cite>
         @endif
     </blockquote>
     @endif
     @break
 
-    {{-- Side by Side --}}
     @case('side-by-side')
-    @if(
-    !empty($block['data']['image']) &&
-    !empty($block['data']['heading']) &&
-    !empty($block['data']['content'])
-    )
+    @if (!empty($block['data']['image']) || !empty($block['data']['heading']) || !empty($block['data']['content']))
     <div class="mb-4 row pb-lg-2 pt-xl-2 gy-4">
-
+        @if (!empty($block['data']['image']))
         <div class="col-md-auto">
-            <img class="w-100" src="{{ asset('storage/' . $block['data']['image']) }}" alt="side-by-side-{{ e($block['data']['heading']) }}">
+            <img src="{{ asset('storage/' . $block['data']['image']) }}" alt="side-by-side-{{ e($block['data']['heading'] ?? '') }}" class="img-fluid" style="width:306px; height:auto; aspect-ratio:306/320; object-fit:cover;">
         </div>
+        @endif
 
         <div class="col-md">
+            @if (!empty($block['data']['heading']))
             <h3 class="box-title-24">{{ $block['data']['heading'] }}</h3>
+            @endif
+            @if (!empty($block['data']['content']))
             <p>{!! $block['data']['content'] !!}</p>
+            @endif
 
-            @if(!empty($block['data']['highlights']) && is_array($block['data']['highlights']))
-            <div class="blog-inner-list">
-                <ul>
-                    @foreach ($block['data']['highlights'] as $listItem)
-                    @if(!empty($listItem['text']))
-                    <li>{!! $listItem['text'] !!}</li>
-                    @endif
-                    @endforeach
-                </ul>
-            </div>
+            @if (!empty($block['data']['highlights']))
+            <ul class="blog-inner-list">
+                @foreach ($block['data']['highlights'] as $item)
+                @if (!empty($item['text']))
+                <li>{!! $item['text'] !!}</li>
+                @endif
+                @endforeach
+            </ul>
             @endif
         </div>
-
     </div>
     @endif
     @break
@@ -99,5 +82,4 @@
     @endswitch
 
     @endforeach
-    @endif
 </div>

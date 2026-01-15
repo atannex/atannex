@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PostModules\Schemas;
 
+use App\Enums\HeadingLevel;
 use App\Enums\PostType;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
@@ -173,22 +174,27 @@ class PostModuleForm
                         ->blocks([
 
                             Block::make('paragraphs')
-                                ->label('Paragraph')
+                                ->label('Paragraphs')
                                 ->icon('heroicon-o-bars-3-bottom-left')
                                 ->schema([
-                                    RichEditor::make('content')
-                                        ->label('Content')
-                                        ->placeholder('Write your paragraph content here...')
-                                        ->required()
-                                        ->columnSpanFull()
-                                        ->disableToolbarButtons(['codeBlock'])
-                                        ->toolbarButtons([
-                                            'bold',
-                                            'italic',
-                                            'link',
-                                            'bulletList',
-                                            'orderedList',
-                                        ]),
+                                    Repeater::make('content')
+                                        ->label('Paragraph Content')
+                                        ->schema([
+                                            RichEditor::make('value')
+                                                ->label('Text')
+                                                ->placeholder('Write your paragraph content here...')
+                                                ->required()
+                                                ->disableToolbarButtons(['codeBlock'])
+                                                ->toolbarButtons([
+                                                    'bold',
+                                                    'italic',
+                                                    'link',
+                                                    'bulletList',
+                                                    'orderedList',
+                                                ]),
+                                        ])
+                                        ->minItems(1)
+                                        ->columnSpanFull(),
                                 ]),
 
                             Block::make('heading')
@@ -198,17 +204,14 @@ class PostModuleForm
                                     Grid::make(3)
                                         ->schema([
                                             Select::make('level')
-                                                ->label('Level')
-                                                ->options([
-                                                    'h2' => 'H2 - Section Title',
-                                                    'h3' => 'H3 - Subsection',
-                                                    'h4' => 'H4 - Minor Heading',
-                                                ])
-                                                ->default('h2')
+                                                ->label('Heading Level')
+                                                ->options(HeadingLevel::asSelectArray())
+                                                ->default(HeadingLevel::H2)
                                                 ->required()
+                                                ->searchable()
+                                                ->preload()
                                                 ->native(false)
                                                 ->columnSpan(1),
-
                                             TextInput::make('content')
                                                 ->label('Heading Text')
                                                 ->placeholder('Enter your heading')
@@ -232,21 +235,6 @@ class PostModuleForm
                                         ->label('Attribution')
                                         ->placeholder('— Author Name, Source')
                                         ->helperText('Optional: Author or source of the quote'),
-                                ]),
-
-                            Block::make('divider')
-                                ->label('Divider')
-                                ->icon('heroicon-o-minus')
-                                ->schema([
-                                    Select::make('style')
-                                        ->label('Style')
-                                        ->options([
-                                            'default' => 'Default Line',
-                                            'thick' => 'Thick Line',
-                                            'dotted' => 'Dotted Line',
-                                        ])
-                                        ->default('default')
-                                        ->native(false),
                                 ]),
 
                             Block::make('image')

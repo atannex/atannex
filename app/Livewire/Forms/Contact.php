@@ -1,65 +1,66 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Forms;
 
 use App\Enums\Subject;
+use App\Events\ContactMessageSubmitted;
 use App\Models\Others\Contact as ContactMessage;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Contact extends Component
 {
-    public $name;
+    public string $name = '';
+    public string $email = '';
+    public ?string $number = null;
+    public string $subject = '';
+    public string $message = '';
 
-    public $email;
+    public array $subjects = [];
 
-    public $number;
-
-    public $subject;
-
-    public $message;
-
-    public $subjects;
-
-    protected function rules()
+    protected function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'number' => Auth::check() ? 'nullable|string|max:20' : 'required|string|max:20',
-            'subject' => 'required|in:'.implode(',', Subject::getValues()),
-            'message' => 'required|string|max:2000',
+            'name'    => ['required', 'string', 'max:255'],
+            'email'   => ['required', 'email', 'max:255'],
+            'number'  => [Auth::check() ? 'nullable' : 'required', 'string', 'max:20'],
+            'subject' => ['required', 'in:' . implode(',', Subject::asSelectArray())],
+            'message' => ['required', 'string', 'max:2000'],
         ];
     }
 
-    public function mount(array $subjects)
+    public function mount(array $subjects): void
     {
         $this->subjects = $subjects;
 
         if (Auth::check()) {
             $user = Auth::user();
-            $this->name = $user->name;
-            $this->email = $user->email;
-            $this->number = $user->phone;
+
+            $this->fill([
+                'name'   => $user->name,
+                'email'  => $user->email,
+                'number' => $user->phone,
+            ]);
         }
     }
 
-    public function submit()
+    public function submit(): void
     {
-        $this->validate();
+        $validated = $this->validate();
 
-        $contact = ContactMessage::create([
-            'name' => $this->name,
-            'email' => $this->email,
-            'number' => $this->number,
-            'subject' => $this->subject,
-            'message' => $this->message,
-        ]);
+        $contact = ContactMessage::create($validated);
 
-        session()->flash('success', 'Message sent successfully!');
+        ContactMessageSubmitted::dispatch($contact);
 
-        $fieldsToReset = Auth::check() ? ['subject', 'message'] : ['name', 'email', 'number', 'subject', 'message'];
-        $this->reset($fieldsToReset);
+        session()->flash('success', 'Your message has been sent successfully.');
+
+        $this->reset(
+            Auth::check()
+                ? ['subject', 'message']
+                : ['name', 'email', 'number', 'subject', 'message']
+        );
     }
 
     public function render()

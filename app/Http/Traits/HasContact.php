@@ -30,7 +30,7 @@ trait HasContact
             ];
         });
 
-        $subjects = Subject::getValues();
+        $subjects = Subject::asSelectArray();
 
         return view('contact', ['infos' => $infos, 'map' => $map, 'subjects' => $subjects]);
     }

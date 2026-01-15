@@ -30,10 +30,10 @@
 
 <x-partials.breadcrumb />
 
-<section class="th-blog-wrapper blog-details bg-smoke space-top space-extra-bottom">
+<section class="th-blog-wrapper blog-details space-top space-extra-bottom">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-xxl-9 col-lg-8">
                 <div class="th-blog blog-single style-bg">
 
                     <x-shows.header-content :module="$module" />
@@ -76,7 +76,7 @@
 
                         <div class="blog-content">
 
-                            <x-shows.video :module="$module" />
+                            <x-shows.video :module="$module" :headingLevels="$headingLevels" />
 
                             <x-shows.related-tag :relatedTags="$relatedTags" />
 
@@ -90,9 +90,9 @@
 
                 </div>
             </div>
-            <div class="col-lg-4 sidebar-wrap">
-                <aside class="sidebar-area style-bg">
-                    <div class="widget widget_search">
+            <div class="col-xxl-3 col-lg-4 sidebar-wrap">
+                <aside class="sidebar-area">
+                    <div class="widget widget_tag_cloud">
 
                         @livewire('search.post')
 

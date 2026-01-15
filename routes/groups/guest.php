@@ -31,6 +31,6 @@ Route::controller(RegionController::class)->group(function () {
 Route::controller(HomeController::class)
     ->group(function () {
         Route::get('/', 'index')->name('home');
-        Route::get('about-us', 'about')->name('about');
-        Route::get('contact-us', 'contact')->name('contact');
+        Route::get('about-atannex', 'about')->name('about');
+        Route::get('contact-atannex', 'contact')->name('contact');
     });
