@@ -65,9 +65,9 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}?v=1.0.3">
+    <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}?v=1.0.3">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=1.0.3">
 
     @livewireStyles
 
