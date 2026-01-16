@@ -88,8 +88,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" defer></script>
 
-    <script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}" defer></script>
-    <script src="{{ asset('assets/js/app.min.js') }}" defer></script>
-    <script src="{{ asset('assets/js/main.js') }}" defer></script>
+    <script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}?v=1.0.3"></script>
+    <script src="{{ asset('assets/js/app.min.js') }}?v=1.0.3"></script>
+    <script src="{{ asset('assets/js/main.js') }}?v=1.0.3"></script>
 </body>
 </html>
