@@ -18,10 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class Comment extends Model
 {
-    /* -----------------------------------------------------------------
-     |  Mass Assignment
-     | -----------------------------------------------------------------
-     */
+
     protected $fillable = [
         'user_id',
         'is_guest',
@@ -37,24 +34,12 @@ class Comment extends Model
         'edited_at',
     ];
 
-    /* -----------------------------------------------------------------
-     |  Casting
-     | -----------------------------------------------------------------
-     */
     protected $casts = [
         'is_guest'    => 'boolean',
         'is_approved' => 'boolean',
         'edited_at'   => 'datetime',
     ];
 
-    /* -----------------------------------------------------------------
-     |  Relationships
-     | -----------------------------------------------------------------
-     */
-
-    /**
-     * Polymorphic parent (Post, Article, etc.).
-     */
     public function commentable(): MorphTo
     {
         return $this->morphTo();
@@ -86,10 +71,13 @@ class Comment extends Model
             ->latest();
     }
 
-    /* -----------------------------------------------------------------
-     |  Scopes
-     | -----------------------------------------------------------------
+    /**
+     * Determine if the comment is a reply to another comment.
      */
+    public function isReply(): bool
+    {
+        return !is_null($this->parent_id);
+    }
 
     /**
      * Only top-level comments.
@@ -106,11 +94,6 @@ class Comment extends Model
     {
         return $query->where('is_approved', true);
     }
-
-    /* -----------------------------------------------------------------
-     |  Accessors
-     | -----------------------------------------------------------------
-     */
 
     /**
      * Unified author name (user or guest).
@@ -137,11 +120,6 @@ class Comment extends Model
     {
         return $this->is_guest && is_null($this->user_id);
     }
-
-    /* -----------------------------------------------------------------
-     |  Helpers
-     | -----------------------------------------------------------------
-     */
 
     /**
      * Mark comment as edited.
