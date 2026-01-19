@@ -29,6 +29,10 @@ $others = $posts->skip(1);
                         @include('partials.title', ['post' => $featured])
 
                     </h3>
+                    <p class="blog-text">
+
+                        {{ Str::limit(strip_tags($featured->description), 100) }}
+                    </p>
                     <div class="blog-meta"></div>
                 </div>
             </div>
