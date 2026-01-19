@@ -10,7 +10,20 @@ class CommentPosted
 {
     use Dispatchable, SerializesModels;
 
-    public function __construct(
-        public Comment $comment
-    ) {}
+    /**
+     * The comment instance.
+     *
+     * @var \App\Models\Comments\Comment
+     */
+    public Comment $comment;
+
+    /**
+     * Create a new event instance.
+     *
+     * @param \App\Models\Comments\Comment $comment
+     */
+    public function __construct(Comment $comment)
+    {
+        $this->comment = $comment;
+    }
 }

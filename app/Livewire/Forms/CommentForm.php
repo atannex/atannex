@@ -2,16 +2,17 @@
 
 namespace App\Livewire\Forms;
 
-use App\Contracts\Commentable;
+use Livewire\Component;
+use Livewire\Attributes\On;
+use Livewire\WithPagination;
 use App\Events\CommentPosted;
+use Livewire\Attributes\Rule;
+use App\Contracts\Commentable;
 use App\Models\Comments\Comment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
-use Livewire\Attributes\On;
-use Livewire\Attributes\Rule;
-use Livewire\Component;
-use Livewire\WithPagination;
+use Atannex\Services\CommentReactionService;
 
 class CommentForm extends Component
 {
@@ -40,8 +41,6 @@ class CommentForm extends Component
 
     /** Guest fields */
     public ?string $guest_name = null;
-
-    //  #[Rule([new StrongEmail])]
     public ?string $guest_email = null;
 
     public function mount(Commentable $commentable): void
@@ -73,7 +72,6 @@ class CommentForm extends Component
     public function submit(): void
     {
         $this->validate();
-
         $this->storeGuestSession();
 
         if ($this->isSpam()) {
@@ -93,14 +91,21 @@ class CommentForm extends Component
                 'is_guest'         => Auth::guest(),
                 'guest_name'       => $this->guestName(),
                 'guest_email'      => $this->guestEmail(),
-                'guest_token'      => $this->guestToken(),
                 'commentable_type' => $this->commentable::class,
                 'commentable_id'   => $this->commentable->id,
                 'parent_id'        => $this->resolveParentId(),
-                'comment'          => $this->sanitize($this->comment ?? ''),
+                'comment'          => $this->sanitize($this->comment),
                 'ip_address'       => request()->ip(),
-                'is_approved'      => true,
+                'reply_count'      => 0,
+                'like_count'       => 0,
+                'dislike_count'    => 0,
+                'comment_hash'     => hash('sha256', ($this->comment ?? '') . Auth::id() . $this->commentable->id),
             ]);
+
+            if ($comment->parent_id) {
+                $parent = Comment::find($comment->parent_id);
+                $parent?->incrementReplyCount();
+            }
 
             event(new CommentPosted($comment));
 
@@ -147,8 +152,34 @@ class CommentForm extends Component
     {
         $comment = Comment::findOrFail($commentId);
 
-        $this->parentId = $comment->parent_id ?: $comment->id;
+        $this->parentId = $comment->id;
         $this->comment  = '@' . $comment->author_name . ' ';
+    }
+
+    #[On('like-comment')]
+    public function likeComment(int $commentId, CommentReactionService $service): void
+    {
+        $this->react($commentId, 'like', $service);
+    }
+
+    #[On('dislike-comment')]
+    public function dislikeComment(int $commentId, CommentReactionService $service): void
+    {
+        $this->react($commentId, 'dislike', $service);
+    }
+
+    protected function react(int $commentId, string $type, CommentReactionService $service): void
+    {
+        if (! Auth::check()) {
+            abort(403, 'Authentication required.');
+        }
+
+        $comment = Comment::findOrFail($commentId);
+        Gate::authorize('react', $comment);
+
+        $service->react($comment, Auth::user(), $type);
+
+        $this->dispatch('$refresh');
     }
 
     public function cancelReply(): void
@@ -158,7 +189,7 @@ class CommentForm extends Component
 
     public function loadMoreReplies(int $commentId): void
     {
-        $total   = Comment::where('parent_id', $commentId)->approved()->count();
+        $total   = Comment::where('parent_id', $commentId)->count();
         $current = $this->shownRepliesCount[$commentId] ?? 0;
 
         $this->shownRepliesCount[$commentId] = min(
@@ -176,7 +207,6 @@ class CommentForm extends Component
     {
         return $this->commentable
             ->comments()
-            ->approved()
             ->topLevel()
             ->with(['user', 'replies' => fn($q) => $this->applyRepliesLimit($q)])
             ->latest()
@@ -185,19 +215,12 @@ class CommentForm extends Component
 
     protected function applyRepliesLimit($query)
     {
-        return $query
-            ->approved()
-            ->latest()
-            ->take(self::REPLIES_PER_LOAD)
-            ->with('user');
+        return $query->latest()->take(self::REPLIES_PER_LOAD)->with('user');
     }
 
     protected function resolveParentId(): ?int
     {
-        if (!$this->parentId) return null;
-
-        $target = Comment::findOrFail($this->parentId);
-        return $target->parent_id ?: $target->id;
+        return $this->parentId ? Comment::findOrFail($this->parentId)->id : null;
     }
 
     protected function replyingContext(): ?array
@@ -224,16 +247,6 @@ class CommentForm extends Component
     protected function guestEmail(): ?string
     {
         return Auth::check() ? null : $this->guest_email;
-    }
-
-    protected function guestToken(): ?string
-    {
-        if (Auth::check()) return null;
-
-        return session()->get(
-            'guest_comment_token',
-            tap(bin2hex(random_bytes(32)), fn($token) => session()->put('guest_comment_token', $token))
-        );
     }
 
     protected function storeGuestSession(): void

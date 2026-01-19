@@ -8,7 +8,6 @@
             @endif
         </h3>
 
-
         <form wire:submit.prevent="submit">
             @guest
             <div class="form-row">
@@ -24,7 +23,7 @@
             <input type="text" wire:model.defer="website" class="d-none" tabindex="-1" autocomplete="off">
 
             <div class="form-group">
-                <textarea wire:model="comment" placeholder="Write a comment..." class="form-textarea"></textarea>
+                <textarea wire:model="comment" placeholder="Write a comment..." class="form-textarea" rows="3"></textarea>
                 @error('comment')
                 <small class="error-message">{{ $message }}</small>
                 @enderror
@@ -43,7 +42,7 @@
         <h2 class="comments-title">{{ __('Comments') }} ({{ $comments->total() }})</h2>
 
         <ul class="comment-list">
-            @forelse ($comments as $comment)
+            @forelse($comments as $comment)
             <li class="comment-item">
                 <x-partials.comment :comment="$comment" :shown-replies-count="$shownRepliesCount" />
             </li>

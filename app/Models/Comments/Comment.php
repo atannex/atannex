@@ -3,41 +3,42 @@
 namespace App\Models\Comments;
 
 use App\Models\User;
+use App\Models\Pivots\CommentReaction;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * Class Comment
- *
- * Represents a polymorphic, threaded comment.
- * Supports authenticated users and guests, moderation, and spam protection.
- */
 class Comment extends Model
 {
+    use SoftDeletes;
 
     protected $fillable = [
         'user_id',
         'is_guest',
         'guest_name',
         'guest_email',
-        'guest_token',
         'commentable_type',
         'commentable_id',
         'parent_id',
+        'reply_count',
         'comment',
         'ip_address',
-        'is_approved',
+        'comment_hash',
         'edited_at',
+        'like_count',
+        'dislike_count',
     ];
 
     protected $casts = [
-        'is_guest'    => 'boolean',
-        'is_approved' => 'boolean',
-        'edited_at'   => 'datetime',
+        'is_guest'      => 'boolean',
+        'edited_at'     => 'datetime',
+        'reply_count'   => 'integer',
+        'like_count'    => 'integer',
+        'dislike_count' => 'integer',
     ];
 
     public function commentable(): MorphTo
@@ -45,59 +46,51 @@ class Comment extends Model
         return $this->morphTo();
     }
 
-    /**
-     * Authenticated user (nullable for guests).
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Parent comment (for replies).
-     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
     }
 
-    /**
-     * Direct replies to this comment.
-     */
     public function replies(): HasMany
     {
-        return $this->hasMany(self::class, 'parent_id')
-            ->approved()
-            ->latest();
+        return $this->hasMany(self::class, 'parent_id')->latest();
     }
 
-    /**
-     * Determine if the comment is a reply to another comment.
-     */
-    public function isReply(): bool
+    public function reactions(): HasMany
     {
-        return !is_null($this->parent_id);
+        return $this->hasMany(CommentReaction::class);
     }
 
-    /**
-     * Only top-level comments.
-     */
+    public function likes(): HasMany
+    {
+        return $this->reactions()->where('type', 'like');
+    }
+
+    public function dislikes(): HasMany
+    {
+        return $this->reactions()->where('type', 'dislike');
+    }
+
     public function scopeTopLevel(Builder $query): Builder
     {
         return $query->whereNull('parent_id');
     }
 
-    /**
-     * Only approved comments.
-     */
-    public function scopeApproved(Builder $query): Builder
+    public function isReply(): bool
     {
-        return $query->where('is_approved', true);
+        return $this->parent_id !== null;
     }
 
-    /**
-     * Unified author name (user or guest).
-     */
+    public function hasReplies(): bool
+    {
+        return $this->reply_count > 0;
+    }
+
     public function getAuthorNameAttribute(): string
     {
         return $this->user?->name
@@ -105,29 +98,76 @@ class Comment extends Model
             ?? __('Guest');
     }
 
-    /**
-     * Safe replies collection.
-     */
     public function getAllRepliesAttribute(): Collection
     {
         return $this->replies ?? collect();
     }
 
-    /**
-     * Check if the comment belongs to a guest.
-     */
-    public function getIsGuestCommentAttribute(): bool
-    {
-        return $this->is_guest && is_null($this->user_id);
-    }
-
-    /**
-     * Mark comment as edited.
-     */
     public function markEdited(): void
     {
+        $this->forceFill(['edited_at' => now()])->save();
+    }
+
+    public function incrementReplyCount(int $by = 1): void
+    {
+        $this->increment('reply_count', $by);
+    }
+
+    public function addReply(Comment $reply): Comment
+    {
+        $reply->forceFill([
+            'parent_id' => $this->id,
+        ])->save();
+
+        $this->incrementReplyCount();
+
+        return $reply;
+    }
+
+    public function isLikedBy(User $user): bool
+    {
+        return $this->likes()->where('user_id', $user->id)->exists();
+    }
+
+    public function isDislikedBy(User $user): bool
+    {
+        return $this->dislikes()->where('user_id', $user->id)->exists();
+    }
+
+    public function like(User $user): void
+    {
+        $this->reactions()->updateOrCreate(
+            ['user_id' => $user->id],
+            ['type' => 'like']
+        );
+
+        $this->refreshReactionCounters();
+    }
+
+    public function dislike(User $user): void
+    {
+        $this->reactions()->updateOrCreate(
+            ['user_id' => $user->id],
+            ['type' => 'dislike']
+        );
+
+        $this->refreshReactionCounters();
+    }
+
+    public function removeReaction(User $user): void
+    {
+        $this->reactions()
+            ->where('user_id', $user->id)
+            ->delete();
+
+        $this->refreshReactionCounters();
+    }
+
+    protected function refreshReactionCounters(): void
+    {
         $this->forceFill([
-            'edited_at' => now(),
+            'like_count'    => $this->likes()->count(),
+            'dislike_count' => $this->dislikes()->count(),
         ])->save();
     }
 }
