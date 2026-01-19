@@ -25,7 +25,7 @@
                             <h3 class="box-title-22">
 
                                 <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="hover-line">
-                                    {{ Str::limit($post->title, 150) }}
+                                    {{ Str::limit($post->title, 40) }}
                                 </a>
 
                             </h3>
