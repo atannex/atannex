@@ -11,9 +11,11 @@
 
             <p class="comment-text">
                 {!! nl2br(
-                preg_replace(
-                '/^(@[A-Za-z ]+)\s/',
-                '<span class="text-danger"><i>$1</i></span> ',
+                preg_replace_callback(
+                '/^(@[A-Za-z]+(?:\s[A-Za-z]+)?)/',
+                function ($matches) {
+                return '<span class="text-danger"><i>' . e($matches[1]) . '</i></span>';
+                },
                 e($comment->comment)
                 )
                 ) !!}
@@ -26,6 +28,15 @@
             <a href="javascript:void(0)" wire:click="$dispatch('reply-to-comment', { commentId: {{ $comment->id }} })" class="meta-link">
                 <i class="fas fa-reply"></i> {{ __('Reply') }}
             </a>
+
+            @auth
+            <a href="javascript:void(0)" wire:click="$dispatch('like-comment', { commentId: {{ $comment->id }} })" class="meta-link {{ $comment->isLikedBy(auth()->user()) ? 'text-blue-500' : '' }}">
+                <i class="fas fa-thumbs-up"></i> {{ $comment->like_count }}
+            </a>
+            <a href="javascript:void(0)" wire:click="$dispatch('dislike-comment', { commentId: {{ $comment->id }} })" class="meta-link {{ $comment->isDislikedBy(auth()->user()) ? 'text-red-500' : '' }}">
+                <i class="fas fa-thumbs-down"></i> {{ $comment->dislike_count }}
+            </a>
+            @endauth
 
             @can('delete', $comment)
             <a href="javascript:void(0)" wire:click="$dispatch('delete-comment', { commentId: {{ $comment->id }} })" class="meta-link">
@@ -46,13 +57,10 @@ $visibleReplies = $comment->replies->take($shown);
 <ul class="replies-list">
     @foreach($visibleReplies as $reply)
     <li class="comment-item">
-
         <x-partials.comment :comment="$reply" :shown-replies-count="$shownRepliesCount" />
-
     </li>
     @endforeach
 
-    {{-- Load more / collapse replies --}}
     @if($shown < $totalReplies) <li class="load-more-replies">
         <a href="javascript:void(0)" wire:click="loadMoreReplies({{ $comment->id }})" class="meta-link">
             <i class="fas fa-chevron-down"></i> {{ $totalReplies }} {{ Str::plural('reply', $totalReplies) }}

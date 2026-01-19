@@ -2,12 +2,7 @@
 
 namespace App\Providers;
 
-use App\Events\CommentPosted;
-use App\Events\ContactMessageSubmitted;
-use App\Listeners\DispatchAdminContactEmails;
-use App\Listeners\NotifyRoleUsersOfComment;
 use App\Models\Modules\PostModule;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Regions\Widget;
 use App\Models\Regions\Section;
@@ -34,8 +29,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerObservers();
-        Event::listen(CommentPosted::class, NotifyRoleUsersOfComment::class);
-        Event::listen(ContactMessageSubmitted::class, DispatchAdminContactEmails::class);
     }
 
     /**

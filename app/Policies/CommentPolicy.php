@@ -11,9 +11,7 @@ class CommentPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can create comments.
-     *
-     * Anyone can create comments (authenticated users or guests).
+     * Anyone can create comments (authenticated or guest).
      */
     public function create(?User $user): bool
     {
@@ -21,37 +19,26 @@ class CommentPolicy
     }
 
     /**
-     * Determine whether the user can update the comment.
-     *
-     * - Authenticated users: only if they own the comment (user_id matches)
-     * - Guests: only if the current session's guest_comment_token matches the comment's token
+     * Only the comment owner (authenticated user) can update.
      */
     public function update(?User $user, Comment $comment): bool
     {
-        // Authenticated user: must be the owner
-        if ($user) {
-            return $comment->user_id === $user->id;
-        }
-
-        // Guest user: must have matching guest token in session
-        if ($comment->is_guest) {
-            $sessionToken = session('guest_comment_token');
-
-            return $sessionToken !== null && $sessionToken === $comment->guest_token;
-        }
-
-        // Guest trying to edit a non-guest comment → denied
-        return false;
+        return $user !== null && $comment->user_id === $user->id;
     }
 
     /**
-     * Determine whether the user can delete the comment.
-     *
-     * Same rules as update (owner only).
+     * Only the comment owner (authenticated user) can delete.
      */
     public function delete(?User $user, Comment $comment): bool
     {
-        // Reuse update logic – delete follows the same ownership rules
         return $this->update($user, $comment);
+    }
+
+    /**
+     * Only authenticated users can react (like/dislike).
+     */
+    public function react(?User $user): bool
+    {
+        return $user !== null;
     }
 }
