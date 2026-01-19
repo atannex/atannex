@@ -24,7 +24,9 @@
 
                             <h3 class="box-title-22">
 
-                                @include('partials.title', ['post' => $post])
+                                <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="hover-line">
+                                    {{ Str::limit($post->title, 150) }}
+                                </a>
 
                             </h3>
 
@@ -60,12 +62,14 @@
 
                             <h3 class="box-title-40">
 
-                                @include('partials.title', ['post' => $featuredBlog])
+                                <a href="{{ route('page.index', ['slug' => $featuredBlog->slug_path ]) }}" class="hover-line">
+                                    {{ Str::limit($featuredBlog->title, 50) }}
+                                </a>
 
                             </h3>
                             <p class="blog-text">
 
-                                {{ Str::limit(strip_tags($featuredBlog->description), 100) }}
+                                {{ Str::limit(strip_tags($featuredBlog->description), 170) }}
                             </p>
 
                             <div class="blog-meta">

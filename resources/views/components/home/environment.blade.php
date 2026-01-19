@@ -25,9 +25,9 @@ $others = $posts->skip(1);
                     @include('partials.category', ['post' => $featured])
 
                     <h3 class="box-title-40">
-
-                        @include('partials.title', ['post' => $featured])
-
+                        <a href="{{ route('page.index', ['slug' => $featured->slug_path ]) }}" class="hover-line">
+                            {{ Str::limit($featured->title, 140) }}
+                        </a>
                     </h3>
                     <p class="blog-text">
 
