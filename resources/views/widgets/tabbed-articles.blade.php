@@ -27,6 +27,7 @@
                             @include('partials.title')
 
                         </h3>
+                        @include('partials.date', ['post' => $post])
                     </div>
                 </article>
             </div>
