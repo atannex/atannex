@@ -1,4 +1,4 @@
-<img src="public/logo.jpg" alt="Project Logo" width="500">
+<img src="public/logo.jpg" alt="Project Logo" width="1000">
 
 
 ## *Overview*
