@@ -1,10 +1,11 @@
-<p align="center">
-  <img src="public/logo.jpg" alt="Project Logo" width="250" height="250">
-</p>
 
 ## *Overview*
 
 Atannex is a comprehensive digital platform dedicated to the Lebialem community across the globe. Our mission is to celebrate, promote, and preserve Lebialem culture, heritage, and identity by providing an engaging, centralized hub for cultural content, community news, and real-time updates. Atannex aims to empower Lebialem individuals and organizations by fostering cultural pride, facilitating communication, and supporting community-driven initiatives.
+
+<p align="center">
+  <img src="public/logo.jpg" alt="Project Logo" width="250" height="250">
+</p>
 
 ## *Purpose and Vision*
 
