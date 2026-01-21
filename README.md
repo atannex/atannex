@@ -1,4 +1,5 @@
-# ![Project Logo](public/logo.jpg)
+<img src="public/logo.jpg" alt="Project Logo" width="150">
+
 
 ## *Overview*
 
