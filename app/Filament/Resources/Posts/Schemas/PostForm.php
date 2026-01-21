@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Posts\Schemas;
 
 use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
+use App\Models\Regions\Region;
 use App\Models\Regions\Category;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
@@ -29,7 +30,7 @@ class PostForm
      * image upload, toggles and associated date ranges, and related reactive behaviors.
      *
      * @param Schema $schema The base Schema instance to augment with post form components.
-     * @return Schema The configured Schema containing the complete post form. 
+     * @return Schema The configured Schema containing the complete post form.
      */
     public static function configure(Schema $schema): Schema
     {
@@ -99,53 +100,67 @@ class PostForm
                                     ->description('Categorize and manage ownership')
                                     ->icon('heroicon-o-folder-open')
                                     ->schema([
-                                        Select::make('category_id')
-                                            ->label('Category')
-                                            ->required()
-                                            ->searchable()
-                                            ->preload()
-                                            ->options(function () {
-                                                return Category::with('parent')
-                                                    ->get()
-                                                    ->mapWithKeys(function ($category) {
-                                                        $label = $category->parent
-                                                            ? sprintf('%s → %s', $category->parent->name, $category->name)
-                                                            : $category->name;
+                                        Grid::make(2)
+                                            ->schema([
+                                                Select::make('category_id')
+                                                    ->label('Category')
+                                                    ->required()
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->options(function () {
+                                                        return Category::with('parent')
+                                                            ->get()
+                                                            ->mapWithKeys(function ($category) {
+                                                                $label = $category->parent
+                                                                    ? sprintf('%s → %s', $category->parent->name, $category->name)
+                                                                    : $category->name;
 
-                                                        return [$category->id => $label];
+                                                                return [$category->id => $label];
+                                                            })
+                                                            ->toArray();
                                                     })
-                                                    ->toArray();
-                                            })
-                                            ->createOptionForm([
-                                                Section::make('Create New Category')
-                                                    ->schema([
-                                                        TextInput::make('name')
-                                                            ->label('Category Name')
-                                                            ->required()
-                                                            ->maxLength(255)
-                                                            ->placeholder('Enter category name'),
+                                                    ->createOptionForm([
+                                                        Section::make('Create New Category')
+                                                            ->schema([
+                                                                TextInput::make('name')
+                                                                    ->label('Category Name')
+                                                                    ->required()
+                                                                    ->maxLength(255)
+                                                                    ->placeholder('Enter category name'),
 
-                                                        Select::make('parent_id')
-                                                            ->label('Parent Category (optional)')
-                                                            ->options(
-                                                                Category::pluck('name', 'id')->toArray()
-                                                            )
-                                                            ->searchable()
-                                                            ->preload()
-                                                            ->placeholder('Select parent category'),
-                                                    ]),
-                                            ])
-                                            ->createOptionModalHeading('Create New Category')
-                                            ->createOptionAction(
-                                                fn($action) => $action
-                                                    ->modalHeading('Create Category')
-                                                    ->modalDescription('Add a new category or subcategory to organize your content.')
-                                                    ->modalSubmitActionLabel('Create Category')
-                                                    ->modalWidth('lg')
-                                            )
-                                            ->helperText('Choose existing or create new. Parent → Child hierarchy supported.')
-                                            ->native(false)
-                                            ->prefixIcon('heroicon-o-folder'),
+                                                                Select::make('parent_id')
+                                                                    ->label('Parent Category (optional)')
+                                                                    ->options(
+                                                                        Category::pluck('name', 'id')->toArray()
+                                                                    )
+                                                                    ->searchable()
+                                                                    ->preload()
+                                                                    ->placeholder('Select parent category'),
+                                                            ]),
+                                                    ])
+                                                    ->createOptionModalHeading('Create New Category')
+                                                    ->createOptionAction(
+                                                        fn($action) => $action
+                                                            ->modalHeading('Create Category')
+                                                            ->modalDescription('Add a new category or subcategory to organize your content.')
+                                                            ->modalSubmitActionLabel('Create Category')
+                                                            ->modalWidth('lg')
+                                                    )
+                                                    ->helperText('Choose existing or create new. Parent → Child hierarchy supported.')
+                                                    ->native(false)
+                                                    ->prefixIcon('heroicon-o-folder'),
+
+                                                Select::make('region_id')
+                                                    ->label('Region')
+                                                    ->required()
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->options(function () {
+                                                        return Region::pluck('name', 'id')->toArray();
+                                                    })
+                                                    ->helperText('Select the region this post belongs to.')
+                                                    ->prefixIcon('heroicon-o-map'),
+                                            ]),
 
                                         Select::make('author_id')
                                             ->relationship('author.user', 'name')
@@ -214,7 +229,7 @@ class PostForm
                                             ->visibility('public')
                                             ->image()
                                             ->imageEditor()
-                                            ->imageEditorAspectRatios([
+                                            ->imageEditorAspectRatioOptions([
                                                 '16:9' => '16:9 (Widescreen - Recommended)',
                                                 '4:3'  => '4:3 (Standard)',
                                                 '1:1'  => '1:1 (Square)',

@@ -3,36 +3,39 @@
 namespace Atannex\Components\GetPosts;
 
 use App\Models\Regions\Category;
-use Illuminate\Support\Collection;
-use Atannex\Concerns\WithHierarchicalPosts;
+use Illuminate\Database\Eloquent\Collection;
 
-/**
- * Trait WithCategory
- *
- * Provides methods to retrieve categories with their hierarchical posts.
- */
 trait WithCategory
 {
-    use WithHierarchicalPosts;
-
-    /**
-     * Retrieve categories along with their hierarchical posts.
-     *
-     * @param  array  $config  Configuration options:
-     *                         - 'ids' => array of category IDs (required)
-     *                         - 'limit' => number of top-level categories (required)
-     *                         - 'relation_limit' => posts per top-level category (required)
-     *                         - 'leaf_relation_limit' => posts per child category (required)
-     *                         - 'sort_field' => field to sort posts by (optional)
-     *                         - 'sort_direction' => sorting direction: 'asc' or 'desc' (optional)
-     */
     public function getCategoryWithPosts(array $config): Collection
     {
-        return $this->getHierarchicalWithPosts(
-            Category::class,
-            $config,
-            'children',
-            'posts'
-        );
+        $categoryIds = normalizeIds($config['posts_with_id']);
+        $categoryLimit = (int) $config['limit'];
+        $sortBy = $config['sort'];
+        $sortDir = strtolower($config['order']);
+        $postLimit = (int) $config['relation_limit'];
+        $leafPostLimit = (int) $config['leaf_relation_limit'];
+
+        $categories = Category::query()
+            ->whereIn('id', $categoryIds)
+            ->with([
+                'posts' => fn($q) => $q->published()
+                    ->orderBy($sortBy, $sortDir)
+                    ->take($postLimit),
+                'descendants.posts' => fn($q) => $q->published()
+                    ->orderBy($sortBy, $sortDir)
+                    ->take($leafPostLimit),
+            ])
+            ->limit($categoryLimit)
+            ->get();
+
+        return $categories->map(function (Category $category) {
+            $allPosts = $category->posts->concat(
+                $category->descendants->flatMap(fn($desc) => $desc->posts)
+            );
+            $category->setRelation('posts', $allPosts);
+
+            return $category;
+        });
     }
 }

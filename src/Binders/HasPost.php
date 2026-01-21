@@ -2,7 +2,6 @@
 
 namespace Atannex\Binders;
 
-use Atannex\Components\GetPosts\ByTag;
 use Atannex\Components\GetPosts\ByRegion;
 use Atannex\Components\Sections\HasModule;
 use Atannex\Components\Sections\HasRecent;
@@ -37,7 +36,6 @@ final class HasPost
     use ByRated;
     use ByRegion;
     use ByShared;
-    use ByTag;
     use ByViewed;
     use ByEditorPick;
     use ByRecent;

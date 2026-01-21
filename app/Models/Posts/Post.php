@@ -4,12 +4,23 @@ declare(strict_types=1);
 
 namespace App\Models\Posts;
 
+use App\Models\Tags\Tag;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use App\Contracts\Commentable;
+use App\Models\Pivots\PostTag;
+use App\Models\Regions\Region;
+use App\Models\Comments\Comment;
+use App\Models\Regions\Category;
+use App\Models\Regions\Employee;
 use App\Models\Traits\HandlePost;
+use App\Models\Modules\PostModule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Post extends Model implements Commentable
 {
@@ -30,6 +41,7 @@ class Post extends Model implements Commentable
         'title',
         'slug',
         'category_id',
+        'region_id',
         'author_id',
         'updated_by',
         'description',
@@ -63,5 +75,70 @@ class Post extends Model implements Commentable
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::class, 'region_id');
+    }
+
+    /**
+     * Many-to-Many relationship with Tags.
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'post_tag')
+            ->using(PostTag::class)
+            ->withTimestamps();
+    }
+
+    /**
+     * Belongs to a Category.
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    /**
+     * Belongs to an Author (Employee).
+     */
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'author_id');
+    }
+
+    /**
+     * Belongs to an Editor (Employee) — updated_by.
+     */
+    public function editor(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'updated_by');
+    }
+
+    /**
+     * One-to-One relationship with PostModule.
+     */
+    public function module(): HasOne
+    {
+        return $this->hasOne(PostModule::class);
+    }
+
+    /**
+     * Polymorphic relationship with Comments (only top-level).
+     */
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable')
+            ->whereNull('parent_id')
+            ->latest();
+    }
+
+    /**
+     * Belongs to the employee who last updated the post.
+     */
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'updated_by')->withTrashed();
     }
 }

@@ -13,7 +13,6 @@ use App\Models\Regions\Ruler;
 use Atannex\Enables\Slugging;
 use Atannex\Filters\Hierarchy;
 use Atannex\Traits\HasSlugPath;
-use App\Models\Pivots\PostRegion;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Pivots\RegionSectionWidget;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -24,9 +23,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Region extends Model implements Sluggable
 {
     use Hierarchy;
+    use Slugging;
     use HasSlugPath;
     use Scoping;
-    use Slugging;
     use SoftDeletes;
 
     protected $table = 'regions';
@@ -66,9 +65,9 @@ class Region extends Model implements Sluggable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany The has-many relationship for this region's direct children; descendants are eager-loaded recursively.
      */
-    public function childrenRecursive(): HasMany
+    public function descendants(): HasMany
     {
-        return $this->children()->with('childrenRecursive');
+        return $this->children()->with('descendants');
     }
 
     /**
@@ -81,21 +80,9 @@ class Region extends Model implements Sluggable
         return $this->hasOne(Ruler::class);
     }
 
-    /**
-     * Get the posts associated with this region.
-     *
-     * The many-to-many relationship to Post models via the `post_region` pivot table.
-     * Uses `PostRegion` as the custom pivot model and includes the `region_id` and
-     * `post_id` pivot attributes as well as pivot timestamps.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany The many-to-many relation to Post.
-     */
-    public function posts(): BelongsToMany
+    public function posts(): HasMany
     {
-        return $this->belongsToMany(Post::class, 'post_region')
-            ->using(PostRegion::class)
-            ->withPivot(['region_id', 'post_id'])
-            ->withTimestamps();
+        return $this->hasMany(Post::class, 'region_id');
     }
 
     /**

@@ -24,7 +24,7 @@ trait HasPostSearchFields
                 'author.user',
                 'category',
                 'tags',
-                'regions',
+                'region',
             ]);
     }
 
@@ -34,7 +34,7 @@ trait HasPostSearchFields
             'title',
             'description',
             'tags.name',
-            'regions.name',
+            'region.name',
             'category.name',
             'author.user.name',
         ];

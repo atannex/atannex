@@ -36,11 +36,11 @@
                     </div>
 
                     <div class="blog-content">
-                        @foreach ($post->regions as $regionItem)
-                        <a href="{{ route('page.index', ['slug' => $regionItem->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
-                            {{ $regionItem->name }}
+                        @if ($post->region)
+                        <a href="{{ route('page.index', ['slug' => $post->region->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
+                            {{ $post->region->name }}
                         </a>
-                        @endforeach
+                        @endif
 
                         <h3 class="box-title-20">
                             @include('partials.title', ['post' => $post])

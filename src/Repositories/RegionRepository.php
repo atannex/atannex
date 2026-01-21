@@ -25,7 +25,7 @@ class RegionRepository implements RegionInterface
         return Category::query()
             ->flagged(Flag::PUBLISHED)
             ->whereNull('parent_id')
-            ->with('children') // Assumes Category has a hasMany 'children' relation
+            ->with('descendants')
             ->get();
     }
 
@@ -39,7 +39,7 @@ class RegionRepository implements RegionInterface
         return Region::query()
             ->flagged(Flag::PUBLISHED)
             ->whereNull('parent_id')
-            ->with('childrenRecursive')
+            ->with('descendants')
             ->get();
     }
 

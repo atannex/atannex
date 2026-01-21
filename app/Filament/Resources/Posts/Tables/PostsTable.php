@@ -55,14 +55,18 @@ class PostsTable
                     ->description(fn($record) => $record->description ? Str::limit($record->description, 60) : null)
                     ->wrap(),
 
-                TextColumn::make('is_breaking')
-                    ->label('Breaking')
-                    ->badge()
-                    ->color(fn($state) => $state ? 'danger' : 'gray')
-                    ->formatStateUsing(fn($state) => $state ? 'BREAKING' : 'Normal')
-                    ->icon(fn($state) => $state ? 'heroicon-o-bolt' : null)
-                    ->sortable()
-                    ->toggleable(),
+                // TextColumn::make('is_breaking')
+                //     ->label('Breaking')
+                //     ->badge()
+                //     ->color(fn($state) => $state ? 'danger' : 'gray')
+                //     ->formatStateUsing(fn($state) => $state ? 'BREAKING' : 'Normal')
+                //     ->icon(fn($state) => $state ? 'heroicon-o-bolt' : null)
+                //     ->sortable()
+                //     ->toggleable(),
+
+                TextColumn::make('region.name')
+                    ->label('Regions')
+                    ->badge(),
 
                 TextColumn::make('is_editor_pick')
                     ->label("Editor's Pick")
