@@ -1,4 +1,7 @@
-<img src="public/logo.jpg" alt="Project Logo" width="1000">
+<p align="center">
+  <img src="public/logo.jpg" alt="Project Logo" width="150" height="100">
+</p>
+
 
 
 ## *Overview*
