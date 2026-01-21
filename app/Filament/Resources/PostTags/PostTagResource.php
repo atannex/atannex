@@ -2,17 +2,18 @@
 
 namespace App\Filament\Resources\PostTags;
 
-use App\Filament\Resources\PostTags\Pages\CreatePostTag;
+use BackedEnum;
+use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use App\Models\Pivots\PostTag;
+use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
+use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\PostTags\Pages\EditPostTag;
 use App\Filament\Resources\PostTags\Pages\ListPostTags;
+use App\Filament\Resources\PostTags\Pages\CreatePostTag;
 use App\Filament\Resources\PostTags\Schemas\PostTagForm;
 use App\Filament\Resources\PostTags\Tables\PostTagsTable;
-use App\Models\Pivots\PostTag;
-use BackedEnum;
-use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
 
 class PostTagResource extends Resource
 {
@@ -44,5 +45,14 @@ class PostTagResource extends Resource
             'create' => CreatePostTag::route('/create'),
             'edit' => EditPostTag::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->with([
+                'post',
+                'tag' => fn($query) => $query->withCount('posts'),
+            ]);
     }
 }
