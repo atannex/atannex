@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Atannex\Traits;
 
-use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,9 +19,7 @@ trait HasSlugPath
 
     public function children(): HasMany
     {
-        return $this->hasMany(static::class, 'parent_id')
-            ->where('flag', Flag::PUBLISHED)
-            ->whereNull('deleted_at');
+        return $this->hasMany(static::class, 'parent_id');
     }
 
     public function generateSlugPath(): string

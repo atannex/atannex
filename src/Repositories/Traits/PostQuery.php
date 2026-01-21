@@ -69,30 +69,23 @@ trait PostQuery
         return $query->get();
     }
 
+
     /**
-     * Retrieve paginated published posts associated with the given region's subtree.
+     * Retrieve paginated published posts associated with the given region and its subtree.
      *
      * @param Region $region The root region whose subtree will be used to match post regions.
      * @param int $limit The number of posts per page.
-     * @return LengthAwarePaginator A paginator of published posts that are linked to any region within the given region's subtree, with content relations eager loaded.
+     * @return LengthAwarePaginator A paginator of published posts with content relations eager loaded.
      */
-    public function postsByRegion(
-        Region $region,
-        int $limit = self::PAGINATION_LIMIT
-    ): LengthAwarePaginator {
-        return $this->paginate(
-            Post::query()
-                ->published()
-                ->whereHas(
-                    'regions',
-                    fn($q) => $q->whereIn(
-                        'region_id',
-                        $this->getTreeIds($region)
-                    )
-                )
-                ->with($this->contentRelations()),
-            $limit
-        );
+    public function postsByRegion(Region $region, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
+    {
+        $regionIds = $region->getSelfAndDescendantIds();
+        return Post::query()
+            ->published()
+            ->whereIn('region_id', $regionIds)
+            ->with(['author', 'category', 'tags'])
+            ->orderBy('created_at', 'desc')
+            ->paginate($limit);
     }
 
     /**
@@ -122,7 +115,7 @@ trait PostQuery
                 $month,
                 fn($q) => $q->whereMonth('published_at', $month)
             )
-            ->with($this->contentRelations());
+            ->with(['author', 'category', 'tags']);
 
         return $this->paginate($query, $limit);
     }
@@ -155,7 +148,7 @@ trait PostQuery
             Post::query()
                 ->published()
                 ->where('author_id', $authorId)
-                ->with($this->contentRelations()),
+                ->with(['author', 'category', 'tags']),
             $limit
         );
     }

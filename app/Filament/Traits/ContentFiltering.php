@@ -5,7 +5,6 @@ namespace App\Filament\Traits;
 use App\Enums\Entity;
 use App\Models\Regions\Category;
 use App\Models\Regions\Region;
-use App\Models\Tags\Tag;
 use App\Models\User;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Grid;
@@ -47,16 +46,6 @@ class ContentFiltering
                         ->preload()
                         ->visible(fn(Get $get) => $get('type') === Entity::POSTS_BY_REGION),
 
-                    Select::make('tag_id')
-                        ->label('Filter by Tag')
-                        ->options(fn() => self::tags())
-                        ->searchable()
-                        ->multiple()
-                        ->placeholder('Select Tags')
-                        ->helperText('Show only posts with this Tag')
-                        ->preload()
-                        ->visible(fn(Get $get) => $get('type') === Entity::POSTS_BY_TAG),
-
                     Select::make('category_id')
                         ->label('Filter by Category')
                         ->options(fn() => self::categories())
@@ -86,7 +75,6 @@ class ContentFiltering
                         ->helperText('Show posts under selected entities')
                         ->preload()
                         ->visible(fn(Get $get) => in_array($get('type'), [
-                            Entity::POSTS_BY_TAG,
                             Entity::CATEGORIES_WITH_POSTS,
                             Entity::REGIONS_WITH_POSTS,
                             Entity::POSTS_BY_AUTHOR,
@@ -122,12 +110,6 @@ class ContentFiltering
         return Region::pluck('name', 'id')->toArray();
     }
 
-    /** @return array<int, string> */
-    private static function tags(): array
-    {
-        return Tag::pluck('name', 'id')->toArray();
-    }
-
     /**
      * An associative array mapping category IDs to category names.
      *
@@ -161,7 +143,6 @@ class ContentFiltering
     private static function entityOptions(string $type): array
     {
         return match ($type) {
-            Entity::POSTS_BY_TAG           => self::tags(),
             Entity::CATEGORIES_WITH_POSTS  => self::categories(),
             Entity::REGIONS_WITH_POSTS     => self::regions(),
             Entity::POSTS_BY_AUTHOR        => self::authors(),

@@ -50,6 +50,11 @@ class Category extends Model implements Sluggable
         return 'slug';
     }
 
+    protected static function booted(): void
+    {
+        static::bootHasSlugPath();
+    }
+
     /**
      * Get posts that belong to this category.
      *
@@ -74,5 +79,13 @@ class Category extends Model implements Sluggable
             ->using(CategorySection::class)
             ->withPivot('flag')
             ->withTimestamps();
+    }
+
+    /**
+     * Recursive children for tree structures.
+     */
+    public function descendants(): HasMany
+    {
+        return $this->children()->with('descendants');
     }
 }

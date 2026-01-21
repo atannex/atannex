@@ -35,11 +35,11 @@
 
                                 @include('partials.image', ['post' => $post, 'class'=> 'primary-news-section'])
 
-                                @foreach ($post->regions as $postRegion)
-                                <a href="{{ route('page.index', ['slug' => $postRegion->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
-                                    {{ $postRegion->name }}
+                                @if ($post->region)
+                                <a href="{{ route('page.index', ['slug' => $post->region->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
+                                    {{ $post->region->name }}
                                 </a>
-                                @endforeach
+                                @endif
 
                             </div>
 

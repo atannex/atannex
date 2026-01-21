@@ -20,10 +20,6 @@ use Illuminate\Support\Collection;
  */
 trait HasTree
 {
-    // ==========================================================================
-    // 1️⃣ GENERIC TREE OPERATIONS
-    // ==========================================================================
-
     /**
      * Get the top-most ancestor (root) of a tree node.
      *
@@ -54,10 +50,6 @@ trait HasTree
             ? $ids->reject(fn($id) => $id === $excludeId)->values()
             : $ids->values();
     }
-
-    // ==========================================================================
-    // 2️⃣ LEAF NODE RETRIEVAL WITH POST COUNTS
-    // ==========================================================================
 
     /**
      * Retrieve leaf nodes (nodes that have no children) within the given node's tree.
@@ -97,10 +89,6 @@ trait HasTree
             ])->orderBy('total_count', $direction);
         })->get();
     }
-
-    // ==========================================================================
-    // 3️⃣ CONTENT ATTACHMENT & MERGING
-    // ==========================================================================
 
     /**
      * Combine a node's own related content with content collected from its leaf descendants.
@@ -200,8 +188,6 @@ trait HasTree
         return $node;
     }
 
-    // ==========================================================================
-    // 4️⃣ PAGINATION & QUERY UTILITIES
     /**
      * Paginate the given query using a normalized per-page limit.
      *
@@ -221,7 +207,7 @@ trait HasTree
      * Clamp a limit value to the range 1 through 100.
      *
      * @param int $limit The requested limit value.
-     * @return int An integer between 1 and 100. 
+     * @return int An integer between 1 and 100.
      */
     protected function sanitizeLimit(int $limit): int
     {
@@ -237,7 +223,7 @@ trait HasTree
     {
         return [
             'category.parent',
-            'regions',
+            'region',
             'tags',
             'author.user',
         ];

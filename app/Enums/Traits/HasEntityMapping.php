@@ -41,16 +41,13 @@ trait HasEntityMapping
             'method' => 'getPostsForCategory',
             'idKey'  => 'category_id',
         ],
+
         Entity::POSTS_BY_REGION   => [
             'entity' => Entity::POSTS_BY_REGION,
             'method' => 'getPostsForRegion',
             'idKey'  => 'region_id',
         ],
-        Entity::POSTS_BY_TAG      => [
-            'entity' => Entity::POSTS_BY_TAG,
-            'method' => 'getPostsByTag',
-            'idKey'  => 'tag_id',
-        ],
+
         Entity::POSTS_BY_AUTHOR   => [
             'entity' => Entity::POSTS_BY_AUTHOR,
             'method' => 'getPostsByAuthor',
@@ -62,6 +59,7 @@ trait HasEntityMapping
             'method' => 'getCategoryWithPosts',
             'idKey'  => 'posts_with_id',
         ],
+
         Entity::REGIONS_WITH_POSTS    => [
             'entity' => Entity::REGIONS_WITH_POSTS,
             'method' => 'getRegionWithPosts',
@@ -72,30 +70,37 @@ trait HasEntityMapping
             'entity' => Entity::MOST_VIEWED_POSTS,
             'method' => 'getMostViewedPosts',
         ],
+
         Entity::MOST_COMMENTED_POSTS => [
             'entity' => Entity::MOST_COMMENTED_POSTS,
             'method' => 'getMostCommentedPosts',
         ],
+
         Entity::MOST_SHARED_POSTS    => [
             'entity' => Entity::MOST_SHARED_POSTS,
             'method' => 'getMostSharedPosts',
         ],
+
         Entity::MOST_LIKED_POSTS     => [
             'entity' => Entity::MOST_LIKED_POSTS,
             'method' => 'getMostLikedPosts',
         ],
+
         Entity::TOP_RATED_POSTS      => [
             'entity' => Entity::TOP_RATED_POSTS,
             'method' => 'getTopRatedPosts',
         ],
+
         Entity::TRENDING_POSTS       => [
             'entity' => Entity::TRENDING_POSTS,
             'method' => 'getTrendingPosts',
         ],
+
         Entity::POPULAR_THIS_WEEK    => [
             'entity' => Entity::POPULAR_THIS_WEEK,
             'method' => 'getPopularPostsThisWeek',
         ],
+
         Entity::POPULAR_THIS_MONTH   => [
             'entity' => Entity::POPULAR_THIS_MONTH,
             'method' => 'getPopularPostsThisMonth',
@@ -105,14 +110,17 @@ trait HasEntityMapping
             'entity' => Entity::WEEKLY_HIGHLIGHTS,
             'method' => 'getWeeklyHighlights',
         ],
+
         Entity::MONTHLY_HIGHLIGHTS    => [
             'entity' => Entity::MONTHLY_HIGHLIGHTS,
             'method' => 'getMonthlyHighlights',
         ],
+
         Entity::TRENDING_THIS_WEEK    => [
             'entity' => Entity::TRENDING_THIS_WEEK,
             'method' => 'getTrendingThisWeek',
         ],
+
         Entity::TRENDING_THIS_MONTH   => [
             'entity' => Entity::TRENDING_THIS_MONTH,
             'method' => 'getTrendingThisMonth',

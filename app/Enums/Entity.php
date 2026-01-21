@@ -35,9 +35,6 @@ final class Entity extends Enum
     #[Description('Posts by Region')]
     public const POSTS_BY_REGION = 'posts-by-region';
 
-    #[Description('Posts by Tag')]
-    public const POSTS_BY_TAG = 'posts-by-tag';
-
     #[Description('Posts by Author')]
     public const POSTS_BY_AUTHOR = 'posts-by-author';
 

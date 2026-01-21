@@ -15,7 +15,6 @@ use App\Filament\Resources\Employees\EmployeeResource;
 use App\Filament\Resources\Galleries\GalleryResource;
 use App\Filament\Resources\Permissions\PermissionResource;
 use App\Filament\Resources\PostModules\PostModuleResource;
-use App\Filament\Resources\PostRegions\PostRegionResource;
 use App\Filament\Resources\Posts\PostResource;
 use App\Filament\Resources\PostTags\PostTagResource;
 use App\Filament\Resources\Regions\RegionResource;
@@ -104,7 +103,6 @@ class AdminPanelProvider extends PanelProvider
                     NavigationGroup::make('Posts')
                         ->items([
                             ...PostResource::getNavigationItems(),
-                            ...PostRegionResource::getNavigationItems(),
                             ...PostTagResource::getNavigationItems(),
                             ...TagResource::getNavigationItems(),
                         ]),

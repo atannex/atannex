@@ -67,10 +67,6 @@
                                 </a>
 
                             </h3>
-                            <p class="blog-text">
-
-                                {{ Str::limit(strip_tags($featuredBlog->description), 170) }}
-                            </p>
 
                             <div class="blog-meta">
 
