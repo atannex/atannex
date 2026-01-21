@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console;
+namespace App\Console\Commands;
 
 use App\Models\Regions\Employee;
 use Illuminate\Console\Command;

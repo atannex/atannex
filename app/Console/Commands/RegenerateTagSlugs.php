@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console;
+namespace App\Console\Commands;
 
 use App\Models\Tags\Tag;
 use Illuminate\Console\Command;
