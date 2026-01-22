@@ -6,7 +6,7 @@ use App\Models\Comments\Comment;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class CommentPosted
+class NewComment
 {
     use Dispatchable, SerializesModels;
 
