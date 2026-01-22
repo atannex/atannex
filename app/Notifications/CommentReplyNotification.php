@@ -5,8 +5,9 @@ namespace App\Notifications;
 use App\Models\Comments\Comment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\DatabaseMessage;
 
 class CommentReplyNotification extends Notification implements ShouldQueue
 {
@@ -16,35 +17,42 @@ class CommentReplyNotification extends Notification implements ShouldQueue
         protected Comment $comment
     ) {}
 
+    /**
+     * Get the notification delivery channels.
+     */
     public function via(object $notifiable): array
     {
         return ['mail', 'database'];
     }
 
+    /**
+     * Get the mail representation of the notification.
+     */
     public function toMail(object $notifiable): MailMessage
     {
-        $parent = $this->comment->parent;
+        // $url = route('comments.show', $this->comment->commentable->id);
 
         return (new MailMessage)
-            ->subject('New Reply to a Comment')
-            ->greeting('Hello ' . $notifiable->name)
-            ->line("{$this->comment->author_name} replied to a comment.")
-            ->line('Reply:')
-            ->line('"' . str($this->comment->comment)->limit(150) . '"')
-            ->action(
-                'View Reply',
-                $this->comment->commentable->url
-            )
-            ->line('You are receiving this notification because of your role.');
+            ->subject('Someone replied to your comment')
+            ->greeting("Hello {$notifiable->name},")
+            ->line("{$this->comment->user?->name} replied to your comment:")
+            ->line("\"{$this->comment->comment}\"")
+            // ->action('View Reply', $url)
+            ->line('Thank you for engaging with our content!');
     }
 
-    public function toArray(object $notifiable): array
+    /**
+     * Get the array / database representation of the notification.
+     */
+    public function toDatabase(object $notifiable): array
     {
         return [
-            'comment_id'        => $this->comment->id,
-            'parent_comment_id' => $this->comment->parent_id,
-            'author'            => $this->comment->author_name,
-            'excerpt'           => str($this->comment->comment)->limit(100),
+            'comment_id'      => $this->comment->id,
+            'comment_text'    => $this->comment->comment,
+            'commenter_name'  => $this->comment->user?->name ?? 'Guest',
+            'commentable_id'  => $this->comment->commentable->id,
+            'commentable_type' => get_class($this->comment->commentable),
+            // 'url'             => route('comments.show', $this->comment->commentable->id),
         ];
     }
 }

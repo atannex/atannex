@@ -11,63 +11,128 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Notification;
 
 class NotifyUsersOfComment implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected Comment $comment;
+    public function __construct(
+        protected Comment $comment
+    ) {}
 
-    /**
-     * Create a new job instance.
-     */
-    public function __construct(Comment $comment)
+    public function handle(): void
     {
-        $this->comment = $comment;
+        $this->notifyReplyAuthor();
+        $this->notifyNewTopLevelCommentSubscribers();
     }
 
     /**
-     * Execute the job.
+     * Notify the author of the parent comment (if it's a reply).
      */
-    public function handle(): void
+    private function notifyReplyAuthor(): void
     {
-        // Skip unapproved comments
-        if (!$this->comment->is_approved) {
+        if (! $this->comment->parent_id) {
             return;
         }
 
-        // Determine which notification class to use
-        $notificationClass = $this->comment->isReply()
-            ? CommentReplyNotification::class
-            : NewCommentNotification::class;
+        $parent = $this->comment->parent;
 
-        // Chunk users to avoid memory overload
-        User::query()
-            ->whereHas('roles') // adjust if you need specific roles
-            ->where('id', '!=', $this->comment->user_id)
-            ->select('id', 'name', 'email')
-            ->chunkById(100, function ($users) use ($notificationClass) {
+        // Skip if no parent user or if the replier is replying to themselves
+        if (! $parent?->user || $parent->user_id === $this->comment->user_id) {
+            return;
+        }
 
-                foreach ($users as $user) {
+        $parent->user->notify(new CommentReplyNotification($this->comment));
+    }
 
-                    // Use a transaction to prevent race conditions
-                    DB::transaction(function () use ($user, $notificationClass) {
+    /**
+     * Handle notifications for new top-level comments:
+     * - All registered users (except author)
+     * - All previous guest commenters (distinct emails)
+     * - The current guest commenter (confirmation)
+     */
+    private function notifyNewTopLevelCommentSubscribers(): void
+    {
+        if ($this->comment->parent_id) {
+            return; // Only top-level comments trigger this
+        }
 
-                        // Atomic check to prevent duplicates
-                        $alreadyNotified = $user->notifications()
-                            ->where('type', $notificationClass)
-                            ->where('data->comment_id', $this->comment->id)
-                            ->exists();
+        $notification = new NewCommentNotification($this->comment);
 
-                        if ($alreadyNotified) {
-                            return;
-                        }
+        // 1. Registered users
+        $this->notifyRegisteredUsers($notification);
 
-                        // Send the notification
-                        $user->notify(new $notificationClass($this->comment));
-                    });
-                }
-            });
+        // 2. Previous guest commenters
+        $this->notifyPreviousGuests($notification);
+
+        // 3. Current guest (if applicable – confirmation email)
+        $this->notifyCurrentGuest($notification);
+    }
+
+    private function notifyRegisteredUsers(NewCommentNotification $notification): void
+    {
+        $users = User::where('id', '!=', $this->comment->user_id)->get();
+
+        if ($users->isNotEmpty()) {
+            Notification::send($users, $notification);
+        }
+    }
+
+    private function notifyPreviousGuests(NewCommentNotification $notification): void
+    {
+        $emails = $this->getPreviousGuestEmails();
+
+        if ($emails->isEmpty()) {
+            return;
+        }
+
+        Notification::route('mail', $emails->toArray())
+            ->notify($notification);
+    }
+
+    private function notifyCurrentGuest(NewCommentNotification $notification): void
+    {
+        if (! $this->comment->is_guest || ! $this->comment->guest_email) {
+            return;
+        }
+
+        // Avoid double-sending if the current guest was already in previous guests
+        // (common when editing or if duplicate comment somehow)
+        if ($this->getPreviousGuestEmails()->contains($this->comment->guest_email)) {
+            return;
+        }
+
+        Notification::route('mail', $this->comment->guest_email)
+            ->notify($notification);
+    }
+
+    /**
+     * Fetch distinct guest emails from previous top-level comments.
+     * Customize the query scope based on your model's relationships.
+     */
+    private function getPreviousGuestEmails(): Collection
+    {
+        $query = Comment::query()
+            ->whereNull('parent_id')                    // only top-level
+            ->where('id', '!=', $this->comment->id)     // exclude current comment
+            ->where('is_guest', true)
+            ->whereNotNull('guest_email')
+            ->where('guest_email', '!=', $this->comment->guest_email); // exclude current if exists
+
+        // === IMPORTANT: Add your grouping logic here ===
+        // Examples:
+        // If comments belong to a post/article (polymorphic):
+        // ->where('commentable_id',   $this->comment->commentable_id)
+        // ->where('commentable_type', $this->comment->commentable_type)
+        //
+        // Or if using a post_id column:
+        // ->where('post_id', $this->comment->post_id)
+
+        return $query->pluck('guest_email')
+            ->filter()          // remove any null/empty values
+            ->unique()
+            ->values();
     }
 }

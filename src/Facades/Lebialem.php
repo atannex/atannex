@@ -45,6 +45,7 @@ final class Lebialem
         $breakingPosts = $this->getPosts->hasBreakingPosts();
 
         return [
+            'cover'           => $this->getGalleryImage(Image::COVER()),
             'logo'            => $this->getGalleryImage(Image::LOGO()),
             'favicon'         => $this->getGalleryImage(Image::FAVICON()),
             'banner'          => $this->getGalleryImage(Image::BANNER()),

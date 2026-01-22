@@ -10,8 +10,6 @@ use App\Models\Comments\Comment;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\RateLimiter;
 
 /**
  * Service provider for Atannex-specific bindings and shared data.
@@ -35,12 +33,6 @@ class AtannexProvider extends ServiceProvider
         Gate::after(fn($user) => $user->hasRole('Super Administrator') ? true : null);
 
         $this->shareGlobalData($lebialem);
-
-        RateLimiter::for('comments', function ($request) {
-            return Limit::perMinute(5)->by(
-                optional($request->user())->id ?: $request->ip()
-            );
-        });
     }
 
     /**

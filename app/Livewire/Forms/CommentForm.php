@@ -5,9 +5,9 @@ namespace App\Livewire\Forms;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\WithPagination;
-use App\Events\CommentPosted;
 use Livewire\Attributes\Rule;
 use App\Contracts\Commentable;
+use App\Events\NewComment;
 use App\Models\Comments\Comment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -18,9 +18,9 @@ class CommentForm extends Component
 {
     use WithPagination;
 
-    protected const COMMENTS_PER_LOAD = 4;
-    protected const REPLIES_PER_LOAD  = 2;
-    protected const RATE_LIMIT_MAX    = 3;
+    protected const COMMENTS_PER_LOAD = 5;
+    protected const REPLIES_PER_LOAD  = 3;
+    protected const RATE_LIMIT_MAX    = 5;
 
     public const EVENT_COMMENT_POSTED  = 'comment-posted';
     public const EVENT_COMMENT_DELETED = 'comment-deleted';
@@ -107,7 +107,7 @@ class CommentForm extends Component
                 $parent?->incrementReplyCount();
             }
 
-            event(new CommentPosted($comment));
+            event(new NewComment($comment));
 
             $this->dispatch(self::EVENT_COMMENT_POSTED);
             $this->dispatch('$refresh');

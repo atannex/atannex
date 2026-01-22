@@ -131,7 +131,7 @@ class CategoryForm
                                     ->visibility('public')
                                     ->image()
                                     ->imageEditor()
-                                    ->imageEditorAspectRatios([
+                                    ->imageEditorAspectRatioOptions([
                                         '16:9' => '16:9 (Landscape)',
                                         '4:3'  => '4:3 (Standard)',
                                         '1:1'  => '1:1 (Square)',
@@ -175,7 +175,7 @@ class CategoryForm
                                     ->label('Status Flag')
                                     ->required()
                                     ->default('pending')
-                                    ->options(Flag::labels())
+                                    ->options(Flag::asSelectArray())
                                     ->native(false)
                                     ->searchable()
                                     ->helperText('Current publication status')
