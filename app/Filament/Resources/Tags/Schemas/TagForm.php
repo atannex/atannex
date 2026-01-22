@@ -40,7 +40,6 @@ class TagForm
 
                         TextInput::make('slug')
                             ->label('URL Slug')
-                            ->required()
                             ->disabled()
                             ->maxLength(255)
                             ->unique(ignoreRecord: true)
