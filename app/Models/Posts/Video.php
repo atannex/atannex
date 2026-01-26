@@ -8,6 +8,7 @@ use App\Enums\Flag;
 use App\Models\Regions\Region;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
+use Atannex\Enables\Slugging;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,6 +16,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Video extends Model
 {
     use SoftDeletes;
+    use Slugging;
+
+    /**
+     * Slug source field.
+     */
+    protected string $slugSource = 'title';
 
     protected $fillable = [
         'title',

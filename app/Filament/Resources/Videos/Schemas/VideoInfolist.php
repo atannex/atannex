@@ -70,7 +70,7 @@ class VideoInfolist
                     ->label('Title')
                     ->size(TextSize::Large)
                     ->weight(FontWeight::Bold)
-                    ->color('primary')
+                    ->getStateUsing(fn($record) => $record->title . ($record->slug ? " ({$record->slug})" : ''))
                     ->columnSpanFull(),
 
                 Grid::make(3)
