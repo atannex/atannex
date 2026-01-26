@@ -4,6 +4,8 @@ namespace App\Filament\Resources\Comments\Pages;
 
 use App\Filament\Resources\Comments\CommentResource;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditComment extends EditRecord
@@ -14,6 +16,8 @@ class EditComment extends EditRecord
     {
         return [
             DeleteAction::make(),
+            ForceDeleteAction::make(),
+            RestoreAction::make(),
         ];
     }
 }
