@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Filament\Traits\HasVisibilityRules;
 use App\Models\Comments\Comment;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -10,14 +9,18 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class CommentPolicy
 {
     use HandlesAuthorization;
-    use HasVisibilityRules;
 
     /**
-     * Global override for admins & super admins.
+     * Global override for comment moderators.
      */
     public function before(?User $user, string $ability): bool|null
     {
-        if (static::canSeeModerationContent()) {
+        if (! $user) {
+            return null;
+        }
+
+        // Full comment moderation override
+        if ($user->can('comments.moderate')) {
             return true;
         }
 
@@ -33,26 +36,58 @@ class CommentPolicy
     }
 
     /**
-     * Comment owners can update their own comments.
+     * Update comment.
      */
-    public function update(?User $user, Comment $comment): bool
+    public function update(User $user, Comment $comment): bool
     {
-        return $user !== null && $comment->user_id === $user->id;
+        return
+            // Edit any comment
+            $user->can('comments.edit.any')
+
+            // Edit own comment
+            || (
+                $user->can('comments.edit.own')
+                && $comment->user_id === $user->id
+            );
     }
 
     /**
-     * Comment owners can delete their own comments.
+     * Delete comment.
      */
-    public function delete(?User $user, Comment $comment): bool
+    public function delete(User $user, Comment $comment): bool
     {
-        return $this->update($user, $comment);
+        return
+            // Delete any comment
+            $user->can('comments.delete.any')
+
+            // Delete own comment
+            || (
+                $user->can('comments.delete.own')
+                && $comment->user_id === $user->id
+            );
     }
 
     /**
-     * Only authenticated users can react.
+     * Restore deleted comments.
      */
-    public function react(?User $user): bool
+    public function restore(User $user, Comment $comment): bool
     {
-        return $user !== null;
+        return $user->can('comments.restore');
+    }
+
+    /**
+     * Force delete comments.
+     */
+    public function forceDelete(User $user, Comment $comment): bool
+    {
+        return $user->can('comments.force_delete');
+    }
+
+    /**
+     * React to comments.
+     */
+    public function react(User $user): bool
+    {
+        return $user->can('comments.react');
     }
 }

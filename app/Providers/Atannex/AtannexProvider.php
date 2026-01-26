@@ -7,6 +7,8 @@ use App\Policies\UserPolicy;
 use Atannex\Facades\Lebialem;
 use App\Policies\CommentPolicy;
 use App\Models\Comments\Comment;
+use App\Models\Posts\Post;
+use App\Policies\PostPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -27,6 +29,8 @@ class AtannexProvider extends ServiceProvider
     public function boot(Lebialem $lebialem): void
     {
         Gate::policy(User::class, UserPolicy::class);
+
+        Gate::policy(Post::class, PostPolicy::class);
 
         Gate::policy(Comment::class, CommentPolicy::class);
 
