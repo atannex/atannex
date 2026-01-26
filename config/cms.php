@@ -20,6 +20,8 @@ return [
         'email',
         'verification',
 
+        'videos',
+        'catalog',
         'about-atannex',
         'contact-atannex',
         'user',

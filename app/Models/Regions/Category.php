@@ -6,6 +6,7 @@ namespace App\Models\Regions;
 
 use App\Enums\Flag;
 use App\Models\Posts\Post;
+use App\Models\Posts\Video;
 use App\Contracts\Sluggable;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
@@ -87,5 +88,10 @@ class Category extends Model implements Sluggable
     public function descendants(): HasMany
     {
         return $this->children()->with('descendants');
+    }
+
+    public function videos(): HasMany
+    {
+        return $this->hasMany(Video::class);
     }
 }

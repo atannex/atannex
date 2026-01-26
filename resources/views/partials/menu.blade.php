@@ -10,6 +10,12 @@ $menu = displayGuestData($global['mainRegions']);
         </a>
     </li>
 
+     <li>
+        <a href="{{ route('video') }}">
+            {{ __('navigation.video') }}
+        </a>
+    </li>
+
     <li>
         <a href="{{ route('about') }}">
             {{ __('navigation.about') }}
