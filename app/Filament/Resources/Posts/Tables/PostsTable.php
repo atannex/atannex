@@ -78,8 +78,7 @@ class PostsTable
                     ->formatStateUsing(fn($state) => $state ? 'FEATURED' : 'Standard')
                     ->icon(fn($state) => $state ? 'heroicon-o-star' : null)
                     ->sortable()
-                    ->toggleable()
-                    ->visible(fn() => static::canSeeModerationContent()),
+                    ->toggleable(),
 
                 TextColumn::make('category.name')
                     ->label('Category')
