@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Posts\Tables;
 
+use App\Filament\Traits\HasVisibilityRules;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -20,6 +21,8 @@ use Illuminate\Support\Str;
 
 class PostsTable
 {
+    use HasVisibilityRules;
+
     /**
      * Configure and return a Filament table for displaying and managing posts.
      *
@@ -75,7 +78,8 @@ class PostsTable
                     ->formatStateUsing(fn($state) => $state ? 'FEATURED' : 'Standard')
                     ->icon(fn($state) => $state ? 'heroicon-o-star' : null)
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->visible(fn() => static::canSeeModerationContent()),
 
                 TextColumn::make('category.name')
                     ->label('Category')
@@ -94,7 +98,8 @@ class PostsTable
                         return empty($record->author?->user?->email)
                             ? null
                             : Str::limit($record->author->user->email, 60);
-                    }),
+                    })
+                    ->visible(fn() => static::canSeeModerationContent()),
 
                 TextColumn::make('slug')
                     ->label('Slug')
@@ -133,7 +138,8 @@ class PostsTable
                     ->icon('heroicon-o-eye')
                     ->iconColor('primary')
                     ->formatStateUsing(fn($state) => number_format($state ?: 0))
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->visible(fn() => static::canSeeModerationContent()),
 
                 TextColumn::make('updated_by')
                     ->label('Last Updated By')
@@ -141,7 +147,8 @@ class PostsTable
                     ->sortable()
                     ->icon('heroicon-o-pencil-square')
                     ->iconColor('warning')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->visible(fn() => static::canSeeModerationContent()),
 
                 TextColumn::make('created_at')
                     ->label('Created')
@@ -149,7 +156,8 @@ class PostsTable
                     ->sortable()
                     ->since()
                     ->tooltip(fn($record) => $record->created_at->format('F j, Y \a\t g:i A'))
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->visible(fn() => static::canSeeModerationContent()),
 
                 TextColumn::make('updated_at')
                     ->label('Last Modified')
@@ -157,7 +165,8 @@ class PostsTable
                     ->sortable()
                     ->since()
                     ->tooltip(fn($record) => $record->updated_at->format('F j, Y \a\t g:i A'))
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->visible(fn() => static::canSeeModerationContent()),
 
                 TextColumn::make('breaking_at')
                     ->label('Breaking Since')
@@ -167,7 +176,8 @@ class PostsTable
                     ->icon('heroicon-o-bolt')
                     ->iconColor('danger')
                     ->tooltip(fn($record) => $record->breaking_at?->format('F j, Y \a\t g:i A'))
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->visible(fn() => static::canSeeModerationContent()),
 
                 TextColumn::make('breaking_expires')
                     ->label('Breaking Expires')
@@ -176,7 +186,8 @@ class PostsTable
                     ->icon('heroicon-o-clock')
                     ->iconColor('warning')
                     ->tooltip(fn($record) => $record->breaking_expires?->format('F j, Y \a\t g:i A'))
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->visible(fn() => static::canSeeModerationContent()),
 
                 TextColumn::make('editor_pick_at')
                     ->label('Featured Since')
@@ -186,7 +197,8 @@ class PostsTable
                     ->icon('heroicon-o-star')
                     ->iconColor('success')
                     ->tooltip(fn($record) => $record->editor_pick_at?->format('F j, Y \a\t g:i A'))
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->visible(fn() => static::canSeeModerationContent()),
 
                 TextColumn::make('editor_pick_expires')
                     ->label('Featured Expires')
@@ -195,7 +207,8 @@ class PostsTable
                     ->icon('heroicon-o-clock')
                     ->iconColor('warning')
                     ->tooltip(fn($record) => $record->editor_pick_expires?->format('F j, Y \a\t g:i A'))
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->visible(fn() => static::canSeeModerationContent()),
 
                 TextColumn::make('deleted_at')
                     ->label('Deleted At')
@@ -205,7 +218,8 @@ class PostsTable
                     ->color('danger')
                     ->icon('heroicon-o-trash')
                     ->iconColor('danger')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->visible(fn() => static::canSeeModerationContent()),
             ])
             ->defaultSort('published_at', 'desc')
             ->filters([
