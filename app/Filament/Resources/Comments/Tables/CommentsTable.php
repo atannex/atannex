@@ -2,17 +2,18 @@
 
 namespace App\Filament\Resources\Comments\Tables;
 
-use App\Filament\Traits\HasVisibilityRules;
+use Filament\Tables\Table;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
-use Filament\Tables\Table;
+use App\Filament\Traits\HasVisibilityRules;
+use Filament\Actions\ForceDeleteBulkAction;
 
 class CommentsTable
 {
@@ -178,7 +179,13 @@ class CommentsTable
             |--------------------------------------------------------------------------
             */
             ->recordActions([
-                EditAction::make(),
+                DeleteAction::make()
+                    ->iconButton()
+                    ->tooltip('Delete Comment'),
+
+                EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Edit Comment'),
             ])
 
             /*
