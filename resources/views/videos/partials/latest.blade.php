@@ -1,16 +1,13 @@
 <section class="section section--border">
     <div class="container">
         <div class="row">
-            <!-- section title -->
             <div class="col-12">
                 <div class="section__title-wrap">
                     <h2 class="section__title">{{ __("Latest") }}</h2>
                     <a href="{{ route('catalog') }}" class="section__view section__view--carousel">View All</a>
                 </div>
             </div>
-            <!-- end section title -->
 
-            <!-- carousel -->
             <div class="col-12">
                 <div class="section__carousel splide splide--content">
                     <div class="splide__arrows">
@@ -24,27 +21,34 @@
 
                     <div class="splide__track">
                         <ul class="splide__list">
-
+                            @foreach ($videos as $video)
                             <li class="splide__slide">
                                 <div class="item item--carousel">
                                     <div class="item__cover">
-                                        <img src="img/covers/cover.jpg" alt="">
-                                        <a href="details.html" class="item__play">
+                                        <div class="d-flex justify-content-center">
+                                            <img src="{{ asset('storage/' . $video->image) }}" alt="{{ config('app.name') }}" class="img-fluid video-thumbnail">
+                                        </div>
+                                        <a href="{{ route('video.show', ['slug' => $video->slug]) }}" class="item__play">
                                             <i class="ti ti-player-play-filled"></i>
                                         </a>
-                                        <span class="item__rate item__rate--green">8.4</span>
-                                        <button class="item__favorite" type="button"><i class="ti ti-bookmark"></i></button>
+                                        @if($video->rating)
+                                        <span class="item__rate item__rate--green">{{ number_format($video->rating, 1) }}</span>
+                                        @endif
+                                        <button class="item__favorite" type="button">
+                                            <i class="ti ti-bookmark"></i>
+                                        </button>
                                     </div>
                                     <div class="item__content">
-                                        <h3 class="item__title"><a href="details.html">I Dream in Another Language</a></h3>
+                                        <h3 class="item__title">
+                                            <a href="{{ route('video.show', ['slug' => $video->slug]) }}">{{ $video->title }}</a>
+                                        </h3>
                                         <span class="item__category">
-                                            <a href="#">Action</a>
-                                            <a href="#">Triler</a>
+                                            <a href="{{ route('page.index', $video->category->slug_path) }}">{{ $video->category->name }}</a>
                                         </span>
                                     </div>
                                 </div>
                             </li>
-
+                            @endforeach
                         </ul>
                     </div>
                 </div>

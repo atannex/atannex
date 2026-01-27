@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Models\Posts;
 
 use App\Enums\Flag;
+use Atannex\Enables\Slugging;
 use App\Models\Regions\Region;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
-use Atannex\Enables\Slugging;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Video extends Model
 {
@@ -65,6 +66,11 @@ class Video extends Model
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
+    }
+
+    public function module(): HasOne
+    {
+        return $this->hasOne(VideoModule::class);
     }
 
     /**
