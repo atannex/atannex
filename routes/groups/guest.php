@@ -15,12 +15,12 @@ use App\Http\Controllers\RegionController;
 
 Route::controller(RegionController::class)->group(function () {
 
-        $reserved = implode('|', config('cms.reserved_slugs'));
+    $reserved = implode('|', config('cms.reserved_slugs'));
 
-        Route::get('{slug}', 'resolve')
-            ->where('slug', "^(?!{$reserved}).+")
-            ->name('page.index');
-    });
+    Route::get('{slug}', 'resolve')
+        ->where('slug', "^(?!{$reserved}).+")
+        ->name('page.index');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +33,8 @@ Route::controller(HomeController::class)
         Route::get('/', 'index')->name('home');
 
         Route::get('/videos', 'video')->name('video');
+
+        Route::get('/videos/{slug}', 'show')->name('video.show');
         Route::get('/catalog', 'catalog')->name('catalog');
         Route::get('about-atannex', 'about')->name('about');
         Route::get('contact-atannex', 'contact')->name('contact');

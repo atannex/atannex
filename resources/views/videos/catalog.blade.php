@@ -6,7 +6,7 @@
 
 @include('videos.partials.breadcrumbs')
 
-@include('videos.partials.catalog')
+<livewire:catalog />
 
 @include('videos.partials.latest')
 
