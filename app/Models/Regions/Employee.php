@@ -2,19 +2,20 @@
 
 namespace App\Models\Regions;
 
-use App\Enums\Status;
-use App\Models\Others\SocialMedia;
-use App\Models\Pivots\EmployeeDepartment;
-use App\Models\Posts\Post;
 use App\Models\User;
+use App\Enums\Status;
+use App\Models\Posts\Post;
+use App\Models\Posts\Video;
+use App\Models\Others\SocialMedia;
 use Atannex\Concerns\EmployeeCode;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use App\Models\Pivots\EmployeeDepartment;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Employee extends Model
 {
@@ -84,11 +85,21 @@ class Employee extends Model
 
     protected function scopeByDepartment(Builder $query, int $departmentId): Builder
     {
-        return $query->whereHas('departments', fn ($q) => $q->where('departments.id', $departmentId));
+        return $query->whereHas('departments', fn($q) => $q->where('departments.id', $departmentId));
     }
 
     protected function scopeManagers(Builder $query): Builder
     {
         return $query->whereNull('manager_id');
+    }
+
+    public function videos(): HasMany
+    {
+        return $this->hasMany(Video::class, 'author_id');
+    }
+
+    public function updatedVideos(): HasMany
+    {
+        return $this->hasMany(Video::class, 'updated_by');
     }
 }

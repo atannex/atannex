@@ -25,6 +25,7 @@ use App\Filament\Resources\Sections\SectionResource;
 use App\Filament\Resources\SocialMedia\SocialMediaResource;
 use App\Filament\Resources\Tags\TagResource;
 use App\Filament\Resources\Users\UserResource;
+use App\Filament\Resources\Videos\VideoResource;
 use App\Filament\Resources\Widgets\WidgetResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -105,6 +106,7 @@ class AdminPanelProvider extends PanelProvider
                             ...PostResource::getNavigationItems(),
                             ...PostTagResource::getNavigationItems(),
                             ...TagResource::getNavigationItems(),
+                            ...VideoResource::getNavigationItems(),
                         ]),
 
                     NavigationGroup::make('User Management')
