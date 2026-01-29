@@ -3,12 +3,12 @@
 namespace App\Filament\Resources\Reviews\Schemas;
 
 use App\Enums\Flag;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Group;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class ReviewForm
@@ -48,37 +48,16 @@ class ReviewForm
                             ->description('The main review content and rating')
                             ->icon('heroicon-o-star')
                             ->schema([
-                                Textarea::make('content')
-                                    ->label('Review Content')
-                                    ->required()
-                                    ->rows(5)
-                                    ->maxLength(5000)
-                                    ->placeholder('Write the review content here...')
-                                    ->helperText('Maximum 5000 characters')
-                                    ->columnSpanFull(),
-
-                                Grid::make(2)
+                                Grid::make(1)
                                     ->schema([
-                                        TextInput::make('reviewer_rating')
-                                            ->label('Rating')
+                                        Textarea::make('content')
+                                            ->label('Review Content')
                                             ->required()
-                                            ->numeric()
-                                            ->minValue(1)
-                                            ->maxValue(5)
-                                            ->step(0.5)
-                                            ->suffix('/ 5')
-                                            ->placeholder('0.0')
-                                            ->helperText('Rating from 1 to 5'),
-
-                                        Select::make('flag')
-                                            ->label('Review Status')
-                                            ->options(Flag::asSelectArray())
-                                            ->preload()
-                                            ->searchable()
-                                            ->required()
-                                            ->default(Flag::PENDING_REVIEW)
-                                            ->native(false)
-                                            ->helperText('Current review status'),
+                                            ->rows(8)
+                                            ->maxLength(5000)
+                                            ->placeholder('Write the review content here...')
+                                            ->helperText('Maximum 5000 characters')
+                                            ->columnSpanFull(),
                                     ]),
                             ])
                             ->collapsible(),
@@ -107,23 +86,65 @@ class ReviewForm
                             ])
                             ->collapsible()
                             ->persistCollapsed(),
+                    ])
+                    ->columnSpan(['lg' => 2]),
 
-                        Section::make('Metadata')
-                            ->description('Additional tracking information')
+                Group::make()
+                    ->schema([
+                        Section::make('Review Status')
+                            ->description('Manage review approval')
+                            ->icon('heroicon-o-flag')
+                            ->schema([
+                                Grid::make(1)
+                                    ->schema([
+                                        Select::make('flag')
+                                            ->label('Status')
+                                            ->options(Flag::asSelectArray())
+                                            ->preload()
+                                            ->searchable()
+                                            ->required()
+                                            ->default(Flag::PENDING_REVIEW)
+                                            ->native(false)
+                                            ->helperText('Set the review status'),
+                                    ]),
+                            ]),
+
+                        Section::make('Ratings')
+                            ->description('User rating for the reviewable entity')
                             ->icon('heroicon-o-information-circle')
                             ->schema([
-                                TextInput::make('ip_address')
-                                    ->label('IP Address')
-                                    ->placeholder('Auto-detected')
-                                    ->helperText('IP address of the reviewer')
-                                    ->disabled()
-                                    ->dehydrated(true),
+                                TextInput::make('reviewer_rating')
+                                    ->label('Rating')
+                                    ->required()
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->maxValue(5)
+                                    ->step(0.5)
+                                    ->suffix('/ 5')
+                                    ->placeholder('0.0')
+                                    ->helperText('Rating from 1 to 5'),
+                            ]),
+
+                        Section::make('Metadata')
+                            ->description('Tracking information')
+                            ->icon('heroicon-o-information-circle')
+                            ->schema([
+                                Grid::make(1)
+                                    ->schema([
+                                        TextInput::make('ip_address')
+                                            ->label('IP Address')
+                                            ->placeholder('Auto-detected')
+                                            ->helperText('Reviewer IP address')
+                                            ->disabled()
+                                            ->dehydrated(true),
+                                    ]),
                             ])
                             ->collapsible()
                             ->collapsed()
                             ->persistCollapsed(),
                     ])
-                    ->columnSpanFull(),
-            ]);
+                    ->columnSpan(['lg' => 1]),
+            ])
+            ->columns(3);
     }
 }
