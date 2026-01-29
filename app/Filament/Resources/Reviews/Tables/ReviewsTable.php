@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Reviews\Tables;
 
 use App\Enums\Flag;
+use Illuminate\Support\Str;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
@@ -37,14 +38,18 @@ class ReviewsTable
                     ->searchable()
                     ->sortable()
                     ->weight(FontWeight::Medium)
-                    ->description(fn($record) => "ID: {$record->reviewable_id}")
+                    ->description(
+                        fn($record) =>
+                        'ID: ' . Str::limit($record->reviewable->slug, 20)
+                    )
                     ->tooltip('Type of entity being reviewed'),
 
-                TextColumn::make('reviewable_id')
+                TextColumn::make('reviewable.title')
                     ->label('Entity ID')
                     ->numeric()
                     ->sortable()
                     ->toggleable()
+                    ->limit(30)
                     ->alignCenter(),
 
                 TextColumn::make('content')
