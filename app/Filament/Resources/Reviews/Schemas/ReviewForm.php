@@ -3,9 +3,12 @@
 namespace App\Filament\Resources\Reviews\Schemas;
 
 use App\Enums\Flag;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class ReviewForm
@@ -14,30 +17,113 @@ class ReviewForm
     {
         return $schema
             ->components([
-                TextInput::make('reviewable_type')
-                    ->required(),
-                TextInput::make('reviewable_id')
-                    ->required()
-                    ->numeric(),
-                Textarea::make('content')
-                    ->required()
+                Group::make()
+                    ->schema([
+                        Section::make('Reviewable Entity')
+                            ->description('Specify the entity being reviewed')
+                            ->icon('heroicon-o-document-text')
+                            ->schema([
+                                Grid::make(2)
+                                    ->schema([
+                                        TextInput::make('reviewable_type')
+                                            ->label('Entity Type')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->placeholder('e.g., Product, Service, etc.')
+                                            ->helperText('The type of entity being reviewed'),
+
+                                        TextInput::make('reviewable_id')
+                                            ->label('Entity ID')
+                                            ->required()
+                                            ->numeric()
+                                            ->minValue(1)
+                                            ->placeholder('Enter entity ID')
+                                            ->helperText('The unique identifier of the entity'),
+                                    ]),
+                            ])
+                            ->collapsible()
+                            ->persistCollapsed(),
+
+                        Section::make('Review Content')
+                            ->description('The main review content and rating')
+                            ->icon('heroicon-o-star')
+                            ->schema([
+                                Textarea::make('content')
+                                    ->label('Review Content')
+                                    ->required()
+                                    ->rows(5)
+                                    ->maxLength(5000)
+                                    ->placeholder('Write the review content here...')
+                                    ->helperText('Maximum 5000 characters')
+                                    ->columnSpanFull(),
+
+                                Grid::make(2)
+                                    ->schema([
+                                        TextInput::make('reviewer_rating')
+                                            ->label('Rating')
+                                            ->required()
+                                            ->numeric()
+                                            ->minValue(1)
+                                            ->maxValue(5)
+                                            ->step(0.5)
+                                            ->suffix('/ 5')
+                                            ->placeholder('0.0')
+                                            ->helperText('Rating from 1 to 5'),
+
+                                        Select::make('flag')
+                                            ->label('Review Status')
+                                            ->options(Flag::asSelectArray())
+                                            ->preload()
+                                            ->searchable()
+                                            ->required()
+                                            ->default(Flag::PENDING_REVIEW)
+                                            ->native(false)
+                                            ->helperText('Current review status'),
+                                    ]),
+                            ])
+                            ->collapsible(),
+
+                        Section::make('Reviewer Information')
+                            ->description('Details about the reviewer')
+                            ->icon('heroicon-o-user')
+                            ->schema([
+                                Grid::make(2)
+                                    ->schema([
+                                        Select::make('user_id')
+                                            ->label('Registered User')
+                                            ->relationship('user', 'name')
+                                            ->searchable()
+                                            ->preload()
+                                            ->placeholder('Select a user (optional)')
+                                            ->helperText('Link to a registered user account')
+                                            ->native(false),
+
+                                        TextInput::make('reviewer_name')
+                                            ->label('Guest Name')
+                                            ->maxLength(255)
+                                            ->placeholder('Enter name for guest reviewers')
+                                            ->helperText('Use when no user account exists'),
+                                    ]),
+                            ])
+                            ->collapsible()
+                            ->persistCollapsed(),
+
+                        Section::make('Metadata')
+                            ->description('Additional tracking information')
+                            ->icon('heroicon-o-information-circle')
+                            ->schema([
+                                TextInput::make('ip_address')
+                                    ->label('IP Address')
+                                    ->placeholder('Auto-detected')
+                                    ->helperText('IP address of the reviewer')
+                                    ->disabled()
+                                    ->dehydrated(true),
+                            ])
+                            ->collapsible()
+                            ->collapsed()
+                            ->persistCollapsed(),
+                    ])
                     ->columnSpanFull(),
-                TextInput::make('reviewer_name')
-                    ->default(null),
-                Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->default(null),
-                TextInput::make('reviewer_rating')
-                    ->required()
-                    ->numeric(),
-                Select::make('flag')
-                    ->options(Flag::asSelectArray())
-                    ->preload()
-                    ->searchable()
-                    ->required()
-                    ->default(Flag::PENDING_REVIEW),
-                TextInput::make('ip_address')
-                    ->default(null),
             ]);
     }
 }
