@@ -42,10 +42,13 @@
 
                 <div class="media-body">
                     <h4 class="text-sm font-semibold leading-tight post-title">
-                        <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="hover:underline" aria-disabled="true">
+                        <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="hover:underline text-light" aria-disabled="true">
                             {{ Str::limit($post->title, 40) }}
                         </a>
                     </h4>
+
+                    @include('partials.date', ['post' => $post])
+
                 </div>
             </article>
             @endforeach
