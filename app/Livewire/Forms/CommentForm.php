@@ -2,45 +2,45 @@
 
 namespace App\Livewire\Forms;
 
-use Livewire\Component;
-use Livewire\Attributes\On;
-use Livewire\WithPagination;
-use Livewire\Attributes\Rule;
 use App\Contracts\Commentable;
+use Livewire\Attributes\Locked;
 use App\Events\NewComment;
 use App\Models\Comments\Comment;
+use Atannex\Services\CommentReactionService;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
-use Atannex\Services\CommentReactionService;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Rule;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class CommentForm extends Component
 {
     use WithPagination;
 
-    protected const COMMENTS_PER_LOAD = 5;
+    protected const COMMENTS_PER_PAGE = 5;
     protected const REPLIES_PER_LOAD  = 3;
     protected const RATE_LIMIT_MAX    = 5;
 
     public const EVENT_COMMENT_POSTED  = 'comment-posted';
     public const EVENT_COMMENT_DELETED = 'comment-deleted';
 
+    #[Locked]
+    public ?int $parentId = null;
+
     public Commentable $commentable;
 
     #[Rule(['required', 'string', 'min:3', 'max:5000'], as: 'comment')]
     public ?string $comment = null;
 
-    public ?int $parentId = null;
-    public int $perPage = self::COMMENTS_PER_LOAD;
+    public int $perPage = self::COMMENTS_PER_PAGE;
 
-    /** Track how many replies are currently shown per comment */
     public array $shownRepliesCount = [];
 
-    /** Honeypot field for spam protection */
-    public ?string $website = null;
-
-    /** Guest fields */
-    public ?string $guest_name = null;
+    public ?string $website     = null;
+    public ?string $guest_name  = null;
     public ?string $guest_email = null;
 
     public function mount(Commentable $commentable): void
@@ -53,73 +53,53 @@ class CommentForm extends Component
         }
     }
 
-    public function render()
+    public function render(): View
     {
-        $comments = $this->getTopLevelComments();
+        $comments = $this->loadTopLevelComments();
 
         return view('livewire.forms.comment-form', [
             'comments'          => $comments,
             'shownRepliesCount' => $this->shownRepliesCount,
-            'replyingTo'        => $this->replyingContext(),
+            'replyingTo'        => $this->getReplyingContext(),
         ]);
     }
 
     public function loadMoreComments(): void
     {
-        $this->perPage += self::COMMENTS_PER_LOAD;
+        $this->perPage += self::COMMENTS_PER_PAGE;
+    }
+
+    public function loadMoreReplies(int $commentId): void
+    {
+        $total = Comment::where('parent_id', $commentId)->count();
+        $current = $this->shownRepliesCount[$commentId] ?? 0;
+
+        $this->shownRepliesCount[$commentId] = min($current + self::REPLIES_PER_LOAD, $total);
+    }
+
+    public function collapseReplies(int $commentId): void
+    {
+        unset($this->shownRepliesCount[$commentId]);
     }
 
     public function submit(): void
     {
         $this->validate();
-        $this->storeGuestSession();
 
-        if ($this->isSpam()) {
-            abort(403);
-        }
-
-        if ($this->isRateLimited()) {
-            $this->addError('comment', __('Too many comments. Please slow down.'));
-            return;
-        }
+        $this->abortIfSpam();
+        $this->abortIfRateLimited();
 
         Gate::authorize('create', Comment::class);
 
-        try {
-            $comment = Comment::create([
-                'user_id'          => Auth::id(),
-                'is_guest'         => Auth::guest(),
-                'guest_name'       => $this->guestName(),
-                'guest_email'      => $this->guestEmail(),
-                'commentable_type' => $this->commentable::class,
-                'commentable_id'   => $this->commentable->id,
-                'parent_id'        => $this->resolveParentId(),
-                'comment'          => $this->sanitize($this->comment),
-                'ip_address'       => request()->ip(),
-                'reply_count'      => 0,
-                'like_count'       => 0,
-                'dislike_count'    => 0,
-                'comment_hash'     => hash('sha256', ($this->comment ?? '') . Auth::id() . $this->commentable->id),
-            ]);
+        $comment = $this->createComment();
 
-            if ($comment->parent_id) {
-                $parent = Comment::find($comment->parent_id);
-                $parent?->incrementReplyCount();
-            }
+        $this->incrementParentReplyCount($comment);
+        event(new NewComment($comment));
 
-            event(new NewComment($comment));
+        $this->notifyCommentPosted();
+        $this->resetCommentForm();
 
-            $this->dispatch(self::EVENT_COMMENT_POSTED);
-            $this->dispatch('$refresh');
-
-            session()->flash('message', __('Comment posted successfully.'));
-
-            $this->resetCommentState();
-            $this->resetPage();
-        } catch (\Throwable $e) {
-            report($e);
-            session()->flash('error', __('Failed to post comment.'));
-        }
+        session()->flash('message', __('Comment posted successfully.'));
     }
 
     #[On('edit-comment')]
@@ -156,87 +136,94 @@ class CommentForm extends Component
         $this->comment  = '@' . $comment->author_name . ' ';
     }
 
-    #[On('like-comment')]
-    public function likeComment(int $commentId, CommentReactionService $service): void
-    {
-        $this->react($commentId, 'like', $service);
-    }
-
-    #[On('dislike-comment')]
-    public function dislikeComment(int $commentId, CommentReactionService $service): void
-    {
-        $this->react($commentId, 'dislike', $service);
-    }
-
-    protected function react(int $commentId, string $type, CommentReactionService $service): void
-    {
-        if (! Auth::check()) {
-            abort(403, 'Authentication required.');
-        }
-
-        $comment = Comment::findOrFail($commentId);
-        Gate::authorize('react', $comment);
-
-        $service->react($comment, Auth::user(), $type);
-
-        $this->dispatch('$refresh');
-    }
-
     public function cancelReply(): void
     {
         $this->resetCommentState();
     }
 
-    public function loadMoreReplies(int $commentId): void
+    #[On('like-comment')]
+    public function likeComment(int $commentId, CommentReactionService $service): void
     {
-        $total   = Comment::where('parent_id', $commentId)->count();
-        $current = $this->shownRepliesCount[$commentId] ?? 0;
-
-        $this->shownRepliesCount[$commentId] = min(
-            $current + self::REPLIES_PER_LOAD,
-            $total
-        );
+        $this->handleReaction($commentId, 'like', $service);
     }
 
-    public function collapseReplies(int $commentId): void
+    #[On('dislike-comment')]
+    public function dislikeComment(int $commentId, CommentReactionService $service): void
     {
-        unset($this->shownRepliesCount[$commentId]);
+        $this->handleReaction($commentId, 'dislike', $service);
     }
 
-    protected function getTopLevelComments()
+    private function createComment(): Comment
     {
-        return $this->commentable
-            ->comments()
-            ->topLevel()
-            ->with(['user', 'replies' => fn($q) => $this->applyRepliesLimit($q)])
-            ->latest()
-            ->paginate($this->perPage);
+        return Comment::create([
+            'user_id'          => Auth::id(),
+            'is_guest'         => Auth::guest(),
+            'guest_name'       => $this->guestName(),
+            'guest_email'      => $this->guestEmail(),
+            'commentable_type' => $this->commentable::class,
+            'commentable_id'   => $this->commentable->id,
+            'parent_id'        => $this->resolveParentId(),
+            'comment'          => $this->sanitize($this->comment),
+            'ip_address'       => request()->ip(),
+            'reply_count'      => 0,
+            'like_count'       => 0,
+            'dislike_count'    => 0,
+            'comment_hash'     => hash('sha256', ($this->comment ?? '') . Auth::id() . $this->commentable->id),
+        ]);
     }
 
-    protected function applyRepliesLimit($query)
+    private function incrementParentReplyCount(Comment $comment): void
     {
-        return $query->latest()->take(self::REPLIES_PER_LOAD)->with('user');
+        if ($comment->parent_id) {
+            $parent = Comment::find($comment->parent_id);
+            $parent?->increment('reply_count');
+        }
     }
 
-    protected function resolveParentId(): ?int
+    private function notifyCommentPosted(): void
+    {
+        $this->dispatch(self::EVENT_COMMENT_POSTED);
+        $this->dispatch('$refresh');
+    }
+
+    private function resetCommentForm(): void
+    {
+        $this->resetCommentState();
+        $this->resetPage();
+    }
+
+    protected function resetCommentState(): void
+    {
+        $this->reset(['comment', 'parentId']);
+    }
+
+    private function resolveParentId(): ?int
     {
         return $this->parentId ? Comment::findOrFail($this->parentId)->id : null;
     }
 
-    protected function replyingContext(): ?array
+    private function abortIfSpam(): void
     {
-        if (!$this->parentId) return null;
-
-        $comment = Comment::find($this->parentId);
-        return $comment ? [
-            'commentId' => $comment->id,
-            'username'  => $comment->author_name,
-        ] : null;
+        if (! empty($this->website)) {
+            abort(403, 'Spam detected.');
+        }
     }
 
-    protected function isSpam(): bool
+    private function abortIfRateLimited(): void
     {
-        return !empty($this->website);
+        $key = 'comments:' . (Auth::id() ?? request()->ip());
+
+        RateLimiter::hit($key, 3600); // 1 hour decay
+
+        if (RateLimiter::tooManyAttempts($key, self::RATE_LIMIT_MAX)) {
+            $this->addError('comment', __('Too many comments. Please slow down.'));
+            $this->skipRender();
+        }
+    }
+
+    protected function sanitize(string $comment): string
+    {
+        return clean(trim($comment), 'comment');
     }
 
     protected function guestName(): ?string
@@ -259,21 +246,44 @@ class CommentForm extends Component
         }
     }
 
-    protected function isRateLimited(): bool
+    protected function getReplyingContext(): ?array
     {
-        $key = 'comments:' . (Auth::id() ?? request()->ip());
-        RateLimiter::hit($key);
+        if (! $this->parentId) {
+            return null;
+        }
 
-        return RateLimiter::tooManyAttempts($key, self::RATE_LIMIT_MAX);
+        $comment = Comment::find($this->parentId);
+
+        return $comment ? [
+            'commentId' => $comment->id,
+            'username'  => $comment->author_name,
+        ] : null;
     }
 
-    protected function sanitize(string $comment): string
+    private function handleReaction(int $commentId, string $type, CommentReactionService $service): void
     {
-        return clean(trim($comment), 'comment');
+        if (! Auth::check()) {
+            abort(403, 'Authentication required.');
+        }
+
+        $comment = Comment::findOrFail($commentId);
+        Gate::authorize('react', $comment);
+
+        $service->react($comment, Auth::user(), $type);
+
+        $this->dispatch('$refresh');
     }
 
-    protected function resetCommentState(): void
+    protected function loadTopLevelComments()
     {
-        $this->reset(['comment', 'parentId']);
+        return $this->commentable
+            ->comments()
+            ->topLevel()
+            ->with([
+                'user',
+                'replies' => fn($q) => $q->latest()->take(self::REPLIES_PER_LOAD)->with('user')
+            ])
+            ->latest()
+            ->paginate($this->perPage);
     }
 }

@@ -8,7 +8,9 @@ use Atannex\Facades\Lebialem;
 use App\Policies\CommentPolicy;
 use App\Models\Comments\Comment;
 use App\Models\Posts\Post;
+use App\Models\Posts\Review;
 use App\Policies\PostPolicy;
+use App\Policies\ReviewPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -33,6 +35,8 @@ class AtannexProvider extends ServiceProvider
         Gate::policy(Post::class, PostPolicy::class);
 
         Gate::policy(Comment::class, CommentPolicy::class);
+
+        Gate::policy(Review::class, ReviewPolicy::class);
 
         Gate::after(fn($user) => $user->hasRole('Super Administrator') ? true : null);
 

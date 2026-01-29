@@ -45,4 +45,20 @@ final class Flag extends Enum
 
     #[Description('Deleted')]
     public const DELETED = 'deleted';
+
+    /**
+     * Determines if the given flag allows editing.
+     *
+     * @param string|self $flag
+     * @return bool
+     */
+    public static function allowsEditing(string|self $flag): bool
+    {
+        return in_array($flag instanceof self ? $flag->value : $flag, [
+            self::DRAFT,
+            self::REVISION_NEEDED,
+            self::PENDING_REVIEW,
+            self::APPROVED,
+        ], true);
+    }
 }

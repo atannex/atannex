@@ -21,20 +21,8 @@ class CommentForm
     {
         return $schema
             ->components([
-
-                /*
-                |--------------------------------------------------------------------------
-                | Primary Content Group
-                |--------------------------------------------------------------------------
-                */
                 Group::make()
                     ->schema([
-
-                        /*
-                        |--------------------------------------------------------------
-                        | Comment Context
-                        |--------------------------------------------------------------
-                        */
                         Section::make('Context')
                             ->description('Defines where and how the comment is attached')
                             ->schema([
@@ -57,12 +45,6 @@ class CommentForm
                                             ->preload(),
                                     ]),
                             ]),
-
-                        /*
-                        |--------------------------------------------------------------
-                        | Comment Body
-                        |--------------------------------------------------------------
-                        */
                         Section::make('Comment')
                             ->schema([
                                 Grid::make()
@@ -75,20 +57,8 @@ class CommentForm
                             ]),
                     ])
                     ->columnSpan(2),
-
-                /*
-                |--------------------------------------------------------------------------
-                | Sidebar Group
-                |--------------------------------------------------------------------------
-                */
                 Group::make()
                     ->schema([
-
-                        /*
-                        |--------------------------------------------------------------
-                        | Author Information
-                        |--------------------------------------------------------------
-                        */
                         Section::make('Author')
                             ->schema([
                                 Grid::make(2)
@@ -107,20 +77,16 @@ class CommentForm
                                         TextInput::make('guest_name')
                                             ->label('Guest Name')
                                             ->required(fn($get) => $get('is_guest'))
-                                            ->visible(fn($get) => $get('is_guest')),
+                                            ->visible(fn($get) => $get('is_guest'))
+                                            ->columnSpanFull(),
 
                                         TextInput::make('guest_email')
                                             ->label('Guest Email')
                                             ->email()
-                                            ->visible(fn($get) => $get('is_guest')),
+                                            ->visible(fn($get) => $get('is_guest'))
+                                            ->columnSpanFull(),
                                     ]),
                             ]),
-
-                        /*
-                        |--------------------------------------------------------------
-                        | Engagement Metrics (Moderator Only)
-                        |--------------------------------------------------------------
-                        */
                         Section::make('Engagement')
                             ->visible(fn() => static::canSeeModerationContent())
                             ->schema([
@@ -137,31 +103,29 @@ class CommentForm
 
                                         TextInput::make('dislike_count')
                                             ->numeric()
+                                            ->disabled()
                                             ->default(0),
                                     ]),
                             ]),
-
-                        /*
-                        |--------------------------------------------------------------
-                        | System Metadata (Moderator Only)
-                        |--------------------------------------------------------------
-                        */
                         Section::make('System')
                             ->collapsed()
                             ->visible(fn() => static::canSeeModerationContent())
                             ->schema([
-                                Grid::make(2)
+                                Grid::make()
                                     ->schema([
                                         TextInput::make('comment_hash')
                                             ->label('Hash')
-                                            ->disabled(),
+                                            ->disabled()
+                                            ->columnSpanFull(),
 
                                         TextInput::make('ip_address')
                                             ->label('IP Address')
-                                            ->disabled(),
+                                            ->disabled()
+                                            ->columnSpanFull(),
 
                                         DateTimePicker::make('edited_at')
-                                            ->label('Edited At'),
+                                            ->label('Edited At')
+                                            ->columnSpanFull(),
                                     ]),
                             ]),
                     ])

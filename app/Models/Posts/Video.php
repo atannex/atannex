@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace App\Models\Posts;
 
 use App\Contracts\Commentable;
-use App\Models\Comments\Comment;
 use App\Enums\Flag;
-use Atannex\Enables\Slugging;
-use App\Models\Regions\Region;
+use App\Models\Comments\Comment;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
+use App\Models\Regions\Region;
+use Atannex\Enables\Slugging;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Video extends Model implements Commentable
 {
@@ -23,10 +24,13 @@ class Video extends Model implements Commentable
     use Slugging;
 
     /**
-     * Slug source field.
+     * The attribute used to generate the slug.
      */
     protected string $slugSource = 'title';
 
+    /**
+     * Mass assignable attributes.
+     */
     protected $fillable = [
         'title',
         'description',
@@ -41,14 +45,22 @@ class Video extends Model implements Commentable
         'updated_by',
     ];
 
+    /**
+     * Attribute casting.
+     */
     protected $casts = [
         'published_at' => 'datetime',
-        'flag'         => Flag::class,
         'duration'     => 'integer',
+        'flag'         => Flag::class,
     ];
 
+    /* -----------------------------------------------------------------
+     | Relationships
+     | -----------------------------------------------------------------
+     */
+
     /**
-     * Polymorphic relationship with Comments (only top-level).
+     * Top-level polymorphic comments.
      */
     public function comments(): MorphMany
     {
@@ -58,7 +70,7 @@ class Video extends Model implements Commentable
     }
 
     /**
-     * Get all reviews for this post.
+     * Polymorphic reviews.
      */
     public function reviews(): MorphMany
     {
@@ -66,7 +78,7 @@ class Video extends Model implements Commentable
     }
 
     /**
-     * Get only approved reviews.
+     * Approved reviews only.
      */
     public function approvedReviews(): MorphMany
     {
@@ -74,7 +86,7 @@ class Video extends Model implements Commentable
     }
 
     /**
-     * Get only pending reviews.
+     * Pending reviews only.
      */
     public function pendingReviews(): MorphMany
     {
@@ -82,23 +94,7 @@ class Video extends Model implements Commentable
     }
 
     /**
-     * Average rating for the video.
-     */
-    public function averageRating(): float
-    {
-        return (float) $this->approvedReviews()->avg('reviewer_rating') ?? 0;
-    }
-
-    /**
-     * Total number of approved reviews.
-     */
-    public function reviewCount(): int
-    {
-        return $this->approvedReviews()->count();
-    }
-
-    /**
-     * The category this video belongs to
+     * Video category.
      */
     public function category(): BelongsTo
     {
@@ -106,7 +102,7 @@ class Video extends Model implements Commentable
     }
 
     /**
-     * The employee who created / owns this video
+     * Video author.
      */
     public function author(): BelongsTo
     {
@@ -114,38 +110,77 @@ class Video extends Model implements Commentable
     }
 
     /**
-     * The region this video is targeted to / associated with
+     * Associated region.
      */
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
     }
 
+    /**
+     * Optional learning/module mapping.
+     */
     public function module(): HasOne
     {
         return $this->hasOne(VideoModule::class);
     }
 
     /**
-     * The employee who last updated this video (nullable)
+     * Last editor of the video.
      */
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'updated_by');
     }
 
-    public function scopePublished($query)
+    /* -----------------------------------------------------------------
+     | Scopes
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Published videos only.
+     */
+    public function scopePublished(Builder $query): Builder
     {
-        return $query->whereNotNull('published_at')
+        return $query
+            ->whereNotNull('published_at')
             ->where('published_at', '<=', now())
             ->where('flag', Flag::PUBLISHED);
     }
 
-    public function scopeDrafts($query)
+    /**
+     * Draft videos only.
+     */
+    public function scopeDrafts(Builder $query): Builder
     {
         return $query->where('flag', Flag::DRAFT);
     }
 
+    /* -----------------------------------------------------------------
+     | Aggregates & State
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Average rating from approved reviews.
+     */
+    public function averageRating(): float
+    {
+        return (float) ($this->approvedReviews()->avg('reviewer_rating') ?? 0.0);
+    }
+
+    /**
+     * Total approved review count.
+     */
+    public function reviewCount(): int
+    {
+        return $this->approvedReviews()->count();
+    }
+
+    /**
+     * Determine if the video is publicly published.
+     */
     public function isPublished(): bool
     {
         return $this->published_at !== null
@@ -153,15 +188,24 @@ class Video extends Model implements Commentable
             && $this->flag === Flag::PUBLISHED;
     }
 
+    /* -----------------------------------------------------------------
+     | Accessors
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Human-readable duration (MM:SS).
+     */
     public function getDurationForHumansAttribute(): ?string
     {
-        if (!$this->duration) {
+        if ($this->duration === null || $this->duration <= 0) {
             return null;
         }
 
-        $minutes = floor($this->duration / 60);
-        $seconds = $this->duration % 60;
-
-        return sprintf('%02d:%02d', $minutes, $seconds);
+        return sprintf(
+            '%02d:%02d',
+            intdiv($this->duration, 60),
+            $this->duration % 60
+        );
     }
 }
