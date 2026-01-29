@@ -77,6 +77,14 @@ class Post extends Model implements Commentable
         return 'slug';
     }
 
+    /**
+     * Get all reviews for this post.
+     */
+    public function reviews(): MorphMany
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
+
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class, 'region_id');

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models\Posts;
 
+use App\Contracts\Commentable;
+use App\Models\Comments\Comment;
 use App\Enums\Flag;
 use Atannex\Enables\Slugging;
 use App\Models\Regions\Region;
@@ -13,8 +15,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Video extends Model
+class Video extends Model implements Commentable
 {
     use SoftDeletes;
     use Slugging;
@@ -43,6 +46,56 @@ class Video extends Model
         'flag'         => Flag::class,
         'duration'     => 'integer',
     ];
+
+    /**
+     * Polymorphic relationship with Comments (only top-level).
+     */
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable')
+            ->whereNull('parent_id')
+            ->latest();
+    }
+
+    /**
+     * Get all reviews for this post.
+     */
+    public function reviews(): MorphMany
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
+
+    /**
+     * Get only approved reviews.
+     */
+    public function approvedReviews(): MorphMany
+    {
+        return $this->reviews()->where('flag', Flag::APPROVED);
+    }
+
+    /**
+     * Get only pending reviews.
+     */
+    public function pendingReviews(): MorphMany
+    {
+        return $this->reviews()->where('flag', Flag::PENDING_REVIEW);
+    }
+
+    /**
+     * Average rating for the video.
+     */
+    public function averageRating(): float
+    {
+        return (float) $this->approvedReviews()->avg('reviewer_rating') ?? 0;
+    }
+
+    /**
+     * Total number of approved reviews.
+     */
+    public function reviewCount(): int
+    {
+        return $this->approvedReviews()->count();
+    }
 
     /**
      * The category this video belongs to
