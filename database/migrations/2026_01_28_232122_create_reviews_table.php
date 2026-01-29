@@ -20,6 +20,7 @@ return new class extends Migration
             $table->ipAddress('ip_address')->nullable();
             $table->softDeletes();
             $table->timestamps();
+            $table->unique(['reviewable_type', 'reviewable_id', 'user_id'], 'unique_user_review_per_video');
         });
     }
 
