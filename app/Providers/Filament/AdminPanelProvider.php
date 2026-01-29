@@ -19,6 +19,7 @@ use App\Filament\Resources\Posts\PostResource;
 use App\Filament\Resources\PostTags\PostTagResource;
 use App\Filament\Resources\Regions\RegionResource;
 use App\Filament\Resources\RegionSectionWidgets\RegionSectionWidgetResource;
+use App\Filament\Resources\Reviews\ReviewResource;
 use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Resources\Rulers\RulerResource;
 use App\Filament\Resources\Sections\SectionResource;
@@ -133,6 +134,7 @@ class AdminPanelProvider extends PanelProvider
                     NavigationGroup::make('Engagement')
                         ->items([
                             ...CommentResource::getNavigationItems(),
+                            ...ReviewResource::getNavigationItems(),
                         ]),
 
                     NavigationGroup::make('Documentation')

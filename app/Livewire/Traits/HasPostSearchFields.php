@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Traits;
 
-use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Database\Eloquent\Builder;
 
