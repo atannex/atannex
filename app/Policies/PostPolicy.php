@@ -11,23 +11,15 @@ class PostPolicy
     use HandlesAuthorization;
 
     /**
-     * Global override for post moderators.
+     * Global override for super admins and moderators.
      */
-    public function before(?User $user, string $ability): bool|null
+    public function before(?User $user): bool
     {
-        if (! $user) {
-            return null;
-        }
-
-        if ($user->can('posts.moderate')) {
-            return true;
-        }
-
-        return null;
+        return $user->hasAnyRole(['super admin', 'moderator']);
     }
 
     /**
-     * View any posts.
+     * View any posts (publicly accessible).
      */
     public function viewAny(?User $user): bool
     {
@@ -39,11 +31,7 @@ class PostPolicy
      */
     public function view(?User $user, Post $post): bool
     {
-        if ($post->is_private) {
-            return $user?->can('posts.view.private') ?? false;
-        }
-
-        return true;
+        return $user?->hasAnyRole(['admin', 'editor', 'super admin', 'user']);
     }
 
     /**
@@ -51,7 +39,7 @@ class PostPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('posts.create');
+        return $user->hasAnyRole(['user', 'editor', 'admin', 'super admin']);
     }
 
     /**
@@ -59,15 +47,10 @@ class PostPolicy
      */
     public function update(User $user, Post $post): bool
     {
-        return
-            // Edit any post
-            $user->can('posts.edit.any')
+        $isOwner = $post->user_id === $user->id;
 
-            // Edit own post
-            || (
-                $user->can('posts.edit.own')
-                && $post->user_id === $user->id
-            );
+        // Admins and editors can edit any post, owners can edit their own
+        return $user->hasAnyRole(['admin', 'editor', 'super admin']) || $isOwner;
     }
 
     /**
@@ -75,7 +58,7 @@ class PostPolicy
      */
     public function publish(User $user, Post $post): bool
     {
-        return $user->can('posts.publish');
+        return $user->hasAnyRole(['editor', 'admin', 'super admin']);
     }
 
     /**
@@ -83,7 +66,7 @@ class PostPolicy
      */
     public function schedule(User $user, Post $post): bool
     {
-        return $user->can('posts.schedule');
+        return $user->hasAnyRole(['editor', 'admin', 'super admin']);
     }
 
     /**
@@ -91,15 +74,10 @@ class PostPolicy
      */
     public function delete(User $user, Post $post): bool
     {
-        return
-            // Delete any post
-            $user->can('posts.delete.any')
+        $isOwner = $post->user_id === $user->id;
 
-            // Delete own post
-            || (
-                $user->can('posts.delete.own')
-                && $post->user_id === $user->id
-            );
+        // Admins can delete any post, owners can delete their own
+        return $user->hasAnyRole(['admin', 'super admin']) || $isOwner;
     }
 
     /**
@@ -107,7 +85,7 @@ class PostPolicy
      */
     public function restore(User $user, Post $post): bool
     {
-        return $user->can('posts.restore');
+        return $user->hasAnyRole(['admin', 'super admin']);
     }
 
     /**
@@ -115,6 +93,6 @@ class PostPolicy
      */
     public function forceDelete(User $user, Post $post): bool
     {
-        return $user->can('posts.force_delete');
+        return $user->hasRole('super admin');
     }
 }

@@ -1,77 +1,87 @@
-@props(['comment', 'shownRepliesCount'])
-
-<div class="post-comment">
-    <div class="comment-avatar">
-        <img src="{{ asset('logo.jpg') }}" alt="{{ config('app.name') }}">
+@php
+$maxNestLevel = 4;
+$currentLevel = $level ?? 0;
+$shouldNest = $currentLevel < $maxNestLevel; $isFlattened=!$shouldNest; $nestClass=$isFlattened ? 'flattened-reply' : '' ; @endphp <div class="gap-3 post-comment d-flex align-items-start {{ $nestClass }}" data-level="{{ $currentLevel }}">
+    <div class="flex-shrink-0 comment-avatar">
+        <img src="{{ asset('logo.jpg') }}" alt="{{ config('app.name', 'Site') }}" class="rounded-circle" width="45" height="45">
     </div>
 
-    <div class="comment-content">
-        <div class="comment-bubble">
-            <h3 class="author-name">{{ ucwords(strtolower($comment->author_name)) }}</h3>
+    <div class="comment-content flex-grow-1">
+        @if($isFlattened && $comment->parent)
+        <div class="mb-2 reply-indicator small text-muted">
+            <i class="fas fa-reply"></i>
+            Replying to <strong>{{ ucwords(strtolower($comment->parent->author_name)) }}</strong>
+        </div>
+        @endif
 
-            <p class="comment-text">
-                {!! nl2br(
-                preg_replace_callback(
-                '/^(@[A-Za-z]+(?:\s[A-Za-z]+)?)/',
-                function ($matches) {
-                return '<span class="text-danger"><i>' . e($matches[1]) . '</i></span>';
-                },
+        <div class="p-3 rounded comment-bubble">
+            <div class="flex-wrap mb-2 d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 author-name fw-bold">{{ ucwords(strtolower($comment->author_name)) }}</h6>
+                <div class="gap-3 d-flex comment-actions small">
+                    <a type="button" wire:click="like({{ $comment->id }})" class="meta-link text-success {{ $comment->isLikedBy(auth()->user()) ? 'fw-bold text-primary' : '' }}">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span>{{ $comment->like_count }}</span>
+                    </a>
+                    <a type="button" wire:click="dislike({{ $comment->id }})" class="meta-link text-info {{ $comment->isDislikedBy(auth()->user()) ? 'fw-bold text-danger' : '' }}">
+                        <i class="fas fa-thumbs-down"></i>
+                        <span>{{ $comment->dislike_count }}</span>
+                    </a>
+                </div>
+            </div>
+
+            <p class="mb-0 comment-text">
+                {!! nl2br(preg_replace_callback(
+                '/^(@[A-Za-z0-9_]+(?:\s[A-Za-z0-9_]+)?)/',
+                fn($m) => '<span class="text-danger fst-italic">' . e($m[1]) . '</span>',
                 e($comment->comment)
-                )
-                ) !!}
+                )) !!}
             </p>
         </div>
 
-        <div class="comment-meta">
-            <span class="comment-date">{{ $comment->created_at->format('d F, Y') }}</span>
-
-            <a href="javascript:void(0)" wire:click="$dispatch('reply-to-comment', { commentId: {{ $comment->id }} })" class="meta-link">
-                <i class="fas fa-reply"></i> {{ __('Reply') }}
+        <div class="flex-wrap gap-3 mt-2 d-flex comment-meta small text-muted">
+            <span>{{ $comment->created_at->format('d F Y') }}</span>
+            <a href="javascript:void(0)" wire:click="$dispatch('reply-to-comment', { commentId: {{ $comment->id }} })" class="meta-link text-primary">
+                <i class="fas fa-reply"></i>
             </a>
-
-            @auth
-            <a href="javascript:void(0)" wire:click="$dispatch('like-comment', { commentId: {{ $comment->id }} })" class="meta-link {{ $comment->isLikedBy(auth()->user()) ? 'text-blue-500' : '' }}">
-                <i class="fas fa-thumbs-up"></i> {{ $comment->like_count }}
-            </a>
-            <a href="javascript:void(0)" wire:click="$dispatch('dislike-comment', { commentId: {{ $comment->id }} })" class="meta-link {{ $comment->isDislikedBy(auth()->user()) ? 'text-red-500' : '' }}">
-                <i class="fas fa-thumbs-down"></i> {{ $comment->dislike_count }}
-            </a>
-            @endauth
-
             @can('delete', $comment)
-            <a href="javascript:void(0)" wire:click="$dispatch('delete-comment', { commentId: {{ $comment->id }} })" class="meta-link">
-                <i class="fas fa-trash"></i> {{ __('Delete') }}
+            <a href="javascript:void(0)" wire:click="$dispatch('delete-comment', { commentId: {{ $comment->id }} })" class="meta-link text-danger">
+                <i class="fas fa-trash"></i>
             </a>
             @endcan
         </div>
     </div>
-</div>
+    </div>
 
-@php
-$shown = $shownRepliesCount[$comment->id] ?? 0;
-$totalReplies = $comment->replies->count();
-$visibleReplies = $comment->replies->take($shown);
-@endphp
+    @if($comment->replies->isNotEmpty())
+    @php
+    $nextLevel = $shouldNest ? $currentLevel + 1 : $maxNestLevel;
+    $shownCount = $shownRepliesCount[$comment->id] ?? 0;
+    $totalReplies = $comment->replies->count();
+    $remainingReplies = $totalReplies - $shownCount;
+    @endphp
 
-@if($totalReplies > 0)
-<ul class="replies-list">
-    @foreach($visibleReplies as $reply)
-    <li class="comment-item">
-        <x-partials.comment :comment="$reply" :shown-replies-count="$shownRepliesCount" />
-    </li>
-    @endforeach
-
-    @if($shown < $totalReplies) <li class="load-more-replies">
-        <a href="javascript:void(0)" wire:click="loadMoreReplies({{ $comment->id }})" class="meta-link">
-            <i class="fas fa-chevron-down"></i> {{ $totalReplies }} {{ Str::plural('reply', $totalReplies) }}
-        </a>
+    <ul class="replies-list fb-replies {{ $isFlattened ? 'no-indent' : '' }}">
+        @foreach($comment->replies->take($shownCount) as $reply)
+        <li class="fb-reply-item">
+            @if($shouldNest)
+            <div class="fb-reply-connector"></div>
+            @endif
+            <x-partials.comment :comment="$reply" :shown-replies-count="$shownRepliesCount" :level="$nextLevel" />
         </li>
-        @elseif($shown > 0)
-        <li class="load-more-replies">
-            <a href="javascript:void(0)" wire:click="collapseReplies({{ $comment->id }})" class="meta-link">
+        @endforeach
+
+        @if($remainingReplies > 0)
+        <li class="fb-replies-action">
+            <a href="javascript:void(0)" wire:click="loadMoreReplies({{ $comment->id }})" class="fb-replies-link">
+                <i class="fas fa-chevron-down"></i> {{ __('Replies') }} ({{ $remainingReplies }})
+            </a>
+        </li>
+        @elseif($shownCount > 0)
+        <li class="fb-replies-action">
+            <a href="javascript:void(0)" wire:click="collapseReplies({{ $comment->id }})" class="fb-replies-link">
                 <i class="fas fa-chevron-up"></i> {{ __('Hide replies') }}
             </a>
         </li>
         @endif
-</ul>
-@endif
+    </ul>
+    @endif

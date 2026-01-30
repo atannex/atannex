@@ -1,4 +1,5 @@
-<div>
+<div class="comments-section">
+    @auth
     <div class="comment-form">
         <h3 class="form-title">
             @if($replyingTo)
@@ -9,54 +10,50 @@
         </h3>
 
         <form wire:submit.prevent="submit">
-            @guest
-            <div class="form-row">
-                <div class="form-group">
-                    <input type="text" wire:model.defer="guest_name" placeholder="Your Name*" class="form-input">
-                </div>
-                <div class="form-group">
-                    <input type="email" wire:model.defer="guest_email" placeholder="Your Email*" class="form-input">
-                </div>
-            </div>
-            @endguest
-
-            <input type="text" wire:model.defer="website" class="d-none" tabindex="-1" autocomplete="off">
-
             <div class="form-group">
-                <textarea wire:model="comment" placeholder="Write a comment..." class="form-textarea" rows="3"></textarea>
+                <textarea wire:model.defer="comment" placeholder="{{ __('Write a comment...') }}" class="form-textarea @error('comment') border-red-500 @enderror" rows="4" required></textarea>
+
                 @error('comment')
-                <small class="error-message">{{ $message }}</small>
+                <small class="text-red-500 error-message">{{ $message }}</small>
                 @enderror
             </div>
 
-            <div class="form-actions">
-                <button type="submit" class="submit-btn">{{ __('Post Comment') }}</button>
+            <div class="mt-2 form-actions">
+                <button type="submit" class="submit-btn">
+                    {{ $replyingTo ? __('Post Reply') : __('Post Comment') }}
+                </button>
+
                 @if($replyingTo)
-                <button type="button" wire:click="cancelReply" class="cancel-btn">{{ __('Cancel Reply') }}</button>
+                <button type="button" wire:click="cancelReply" class="cancel-btn">
+                    {{ __('Cancel') }}
+                </button>
                 @endif
             </div>
         </form>
     </div>
 
-    <div class="comments-wrap">
-        <h2 class="comments-title">{{ __('Comments') }} ({{ $comments->total() }})</h2>
+    @if($comments->total() > 0)
+    <div class="mt-4 comments-wrap">
+        <h2 class="comments-title">
+            {{ __('Comments') }} ({{ $totalComments }})
+        </h2>
 
         <ul class="comment-list">
-            @forelse($comments as $comment)
+            @foreach($comments as $comment)
             <li class="comment-item">
-                <x-partials.comment :comment="$comment" :shown-replies-count="$shownRepliesCount" />
+                <x-partials.comment :comment="$comment" :shown-replies-count="$shownRepliesCount" :level="0" />
             </li>
-            @empty
-            <li class="no-comments">{{ __('No comments yet. Be the first to comment.') }}</li>
-            @endforelse
+            @endforeach
         </ul>
 
-        @if ($comments->hasMorePages())
-        <div class="load-more-comments">
+        @if($comments->hasMorePages())
+        <div class="mt-3 text-center load-more-comments">
             <button wire:click="loadMoreComments" class="load-btn">
-                <i class="fas fa-chevron-down"></i> {{ __('Load More') }}
+                <i class="fas fa-chevron-down"></i> {{ __('Load More Comments') }}
             </button>
         </div>
         @endif
     </div>
+    @endif
+    @endauth
 </div>
