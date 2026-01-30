@@ -2,16 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Atannex\Services;
+namespace Atannex\Traits;
 
 use Illuminate\Support\Str;
 
-class SpamDetector
+trait DetectsSpam
 {
+    /**
+     * Spam score threshold.
+     */
+    protected int $spamThreshold = 60;
+
     /**
      * Calculate a spam score based on content quality and submission velocity.
      */
-    public function score(string $content, int $attempts = 0): int
+    public function spamScore(string $content, int $attempts = 0): int
     {
         $score = 0;
         $normalized = Str::lower(trim($content));
@@ -20,17 +25,17 @@ class SpamDetector
         // Content-based signals
         // -------------------------------------------------
 
-        // Very short reviews are low-effort spam
+        // Very short submissions are typically low-effort
         if (Str::length($normalized) < 20) {
             $score += 20;
         }
 
-        // Excessive links
+        // Presence of links
         if (preg_match('/https?:\/\/|www\./i', $normalized)) {
             $score += 40;
         }
 
-        // Repeated characters (e.g. "goooood", "!!!!!")
+        // Repeated characters (e.g. "!!!!!", "goooood")
         if (preg_match('/(.)\1{5,}/', $normalized)) {
             $score += 20;
         }
@@ -40,7 +45,7 @@ class SpamDetector
             $score += 15;
         }
 
-        // ALL CAPS shouting
+        // All-caps shouting
         if ($this->isMostlyUppercase($content)) {
             $score += 15;
         }
@@ -57,11 +62,11 @@ class SpamDetector
     }
 
     /**
-     * Determine if the spam score exceeds the threshold.
+     * Determine if content should be flagged as spam.
      */
-    public function isSpam(int $score): bool
+    public function isSpam(string $content, int $attempts = 0): bool
     {
-        return $score >= 60;
+        return $this->spamScore($content, $attempts) >= $this->spamThreshold;
     }
 
     /**
@@ -75,8 +80,8 @@ class SpamDetector
             return false;
         }
 
-        $uppercase = preg_match_all('/[A-Z]/', $letters);
+        $uppercaseCount = preg_match_all('/[A-Z]/', $letters);
 
-        return ($uppercase / strlen($letters)) > 0.7;
+        return ($uppercaseCount / strlen($letters)) > 0.7;
     }
 }

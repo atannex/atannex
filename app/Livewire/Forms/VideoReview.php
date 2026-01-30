@@ -3,17 +3,18 @@
 namespace App\Livewire\Forms;
 
 use App\Enums\Flag;
-use Livewire\Attributes\Rule;
-use App\Models\Posts\Review;
+use Livewire\Component;
 use App\Models\Posts\Video;
-use Atannex\Services\SpamDetector;
+use Livewire\Attributes\On;
+use App\Models\Posts\Review;
+use Livewire\WithPagination;
+use Livewire\Attributes\Rule;
+use Livewire\Attributes\Locked;
+use Atannex\Traits\DetectsSpam;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
-use Livewire\Attributes\Locked;
-use Livewire\Component;
-use Livewire\WithPagination;
 
 class VideoReview extends Component
 {
@@ -82,6 +83,7 @@ class VideoReview extends Component
         session()->flash('success', 'Thank you! Your review has been submitted and is pending approval.');
     }
 
+    #[On('edit-review')]
     public function editReview(int $reviewId): void
     {
         $review = Review::findOrFail($reviewId);
@@ -122,6 +124,7 @@ class VideoReview extends Component
         session()->flash('success', 'Your review has been updated and is pending approval.');
     }
 
+    #[On('delete-review')]
     public function deleteReview(int $reviewId): void
     {
         $review = Review::findOrFail($reviewId);
@@ -162,7 +165,7 @@ class VideoReview extends Component
 
     private function isSpamDetected(): bool
     {
-        $spamDetector = app(SpamDetector::class);
+        $spamDetector = app(DetectsSpam::class);
         $attempts = RateLimiter::attempts("video-review:{$this->videoId}:*");
 
         $score = $spamDetector->score($this->content, $attempts);

@@ -52,7 +52,7 @@
                             @guest
                             <li class="d-none d-sm-inline-block me-3">
                                 <i class="fas fa-user"></i>
-                                <a href="{{ route('home') }}" class="text-decoration-none">
+                                <a href="{{ route('login') }}" class="text-decoration-none">
                                     {{ __('Guest') }}
                                 </a>
                             </li>

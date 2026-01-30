@@ -5,14 +5,16 @@
          <div class="recent-post">
              <div class="media-img">
 
-                 @include('partials.image')
+                 @include('partials.image', ['post' => $post])
              </div>
              <div class="media-body">
                  <h4 class="post-title">
 
-                     @include('partials.title')
+                     @include('partials.title', ['post' => $post])
 
                  </h4>
+
+                 @include('partials.date', ['post' => $post])
              </div>
          </div>
          @empty

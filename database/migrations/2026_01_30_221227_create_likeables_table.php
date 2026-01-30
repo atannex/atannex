@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use App\Enums\ReactionType;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('likeables', function (Blueprint $table) {
+            $table->id();
+
+            $table->morphs('likeable');
+
+            $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            $table->string('type')->default(ReactionType::LIKE);
+
+            $table->timestamps();
+
+            $table->unique(['likeable_id', 'likeable_type', 'user_id'], 'unique_likeable_user');
+            $table->index(['likeable_id', 'likeable_type', 'type']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('likeables');
+    }
+};

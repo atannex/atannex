@@ -21,7 +21,7 @@
     @endif
     @break
 
-     @yield('content')
+    @yield('content')
 
     @case('image')
     @if (!empty($block['data']['src']))

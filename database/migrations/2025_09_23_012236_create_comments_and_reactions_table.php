@@ -30,10 +30,6 @@ return new class extends Migration
                 ->constrained('users')
                 ->nullOnDelete();
 
-            $table->boolean('is_guest')->default(false);
-            $table->string('guest_name')->nullable();
-            $table->string('guest_email')->nullable();
-
             $table->text('comment');
             $table->string('comment_hash', 64)->nullable()->unique();
 
@@ -48,36 +44,10 @@ return new class extends Migration
 
             $table->index(['parent_id', 'created_at']);
         });
-
-        /*
-        |--------------------------------------------------------------------------
-        | Comment Reactions Table
-        |--------------------------------------------------------------------------
-        */
-        Schema::create('comment_reaction', function (Blueprint $table) {
-            $table->id();
-
-            $table->foreignId('comment_id')
-                ->constrained()
-                ->cascadeOnDelete();
-
-            $table->foreignId('user_id')
-                ->constrained()
-                ->cascadeOnDelete();
-
-            $table->enum('type', ['like', 'dislike']);
-
-            $table->timestamps();
-
-            $table->unique(['comment_id', 'user_id'], 'comment_reactions_unique_user');
-
-            $table->index(['comment_id', 'type']);
-        });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('comment_reaction');
         Schema::dropIfExists('comments');
     }
 };

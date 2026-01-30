@@ -18,6 +18,8 @@
                     @include('partials.title', ['post' => $post])
 
                 </h4>
+
+                @include('partials.date', ['post' => $post])
             </div>
         </div>
         @endforeach

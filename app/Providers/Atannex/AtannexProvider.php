@@ -38,8 +38,6 @@ class AtannexProvider extends ServiceProvider
 
         Gate::policy(Review::class, ReviewPolicy::class);
 
-        Gate::after(fn($user) => $user->hasRole('Super Administrator') ? true : null);
-
         $this->shareGlobalData($lebialem);
     }
 
