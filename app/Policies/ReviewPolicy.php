@@ -8,11 +8,19 @@ use App\Models\User;
 class ReviewPolicy
 {
     /**
+     * Super admin can do everything.
+     */
+    public function before(User $user): bool|null
+    {
+        return $user->hasRole('Super Administrator') ? true : null;
+    }
+
+    /**
      * Determine if a user (or guest) can create a review.
      */
     public function create(?User $user): bool
     {
-        return true; // Guests allowed
+        return true;
     }
 
     /**
@@ -20,7 +28,6 @@ class ReviewPolicy
      */
     public function update(User $user, Review $review): bool
     {
-        // Author can update only if the review model allows it
         return $review->user_id === $user->id
             && $review->canEdit();
     }
@@ -30,7 +37,6 @@ class ReviewPolicy
      */
     public function delete(User $user, Review $review): bool
     {
-        // Only the author can delete
         return $review->user_id === $user->id;
     }
 }
