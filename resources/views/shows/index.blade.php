@@ -43,6 +43,8 @@
 
                         <div class="blog-content">
 
+                            <livewire:show.info :post="$module->post" wire:key="posts-{{ $module->post->id }}" />
+
                             <x-shows.content :module="$module" :headingLevels="$headingLevels" />
 
                             <x-shows.related-tag :relatedTags="$relatedTags" />

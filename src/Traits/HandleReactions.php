@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Atannex\Traits;
 
-use App\Contracts\Reactable;
+use App\Contracts\Likeably;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +20,7 @@ trait HandleReactions
     ): void {
         $user = Auth::user() ?? abort(403, 'Authentication required.');
 
-        /** @var Model&Reactable $model */
+        /** @var Model&Likeably $model */
         $model = $modelClass::query()->findOrFail($modelId);
 
         Gate::authorize('react', $model);
@@ -33,7 +33,7 @@ trait HandleReactions
     }
 
     protected function toggleReaction(
-        Reactable $model,
+        Likeably $model,
         User $user,
         string $type
     ): void {
@@ -48,7 +48,7 @@ trait HandleReactions
     }
 
     private function alreadyReacted(
-        Reactable $model,
+        Likeably $model,
         User $user,
         string $type
     ): bool {
@@ -60,7 +60,7 @@ trait HandleReactions
     }
 
     private function applyReaction(
-        Reactable $model,
+        Likeably $model,
         User $user,
         string $type
     ): void {
