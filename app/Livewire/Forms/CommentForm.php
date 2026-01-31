@@ -136,7 +136,7 @@ class CommentForm extends Component
     /* ---------------- Reactions (Like / Dislike) ---------------- */
 
     #[On('like-comment')]
-    public function like(int $commentId): void
+    public function toggleLike(int $commentId): void
     {
         $comment = Comment::findOrFail($commentId);
         $comment->isLikedBy(Auth::user())
@@ -147,7 +147,7 @@ class CommentForm extends Component
     }
 
     #[On('dislike-comment')]
-    public function dislike(int $commentId): void
+    public function toggleDislike(int $commentId): void
     {
         $comment = Comment::findOrFail($commentId);
         $comment->isDislikedBy(Auth::user())

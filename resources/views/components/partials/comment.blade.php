@@ -18,13 +18,13 @@ $shouldNest = $currentLevel < $maxNestLevel; $isFlattened=!$shouldNest; $nestCla
             <div class="flex-wrap mb-2 d-flex justify-content-between align-items-center">
                 <h6 class="mb-0 author-name fw-bold">{{ ucwords(strtolower($comment->author_name)) }}</h6>
                 <div class="gap-3 d-flex comment-actions small">
-                    <a type="button" wire:click="like({{ $comment->id }})" class="meta-link text-success {{ $comment->isLikedBy(auth()->user()) ? 'fw-bold text-primary' : '' }}">
+                    <a type="button" wire:click="toggleLike({{ $comment->id }})" wire:loading.attr="disabled" class="meta-link text-success {{ $comment->isLikedBy(auth()->user()) ? 'fw-bold text-primary' : '' }}">
                         <i class="fas fa-thumbs-up"></i>
-                        <span>{{ $comment->like_count }}</span>
+                        <span>{{ $comment->like_count ?? 0 }}</span>
                     </a>
-                    <a type="button" wire:click="dislike({{ $comment->id }})" class="meta-link text-info {{ $comment->isDislikedBy(auth()->user()) ? 'fw-bold text-danger' : '' }}">
+                    <a type="button" wire:click="toggleDislike({{ $comment->id }})" wire:loading.attr="disabled" class="meta-link text-info {{ $comment->isDislikedBy(auth()->user()) ? 'fw-bold text-danger' : '' }}">
                         <i class="fas fa-thumbs-down"></i>
-                        <span>{{ $comment->dislike_count }}</span>
+                        <span>{{ $comment->dislike_count ?? 0 }}</span>
                     </a>
                 </div>
             </div>

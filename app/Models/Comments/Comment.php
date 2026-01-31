@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models\Comments;
 
+use App\Contracts\Likeably;
 use App\Models\User;
-use App\Contracts\Reactable;
 use App\Models\Comments\Likeable;
 use Illuminate\Support\Collection;
 use App\Models\Traits\HasLikeable;
@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Comment extends Model implements Reactable
+class Comment extends Model implements Likeably
 {
     use SoftDeletes;
     use HasLikeable;

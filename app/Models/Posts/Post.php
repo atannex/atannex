@@ -8,6 +8,8 @@ use App\Models\Tags\Tag;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use App\Contracts\Commentable;
+use App\Contracts\Likeably;
+use App\Contracts\Rateably;
 use App\Models\Pivots\PostTag;
 use App\Models\Regions\Region;
 use App\Models\Comments\Comment;
@@ -15,6 +17,8 @@ use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
 use App\Models\Traits\HandlePost;
 use App\Models\Modules\PostModule;
+use App\Models\Traits\HasLikeable;
+use App\Models\Traits\HasRateable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -22,12 +26,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Post extends Model implements Commentable
+class Post extends Model implements Commentable, Rateably, Likeably
 {
     use HandlePost;
     use Scoping;
     use Slugging;
     use SoftDeletes;
+    use HasRateable;
+    use HasLikeable;
 
     /**
      * Slug source field.
