@@ -7,6 +7,7 @@ namespace App\Models\Traits;
 use App\Models\Comments\Rateable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Builder;
 
 trait HasRateable
 {
@@ -22,7 +23,8 @@ trait HasRateable
 
     public function averageRating(): float
     {
-        return round((float) $this->ratings()->avg('rating'), 2);
+        $avg = $this->ratings()->avg('rating');
+        return $avg !== null ? round((float) $avg, 2) : 0.0;
     }
 
     public function hasRatings(): bool
@@ -34,7 +36,7 @@ trait HasRateable
     {
         $userId ??= Auth::id();
 
-        if (! $userId) {
+        if (!$userId) {
             return null;
         }
 
@@ -78,7 +80,7 @@ trait HasRateable
     {
         $userId ??= Auth::id();
 
-        if (! $userId) {
+        if (!$userId) {
             return false;
         }
 
@@ -96,12 +98,12 @@ trait HasRateable
             ->toArray();
     }
 
-    public function scopeWithAverageRating($query)
+    public function scopeWithAverageRating(Builder $query): Builder
     {
         return $query->withAvg('ratings', 'rating');
     }
 
-    public function scopeWithRatingCount($query)
+    public function scopeWithRatingCount(Builder $query): Builder
     {
         return $query->withCount('ratings');
     }

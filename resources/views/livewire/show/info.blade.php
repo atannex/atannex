@@ -1,5 +1,6 @@
 <div class="flex-wrap gap-2 blog-info-wrap d-flex align-items-center gap-md-3">
 
+    @auth
     <div class="gap-2 engagement-group d-flex">
         <button class="blog-info d-flex align-items-center gap-1 {{ $post->isLikedBy(auth()->user()) ? 'fw-bold text-primary' : '' }}" wire:click="toggleLike" wire:loading.attr="disabled" type="button">
             <i class="fas fa-thumbs-up"></i>
@@ -26,9 +27,16 @@
             <span>1.2k</span>
         </span>
         <span class="gap-1 blog-info d-flex align-items-center">
-            <i class="fas fa-star"></i>
-            <span>4.5</span>
-        </span>
+    @for ($i = 1; $i <= 5; $i++)
+        <i
+            class="fas fa-star cursor-pointer {{ $i <= $rating ? 'text-yellow-500' : 'text-gray-300' }}"
+            wire:click="$dispatch('post-rated', {{ $i }})">
+        </i>
+    @endfor
+    <span class="ms-2">{{ $averageRating ?? 0 }}</span>
+</span>
+
+
     </div>
     <style>
         .blog-info-wrap {
@@ -173,4 +181,5 @@
         }
 
     </style>
+    @endauth
 </div>
