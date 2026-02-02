@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('video_modules', function (Blueprint $table) {
             $table->id();
-            $table->text('content')->nullable();
+            $table->longText('content')->nullable();
+            $table->foreignId('video_id')
+                ->constrained('videos')
+                ->cascadeOnDelete()
+                ->index();
             $table->json('images')->nullable();
-            $table->foreignId('video_id')->constrained('videos')->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });

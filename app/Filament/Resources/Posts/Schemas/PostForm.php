@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
-use App\Filament\Traits\HasVisibilityRules;
 use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
 use App\Models\Regions\Region;
@@ -22,8 +21,6 @@ use Filament\Forms\Components\DateTimePicker;
 
 class PostForm
 {
-    use HasVisibilityRules;
-
     /**
      * Builds and returns a Filament form Schema configured for creating and editing posts.
      *
@@ -214,8 +211,7 @@ class PostForm
                                     ])
                                     ->compact()
                                     ->collapsible()
-                                    ->persistCollapsed()
-                                    ->visible(fn() => static::canSeeModerationContent()),
+                                    ->persistCollapsed(),
                             ])
                             ->columnSpan(['default' => 1, 'lg' => 2]),
 
@@ -311,8 +307,7 @@ class PostForm
                                     ])
                                     ->compact()
                                     ->collapsed()
-                                    ->persistCollapsed()
-                                    ->visible(fn() => static::canSeeModerationContent()),
+                                    ->persistCollapsed(),
 
                                 Section::make('Breaking News')
                                     ->description('Highlight urgent, time-sensitive content')

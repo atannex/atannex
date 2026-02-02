@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Comments\Schemas;
 
-use App\Filament\Traits\HasVisibilityRules;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -15,8 +14,6 @@ use Filament\Forms\Components\DateTimePicker;
 
 class CommentForm
 {
-    use HasVisibilityRules;
-
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -88,7 +85,6 @@ class CommentForm
                                     ]),
                             ]),
                         Section::make('Engagement')
-                            ->visible(fn() => static::canSeeModerationContent())
                             ->schema([
                                 Grid::make(3)
                                     ->schema([
@@ -109,7 +105,6 @@ class CommentForm
                             ]),
                         Section::make('System')
                             ->collapsed()
-                            ->visible(fn() => static::canSeeModerationContent())
                             ->schema([
                                 Grid::make()
                                     ->schema([
