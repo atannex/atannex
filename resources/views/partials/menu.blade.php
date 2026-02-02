@@ -10,11 +10,13 @@ $menu = displayGuestData($global['mainRegions']);
         </a>
     </li>
 
-     <li>
+    @auth
+    <li>
         <a href="{{ route('video') }}">
             {{ __('navigation.video') }}
         </a>
     </li>
+    @endauth
 
     <li>
         <a href="{{ route('about') }}">
