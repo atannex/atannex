@@ -5,9 +5,7 @@ namespace App\Filament\Resources\VideoModules;
 use App\Filament\Resources\VideoModules\Pages\CreateVideoModule;
 use App\Filament\Resources\VideoModules\Pages\EditVideoModule;
 use App\Filament\Resources\VideoModules\Pages\ListVideoModules;
-use App\Filament\Resources\VideoModules\Pages\ViewVideoModule;
 use App\Filament\Resources\VideoModules\Schemas\VideoModuleForm;
-use App\Filament\Resources\VideoModules\Schemas\VideoModuleInfolist;
 use App\Filament\Resources\VideoModules\Tables\VideoModulesTable;
 use App\Models\Posts\VideoModule;
 use BackedEnum;
@@ -29,11 +27,6 @@ class VideoModuleResource extends Resource
         return VideoModuleForm::configure($schema);
     }
 
-    public static function infolist(Schema $schema): Schema
-    {
-        return VideoModuleInfolist::configure($schema);
-    }
-
     public static function table(Table $table): Table
     {
         return VideoModulesTable::configure($table);
@@ -51,7 +44,6 @@ class VideoModuleResource extends Resource
         return [
             'index' => ListVideoModules::route('/'),
             'create' => CreateVideoModule::route('/create'),
-            'view' => ViewVideoModule::route('/{record}'),
             'edit' => EditVideoModule::route('/{record}/edit'),
         ];
     }

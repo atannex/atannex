@@ -12,12 +12,10 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
-use App\Filament\Traits\HasVisibilityRules;
 use Filament\Actions\ForceDeleteBulkAction;
 
 class CommentsTable
 {
-    use HasVisibilityRules;
 
     public static function configure(Table $table): Table
     {
@@ -93,15 +91,13 @@ class CommentsTable
                     ->label('Likes')
                     ->numeric()
                     ->sortable()
-                    ->alignCenter()
-                    ->visible(fn() => static::canSeeModerationContent()),
+                    ->alignCenter(),
 
                 TextColumn::make('dislike_count')
                     ->label('Dislikes')
                     ->numeric()
                     ->sortable()
-                    ->alignCenter()
-                    ->visible(fn() => static::canSeeModerationContent()),
+                    ->alignCenter(),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -112,32 +108,27 @@ class CommentsTable
                     ->label('Edited')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->visible(fn() => static::canSeeModerationContent()),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('ip_address')
                     ->label('IP')
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->visible(fn() => static::canSeeModerationContent()),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('comment_hash')
                     ->label('Hash')
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->visible(fn() => static::canSeeModerationContent()),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->visible(fn() => static::canSeeModerationContent()),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('deleted_at')
                     ->label('Deleted')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->visible(fn() => static::canSeeModerationContent()),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -153,8 +144,7 @@ class CommentsTable
                         'danger'  => 'spam',
                         'gray'    => 'hidden',
                     ])
-                    ->sortable()
-                    ->visible(fn() => static::canSeeModerationContent()),
+                    ->sortable(),
             ])
 
             /*
