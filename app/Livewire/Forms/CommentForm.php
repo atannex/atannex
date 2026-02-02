@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\RateLimiter;
-use App\Enums\ReactionType;
 
 class CommentForm extends Component
 {
@@ -37,7 +36,13 @@ class CommentForm extends Component
     public ?string $comment = null;
 
     public int $perPage = self::COMMENTS_PER_PAGE;
+
+    /**
+     * Controls how many replies are visible per parent comment
+     */
     public array $shownRepliesCount = [];
+
+    /* ===================== Lifecycle ===================== */
 
     public function mount(Commentable $commentable): void
     {
@@ -47,14 +52,51 @@ class CommentForm extends Component
     public function render(): View
     {
         return view('livewire.forms.comment-form', [
-            'comments'          => $this->loadTopLevelComments(),
+            'comments'          => $this->comments,
             'shownRepliesCount' => $this->shownRepliesCount,
             'totalComments'     => $this->totalComments,
-            'replyingTo'        => $this->getReplyingContext(),
+            'replyingTo'        => $this->replyingTo,
         ]);
     }
 
-    /* ---------------- Pagination & Replies ---------------- */
+    /* ===================== Computed Properties ===================== */
+
+    public function getCommentsProperty()
+    {
+        return $this->commentable
+            ->comments()
+            ->topLevel()
+            ->with([
+                'user',
+                'replies.user',
+                'replies.replies.user',
+            ])
+            ->latest()
+            ->paginate($this->perPage);
+    }
+
+    public function getTotalCommentsProperty(): int
+    {
+        return Comment::where('commentable_type', $this->commentable::class)
+            ->where('commentable_id', $this->commentable->id)
+            ->count();
+    }
+
+    public function getReplyingToProperty(): ?array
+    {
+        if (! $this->parentId) {
+            return null;
+        }
+
+        $comment = Comment::find($this->parentId);
+
+        return $comment ? [
+            'commentId' => $comment->id,
+            'username'  => $comment->author_name,
+        ] : null;
+    }
+
+    /* ===================== Pagination ===================== */
 
     public function loadMoreComments(): void
     {
@@ -66,7 +108,10 @@ class CommentForm extends Component
         $total   = Comment::where('parent_id', $commentId)->count();
         $current = $this->shownRepliesCount[$commentId] ?? 0;
 
-        $this->shownRepliesCount[$commentId] = min($current + self::REPLIES_PER_LOAD, $total);
+        $this->shownRepliesCount[$commentId] = min(
+            $current + self::REPLIES_PER_LOAD,
+            $total
+        );
     }
 
     public function collapseReplies(int $commentId): void
@@ -74,7 +119,7 @@ class CommentForm extends Component
         unset($this->shownRepliesCount[$commentId]);
     }
 
-    /* ---------------- Comment Actions ---------------- */
+    /* ===================== Comment Actions ===================== */
 
     public function submit(): void
     {
@@ -84,27 +129,24 @@ class CommentForm extends Component
 
         $comment = $this->createComment();
 
-        if ($comment) {
-            $this->incrementParentReplyCount($comment);
-            event(new NewComment($comment));
-
-            $this->notifyCommentPosted();
-            $this->resetCommentForm();
-
-            session()->flash('message', __('Comment posted successfully.'));
+        if (! $comment) {
+            return;
         }
-    }
 
-    #[On('edit-comment')]
-    public function editComment(int $commentId): void
-    {
-        $comment = Comment::findOrFail($commentId);
-        Gate::authorize('update', $comment);
+        // ✅ Ensure visibility immediately
+        if ($comment->parent_id) {
+            $this->shownRepliesCount[$comment->parent_id] =
+                ($this->shownRepliesCount[$comment->parent_id] ?? 0) + 1;
+        } else {
+            $this->resetPage();
+        }
 
-        $this->comment  = $comment->comment;
-        $this->parentId = $comment->parent_id;
+        event(new NewComment($comment));
 
-        $this->dispatch('edit-comment-form', commentId: $commentId);
+        $this->resetCommentState();
+
+        // 🔑 Force Livewire re-render
+        $this->dispatch('$refresh');
     }
 
     #[On('delete-comment')]
@@ -115,15 +157,17 @@ class CommentForm extends Component
 
         $comment->delete();
 
+        unset($this->shownRepliesCount[$commentId]);
+
         $this->dispatch(self::EVENT_COMMENT_DELETED);
-        session()->flash('message', __('Comment deleted successfully.'));
-        $this->resetPage();
+        $this->dispatch('$refresh');
     }
 
     #[On('reply-to-comment')]
     public function setReplyTo(int $commentId): void
     {
         $comment = Comment::findOrFail($commentId);
+
         $this->parentId = $comment->id;
         $this->comment  = '@' . $comment->author_name . ' ';
     }
@@ -133,12 +177,12 @@ class CommentForm extends Component
         $this->resetCommentState();
     }
 
-    /* ---------------- Reactions (Like / Dislike) ---------------- */
+    /* ===================== Reactions ===================== */
 
-    #[On('like-comment')]
     public function toggleLike(int $commentId): void
     {
         $comment = Comment::findOrFail($commentId);
+
         $comment->isLikedBy(Auth::user())
             ? $comment->removeReaction(Auth::user())
             : $comment->like(Auth::user());
@@ -146,10 +190,10 @@ class CommentForm extends Component
         $this->dispatch('$refresh');
     }
 
-    #[On('dislike-comment')]
     public function toggleDislike(int $commentId): void
     {
         $comment = Comment::findOrFail($commentId);
+
         $comment->isDislikedBy(Auth::user())
             ? $comment->removeReaction(Auth::user())
             : $comment->dislike(Auth::user());
@@ -157,7 +201,7 @@ class CommentForm extends Component
         $this->dispatch('$refresh');
     }
 
-    /* ---------------- Helpers ---------------- */
+    /* ===================== Internals ===================== */
 
     private function createComment(): ?Comment
     {
@@ -166,54 +210,23 @@ class CommentForm extends Component
                 'user_id'          => Auth::id(),
                 'commentable_type' => $this->commentable::class,
                 'commentable_id'   => $this->commentable->id,
-                'parent_id'        => $this->resolveParentId(),
-                'comment'          => $this->sanitize($this->comment),
+                'parent_id'        => $this->parentId,
+                'comment'          => clean(trim($this->comment), 'comment'),
                 'ip_address'       => request()->ip(),
-                'reply_count'      => 0,
-                'like_count'       => 0,
-                'dislike_count'    => 0,
-                'comment_hash'     => hash(
-                    'sha256',
-                    ($this->comment ?? '') . Auth::id() . $this->commentable->id . now()->timestamp
-                ),
             ]);
         } catch (QueryException $e) {
             if ($e->getCode() === '23000') {
-                $this->addError('comment', __('You have already submitted this comment.'));
+                $this->addError('comment', __('Duplicate comment detected.'));
                 return null;
             }
+
             throw $e;
         }
     }
 
-    private function incrementParentReplyCount(Comment $comment): void
-    {
-        if ($comment->parent_id) {
-            $parent = Comment::find($comment->parent_id);
-            $parent?->increment('reply_count');
-        }
-    }
-
-    private function notifyCommentPosted(): void
-    {
-        $this->dispatch(self::EVENT_COMMENT_POSTED);
-        $this->dispatch('$refresh');
-    }
-
-    private function resetCommentForm(): void
-    {
-        $this->resetCommentState();
-        $this->resetPage();
-    }
-
-    protected function resetCommentState(): void
+    private function resetCommentState(): void
     {
         $this->reset(['comment', 'parentId']);
-    }
-
-    private function resolveParentId(): ?int
-    {
-        return $this->parentId ? Comment::findOrFail($this->parentId)->id : null;
     }
 
     private function abortIfRateLimited(): void
@@ -225,42 +238,5 @@ class CommentForm extends Component
             $this->addError('comment', __('Too many comments. Please slow down.'));
             $this->skipRender();
         }
-    }
-
-    protected function sanitize(string $comment): string
-    {
-        return clean(trim($comment), 'comment');
-    }
-
-    protected function getReplyingContext(): ?array
-    {
-        if (! $this->parentId) return null;
-
-        $comment = Comment::find($this->parentId);
-
-        return $comment ? [
-            'commentId' => $comment->id,
-            'username'  => $comment->author_name,
-        ] : null;
-    }
-
-    protected function loadTopLevelComments()
-    {
-        return $this->commentable
-            ->comments()
-            ->topLevel()
-            ->with([
-                'user',
-                'replies' => fn($q) => $q->latest()->take(self::REPLIES_PER_LOAD)->with('user')
-            ])
-            ->latest()
-            ->paginate($this->perPage);
-    }
-
-    public function getTotalCommentsProperty(): int
-    {
-        return Comment::where('commentable_type', $this->commentable::class)
-            ->where('commentable_id', $this->commentable->id)
-            ->count();
     }
 }
