@@ -1,24 +1,33 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ShareController;
+use Illuminate\Support\Facades\Auth;
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RegionController;
+use App\Http\Controllers\ShareController;
 
 // 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
 
 /*
 |--------------------------------------------------------------------------
-| Global / System Routes
+| Static / Core Pages
 |--------------------------------------------------------------------------
-| Routes that are accessed externally via email, bots, or third-party links
-| should be defined early to avoid accidental shadowing.
+| Always define exact routes first
 */
+
+Route::controller(HomeController::class)->group(function () {
+    Route::get('/', 'index')->name('home');
+    Route::get('/catalog', 'catalog')->name('catalog');
+    Route::get('/about-atannex', 'about')->name('about');
+    Route::get('/contact-atannex', 'contact')->name('contact');
+});
 
 /*
 |--------------------------------------------------------------------------
-| Social Media Sharing Routes
+| Social Media Sharing (External Access)
 |--------------------------------------------------------------------------
-| Prefixed to prevent collision with region, category, or post slugs.
+| Prefixed to avoid slug conflicts
 */
 Route::prefix('share')->group(function () {
     Route::get('{platform:platform}/{post:slug}', [ShareController::class, 'share'])
@@ -27,16 +36,36 @@ Route::prefix('share')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Guest Routes
+| Authentication Routes
 |--------------------------------------------------------------------------
-| Public-facing routes (auth, registration, landing pages, etc.)
 */
-require __DIR__ . '/groups/guest.php';
+Auth::routes(['verify' => true]);
 
 /*
 |--------------------------------------------------------------------------
-| CMS Routes
+| Protected Routes
 |--------------------------------------------------------------------------
-| Admin, editor, and protected CMS functionality
+| Middleware: auth + verified + password.confirm
 */
-require __DIR__ . '/groups/cms.php';
+Route::middleware([
+    'auth',
+    'verified',
+    'password.confirm',
+])->group(function () {
+    // protected routes go here
+});
+
+/*
+|--------------------------------------------------------------------------
+| CMS / Region Catch-All (⚠️ MUST BE LAST)
+|--------------------------------------------------------------------------
+| Prevents conflicts with system routes
+*/
+Route::controller(RegionController::class)->group(function () {
+
+    $reserved = implode('|', config('cms.reserved_slugs'));
+
+    Route::get('{slug}', 'resolve')
+        ->where('slug', "^(?!{$reserved}).+")
+        ->name('page.index');
+});
