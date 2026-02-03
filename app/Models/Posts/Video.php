@@ -118,14 +118,6 @@ class Video extends Model implements Commentable
     }
 
     /**
-     * Optional learning/module mapping.
-     */
-    public function module(): HasOne
-    {
-        return $this->hasOne(VideoModule::class);
-    }
-
-    /**
      * Last editor of the video.
      */
     public function updatedBy(): BelongsTo

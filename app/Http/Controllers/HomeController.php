@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\HasAbout;
 use App\Http\Traits\HasContact;
-use App\Http\Traits\HasVideo;
 use Atannex\Binders\HasPost;
 use Illuminate\View\View;
 
@@ -12,7 +11,6 @@ class HomeController extends Controller
 {
     use HasAbout;
     use HasContact;
-    use HasVideo;
 
     /**
      * Instantiate the HomeController with its post service dependency.

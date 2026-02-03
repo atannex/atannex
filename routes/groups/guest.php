@@ -31,10 +31,6 @@ Route::controller(RegionController::class)->group(function () {
 Route::controller(HomeController::class)
     ->group(function () {
         Route::get('/', 'index')->name('home');
-
-        Route::get('/videos', 'video')->name('video');
-
-        Route::get('/videos/{slug}', 'show')->name('video.show');
         Route::get('/catalog', 'catalog')->name('catalog');
         Route::get('about-atannex', 'about')->name('about');
         Route::get('contact-atannex', 'contact')->name('contact');
