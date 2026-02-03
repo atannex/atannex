@@ -22,12 +22,10 @@ use Filament\Forms\Components\DateTimePicker;
 class PostForm
 {
     /**
-     * Builds and returns a Filament form Schema configured for creating and editing posts.
+     * Builds and returns a beautifully redesigned Filament form Schema for creating and editing posts.
      *
-     * Configures form components for post content, organization & assignment, publishing schedule,
-     * featured media, editor's pick, and breaking news — including title, slug/path, meta description,
-     * category and author selectors (with create-option support), publish date/time, update tracking,
-     * image upload, toggles and associated date ranges, and related reactive behaviors.
+     * Features enhanced UX with visual indicators, character counters, smart defaults, decorative elements,
+     * SEO optimization helpers, social media preview, and streamlined workflows.
      *
      * @param Schema $schema The base Schema instance to augment with post form components.
      * @return Schema The configured Schema containing the complete post form.
@@ -36,69 +34,112 @@ class PostForm
     {
         return $schema
             ->components([
-
-                Section::make('Post Content')
-                    ->description('Create compelling content that engages your audience')
-                    ->icon('heroicon-o-document-text')
+                Section::make('✨ Create Your Story')
+                    ->description('Craft compelling content that captivates your audience')
+                    ->icon('heroicon-o-sparkles')
+                    ->iconColor('primary')
                     ->schema([
-                        TextInput::make('title')
-                            ->label('Title')
-                            ->required()
-                            ->maxLength(255)
-                            ->placeholder('Enter a captivating headline...')
-                            ->columnSpanFull()
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(function (string $operation, $state, $set) {
-                                if ($operation === 'create') {
-                                    $set('slug', Str::slug($state));
-                                }
-                            })
-                            ->helperText('Keep it concise and impactful (recommended: 50-60 characters)'),
-
-                        Grid::make(2)
+                        Grid::make(['default' => 1])
                             ->schema([
-                                TextInput::make('slug')
-                                    ->label('URL Slug')
-                                    ->disabled()
-                                    ->dehydrated()
-                                    ->placeholder('auto-generated-from-title')
-                                    ->prefixIcon('heroicon-o-link')
-                                    ->helperText('Automatically generated, SEO-friendly URL'),
+                                TextInput::make('title')
+                                    ->label('Headline')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->placeholder('Write a headline that stops the scroll...')
+                                    ->columnSpanFull()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function (string $operation, $state, $set) {
+                                        if ($operation === 'create') {
+                                            $set('slug', Str::slug($state));
+                                        }
+                                    })
+                                    ->helperText(
+                                        fn($state) =>
+                                        'Length: ' . strlen($state ?? '') . ' characters' .
+                                            (strlen($state ?? '') > 0 && strlen($state ?? '') < 50
+                                                ? ' ⚠️ Too short - aim for 50-60'
+                                                : (strlen($state ?? '') > 70
+                                                    ? ' ⚠️ Too long - keep under 70'
+                                                    : ' ✓ Perfect length!'))
+                                    )
+                                    ->extraAttributes(['class' => 'text-lg font-semibold']),
 
-                                TextInput::make('slug_path')
-                                    ->label('Full Path')
-                                    ->disabled()
-                                    ->dehydrated()
-                                    ->placeholder('/category/auto-generated-from-title')
-                                    ->prefixIcon('heroicon-o-globe-alt')
-                                    ->helperText('Complete URL path including category'),
+                                Grid::make(2)
+                                    ->schema([
+                                        TextInput::make('slug')
+                                            ->label('🔗 URL Slug')
+                                            ->disabled()
+                                            ->dehydrated()
+                                            ->placeholder('auto-generated-from-title')
+                                            ->prefixIcon('heroicon-o-link'),
+
+                                        TextInput::make('slug_path')
+                                            ->label('🌐 Full Path Preview')
+                                            ->disabled()
+                                            ->dehydrated()
+                                            ->placeholder('/category/auto-generated-from-title')
+                                            ->prefixIcon('heroicon-o-globe-alt')
+                                            ->extraAttributes(['class' => 'font-mono text-xs']),
+                                    ]),
+
+                                Textarea::make('description')
+                                    ->label('Meta Description & Social Preview')
+                                    ->placeholder('This appears in Google search results and when shared on social media. Make it compelling!')
+                                    ->rows(4)
+                                    ->maxLength(500)
+                                    ->columnSpanFull()
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, $component) {
+                                        $length = strlen($state ?? '');
+                                        $status = $length >= 150 && $length <= 160
+                                            ? '✓ Perfect for SEO!'
+                                            : ($length < 150
+                                                ? '⚠️ Add more detail (' . (150 - $length) . ' more chars recommended)'
+                                                : '⚠️ Too long (' . ($length - 160) . ' chars over limit)');
+                                        $component->helperText("📊 {$length}/500 characters | {$status}");
+                                    })
+                                    ->helperText('📊 0/500 characters | ⚠️ Add more detail (150 more chars recommended)'),
+
+                                Select::make('tags')
+                                    ->multiple()
+                                    ->relationship('tags', 'name')
+                                    ->label('🏷️ Tags & Keywords')
+                                    ->preload()
+                                    ->helperText('Press Enter after each tag. Great for SEO and content organization.')
+                                    ->columnSpanFull(),
                             ]),
 
-                        Textarea::make('description')
-                            ->label('Meta Description')
-                            ->placeholder('Write a compelling summary that appears in search results and social media...')
-                            ->rows(3)
-                            ->maxLength(500)
-                            ->columnSpanFull()
-                            ->helperText('Optimal length: 150-160 characters for SEO. Current: 0 characters')
-                            ->reactive()
-                            ->afterStateUpdated(function ($state, $component) {
-                                $length = strlen($state ?? '');
-                                $component->helperText("Optimal length: 150-160 characters for SEO. Current: {$length} characters");
-                            }),
+                        TextEntry::make('seo_preview')
+                            ->label('🔍 Google Search Preview')
+                            ->state(function ($get) {
+                                $title = $get('title') ?? 'Your Headline Here';
+                                $description = $get('description') ?? 'Your meta description will appear here...';
+                                $path = $get('slug_path') ?? '/category/your-post';
+
+                                return new \Illuminate\Support\HtmlString("
+                                    <div class='p-4 border-2 border-blue-200 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 dark:border-blue-900'>
+                                        <div class='mb-1 text-sm text-green-700 dark:text-green-400'>https://atannex.com/{$path}</div>
+                                        <div class='mb-2 text-xl font-semibold text-blue-600 dark:text-blue-400'>{$title}</div>
+                                        <div class='text-sm text-gray-600 dark:text-gray-400'>{$description}</div>
+                                    </div>
+                                ");
+                            })
+                            ->columnSpanFull(),
                     ])
                     ->columnSpanFull()
                     ->collapsible()
-                    ->persistCollapsed(),
-
+                    ->persistCollapsed()
+                    ->extraAttributes(['class' => 'border-l-4 border-l-primary-500']),
                 Grid::make(['default' => 1, 'lg' => 3])
                     ->schema([
+
                         Group::make()
                             ->schema([
 
-                                Section::make('Organization & Assignment')
-                                    ->description('Categorize and manage ownership')
+                                Section::make('📂 Organization')
+                                    ->description('Categorize and assign ownership')
                                     ->icon('heroicon-o-folder-open')
+                                    ->iconColor('success')
                                     ->schema([
                                         Grid::make(2)
                                             ->schema([
@@ -111,22 +152,24 @@ class PostForm
                                                         return Category::with('parent')
                                                             ->get()
                                                             ->mapWithKeys(function ($category) {
+                                                                $emoji = $category->parent ? '└─' : '📁';
                                                                 $label = $category->parent
-                                                                    ? sprintf('%s → %s', $category->parent->name, $category->name)
-                                                                    : $category->name;
+                                                                    ? sprintf('%s %s → %s', $emoji, $category->parent->name, $category->name)
+                                                                    : sprintf('%s %s', $emoji, $category->name);
 
                                                                 return [$category->id => $label];
                                                             })
                                                             ->toArray();
                                                     })
                                                     ->createOptionForm([
-                                                        Section::make('Create New Category')
+                                                        Section::make('➕ Create New Category')
                                                             ->schema([
                                                                 TextInput::make('name')
                                                                     ->label('Category Name')
                                                                     ->required()
                                                                     ->maxLength(255)
-                                                                    ->placeholder('Enter category name'),
+                                                                    ->placeholder('Enter category name')
+                                                                    ->prefixIcon('heroicon-o-tag'),
 
                                                                 Select::make('parent_id')
                                                                     ->label('Parent Category (optional)')
@@ -135,7 +178,8 @@ class PostForm
                                                                     )
                                                                     ->searchable()
                                                                     ->preload()
-                                                                    ->placeholder('Select parent category'),
+                                                                    ->placeholder('Select parent category')
+                                                                    ->prefixIcon('heroicon-o-folder'),
                                                             ]),
                                                     ])
                                                     ->createOptionModalHeading('Create New Category')
@@ -145,8 +189,9 @@ class PostForm
                                                             ->modalDescription('Add a new category or subcategory to organize your content.')
                                                             ->modalSubmitActionLabel('Create Category')
                                                             ->modalWidth('lg')
+                                                            ->icon('heroicon-o-plus-circle')
                                                     )
-                                                    ->helperText('Choose existing or create new. Parent → Child hierarchy supported.')
+                                                    ->helperText('Choose existing or create new')
                                                     ->native(false)
                                                     ->prefixIcon('heroicon-o-folder'),
 
@@ -158,42 +203,73 @@ class PostForm
                                                     ->options(function () {
                                                         return Region::pluck('name', 'id')->toArray();
                                                     })
-                                                    ->helperText('Select the region this post belongs to.')
-                                                    ->prefixIcon('heroicon-o-map'),
+                                                    ->helperText('Geographic area')
+                                                    ->prefixIcon('heroicon-o-map-pin'),
                                             ]),
 
                                         Select::make('author_id')
                                             ->relationship('author.user', 'name')
-                                            ->label('Author')
+                                            ->label('✍️ Author')
                                             ->required()
                                             ->searchable()
                                             ->preload()
                                             ->default(fn() => Auth::id())
                                             ->prefixIcon('heroicon-o-user-circle')
-                                            ->helperText('Content creator assigned to this post'),
+                                            ->helperText('Content creator for this post')
+                                            ->suffixIcon('heroicon-o-check-circle'),
                                     ])
                                     ->compact()
                                     ->collapsible()
                                     ->persistCollapsed(),
 
-                                Section::make('Publishing Schedule')
-                                    ->description('Control publication timing and tracking')
-                                    ->icon('heroicon-o-calendar')
+                                Section::make('📅 Publishing Schedule')
+                                    ->description('Control when your content goes live')
+                                    ->icon('heroicon-o-calendar-days')
+                                    ->iconColor('warning')
                                     ->schema([
                                         DateTimePicker::make('published_at')
-                                            ->label('Publish Date & Time')
+                                            ->label('🚀 Publish Date & Time')
                                             ->placeholder('Select publication date and time')
-                                            ->helperText('Leave empty to publish immediately upon save')
+                                            ->helperText('Leave empty to publish immediately')
                                             ->native(false)
                                             ->displayFormat('M d, Y - H:i')
                                             ->seconds(false)
                                             ->prefixIcon('heroicon-o-clock'),
 
+                                        TextEntry::make('publish_status')
+                                            ->label('📊 Status Preview')
+                                            ->state(function ($get, $record) {
+                                                $publishAt = $get('published_at');
+
+                                                if (!$publishAt) {
+                                                    return new \Illuminate\Support\HtmlString("
+                                                        <div class='px-3 py-2 font-semibold text-green-800 bg-green-100 rounded-lg dark:bg-green-900 dark:text-green-200'>
+                                                            ✓ Will publish immediately on save
+                                                        </div>
+                                                    ");
+                                                }
+
+                                                $date = \Carbon\Carbon::parse($publishAt);
+                                                $isFuture = $date->isFuture();
+
+                                                $bgColor = $isFuture ? 'blue-100 dark:bg-blue-900' : 'green-100 dark:bg-green-900';
+                                                $textColor = $isFuture ? 'blue-800 dark:text-blue-200' : 'green-800 dark:text-green-200';
+                                                $icon = $isFuture ? '⏳' : '✓';
+                                                $status = $isFuture ? 'Scheduled' : 'Published';
+
+                                                return new \Illuminate\Support\HtmlString("
+                                                    <div class='px-3 py-2 bg-{$bgColor} text-{$textColor} rounded-lg font-semibold'>
+                                                        {$icon} {$status}: {$date->format('M d, Y - H:i')}
+                                                        <div class='mt-1 text-xs opacity-75'>{$date->diffForHumans()}</div>
+                                                    </div>
+                                                ");
+                                            }),
+
                                         TextEntry::make('updated_tracking')
-                                            ->label('Update Tracking')
+                                            ->label('📝 Update History')
                                             ->state(function ($record) {
                                                 if (!$record) {
-                                                    return 'Not yet created';
+                                                    return '🆕 Not yet created';
                                                 }
 
                                                 $updatedBy = $record->updatedBy->user->name ?? 'System';
@@ -201,13 +277,7 @@ class PostForm
 
                                                 return "Last modified by {$updatedBy} on {$updatedAt}";
                                             })
-                                            ->helperText('Automatic tracking for audit and compliance'),
-
-                                        TextInput::make('updated_by')
-                                            ->label('Updated By (ID)')
-                                            ->disabled()
-                                            ->dehydrated(false)
-                                            ->visible(fn($record) => $record !== null),
+                                            ->helperText('Automatic tracking for audit compliance'),
                                     ])
                                     ->compact()
                                     ->collapsible()
@@ -218,22 +288,24 @@ class PostForm
                         Group::make()
                             ->schema([
 
-                                Section::make('Featured Media')
-                                    ->description('Upload high-quality imagery')
+                                Section::make('🖼️ Featured Media')
+                                    ->description('Upload stunning visuals')
                                     ->icon('heroicon-o-photo')
+                                    ->iconColor('danger')
                                     ->schema([
                                         FileUpload::make('image')
-                                            ->label('Featured Image')
+                                            ->label('Hero Image')
                                             ->disk('public')
                                             ->directory('posts')
                                             ->visibility('public')
                                             ->image()
                                             ->imageEditor()
                                             ->imageEditorAspectRatioOptions([
-                                                '16:9' => '16:9 (Widescreen - Recommended)',
-                                                '4:3'  => '4:3 (Standard)',
-                                                '1:1'  => '1:1 (Square)',
-                                                '21:9' => '21:9 (Ultrawide)',
+                                                '16:9' => '📺 16:9 (Widescreen - Recommended)',
+                                                '4:3'  => '📱 4:3 (Standard)',
+                                                '1:1'  => '⬛ 1:1 (Square - Instagram)',
+                                                '21:9' => '🎬 21:9 (Cinematic)',
+                                                '9:16' => '📱 9:16 (Stories)',
                                             ])
                                             ->maxSize(5120)
                                             ->acceptedFileTypes([
@@ -243,11 +315,9 @@ class PostForm
                                                 'image/gif',
                                                 'image/jpg',
                                                 'image/svg+xml',
-                                                'image/heic',
-                                                'image/heif',
                                             ])
-                                            ->helperText('Recommended: 1920×1080px | Max size: 5MB | Formats: JPG, PNG, WebP, GIF')
-                                            ->imagePreviewHeight(280)
+                                            ->helperText('✨ Recommended: 1920×1080px | Max: 5MB | Formats: JPG, PNG, WebP')
+                                            ->imagePreviewHeight(320)
                                             ->loadingIndicatorPosition('center')
                                             ->panelAspectRatio('16:9')
                                             ->panelLayout('integrated')
@@ -258,21 +328,27 @@ class PostForm
                                                 if ($record && $record->image && $record->image !== $state) {
                                                     Storage::disk('public')->delete($record->image);
                                                 }
-                                            })
+                                            }),
 
+                                        TextInput::make('image_alt')
+                                            ->label('Alt Text (Accessibility)')
+                                            ->placeholder('Describe the image for screen readers and SEO...')
+                                            ->helperText('Improves accessibility and SEO')
+                                            ->maxLength(255),
                                     ])
                                     ->compact()
                                     ->collapsible()
                                     ->persistCollapsed(),
 
-                                Section::make("Editor's Pick")
-                                    ->description('Curate premium content for homepage spotlight')
+                                Section::make("⭐ Editor's Pick")
+                                    ->description('Curate premium content')
                                     ->icon('heroicon-o-star')
+                                    ->iconColor('warning')
                                     ->schema([
                                         Toggle::make('is_editor_pick')
-                                            ->label("Feature as Editor's Pick")
+                                            ->label("✨ Feature as Editor's Pick")
                                             ->inline(false)
-                                            ->helperText('Showcase this post in premium editorial sections')
+                                            ->helperText('Showcase in premium sections')
                                             ->reactive()
                                             ->afterStateUpdated(function ($state, $set) {
                                                 if ($state) {
@@ -284,6 +360,31 @@ class PostForm
                                                 }
                                             }),
 
+                                        TextEntry::make('editor_pick_badge')
+                                            ->label('')
+                                            ->state(function ($get) {
+                                                if (!$get('is_editor_pick')) {
+                                                    return null;
+                                                }
+
+                                                $expiresAt = $get('editor_pick_expires');
+                                                $expires = $expiresAt ? \Carbon\Carbon::parse($expiresAt) : null;
+                                                $remaining = $expires ? $expires->diffForHumans() : 'No expiration';
+
+                                                return new \Illuminate\Support\HtmlString("
+                                                    <div class='p-3 border-2 border-yellow-400 rounded-lg bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900 dark:to-amber-900 dark:border-yellow-600'>
+                                                        <div class='flex items-center gap-2'>
+                                                            <span class='text-2xl'>⭐</span>
+                                                            <div>
+                                                                <div class='font-bold text-yellow-900 dark:text-yellow-100'>Editor's Pick Active</div>
+                                                                <div class='text-xs text-yellow-700 dark:text-yellow-300'>Expires {$remaining}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ");
+                                            })
+                                            ->visible(fn($get) => $get('is_editor_pick')),
+
                                         Grid::make(2)
                                             ->schema([
                                                 DateTimePicker::make('editor_pick_at')
@@ -291,16 +392,14 @@ class PostForm
                                                     ->native(false)
                                                     ->displayFormat('M d, Y - H:i')
                                                     ->seconds(false)
-                                                    ->visible(fn($get) => $get('is_editor_pick'))
-                                                    ->helperText('When this was selected'),
+                                                    ->helperText('Start date'),
 
                                                 DateTimePicker::make('editor_pick_expires')
-                                                    ->label('Feature Until')
+                                                    ->label('Expires At')
                                                     ->native(false)
                                                     ->displayFormat('M d, Y - H:i')
                                                     ->seconds(false)
-                                                    ->visible(fn($get) => $get('is_editor_pick'))
-                                                    ->helperText('Auto-remove after this date')
+                                                    ->helperText('Auto-remove after')
                                                     ->minDate(fn($get) => $get('editor_pick_at')),
                                             ])
                                             ->visible(fn($get) => $get('is_editor_pick')),
@@ -309,14 +408,15 @@ class PostForm
                                     ->collapsed()
                                     ->persistCollapsed(),
 
-                                Section::make('Breaking News')
-                                    ->description('Highlight urgent, time-sensitive content')
+                                Section::make('⚡ Breaking News')
+                                    ->description('Urgent, time-sensitive content')
                                     ->icon('heroicon-o-bolt')
+                                    ->iconColor('danger')
                                     ->schema([
                                         Toggle::make('is_breaking')
-                                            ->label('Mark as Breaking News')
+                                            ->label('🚨 Mark as Breaking News')
                                             ->inline(false)
-                                            ->helperText('Display with breaking news badge and priority placement')
+                                            ->helperText('Display with priority placement')
                                             ->reactive()
                                             ->afterStateUpdated(function ($state, $set) {
                                                 if ($state) {
@@ -328,6 +428,31 @@ class PostForm
                                                 }
                                             }),
 
+                                        TextEntry::make('breaking_badge')
+                                            ->label('')
+                                            ->state(function ($get) {
+                                                if (!$get('is_breaking')) {
+                                                    return null;
+                                                }
+
+                                                $expiresAt = $get('breaking_expires');
+                                                $expires = $expiresAt ? \Carbon\Carbon::parse($expiresAt) : null;
+                                                $remaining = $expires ? $expires->diffForHumans() : 'No expiration';
+
+                                                return new \Illuminate\Support\HtmlString("
+                                                    <div class='p-3 border-2 border-red-500 rounded-lg bg-gradient-to-r from-red-100 to-orange-100 dark:from-red-900 dark:to-orange-900 dark:border-red-600 animate-pulse'>
+                                                        <div class='flex items-center gap-2'>
+                                                            <span class='text-2xl'>🚨</span>
+                                                            <div>
+                                                                <div class='font-bold text-red-900 dark:text-red-100'>BREAKING NEWS ACTIVE</div>
+                                                                <div class='text-xs text-red-700 dark:text-red-300'>Expires {$remaining}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ");
+                                            })
+                                            ->visible(fn($get) => $get('is_breaking')),
+
                                         Grid::make(2)
                                             ->schema([
                                                 DateTimePicker::make('breaking_at')
@@ -335,16 +460,14 @@ class PostForm
                                                     ->native(false)
                                                     ->displayFormat('M d, Y - H:i')
                                                     ->seconds(false)
-                                                    ->visible(fn($get) => $get('is_breaking'))
-                                                    ->helperText('When this became breaking news'),
+                                                    ->helperText('When it broke'),
 
                                                 DateTimePicker::make('breaking_expires')
                                                     ->label('Expires At')
                                                     ->native(false)
                                                     ->displayFormat('M d, Y - H:i')
                                                     ->seconds(false)
-                                                    ->visible(fn($get) => $get('is_breaking'))
-                                                    ->helperText('Auto-remove breaking status after this time')
+                                                    ->helperText('Auto-remove after')
                                                     ->minDate(fn($get) => $get('breaking_at')),
                                             ])
                                             ->visible(fn($get) => $get('is_breaking')),
