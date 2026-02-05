@@ -23,6 +23,9 @@ final class Status extends Enum
     #[Description('Unverified')]
     public const UNVERIFIED = 'unverified';
 
+    #[Description('Verified')]
+    public const VERIFIED = 'verified';
+
     /** Fully active user */
     #[Description('Active')]
     public const ACTIVE = 'active';
@@ -34,6 +37,9 @@ final class Status extends Enum
     /** Temporarily disabled by system or admin */
     #[Description('Suspended')]
     public const SUSPENDED = 'suspended';
+
+    #[Description('Suspicious')]
+    public const SUSPICIOUS = 'suspicious';
 
     /** Permanently blocked */
     #[Description('Banned')]

@@ -1,7 +1,5 @@
 <?php
 
-namespace App\Livewire\Forms;
-
 use Livewire\Component;
 use App\Events\NewComment;
 use Livewire\Attributes\On;
@@ -16,7 +14,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\RateLimiter;
 
-class CommentForm extends Component
+class Collins extends Component
 {
     use WithPagination;
 
@@ -141,7 +139,6 @@ class CommentForm extends Component
             $this->resetPage();
         }
 
-        event(new NewComment($comment));
 
         $this->resetCommentState();
 

@@ -3,6 +3,7 @@
 namespace App\Models\Comments;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Guest;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\ReactionType;
@@ -10,7 +11,6 @@ use App\Models\User;
 
 class Likeable extends Model
 {
-
     /**
      * The attributes that are mass assignable.
      *
@@ -19,6 +19,7 @@ class Likeable extends Model
     protected $fillable = [
         'user_id',
         'type',
+        'guest_id'
     ];
 
     /**
@@ -76,5 +77,11 @@ class Likeable extends Model
     public function isDislike(): bool
     {
         return $this->type->is(ReactionType::DISLIKE);
+    }
+
+
+    public function guest(): BelongsTo
+    {
+        return $this->belongsTo(Guest::class);
     }
 }

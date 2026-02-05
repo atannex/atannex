@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Livewire\Forms;
 
 use App\Enums\Subject;
-use App\Events\ContactMessageSubmitted;
 use App\Models\Others\Contact as ContactMessage;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -51,8 +50,6 @@ class Contact extends Component
         $validated = $this->validate();
 
         $contact = ContactMessage::create($validated);
-
-        ContactMessageSubmitted::dispatch($contact);
 
         session()->flash('success', 'Your message has been sent successfully.');
 

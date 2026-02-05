@@ -8,11 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        /*
-        |--------------------------------------------------------------------------
-        | Comments Table
-        |--------------------------------------------------------------------------
-        */
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
 
@@ -30,8 +25,13 @@ return new class extends Migration
                 ->constrained('users')
                 ->nullOnDelete();
 
+            $table->foreignId('guest_id')
+                ->nullable()
+                ->constrained('guests')
+                ->cascadeOnDelete();
+
             $table->text('comment');
-            $table->string('comment_hash', 64)->nullable()->unique();
+            $table->string('comment_hash', 64)->unique();
 
             $table->ipAddress('ip_address')->nullable();
             $table->timestamp('edited_at')->nullable();
@@ -41,6 +41,16 @@ return new class extends Migration
 
             $table->softDeletes();
             $table->timestamps();
+
+            $table->unique(
+                ['commentable_type', 'commentable_id', 'guest_id', 'parent_id'],
+                'unique_guest_comment_per_thread'
+            );
+
+            $table->unique(
+                ['commentable_type', 'commentable_id', 'user_id', 'parent_id'],
+                'unique_user_comment_per_thread'
+            );
 
             $table->index(['parent_id', 'created_at']);
         });
