@@ -34,7 +34,7 @@
                                     {{ __('Your email address') }}
                                     <span class="text-danger">*</span>
                                 </label>
-                                <input type="email" id="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="{{ __('Enter your best email address') }}" value="{{ old('email') }}" >
+                                <input type="email" id="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="{{ __('Enter your best email address') }}" value="{{ old('email') }}">
                                 <div class="form-text">{{ __('We\'ll send you a quick confirmation email - check your spam folder too!') }}</div>
                                 @error('email')
                                 <div class="invalid-feedback d-block"><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</div>
@@ -106,7 +106,6 @@
                                         {{ __('and') }}
                                         <a href="{{ route('page.index', ['slug' => 'privacy']) }}" target="_blank" class="text-primary">{{ __('Privacy Policy') }}</a>
                                     </label>
-                                    <div class="form-text">{{ __('Don\'t worry, we keep it simple and fair!') }}</div>
                                 </div>
                                 @error('terms')
                                 <div class="invalid-feedback d-block">
