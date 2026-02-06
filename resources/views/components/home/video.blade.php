@@ -68,25 +68,28 @@
         background: #000;
     }
 
-    /* Large Center Play Button */
+    /* Large Center Play Button - FIXED (No shift on hover) */
     .video-inline-wrapper .plyr__control--overlaid {
         background: rgba(20, 20, 20, 0.95);
-        color: #000;
+        color: #fff;
         padding: 24px;
         border-radius: 50%;
-        transition: all 0.3s ease;
+        transition: background 0.3s ease, box-shadow 0.3s ease;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        transform-origin: center center;
     }
 
     .video-inline-wrapper .plyr__control--overlaid:hover {
         background: #fff;
-        transform: scale(1.15);
+        color: #000;
         box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+        /* Removed transform: scale(1.15) to prevent shifting */
     }
 
     .video-inline-wrapper .plyr__control--overlaid svg {
         width: 32px;
         height: 32px;
+        transition: none;
     }
 
     /* Plyr Controls Bar */
@@ -103,7 +106,6 @@
 
     .video-inline-wrapper .plyr__control:hover {
         background: rgba(255, 255, 255, 0.15);
-        transform: scale(1.05);
     }
 
     .video-inline-wrapper .plyr__control.plyr__tab-focus {
@@ -544,15 +546,6 @@
     <div class="video-inline-wrapper" data-video-title="{{ $video->title ?? $video->post->title }}">
         <video class="plyr-video" playsinline controlsList="nodownload noremoteplayback" disablePictureInPicture disableRemotePlayback preload="metadata" poster="{{ asset('storage/' . ($video->image ?? $video->post->image)) }}" data-video-id="{{ $video->id }}" data-plyr-config='{"title": "{{ addslashes($video->title ?? $video->post->title) }}"}' oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
             <source src="{{ asset('storage/' . $video->video_url) }}" type="video/mp4" size="720">
-            {{-- Add multiple quality sources if available --}}
-            {{-- <source src="{{ asset('storage/' . $video->video_url_1080) }}" type="video/mp4" size="1080"> --}}
-            {{-- <source src="{{ asset('storage/' . $video->video_url_480) }}" type="video/mp4" size="480"> --}}
-            {{-- <source src="{{ asset('storage/' . $video->video_url_360) }}" type="video/mp4" size="360"> --}}
-
-            {{-- Optional: Add subtitles/captions --}}
-            {{-- <track kind="captions" label="English" srclang="en" src="{{ asset('storage/subtitles/' . $video->id . '_en.vtt') }}" default> --}}
-            {{-- <track kind="captions" label="Spanish" srclang="es" src="{{ asset('storage/subtitles/' . $video->id . '_es.vtt') }}"> --}}
-
             {{ __('Your browser does not support the video tag.') }}
         </video>
     </div>
