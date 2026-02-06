@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Flag;
 use App\Http\Traits\HasAbout;
 use App\Http\Traits\HasContact;
 use App\Models\Posts\Video;
@@ -68,6 +69,7 @@ class HomeController extends Controller
                 'post.author:id,user_id',
                 'post.author.user:id,name,slug',
             ])
+            ->where('flag', Flag::PUBLISHED)
             ->published()
             ->whereHas('post', static function ($query) {
                 $query->published();
