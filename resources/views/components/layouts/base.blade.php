@@ -20,7 +20,43 @@
     <!-- =========================
          SECURITY & PRIVACY HEADERS (META + CSP hints)
     ========================== -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://*.google.com https://cdnjs.cloudflare.com https://cdn.plyr.io 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.plyr.io; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.google-analytics.com https://*.googletagmanager.com; media-src 'self' blob: https:;">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src
+          'self'
+          'unsafe-inline'
+          'unsafe-eval'
+          https://cdnjs.cloudflare.com
+          https://cdn.plyr.io
+          https://www.googletagmanager.com
+          https://www.google-analytics.com
+          https://*.google.com;
+        style-src
+          'self'
+          'unsafe-inline'
+          https://fonts.googleapis.com
+          https://cdn.plyr.io;
+        font-src
+          'self'
+          https://fonts.gstatic.com;
+        img-src
+          'self'
+          data:
+          blob:
+          https:;
+        media-src
+          'self'
+          blob:
+          https:;
+        connect-src
+          'self'
+          blob:
+          https://www.google-analytics.com
+          https://www.googletagmanager.com;
+        frame-src
+          'self'
+          https://www.googletagmanager.com;
+      ">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
@@ -240,11 +276,11 @@
         </svg>
     </div>
 
+    <script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}?v={{ $assetVersion }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.2.0/jquery.magnific-popup.min.js"></script>
     <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js.map"></script>
-    <script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}?v={{ $assetVersion }}"></script>
     <script src="{{ asset('assets/js/app.min.js') }}?v={{ $assetVersion }}"></script>
     <script src="{{ asset('assets/js/main.js') }}?v={{ $assetVersion }}"></script>
 
