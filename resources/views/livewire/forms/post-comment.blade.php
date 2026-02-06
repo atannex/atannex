@@ -1,4 +1,5 @@
 <div>
+    @auth
     <div class="th-comments-wrap">
         <h2 class="blog-inner-title h3">Comments (03)</h2>
         <ul class="comment-list">
@@ -80,4 +81,5 @@
             </div>
         </div>
     </div>
+    @endauth
 </div>

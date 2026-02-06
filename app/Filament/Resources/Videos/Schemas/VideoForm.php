@@ -8,6 +8,7 @@ use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Textarea;
+use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\FileUpload;
@@ -66,27 +67,36 @@ class VideoForm
     {
         return Section::make('Video Information')
             ->description('Enter the basic details about the video')
+            ->icon('heroicon-o-information-circle')
+            ->iconColor('primary')
+            ->collapsible()
+            ->persistCollapsed()
             ->schema([
                 Grid::make(2)
                     ->schema([
                         TextInput::make('title')
-                            ->required()
+                            ->label('Video Title')
                             ->maxLength(255)
-                            ->placeholder('Enter video title')
-                            ->columnSpan(2),
+                            ->placeholder('e.g., Introduction to Laravel Filament')
+                            ->columnSpan(2)
+                            ->autofocus()
+                            ->live(onBlur: true)
+                            ->prefixIcon('heroicon-o-film')
+                            ->prefixIconColor('primary')
+                            ->helperText('Choose a clear, descriptive title that captures the video content'),
 
                         Textarea::make('description')
-                            ->rows(4)
-                            ->placeholder('Provide a detailed description of the video content')
-                            ->columnSpan(2),
-
-                        TextInput::make('duration')
-                            ->numeric()
-                            ->suffix('seconds')
-                            ->placeholder('Auto-detected from video file')
-                            ->columnSpanFull()
-                            ->helperText('Duration will be automatically detected upon upload. You may override this value if needed.'),
+                            ->label('Description')
+                            ->rows(5)
+                            ->placeholder('Provide a detailed description of the video content, key topics covered, and what viewers will learn...')
+                            ->columnSpan(2)
+                            ->autosize()
+                            ->helperText('A detailed description helps viewers understand what to expect')
+                            ->extraAttributes(['class' => 'resize-none']),
                     ]),
+            ])
+            ->footerActions([
+                // Optional: Add footer actions if needed
             ]);
     }
 
@@ -99,26 +109,85 @@ class VideoForm
     {
         return Section::make('Media Files')
             ->description('Upload the video file and an optional thumbnail image')
+            ->icon('heroicon-o-photo')
+            ->iconColor('success')
+            ->collapsible()
+            ->persistCollapsed()
             ->schema([
                 Grid::make(2)
                     ->schema([
                         FileUpload::make('video_url')
                             ->label('Video File')
                             ->required()
-                            ->acceptedFileTypes(['video/*'])
-                            ->maxSize(512000)
-                            ->helperText('Supported formats: MP4, MOV, AVI, WebM')
-                            ->columnSpan(1),
+                            ->disk('public')
+                            ->directory('videos')
+                            ->visibility('public')
+                            ->acceptedFileTypes(['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/webm'])
+                            ->maxSize(512000) // 500MB
+                            ->helperText('Maximum file size: 500MB • Supported formats: MP4, MOV, AVI, WebM')
+                            ->columnSpan(2)
+                            ->imagePreviewHeight('200')
+                            ->downloadable()
+                            ->openable()
+                            ->deletable()
+                            ->reorderable()
+                            ->appendFiles()
+                            ->previewable()
+                            ->uploadingMessage('Uploading video...')
+                            ->uploadProgressIndicatorPosition('left')
+                            ->removeUploadedFileButtonPosition('right')
+                            ->uploadButtonPosition('left')
+                            ->panelAspectRatio('16:9')
+                            ->panelLayout('integrated')
+                            ->imageEditorAspectRatioOptions([
+                                '16:9',
+                                '4:3',
+                                '1:1',
+                            ])
+                            ->afterStateUpdated(function ($state, $record) {
+                                if ($record && $record->video_url && $record->video_url !== $state) {
+                                    Storage::disk('public')->delete($record->video_url);
+                                }
+                            }),
 
                         FileUpload::make('image')
                             ->label('Thumbnail Image')
                             ->image()
+                            ->disk('public')
+                            ->directory('videos/thumbnails')
+                            ->visibility('public')
                             ->imageEditor()
-                            ->maxSize(5120)
-                            ->helperText('Recommended size: 1280x720px')
-                            ->columnSpan(1),
+                            ->imageEditorAspectRatioOptions([
+                                '16:9',
+                                '4:3',
+                                '1:1',
+                            ])
+                            ->imageEditorMode(2)
+                            ->automaticallyResizeImagesMode('cover')
+                            ->automaticallyResizeImagesToWidth('1280')
+                            ->automaticallyResizeImagesToHeight('720')
+                            ->maxSize(5120) // 5MB
+                            ->helperText('Recommended size: 1280x720px (16:9) • Maximum file size: 5MB')
+                            ->columnSpan(2)
+                            ->imagePreviewHeight('200')
+                            ->downloadable()
+                            ->openable()
+                            ->deletable()
+                            ->previewable()
+                            ->uploadingMessage('Uploading thumbnail...')
+                            ->panelAspectRatio('16:9')
+                            ->panelLayout('integrated')
+                            ->uploadProgressIndicatorPosition('left')
+                            ->removeUploadedFileButtonPosition('right')
+                            ->uploadButtonPosition('left')
+                            ->afterStateUpdated(function ($state, $record) {
+                                if ($record && $record->image && $record->image !== $state) {
+                                    Storage::disk('public')->delete($record->image);
+                                }
+                            }),
                     ]),
-            ]);
+            ])
+            ->aside();
     }
 
     /**
@@ -146,6 +215,11 @@ class VideoForm
     {
         return Section::make('Publishing')
             ->description('Control video visibility and scheduling')
+            ->icon('heroicon-o-rocket-launch')
+            ->iconColor('warning')
+            ->collapsible()
+            ->persistCollapsed()
+            ->compact()
             ->schema([
                 Select::make('flag')
                     ->label('Publication Status')
@@ -153,12 +227,30 @@ class VideoForm
                     ->required()
                     ->default(Flag::DRAFT)
                     ->native(false)
-                    ->helperText('Set the current publication status of the video'),
+                    ->prefixIcon('heroicon-o-flag')
+                    ->selectablePlaceholder(false)
+                    ->helperText('Set the current publication status of the video')
+                    ->live()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        // Auto-set published_at when status changes to published
+                        if ($state === Flag::PUBLISHED) {
+                            $set('published_at', now());
+                        }
+                    }),
 
                 DateTimePicker::make('published_at')
                     ->label('Publication Date')
                     ->native(false)
-                    ->helperText('Schedule when this video should be published'),
+                    ->prefixIcon('heroicon-o-calendar-days')
+                    ->prefixIconColor('primary')
+                    ->displayFormat('M d, Y h:i A')
+                    ->seconds(false)
+                    ->timezone('UTC')
+                    ->helperText('Schedule when this video should be published')
+                    ->live()
+                    ->default(now())
+                    ->minDate(now()->subDay())
+                    ->maxDate(now()->addYear()),
             ]);
     }
 
@@ -170,34 +262,36 @@ class VideoForm
     private static function getClassificationSection(): Section
     {
         return Section::make('Classification')
-            ->description('Organize the video by category, author, and region')
+            ->description('Organize the video by post')
+            ->icon('heroicon-o-tag')
+            ->iconColor('info')
+            ->collapsible()
+            ->persistCollapsed()
+            ->compact()
             ->schema([
-                Select::make('category_id')
-                    ->relationship('category', 'name')
-                    ->label('Category')
-                    ->required()
+                Select::make('post_id')
+                    ->relationship('post', 'title')
+                    ->label('Associated Post')
                     ->searchable()
                     ->preload()
-                    ->native(false)
-                    ->placeholder('Select a category'),
-
-                Select::make('author_id')
-                    ->relationship('author.user', 'name')
-                    ->label('Author')
                     ->required()
-                    ->searchable()
-                    ->preload()
                     ->native(false)
-                    ->placeholder('Select an author'),
-
-                Select::make('region_id')
-                    ->relationship('region', 'name')
-                    ->label('Region')
-                    ->required()
-                    ->searchable()
-                    ->preload()
-                    ->native(false)
-                    ->placeholder('Select a region'),
+                    ->prefixIcon('heroicon-o-document-text')
+                    ->prefixIconColor('info')
+                    ->placeholder('Select a related post')
+                    ->helperText('Link this video to a blog post or article')
+                    ->createOptionForm([
+                        TextInput::make('title')
+                            ->required()
+                            ->maxLength(255),
+                    ])
+                    ->editOptionForm([
+                        TextInput::make('title')
+                            ->required()
+                            ->maxLength(255),
+                    ])
+                    ->getOptionLabelFromRecordUsing(fn($record) => $record->title)
+                    ->live(),
             ]);
     }
 
@@ -209,16 +303,42 @@ class VideoForm
     private static function getMetadataSection(): Section
     {
         return Section::make('Metadata')
-            ->description('System-managed information')
-            ->schema([
-                TextInput::make('updated_by')
-                    ->label('Last Updated By')
-                    ->numeric()
-                    ->disabled()
-                    ->dehydrated(false)
-                    ->helperText('This field is automatically updated when the video is saved'),
-            ])
+            ->description('Additional information about the video')
+            ->icon('heroicon-o-information-circle')
+            ->iconColor('gray')
             ->collapsible()
-            ->collapsed();
+            ->collapsed()
+            ->persistCollapsed()
+            ->compact()
+            ->schema([
+                Grid::make(1)
+                    ->schema([
+                        TextInput::make('duration')
+                            ->label('Duration')
+                            ->placeholder('e.g., 10:30')
+                            ->helperText('Video duration in MM:SS format')
+                            ->prefixIcon('heroicon-o-clock')
+                            ->prefixIconColor('gray'),
+
+                        TextInput::make('file_size')
+                            ->label('File Size')
+                            ->placeholder('Auto-calculated')
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->helperText('Automatically calculated on upload')
+                            ->prefixIcon('heroicon-o-server')
+                            ->prefixIconColor('gray'),
+
+                        TextInput::make('views_count')
+                            ->label('Views')
+                            ->numeric()
+                            ->default(0)
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->helperText('Total number of views')
+                            ->prefixIcon('heroicon-o-eye')
+                            ->prefixIconColor('gray'),
+                    ]),
+            ]);
     }
 }

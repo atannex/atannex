@@ -59,7 +59,7 @@
                                 -webkit-box-orient:vertical;
                                 overflow:hidden;
                                 line-height:1.5;
-                                padding-bottom:0.2em; "data-ani="slideinup" data-ani-delay="0.7s">
+                                padding-bottom:0.2em; " data-ani="slideinup" data-ani-delay="0.7s">
 
                             {{ Str::limit(strip_tags($post->description), 70) }}
 
@@ -79,7 +79,9 @@
                 @foreach($byRecent as $index => $post)
                 <div class="tab-btn {{ $index === 0 ? 'active' : '' }}">
 
-                    @include('partials.image', ['post' => $post, 'class' => 'home-hero'])
+                    <a href="javascript:void(0)">
+                        <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}" class="img-fluid home-hero">
+                    </a>
 
                 </div>
                 @endforeach

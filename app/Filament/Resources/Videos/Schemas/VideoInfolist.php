@@ -2,12 +2,11 @@
 
 namespace App\Filament\Resources\Videos\Schemas;
 
-use App\Models\Posts\Video;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
-use Filament\Support\Enums\FontWeight;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
+use Filament\Support\Enums\FontWeight;
 use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
@@ -35,22 +34,18 @@ class VideoInfolist
         return $schema
             ->columns(3)
             ->components([
-                // Main Content Area (2 columns)
                 Group::make()
                     ->schema([
                         self::buildHeaderSection(),
                         self::buildVideoPlayerSection(),
                         self::buildContentSection(),
-                        self::buildMediaSection(),
                     ])
                     ->columnSpan(['lg' => 2]),
-
-                // Sidebar (1 column)
                 Group::make()
                     ->schema([
                         self::buildStatusSection(),
+                        self::buildMediaSection(),
                         self::buildClassificationSection(),
-                        self::buildMetricsSection(),
                         self::buildMetadataSection(),
                     ])
                     ->columnSpan(['lg' => 1]),
@@ -67,46 +62,24 @@ class VideoInfolist
         return Section::make()
             ->schema([
                 TextEntry::make('title')
-                    ->label('Title')
+                    ->label('Video Title')
                     ->size(TextSize::Large)
                     ->weight(FontWeight::Bold)
-                    ->getStateUsing(fn($record) => $record->title . ($record->slug ? " ({$record->slug})" : ''))
+                    ->icon('heroicon-o-film')
+                    ->iconColor('primary')
+                    ->copyable()
+                    ->copyMessage('Title copied!')
+                    ->copyMessageDuration(1500)
+                    ->placeholder('Untitled Video')
                     ->columnSpanFull(),
-
-                Grid::make(3)
-                    ->schema([
-                        TextEntry::make('duration')
-                            ->label('Duration')
-                            ->icon('heroicon-m-clock')
-                            ->formatStateUsing(
-                                fn(?string $state): string =>
-                                $state ? self::formatDuration((int) $state) : 'N/A'
-                            )
-                            ->badge()
-                            ->color('gray'),
-
-                        TextEntry::make('views_count')
-                            ->label('Views')
-                            ->icon('heroicon-m-eye')
-                            ->formatStateUsing(
-                                fn(?int $state): string =>
-                                number_format($state ?? 0)
-                            )
-                            ->badge()
-                            ->color('info'),
-
-                        TextEntry::make('published_at')
-                            ->label('Published')
-                            ->icon('heroicon-m-calendar')
-                            ->date('M j, Y')
-                            ->badge()
-                            ->color('success')
-                            ->placeholder('Unpublished'),
-                    ]),
             ])
             ->heading('Video Overview')
+            ->description('Essential video information at a glance')
             ->icon('heroicon-o-video-camera')
-            ->iconColor('primary');
+            ->iconColor('primary')
+            ->collapsible()
+            ->persistCollapsed()
+            ->collapsed(false);
     }
 
     /**
@@ -121,15 +94,18 @@ class VideoInfolist
                 VideoPlayer::make('video_url')
                     ->label('')
                     ->disk('public')
-                    ->directory('video/url')
+                    ->directory('videos')
                     ->visibility('public')
                     ->columnSpanFull(),
             ])
             ->heading('Video Player')
+            ->description('Watch the video directly in the admin panel')
             ->icon('heroicon-o-play-circle')
+            ->iconColor('success')
             ->collapsible()
             ->persistCollapsed()
-            ->collapsed(false);
+            ->collapsed(false)
+            ->aside();
     }
 
     /**
@@ -142,15 +118,74 @@ class VideoInfolist
         return Section::make()
             ->schema([
                 TextEntry::make('description')
-                    ->label('')
+                    ->label('Description')
                     ->markdown()
                     ->placeholder('No description provided')
+                    ->prose()
+                    ->copyable()
+                    ->copyMessage('Description copied!')
                     ->columnSpanFull(),
             ])
             ->heading('Description')
+            ->description('Detailed information about the video content')
             ->icon('heroicon-o-document-text')
+            ->iconColor('info')
             ->collapsible()
-            ->persistCollapsed();
+            ->persistCollapsed()
+            ->collapsed(false);
+    }
+
+    /**
+     * Build the status section
+     *
+     * @return Section
+     */
+    private static function buildStatusSection(): Section
+    {
+        return Section::make()
+            ->schema([
+                Grid::make(1)
+                    ->schema([
+                        TextEntry::make('flag')
+                            ->label('Publication Status')
+                            ->badge()
+                            ->size(TextSize::Medium)
+                            ->weight(FontWeight::Bold)
+                            ->color(fn(string $state): string => match (strtolower($state)) {
+                                'published' => 'success',
+                                'draft' => 'warning',
+                                'scheduled' => 'info',
+                                'archived' => 'danger',
+                                default => 'gray',
+                            })
+                            ->icon(fn(string $state): string => match (strtolower($state)) {
+                                'published' => 'heroicon-m-check-circle',
+                                'draft' => 'heroicon-m-pencil-square',
+                                'scheduled' => 'heroicon-m-clock',
+                                'archived' => 'heroicon-m-archive-box',
+                                default => 'heroicon-m-question-mark-circle',
+                            })
+                            ->formatStateUsing(fn(string $state): string => ucfirst(strtolower($state))),
+
+                        TextEntry::make('published_at')
+                            ->label('Publication Date')
+                            ->dateTime('F j, Y - h:i A')
+                            ->placeholder('Not scheduled')
+                            ->icon('heroicon-m-calendar-days')
+                            ->iconColor('primary')
+                            ->copyable()
+                            ->copyMessage('Date copied!')
+                            ->visible(fn(?string $state): bool => $state !== null),
+                    ]),
+            ])
+            ->heading('Publishing')
+            ->description('Video visibility and scheduling')
+            ->icon('heroicon-o-rocket-launch')
+            ->iconColor('warning')
+            ->compact()
+            ->collapsible()
+            ->persistCollapsed()
+            ->collapsed(false);
     }
 
     /**
@@ -166,64 +201,22 @@ class VideoInfolist
                     ->label('')
                     ->disk('public')
                     ->visibility('public')
-                    ->imageHeight(300)
+                    ->imageHeight(200)
                     ->imageWidth('100%')
-                    ->extraImgAttributes(['class' => 'rounded-lg object-cover'])
+                    ->extraImgAttributes([
+                        'class' => 'rounded-lg object-cover shadow-md',
+                        'loading' => 'lazy',
+                    ])
+                    ->placeholder('No thumbnail uploaded')
                     ->columnSpanFull(),
             ])
             ->heading('Thumbnail')
+            ->description('Video preview image')
             ->icon('heroicon-o-photo')
+            ->iconColor('success')
             ->collapsible()
             ->persistCollapsed()
-            ->collapsed(true);
-    }
-
-    /**
-     * Build the status section
-     *
-     * @return Section
-     */
-    private static function buildStatusSection(): Section
-    {
-        return Section::make()
-            ->schema([
-                TextEntry::make('flag')
-                    ->label('Publication Status')
-                    ->badge()
-                    ->size(TextSize::Medium)
-                    ->color(fn(string $state): string => match (strtolower($state)) {
-                        'published' => 'success',
-                        'draft' => 'warning',
-                        'scheduled' => 'info',
-                        'archived' => 'danger',
-                        default => 'gray',
-                    })
-                    ->icon(fn(string $state): string => match (strtolower($state)) {
-                        'published' => 'heroicon-m-check-circle',
-                        'draft' => 'heroicon-m-pencil-square',
-                        'scheduled' => 'heroicon-m-clock',
-                        'archived' => 'heroicon-m-archive-box',
-                        default => 'heroicon-m-question-mark-circle',
-                    })
-                    ->formatStateUsing(fn(string $state): string => ucfirst(strtolower($state))),
-
-                TextEntry::make('published_at')
-                    ->label('Publish Date')
-                    ->dateTime('F j, Y')
-                    ->placeholder('Not published')
-                    ->icon('heroicon-m-calendar-days')
-                    ->visible(fn(?string $state): bool => $state !== null),
-
-                TextEntry::make('scheduled_at')
-                    ->label('Scheduled For')
-                    ->dateTime('F j, Y \a\t g:i A')
-                    ->placeholder('Not scheduled')
-                    ->icon('heroicon-m-clock')
-                    ->color('info')
-                    ->visible(fn(?string $state): bool => $state !== null),
-            ])
-            ->heading('Status')
-            ->icon('heroicon-o-signal')
+            ->collapsed(false)
             ->compact();
     }
 
@@ -236,94 +229,36 @@ class VideoInfolist
     {
         return Section::make()
             ->schema([
-                TextEntry::make('category.name')
-                    ->label('Category')
-                    ->badge()
-                    ->color('primary')
-                    ->icon('heroicon-m-tag')
-                    ->placeholder('Uncategorized')
-                    ->default('Uncategorized'),
-
-                TextEntry::make('author.user.name')
-                    ->label('Author')
-                    ->icon('heroicon-m-user')
-                    ->color('gray')
-                    ->placeholder('Unknown')
-                    ->openUrlInNewTab(),
-
-                TextEntry::make('region.name')
-                    ->label('Region')
-                    ->badge()
-                    ->color('success')
-                    ->icon('heroicon-m-globe-americas')
-                    ->placeholder('Global'),
-
-                TextEntry::make('tags')
-                    ->label('Tags')
-                    ->badge()
-                    ->separator(',')
-                    ->color('info')
-                    ->placeholder('No tags')
-                    ->visible(fn(?array $state): bool => !empty($state)),
-            ])
-            ->heading('Classification')
-            ->icon('heroicon-o-folder-open')
-            ->compact();
-    }
-
-    /**
-     * Build the metrics section
-     *
-     * @return Section
-     */
-    private static function buildMetricsSection(): Section
-    {
-        return Section::make()
-            ->schema([
-                Grid::make(2)
+                Grid::make(1)
                     ->schema([
-                        TextEntry::make('likes_count')
-                            ->label('Likes')
-                            ->icon('heroicon-m-heart')
-                            ->color('danger')
-                            ->formatStateUsing(
-                                fn(?int $state): string =>
-                                number_format($state ?? 0)
-                            ),
-
-                        TextEntry::make('comments_count')
-                            ->label('Comments')
-                            ->icon('heroicon-m-chat-bubble-left')
+                        TextEntry::make('post.title')
+                            ->label('Associated Post')
+                            ->badge()
                             ->color('info')
-                            ->formatStateUsing(
-                                fn(?int $state): string =>
-                                number_format($state ?? 0)
-                            ),
+                            ->icon('heroicon-m-document-text')
+                            ->placeholder('No post linked')
+                            ->weight(FontWeight::Medium)
+                            ->openUrlInNewTab()
+                            ->tooltip('Click to view post'),
 
-                        TextEntry::make('shares_count')
-                            ->label('Shares')
-                            ->icon('heroicon-m-share')
-                            ->color('success')
-                            ->formatStateUsing(
-                                fn(?int $state): string =>
-                                number_format($state ?? 0)
-                            ),
-
-                        TextEntry::make('downloads_count')
-                            ->label('Downloads')
-                            ->icon('heroicon-m-arrow-down-tray')
-                            ->color('warning')
-                            ->formatStateUsing(
-                                fn(?int $state): string =>
-                                number_format($state ?? 0)
-                            ),
+                        TextEntry::make('tags')
+                            ->label('Tags')
+                            ->badge()
+                            ->separator(',')
+                            ->color('primary')
+                            ->icon('heroicon-m-tag')
+                            ->placeholder('No tags')
+                            ->visible(fn(?array $state): bool => !empty($state)),
                     ]),
             ])
-            ->heading('Engagement')
-            ->icon('heroicon-o-chart-bar')
+            ->heading('Classification')
+            ->description('Organizational links and tags')
+            ->icon('heroicon-o-tag')
+            ->iconColor('info')
+            ->compact()
             ->collapsible()
             ->persistCollapsed()
-            ->compact();
+            ->collapsed(false);
     }
 
     /**
@@ -335,50 +270,65 @@ class VideoInfolist
     {
         return Section::make()
             ->schema([
-                TextEntry::make('id')
-                    ->label('Video ID')
-                    ->icon('heroicon-m-hashtag')
-                    ->color('gray')
-                    ->copyable()
-                    ->copyMessage('ID copied!')
-                    ->copyMessageDuration(1500),
+                Grid::make(1)
+                    ->schema([
+                        TextEntry::make('duration')
+                            ->label('Duration')
+                            ->placeholder('Not specified')
+                            ->icon('heroicon-m-clock')
+                            ->iconColor('gray')
+                            ->badge()
+                            ->color('gray')
+                            ->formatStateUsing(fn(?string $state): string => $state ?? 'N/A'),
 
-                TextEntry::make('created_at')
-                    ->label('Created')
-                    ->dateTime('M j, Y g:i A')
-                    ->icon('heroicon-m-plus-circle')
-                    ->color('success'),
+                        TextEntry::make('file_size')
+                            ->label('File Size')
+                            ->placeholder('Calculating...')
+                            ->icon('heroicon-m-server')
+                            ->iconColor('gray')
+                            ->badge()
+                            ->color('gray')
+                            ->formatStateUsing(fn(?int $state): string =>
+                                $state ? self::formatFileSize($state) : 'N/A'
+                            ),
 
-                TextEntry::make('updated_at')
-                    ->label('Last Updated')
-                    ->dateTime('M j, Y g:i A')
-                    ->icon('heroicon-m-pencil')
-                    ->color('warning')
-                    ->since(),
+                        TextEntry::make('views_count')
+                            ->label('Total Views')
+                            ->numeric()
+                            ->default(0)
+                            ->icon('heroicon-m-eye')
+                            ->iconColor('gray')
+                            ->badge()
+                            ->color('success')
+                            ->formatStateUsing(fn(?int $state): string =>
+                                self::formatNumber($state ?? 0) . ' views'
+                            ),
 
-                TextEntry::make('updated_by')
-                    ->label('Updated By')
-                    ->icon('heroicon-m-user-circle')
-                    ->color('gray')
-                    ->formatStateUsing(
-                        fn(?int $state): string =>
-                        $state ? "User #{$state}" : 'System'
-                    )
-                    ->visible(fn(?int $state): bool => $state !== null),
+                        TextEntry::make('created_at')
+                            ->label('Created')
+                            ->dateTime('M j, Y')
+                            ->icon('heroicon-m-plus-circle')
+                            ->iconColor('gray')
+                            ->since()
+                            ->tooltip(fn($record): string => $record->created_at?->format('F j, Y - h:i:s A') ?? 'N/A'),
 
-                TextEntry::make('deleted_at')
-                    ->label('Deleted')
-                    ->dateTime('M j, Y g:i A')
-                    ->icon('heroicon-m-trash')
-                    ->color('danger')
-                    ->visible(fn(Video $record): bool => $record->trashed()),
+                        TextEntry::make('updated_at')
+                            ->label('Last Updated')
+                            ->dateTime('M j, Y')
+                            ->icon('heroicon-m-arrow-path')
+                            ->iconColor('gray')
+                            ->since()
+                            ->tooltip(fn($record): string => $record->updated_at?->format('F j, Y - h:i:s A') ?? 'N/A'),
+                    ]),
             ])
-            ->heading('System Information')
+            ->heading('Metadata')
+            ->description('Additional video statistics and information')
             ->icon('heroicon-o-information-circle')
+            ->iconColor('gray')
+            ->compact()
             ->collapsible()
             ->persistCollapsed()
-            ->collapsed(true)
-            ->compact();
+            ->collapsed(true);
     }
 
     /**
@@ -402,6 +352,30 @@ class VideoInfolist
         }
 
         return sprintf('%02d:%02d', $minutes, $secs);
+    }
+
+    /**
+     * Format file size in bytes to human-readable format
+     *
+     * @param int $bytes File size in bytes
+     * @return string Formatted file size
+     */
+    private static function formatFileSize(int $bytes): string
+    {
+        if ($bytes < 0) {
+            return '0 B';
+        }
+
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $unitIndex = 0;
+        $size = $bytes;
+
+        while ($size >= 1024 && $unitIndex < count($units) - 1) {
+            $size /= 1024;
+            $unitIndex++;
+        }
+
+        return round($size, 2) . ' ' . $units[$unitIndex];
     }
 
     /**

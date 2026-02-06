@@ -1,5 +1,7 @@
 !(function (e) {
     "use strict";
+    const players = {};
+
     if (
         (e(window).on("load", function () {
             e(".preloader").fadeOut();
@@ -10,7 +12,8 @@
         e(".preloader").length > 0 &&
             e(".preloaderCls").each(function () {
                 e(this).on("click", function (t) {
-                    t.preventDefault(), e(".preloader").css("display", "none");
+                    (t.preventDefault(),
+                        e(".preloader").css("display", "none"));
                 });
             }),
         (e.fn.thmobilemenu = function (t) {
@@ -26,12 +29,12 @@
                     subMenuToggleClass: "th-open",
                     toggleSpeed: 400,
                 },
-                t
+                t,
             );
             return this.each(function () {
                 var t = e(this);
                 function a() {
-                    t.toggleClass(s.bodyToggleClass),
+                    (t.toggleClass(s.bodyToggleClass),
                         t.find("." + s.subMenuClass).each(function () {
                             e(this).hasClass(s.subMenuToggleClass) &&
                                 (e(this).removeClass(s.subMenuToggleClass),
@@ -39,26 +42,26 @@
                                 e(this)
                                     .parent()
                                     .removeClass(s.subMenuParentToggle));
-                        });
+                        }));
                 }
                 t.find("li").each(function () {
                     var t = e(this).find("ul, div.mega-menu");
-                    t.addClass(s.subMenuClass),
+                    (t.addClass(s.subMenuClass),
                         t.css("display", "none"),
                         t.parent().addClass(s.subMenuParent),
                         t.prev("a").append(s.appendElement),
-                        t.next("a").append(s.appendElement);
+                        t.next("a").append(s.appendElement));
                 });
                 var i = "." + s.meanExpandClass;
-                e(i).each(function () {
+                (e(i).each(function () {
                     e(this).on("click", function (t) {
                         var a, i;
-                        t.preventDefault(),
+                        (t.preventDefault(),
                             (a = e(this).parent()),
                             (i = a.next("ul, div.mega-menu")).length > 0 &&
                                 (a.parent().toggleClass(s.subMenuParentToggle),
                                 i.slideToggle(s.toggleSpeed),
-                                i.toggleClass(s.subMenuToggleClass));
+                                i.toggleClass(s.subMenuToggleClass)));
                     });
                 }),
                     e(s.menuToggleBtn).each(function () {
@@ -67,11 +70,11 @@
                         });
                     }),
                     t.on("click", function (e) {
-                        e.stopPropagation(), a();
+                        (e.stopPropagation(), a());
                     }),
                     t.find("div").on("click", function (e) {
                         e.stopPropagation();
-                    });
+                    }));
             });
         }),
         e(".th-menu-wrapper").thmobilemenu(),
@@ -85,20 +88,20 @@
         var t = document.querySelector(".scroll-top"),
             s = document.querySelector(".scroll-top path"),
             a = s.getTotalLength();
-        (s.style.transition = s.style.WebkitTransition = "none"),
+        ((s.style.transition = s.style.WebkitTransition = "none"),
             (s.style.strokeDasharray = a + " " + a),
             (s.style.strokeDashoffset = a),
             s.getBoundingClientRect(),
             (s.style.transition = s.style.WebkitTransition =
-                "stroke-dashoffset 10ms linear");
+                "stroke-dashoffset 10ms linear"));
         var i = function () {
             var t = e(window).scrollTop(),
                 i = e(document).height() - e(window).height(),
                 n = a - (t * a) / i;
             s.style.strokeDashoffset = n;
         };
-        i(), e(window).scroll(i);
-        jQuery(window).on("scroll", function () {
+        (i(), e(window).scroll(i));
+        (jQuery(window).on("scroll", function () {
             jQuery(this).scrollTop() > 50
                 ? jQuery(t).addClass("show")
                 : jQuery(t).removeClass("show");
@@ -109,39 +112,39 @@
                     jQuery("html, body").animate({ scrollTop: 0 }, 750),
                     !1
                 );
-            });
+            }));
     }
-    e("[data-bg-src]").length > 0 &&
+    (e("[data-bg-src]").length > 0 &&
         e("[data-bg-src]").each(function () {
             var t = e(this).attr("data-bg-src");
-            e(this).css("background-image", "url(" + t + ")"),
-                e(this).removeAttr("data-bg-src").addClass("background-image");
+            (e(this).css("background-image", "url(" + t + ")"),
+                e(this).removeAttr("data-bg-src").addClass("background-image"));
         }),
         e("[data-bg-color]").length > 0 &&
             e("[data-bg-color]").each(function () {
                 var t = e(this).attr("data-bg-color");
-                e(this).css("background-color", t),
-                    e(this).removeAttr("data-bg-color");
+                (e(this).css("background-color", t),
+                    e(this).removeAttr("data-bg-color"));
             }),
         e("[data-theme-color]").length > 0 &&
             e("[data-theme-color]").each(function () {
                 var t = e(this).attr("data-theme-color");
-                e(this).get(0).style.setProperty("--theme-color", t),
-                    e(this).removeAttr("data-theme-color");
+                (e(this).get(0).style.setProperty("--theme-color", t),
+                    e(this).removeAttr("data-theme-color"));
             }),
         e("[data-mask-src]").length > 0 &&
             e("[data-mask-src]").each(function () {
                 var t = e(this).attr("data-mask-src");
-                e(this).css({
+                (e(this).css({
                     "mask-image": "url(" + t + ")",
                     "-webkit-mask-image": "url(" + t + ")",
                 }),
                     e(this).addClass("bg-mask"),
-                    e(this).removeAttr("data-mask-src");
+                    e(this).removeAttr("data-mask-src"));
             }),
         e(".center-first").on(
             "init reInit afterChange",
-            function (e, t, s, a) {}
+            function (e, t, s, a) {},
         ),
         e(".th-carousel").each(function () {
             var t = e(this);
@@ -156,16 +159,16 @@
                     '<button type="button" class="slick-next"><i class="' +
                     s("next-arrow") +
                     '"></i></button>';
-            e("[data-slick-next]").each(function () {
+            (e("[data-slick-next]").each(function () {
                 e(this).on("click", function (t) {
-                    t.preventDefault(),
-                        e(e(this).data("slick-next")).slick("slickNext");
+                    (t.preventDefault(),
+                        e(e(this).data("slick-next")).slick("slickNext"));
                 });
             }),
                 e("[data-slick-prev]").each(function () {
                     e(this).on("click", function (t) {
-                        t.preventDefault(),
-                            e(e(this).data("slick-prev")).slick("slickPrev");
+                        (t.preventDefault(),
+                            e(e(this).data("slick-prev")).slick("slickPrev"));
                     });
                 }),
                 1 == s("arrows") &&
@@ -289,8 +292,8 @@
                             },
                         },
                     ],
-                });
-        });
+                }));
+        }));
     e(".slick-marquee").slick({
         speed: 5e3,
         autoplay: !0,
@@ -306,7 +309,7 @@
         pauseOnFocus: !0,
         swipeToSlide: !0,
     });
-    e("[data-ani-duration]").each(function () {
+    (e("[data-ani-duration]").each(function () {
         var t = e(this).data("ani-duration");
         e(this).css("animation-duration", t);
     }),
@@ -316,13 +319,13 @@
         }),
         e("[data-ani]").each(function () {
             var t = e(this).data("ani");
-            e(this).addClass(t),
-                e(".slick-current [data-ani]").addClass("th-animated");
+            (e(this).addClass(t),
+                e(".slick-current [data-ani]").addClass("th-animated"));
         }),
         e(".th-carousel").on("afterChange", function (t, s, a, i) {
-            e(s.$slides).find("[data-ani]").removeClass("th-animated"),
-                e(s.$slides[a]).find("[data-ani]").addClass("th-animated");
-        });
+            (e(s.$slides).find("[data-ani]").removeClass("th-animated"),
+                e(s.$slides[a]).find("[data-ani]").addClass("th-animated"));
+        }));
     var n,
         o,
         r,
@@ -338,85 +341,88 @@
             function a(a) {
                 a = a.split(",");
                 for (var i = 0; i < a.length; i++)
-                    (t = c + " " + a[i]),
+                    ((t = c + " " + a[i]),
                         e(t).val()
                             ? (e(t).removeClass("is-invalid"), (s = !0))
-                            : (e(t).addClass("is-invalid"), (s = !1));
+                            : (e(t).addClass("is-invalid"), (s = !1)));
             }
-            a(
-                '[name="name"],[name="email"],[name="subject"],[name="number"],[name="message"]'
+            (a(
+                '[name="name"],[name="email"],[name="subject"],[name="number"],[name="message"]',
             ),
                 e(d).val() &&
                 e(d)
                     .val()
                     .match(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/)
                     ? (e(d).removeClass("is-invalid"), (s = !0))
-                    : (e(d).addClass("is-invalid"), (s = !1));
+                    : (e(d).addClass("is-invalid"), (s = !1)));
             return s;
         })() &&
             jQuery
                 .ajax({ url: e(c).attr("action"), data: t, type: "POST" })
                 .done(function (t) {
-                    u.removeClass("error"),
+                    (u.removeClass("error"),
                         u.addClass("success"),
                         u.text(t),
                         e(
-                            c + ' input:not([type="submit"]),' + c + " textarea"
-                        ).val("");
+                            c +
+                                ' input:not([type="submit"]),' +
+                                c +
+                                " textarea",
+                        ).val(""));
                 })
                 .fail(function (e) {
-                    u.removeClass("success"),
+                    (u.removeClass("success"),
                         u.addClass("error"),
                         "" !== e.responseText
                             ? u.html(e.responseText)
                             : u.html(
-                                  "Oops! An error occured and your message could not be sent."
-                              );
+                                  "Oops! An error occured and your message could not be sent.",
+                              ));
                 });
     }
-    e(c).on("submit", function (e) {
-        e.preventDefault(), p();
+    (e(c).on("submit", function (e) {
+        (e.preventDefault(), p());
     }),
         (n = ".popup-search-box"),
         (o = ".searchClose"),
         (r = "show"),
         e(".searchBoxToggler").on("click", function (t) {
-            t.preventDefault(), e(n).addClass(r);
+            (t.preventDefault(), e(n).addClass(r));
         }),
         e(n).on("click", function (t) {
-            t.stopPropagation(), e(n).removeClass(r);
+            (t.stopPropagation(), e(n).removeClass(r));
         }),
         e(n)
             .find("form")
             .on("click", function (t) {
-                t.stopPropagation(), e(n).addClass(r);
+                (t.stopPropagation(), e(n).addClass(r));
             }),
         e(o).on("click", function (t) {
-            t.preventDefault(), t.stopPropagation(), e(n).removeClass(r);
+            (t.preventDefault(), t.stopPropagation(), e(n).removeClass(r));
         }),
         (l = ".popup-subscribe-area"),
         e(".popupClose").on("click", function (t) {
             e(l).addClass("hide");
         }),
         e("#destroyPopup").on("click", function () {
-            e(".popup-subscribe-area").addClass("hide"),
-                localStorage.setItem("popupDestroyed", "true");
-        });
+            (e(".popup-subscribe-area").addClass("hide"),
+                localStorage.setItem("popupDestroyed", "true"));
+        }));
     function h(t, s, a, i) {
-        e(s).on("click", function (s) {
-            s.preventDefault(), e(t).addClass(i);
+        (e(s).on("click", function (s) {
+            (s.preventDefault(), e(t).addClass(i));
         }),
             e(t).on("click", function (s) {
-                s.stopPropagation(), e(t).removeClass(i);
+                (s.stopPropagation(), e(t).removeClass(i));
             }),
             e(t + " > div").on("click", function (s) {
-                s.stopPropagation(), e(t).addClass(i);
+                (s.stopPropagation(), e(t).addClass(i));
             }),
             e(a).on("click", function (s) {
-                s.preventDefault(), s.stopPropagation(), e(t).removeClass(i);
-            });
+                (s.preventDefault(), s.stopPropagation(), e(t).removeClass(i));
+            }));
     }
-    "true" === localStorage.getItem("popupDestroyed") &&
+    ("true" === localStorage.getItem("popupDestroyed") &&
         e(".popup-subscribe-area").hide(),
         h(".sidemenu-1", ".sideMenuToggler", ".sideMenuCls", "show"),
         h(".cart-side-menu", ".cartToggler", ".sideMenuCls", "show"),
@@ -426,16 +432,560 @@
             removalDelay: 260,
             gallery: { enabled: !0 },
         }),
-        e(".popup-video").magnificPopup({ type: "iframe" }),
+        e(".popup-video").magnificPopup({
+            type: "inline",
+            midClick: true,
+            closeBtnInside: true,
+            closeMarkup:
+                '<button title="%title%" type="button" class="mfp-close">×</button>',
+            removalDelay: 300,
+            mainClass: "mfp-fade",
+
+            callbacks: {
+                open: function () {
+                    console.log("🎬 Video player opening...");
+
+                    // Check if Plyr is loaded
+                    if (typeof Plyr === "undefined") {
+                        console.error("❌ Plyr is not loaded!");
+                        alert(
+                            "Video player could not be loaded. Please refresh the page.",
+                        );
+                        return;
+                    }
+
+                    console.log("✅ Plyr library loaded");
+                    const $video = this.content.find("video.plyr-video");
+                    console.log("📹 Videos found:", $video.length);
+
+                    // Wait for popup animation and DOM to settle
+                    setTimeout(() => {
+                        $video.each(function () {
+                            const videoElement = this;
+                            const id = e(this).data("video-id");
+
+                            console.log("🔧 Initializing video ID:", id);
+
+                            // Destroy existing player instance to prevent conflicts
+                            if (players[id]) {
+                                console.log(
+                                    "♻️ Destroying previous player instance:",
+                                    id,
+                                );
+                                players[id].destroy();
+                                delete players[id];
+                            }
+
+                            // Create professional Plyr instance with ALL controls EXCEPT download
+                            try {
+                                players[id] = new Plyr(videoElement, {
+                                    // ✅ FULL PROFESSIONAL CONTROLS (NO DOWNLOAD)
+                                    controls: [
+                                        "play-large", // Large center play button
+                                        "restart", // Restart from beginning
+                                        "rewind", // Rewind 10 seconds
+                                        "play", // Play/pause toggle
+                                        "fast-forward", // Forward 10 seconds
+                                        "progress", // Progress bar with scrubber
+                                        "current-time", // Current playback time
+                                        "duration", // Total video duration
+                                        "mute", // Mute/unmute toggle
+                                        "volume", // Volume slider
+                                        "captions", // Captions toggle (if available)
+                                        "settings", // Settings menu (quality, speed, loop)
+                                        "pip", // Picture-in-picture
+                                        "airplay", // AirPlay (Safari only)
+                                        "fullscreen", // Fullscreen toggle
+                                        // ❌ 'download' is intentionally EXCLUDED
+                                    ],
+
+                                    // ✅ SETTINGS MENU OPTIONS (NO DOWNLOAD)
+                                    settings: [
+                                        "captions",
+                                        "quality",
+                                        "speed",
+                                        "loop",
+                                    ],
+
+                                    // ========================================
+                                    // PLAYBACK SETTINGS
+                                    // ========================================
+                                    autoplay: false,
+                                    autopause: true,
+                                    seekTime: 10, // Seek forward/backward by 10 seconds
+                                    volume: 1, // Default volume (0-1)
+                                    muted: false, // Start unmuted
+                                    clickToPlay: true, // Click video to play/pause
+                                    disableContextMenu: true, // 🔒 DISABLE right-click menu
+
+                                    // ========================================
+                                    // DISPLAY SETTINGS
+                                    // ========================================
+                                    hideControls: true, // Auto-hide controls
+                                    resetOnEnd: false, // Don't reset when video ends
+                                    displayDuration: true, // Show total duration
+                                    invertTime: true, // Show time remaining
+                                    toggleInvert: true, // Allow toggling time display
+
+                                    // ========================================
+                                    // KEYBOARD CONTROLS
+                                    // ========================================
+                                    keyboard: {
+                                        focused: true, // Enable keyboard shortcuts when focused
+                                        global: false, // Don't allow global keyboard shortcuts
+                                    },
+
+                                    // ========================================
+                                    // TOOLTIPS & HELP
+                                    // ========================================
+                                    tooltips: {
+                                        controls: true, // Show tooltips on controls
+                                        seek: true, // Show seek tooltips
+                                    },
+
+                                    // ========================================
+                                    // FULLSCREEN SETTINGS
+                                    // ========================================
+                                    fullscreen: {
+                                        enabled: true, // Enable fullscreen
+                                        fallback: true, // Use fallback for browsers without native support
+                                        iosNative: true, // Use native iOS fullscreen
+                                        container: null, // Fullscreen container (null = use player)
+                                    },
+
+                                    // ========================================
+                                    // VIDEO RATIO
+                                    // ========================================
+                                    ratio: "16:9", // Aspect ratio
+
+                                    // ========================================
+                                    // PLAYBACK SPEED OPTIONS
+                                    // ========================================
+                                    speed: {
+                                        selected: 1, // Default speed
+                                        options: [
+                                            0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75,
+                                            2, 2.5, 3,
+                                        ],
+                                    },
+
+                                    // ========================================
+                                    // QUALITY OPTIONS (Multi-resolution)
+                                    // ========================================
+                                    quality: {
+                                        default: 720, // Default quality
+                                        options: [1080, 720, 480, 360, 240],
+                                        forced: false, // Allow quality change
+                                        onChange: (quality) => {
+                                            console.log(
+                                                "🎞️ Quality changed to:",
+                                                quality,
+                                            );
+                                        },
+                                    },
+
+                                    // ========================================
+                                    // LOOP SETTING
+                                    // ========================================
+                                    loop: {
+                                        active: false, // Don't loop by default
+                                    },
+
+                                    // ========================================
+                                    // CAPTIONS/SUBTITLES
+                                    // ========================================
+                                    captions: {
+                                        active: false, // Captions off by default
+                                        language: "auto", // Auto-detect language
+                                        update: true, // Update captions dynamically
+                                    },
+
+                                    // ========================================
+                                    // PREVIEW THUMBNAILS (Hover on progress bar)
+                                    // ========================================
+                                    previewThumbnails: {
+                                        enabled: false, // Disable for now (requires sprite)
+                                        src: "", // Path to thumbnail sprite
+                                    },
+
+                                    // ========================================
+                                    // 🔒 STORAGE (Save user preferences - NO DOWNLOAD)
+                                    // ========================================
+                                    storage: {
+                                        enabled: true, // Remember user settings
+                                        key: "plyr-preferences-" + id,
+                                    },
+
+                                    // ========================================
+                                    // MARKERS (Add chapters/markers)
+                                    // ========================================
+                                    markers: {
+                                        enabled: false, // Enable markers
+                                        points: [], // Array of marker points
+                                    },
+
+                                    // ========================================
+                                    // LOADING & ICONS
+                                    // ========================================
+                                    loadSprite: true,
+                                    iconUrl:
+                                        "https://cdn.plyr.io/3.7.8/plyr.svg",
+                                    blankVideo:
+                                        "https://cdn.plyr.io/static/blank.mp4",
+
+                                    // ========================================
+                                    // CUSTOM LABELS & i18n
+                                    // ========================================
+                                    i18n: {
+                                        restart: "Restart",
+                                        rewind: "Rewind {seektime}s",
+                                        play: "Play",
+                                        pause: "Pause",
+                                        fastForward: "Forward {seektime}s",
+                                        seek: "Seek",
+                                        seekLabel:
+                                            "{currentTime} of {duration}",
+                                        played: "Played",
+                                        buffered: "Buffered",
+                                        currentTime: "Current time",
+                                        duration: "Duration",
+                                        volume: "Volume",
+                                        mute: "Mute",
+                                        unmute: "Unmute",
+                                        enableCaptions: "Enable captions",
+                                        disableCaptions: "Disable captions",
+                                        download: "Download", // Will be hidden anyway
+                                        enterFullscreen: "Enter fullscreen",
+                                        exitFullscreen: "Exit fullscreen",
+                                        frameTitle: "Player for {title}",
+                                        captions: "Captions",
+                                        settings: "Settings",
+                                        pip: "PIP",
+                                        menuBack: "Go back to previous menu",
+                                        speed: "Speed",
+                                        normal: "Normal",
+                                        quality: "Quality",
+                                        loop: "Loop",
+                                    },
+
+                                    // ========================================
+                                    // DEBUG MODE
+                                    // ========================================
+                                    debug: false, // Set to true for debugging
+
+                                    // ========================================
+                                    // 🔒 DISABLE DOWNLOAD & CONTEXT MENU
+                                    // ========================================
+                                    listeners: {
+                                        seek: null,
+                                        play: null,
+                                        pause: null,
+                                        restart: null,
+                                        rewind: null,
+                                        fastForward: null,
+                                        mute: null,
+                                        volume: null,
+                                        captions: null,
+                                        download: (e) => {
+                                            // 🔒 BLOCK DOWNLOAD ATTEMPTS
+                                            e.preventDefault();
+                                            console.warn(
+                                                "🚫 Download blocked - Company policy",
+                                            );
+                                            return false;
+                                        },
+                                        fullscreen: null,
+                                        pip: null,
+                                        airplay: null,
+                                        speed: null,
+                                        quality: null,
+                                        loop: null,
+                                        language: null,
+                                    },
+                                });
+
+                                console.log(
+                                    "✅ Professional Plyr player initialized for video:",
+                                    id,
+                                );
+
+                                // ========================================
+                                // EVENT LISTENERS
+                                // ========================================
+
+                                // Event: When player is ready
+                                players[id].on("ready", (event) => {
+                                    console.log("✅ Player ready:", id);
+                                    const instance = event.detail.plyr;
+
+                                    // 🔒 HIDE DOWNLOAD BUTTON (extra security)
+                                    const downloadBtn =
+                                        instance.elements.container.querySelector(
+                                            '[data-plyr="download"]',
+                                        );
+                                    if (downloadBtn) {
+                                        downloadBtn.remove();
+                                        console.log(
+                                            "🔒 Download button removed",
+                                        );
+                                    }
+
+                                    // Auto-play when ready
+                                    instance.play().catch((err) => {
+                                        console.warn(
+                                            "⚠️ Autoplay prevented by browser:",
+                                            err,
+                                        );
+                                    });
+                                });
+
+                                // Event: When video starts playing
+                                players[id].on("play", () => {
+                                    console.log("▶️ Video playing:", id);
+                                });
+
+                                // Event: When video is paused
+                                players[id].on("pause", () => {
+                                    console.log("⏸️ Video paused:", id);
+                                });
+
+                                // Event: When video ends
+                                players[id].on("ended", () => {
+                                    console.log("⏹️ Video ended:", id);
+                                });
+
+                                // Event: When entering fullscreen
+                                players[id].on("enterfullscreen", () => {
+                                    console.log("🖥️ Fullscreen entered:", id);
+                                });
+
+                                // Event: When exiting fullscreen
+                                players[id].on("exitfullscreen", () => {
+                                    console.log("🔲 Fullscreen exited:", id);
+                                });
+
+                                // Event: Volume change
+                                players[id].on("volumechange", (event) => {
+                                    const volume = event.detail.plyr.volume;
+                                    console.log(
+                                        "🔊 Volume:",
+                                        Math.round(volume * 100) + "%",
+                                    );
+                                });
+
+                                // Event: Speed change
+                                players[id].on("ratechange", (event) => {
+                                    const speed = event.detail.plyr.speed;
+                                    console.log(
+                                        "⚡ Playback speed:",
+                                        speed + "x",
+                                    );
+                                });
+
+                                // Event: Quality change
+                                players[id].on("qualitychange", (event) => {
+                                    const quality = event.detail.plyr.quality;
+                                    console.log(
+                                        "🎞️ Quality changed to:",
+                                        quality + "p",
+                                    );
+                                });
+
+                                // Event: Seeking
+                                players[id].on("seeking", () => {
+                                    console.log("⏩ User seeking...");
+                                });
+
+                                // Event: Seeked (completed)
+                                players[id].on("seeked", () => {
+                                    console.log("✅ Seek completed");
+                                });
+
+                                // Event: Time update (for analytics & progress tracking)
+                                players[id].on("timeupdate", (event) => {
+                                    const currentTime =
+                                        event.detail.plyr.currentTime;
+                                    const duration = event.detail.plyr.duration;
+                                    const progress =
+                                        (currentTime / duration) * 100;
+
+                                    // Track engagement milestones
+                                    if (
+                                        progress >= 25 &&
+                                        !players[id].milestone25
+                                    ) {
+                                        console.log("📊 25% watched");
+                                        players[id].milestone25 = true;
+                                        // Send analytics event here
+                                    }
+                                    if (
+                                        progress >= 50 &&
+                                        !players[id].milestone50
+                                    ) {
+                                        console.log("📊 50% watched");
+                                        players[id].milestone50 = true;
+                                        // Send analytics event here
+                                    }
+                                    if (
+                                        progress >= 75 &&
+                                        !players[id].milestone75
+                                    ) {
+                                        console.log("📊 75% watched");
+                                        players[id].milestone75 = true;
+                                        // Send analytics event here
+                                    }
+                                    if (
+                                        progress >= 95 &&
+                                        !players[id].milestone95
+                                    ) {
+                                        console.log(
+                                            "📊 95% watched (completion)",
+                                        );
+                                        players[id].milestone95 = true;
+                                        // Send analytics event here
+                                    }
+                                });
+
+                                // Event: Picture-in-picture
+                                players[id].on("enterpip", () => {
+                                    console.log("📺 PIP mode entered");
+                                });
+
+                                players[id].on("leavepip", () => {
+                                    console.log("📺 PIP mode exited");
+                                });
+
+                                // Event: Error handling
+                                players[id].on("error", (event) => {
+                                    console.error(
+                                        "❌ Player error:",
+                                        event.detail,
+                                    );
+
+                                    const errorCode = event.detail.code;
+                                    let errorMessage =
+                                        "An error occurred while playing the video.";
+
+                                    switch (errorCode) {
+                                        case 1:
+                                            errorMessage =
+                                                "Video loading was aborted.";
+                                            break;
+                                        case 2:
+                                            errorMessage =
+                                                "Network error occurred.";
+                                            break;
+                                        case 3:
+                                            errorMessage =
+                                                "Video decoding failed.";
+                                            break;
+                                        case 4:
+                                            errorMessage =
+                                                "Video format not supported.";
+                                            break;
+                                    }
+
+                                    alert(
+                                        errorMessage +
+                                            " Please try again or contact support.",
+                                    );
+                                });
+
+                                // 🔒 PREVENT DOWNLOAD ATTEMPTS VIA CONTEXT MENU
+                                videoElement.addEventListener(
+                                    "contextmenu",
+                                    (e) => {
+                                        e.preventDefault();
+                                        console.warn(
+                                            "🚫 Right-click disabled - Company video",
+                                        );
+                                        return false;
+                                    },
+                                );
+
+                                // 🔒 PREVENT DRAG & DROP DOWNLOAD
+                                videoElement.addEventListener(
+                                    "dragstart",
+                                    (e) => {
+                                        e.preventDefault();
+                                        console.warn(
+                                            "🚫 Drag disabled - Company video",
+                                        );
+                                        return false;
+                                    },
+                                );
+
+                                // 🔒 DISABLE VIDEO SELECTION
+                                videoElement.style.userSelect = "none";
+                                videoElement.style.webkitUserSelect = "none";
+                                videoElement.style.mozUserSelect = "none";
+                                videoElement.style.msUserSelect = "none";
+                            } catch (error) {
+                                console.error(
+                                    "❌ Error initializing player:",
+                                    error,
+                                );
+                                alert(
+                                    "Video player initialization failed. Please refresh the page.",
+                                );
+                            }
+                        });
+                    }, 150);
+                },
+
+                beforeClose: function () {
+                    console.log("🔄 Closing video player...");
+                },
+
+                close: function () {
+                    console.log("❌ Video player closed");
+
+                    // Pause and reset all active players
+                    Object.keys(players).forEach((id) => {
+                        const player = players[id];
+
+                        if (player && typeof player.pause === "function") {
+                            console.log("⏸️ Cleaning up video:", id);
+
+                            // Pause playback
+                            player.pause();
+
+                            // Reset to beginning
+                            player.currentTime = 0;
+
+                            // Reset milestone tracking
+                            player.milestone25 = false;
+                            player.milestone50 = false;
+                            player.milestone75 = false;
+                            player.milestone95 = false;
+
+                            // Exit fullscreen if active
+                            if (player.fullscreen.active) {
+                                player.fullscreen.exit();
+                            }
+
+                            // Exit PIP if active
+                            if (player.pip && player.pip.active) {
+                                player.pip.exit();
+                            }
+                        }
+                    });
+                },
+
+                afterClose: function () {
+                    console.log("✅ Video player fully closed and cleaned up");
+                },
+            },
+        }),
         e(".popup-content").magnificPopup({ type: "inline", midClick: !0 }),
         e(".popup-content").on("click", function () {
             e(".slick-slider").slick("refresh");
-        });
+        }));
     e("html").addClass("dark-theme").attr("data-theme", "dark");
     localStorage.setItem("themePreference", "dark");
     e(".theme-toggler, .theme-switcher").off("click").addClass("active");
 
-    e(".print_btn").on("click", function (e) {
+    (e(".print_btn").on("click", function (e) {
         window.print();
     }),
         (e.fn.indicator = function () {
@@ -452,26 +1002,26 @@
                         i = s.css("width"),
                         o = s.position().top + "px",
                         r = s.position().left + "px";
-                    e(window).on("resize", function () {
-                        (o = s.position().top + "px"),
-                            (r = s.position().left + "px");
+                    (e(window).on("resize", function () {
+                        ((o = s.position().top + "px"),
+                            (r = s.position().left + "px"));
                     }),
                         n.get(0).style.setProperty("--height-set", a),
                         n.get(0).style.setProperty("--width-set", i),
                         n.get(0).style.setProperty("--pos-y", o),
-                        n.get(0).style.setProperty("--pos-x", r);
+                        n.get(0).style.setProperty("--pos-x", r));
                 }
-                s.length ? (i = s) : a.length && (i = a),
+                (s.length ? (i = s) : a.length && (i = a),
                     i.on("click", function (t) {
-                        t.preventDefault(),
+                        (t.preventDefault(),
                             e(this).addClass("active"),
                             e(this).siblings(".active").removeClass("active"),
-                            o();
+                            o());
                     }),
                     o(),
                     e(window).on("resize", function () {
                         o();
-                    });
+                    }));
             });
         }),
         e(".indicator-active").length && e(".indicator-active").indicator(),
@@ -486,10 +1036,10 @@
                     (a.on("click", function (t) {
                         t.preventDefault();
                         var a = e(this);
-                        a.addClass("active").siblings().removeClass("active"),
+                        (a.addClass("active").siblings().removeClass("active"),
                             s.sliderTab
                                 ? e(n).slick("slickGoTo", a.data("slide-go-to"))
-                                : r();
+                                : r());
                     }),
                     s.sliderTab)
                 ) {
@@ -497,23 +1047,23 @@
                         o = 0;
                     a.each(function () {
                         var a = e(this);
-                        a.attr("data-slide-go-to", o),
+                        (a.attr("data-slide-go-to", o),
                             o++,
                             a.hasClass("active") &&
                                 e(n).slick("slickGoTo", a.data("slide-go-to")),
                             e(n).on("beforeChange", function (e, a, i, n) {
-                                t
+                                (t
                                     .find(
                                         s.tabButton +
                                             '[data-slide-go-to="' +
                                             n +
-                                            '"]'
+                                            '"]',
                                     )
                                     .addClass("active")
                                     .siblings()
                                     .removeClass("active"),
-                                    r();
-                            });
+                                    r());
+                            }));
                     });
                 }
                 function r() {
@@ -522,7 +1072,7 @@
                         r = n.css("width"),
                         l = n.position().top + "px",
                         c = n.position().left + "px";
-                    i.get(0).style.setProperty("--height-set", o),
+                    (i.get(0).style.setProperty("--height-set", o),
                         i.get(0).style.setProperty("--width-set", r),
                         i.get(0).style.setProperty("--pos-y", l),
                         i.get(0).style.setProperty("--pos-x", c),
@@ -532,14 +1082,14 @@
                                   .removeClass("center")
                                   .removeClass("end")
                             : e(a).last().position().left == n.position().left
-                            ? i
-                                  .addClass("end")
-                                  .removeClass("center")
-                                  .removeClass("start")
-                            : i
-                                  .addClass("center")
-                                  .removeClass("start")
-                                  .removeClass("end");
+                              ? i
+                                    .addClass("end")
+                                    .removeClass("center")
+                                    .removeClass("start")
+                              : i
+                                    .addClass("center")
+                                    .removeClass("start")
+                                    .removeClass("end"));
                 }
                 r();
             });
@@ -555,7 +1105,7 @@
                     filter: "*",
                     masonry: {},
                 });
-                e(".filter-menu-active").on("click", "button", function () {
+                (e(".filter-menu-active").on("click", "button", function () {
                     var s = e(this).attr("data-filter");
                     t.isotope({ filter: s });
                 }),
@@ -563,13 +1113,13 @@
                         "click",
                         "button",
                         function (t) {
-                            t.preventDefault(),
+                            (t.preventDefault(),
                                 e(this).addClass("active"),
                                 e(this)
                                     .siblings(".active")
-                                    .removeClass("active");
-                        }
-                    );
+                                    .removeClass("active"));
+                        },
+                    ));
             }
         }),
         e(".filter-active-cat1").imagesLoaded(function () {
@@ -579,7 +1129,7 @@
                     filter: ".active-filter",
                     masonry: { columnWidth: 1 },
                 });
-                e(".filter-menu-active1").on("click", "button", function () {
+                (e(".filter-menu-active1").on("click", "button", function () {
                     var s = e(this).attr("data-filter");
                     t.isotope({ filter: s });
                 }),
@@ -587,13 +1137,13 @@
                         "click",
                         "button",
                         function (t) {
-                            t.preventDefault(),
+                            (t.preventDefault(),
                                 e(this).addClass("active"),
                                 e(this)
                                     .siblings(".active")
-                                    .removeClass("active");
-                        }
-                    );
+                                    .removeClass("active"));
+                        },
+                    ));
             }
         }),
         e(".counter-number").counterUp({ delay: 5, time: 600 }),
@@ -603,8 +1153,8 @@
             max: 100,
             values: [10, 75],
             slide: function (t, s) {
-                e(".from").text("$" + s.values[0]),
-                    e(".to").text("$" + s.values[1]);
+                (e(".from").text("$" + s.values[0]),
+                    e(".to").text("$" + s.values[1]));
             },
         }),
         e(".from").text("$" + e(".price_slider").slider("values", 0)),
@@ -619,30 +1169,30 @@
                       .slideUp();
         }),
         e(".woocommerce-form-login-toggle a").on("click", function (t) {
-            t.preventDefault(), e(".woocommerce-form-login").slideToggle();
+            (t.preventDefault(), e(".woocommerce-form-login").slideToggle());
         }),
         e(".woocommerce-form-coupon-toggle a").on("click", function (t) {
-            t.preventDefault(), e(".woocommerce-form-coupon").slideToggle();
+            (t.preventDefault(), e(".woocommerce-form-coupon").slideToggle());
         }),
         e(".shipping-calculator-button").on("click", function (t) {
-            t.preventDefault(),
-                e(this).next(".shipping-calculator-form").slideToggle();
+            (t.preventDefault(),
+                e(this).next(".shipping-calculator-form").slideToggle());
         }),
         e('.wc_payment_methods input[type="radio"]:checked')
             .siblings(".payment_box")
             .show(),
         e('.wc_payment_methods input[type="radio"]').each(function () {
             e(this).on("change", function () {
-                e(".payment_box").slideUp(),
-                    e(this).siblings(".payment_box").slideDown();
+                (e(".payment_box").slideUp(),
+                    e(this).siblings(".payment_box").slideDown());
             });
         }),
         e(".rating-select .stars a").each(function () {
             e(this).on("click", function (t) {
-                t.preventDefault(),
+                (t.preventDefault(),
                     e(this).siblings().removeClass("active"),
                     e(this).parent().parent().addClass("selected"),
-                    e(this).addClass("active");
+                    e(this).addClass("active"));
             });
         }),
         e(".quantity-plus").each(function () {
@@ -666,7 +1216,7 @@
             function (e) {
                 e.preventDefault();
             },
-            !1
+            !1,
         ),
         (document.onkeydown = function (e) {
             return (
@@ -677,6 +1227,5 @@
                 (!e.ctrlKey || e.keyCode != "U".charCodeAt(0)) &&
                 void 0
             );
-        });
+        }));
 })(jQuery);
-

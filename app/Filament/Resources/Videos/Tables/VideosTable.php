@@ -56,7 +56,6 @@ class VideosTable
             ImageColumn::make('image')
                 ->label('Thumbnail')
                 ->circular()
-                ->defaultImageUrl(url('/images/default-video-thumbnail.png'))
                 ->imageSize(60),
 
             TextColumn::make('title')
@@ -70,32 +69,13 @@ class VideosTable
                 })
                 ->wrap(),
 
-            TextColumn::make('category.name')
-                ->label('Category')
+            TextColumn::make('post.title')
+                ->label('Post')
                 ->searchable()
                 ->sortable()
                 ->badge()
-                ->color('info'),
-
-            TextColumn::make('author.user.name')
-                ->label('Author')
-                ->searchable()
-                ->sortable()
-                ->default('Unknown'),
-
-            TextColumn::make('region.name')
-                ->label('Region')
-                ->searchable()
-                ->sortable()
-                ->badge()
+                ->limit(50)
                 ->color('success'),
-
-            TextColumn::make('duration')
-                ->label('Duration')
-                ->numeric()
-                ->sortable()
-                ->formatStateUsing(fn(string $state): string => self::formatDuration((int) $state))
-                ->alignCenter(),
 
             TextColumn::make('flag')
                 ->label('Status')
@@ -169,17 +149,9 @@ class VideosTable
                 ->native(false)
                 ->multiple(),
 
-            SelectFilter::make('category')
-                ->relationship('category', 'name')
-                ->label('Category')
-                ->searchable()
-                ->preload()
-                ->native(false)
-                ->multiple(),
-
-            SelectFilter::make('region')
-                ->relationship('region', 'name')
-                ->label('Region')
+            SelectFilter::make('post')
+                ->relationship('post', 'title')
+                ->label('Post')
                 ->searchable()
                 ->preload()
                 ->native(false)
