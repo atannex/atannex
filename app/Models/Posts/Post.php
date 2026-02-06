@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Post extends Model implements Commentable, Rateably, Likeably
 {
@@ -81,6 +82,13 @@ class Post extends Model implements Commentable, Rateably, Likeably
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+    /**
+     * A post can have many videos.
+     */
+    public function videos(): HasMany
+    {
+        return $this->hasMany(Video::class);
     }
 
     /**

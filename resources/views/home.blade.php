@@ -13,7 +13,7 @@
 <x-home.news :byNews="$byNews" />
 
 
-<x-home.video :byNews="$byNews" />
+<x-home.video :videos="$videos" />
 
 <section class="mt-4 space-bottom">
     <div class="container">
