@@ -456,3 +456,99 @@
 
 </style>
 
+@if($videos->isNotEmpty())
+<div class="mb-4 space dark-theme bg-title-dark">
+    <div class="container">
+        <h2 class="sec-title has-line">
+            {{ __('Latest Videos') }}
+        </h2>
+        <div class="row">
+            <div class="col-xl-4 col-lg-2">
+                <div class="blog-tab" data-asnavfor=".blog-tab-slide">
+
+                    @foreach ($videos as $video)
+                    <div class="tab-btn {{ $loop->first ? 'active' : '' }}">
+                        <div class="blog-style2">
+                            <div class="blog-img img-100">
+                                <img src="{{ asset('storage/' . ($video->image ?? $video->post->image)) }}" alt="{{ $video->title ?? $video->post->title }}">
+
+                                <a href="#video-popup-{{ $video->id }}" class="play-btn popup-video" aria-label="Play video">
+                                    <i class="fas fa-play"></i>
+                                </a>
+                            </div>
+
+                            <div class="blog-content">
+                                <a href="{{ route('page.index', ['slug' => $video->post->category->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
+                                    {{ $video->post->category->name }}
+                                </a>
+
+                                <h3 class="box-title-20">
+                                    {{ Str::limit($video->title ?? $video->post->title, 55) }}
+                                </h3>
+                                <div class="blog-meta">
+                                    <a href="{{ route('page.index', $video->post->published_at->format('Y/m')) }}">
+                                        <i class="fal fa-calendar-days"></i>
+                                        {{ ($video->published_at ?? $video->post->published_at)->format('d M, Y') }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+
+                </div>
+            </div>
+            <div class="col-xl-8 col-lg-10">
+                <div class="blog-tab-slide th-carousel" data-slide-show="1" data-arrows="true" data-dots="false">
+                    @foreach ($videos as $video)
+                    <div>
+                        <div class="blog-style8">
+                            <div class="blog-img">
+                                <img src="{{ asset('storage/' . ($video->image ?? $video->post->image)) }}" alt="{{ $video->title ?? $video->post->title }}" class="img-fluid">
+
+                                <a href="#video-popup-{{ $video->id }}" class="play-btn popup-video" aria-label="Play {{ $video->title ?? $video->post->title }}">
+                                    <i class="fas fa-play"></i>
+                                </a>
+                            </div>
+                            <h3 class="box-title-30">
+                                <a href="{{ route('page.index', ['slug' => $video->post->slug_path]) }}" class="hover-line">
+                                    {{ Str::limit($video->title ?? $video->post->title, 56) }}
+                                </a>
+                            </h3>
+
+                            <div class="blog-meta">
+                                <a data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" href="{{ route('page.index', ['slug' => $video->post->category->slug_path]) }}" class="category">
+                                    {{ $video->post->category->name }}
+                                </a>
+
+                                <a href="{{ route('page.index', ['slug' => $video->post->author->user->slug]) }}">
+                                    <i class="far fa-user"></i>
+                                    By - {{ $video->post->author->user->name }}
+                                </a>
+
+                                <a href="{{ route('page.index', $video->post->published_at->format('Y/m')) }}">
+                                    <i class="fal fa-calendar-days"></i>
+                                    {{ ($video->published_at ?? $video->post->published_at)->format('d M, Y') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@foreach ($videos as $video)
+<div id="video-popup-{{ $video->id }}" class="mfp-hide">
+    <div class="video-inline-wrapper" data-video-title="{{ $video->title ?? $video->post->title }}">
+        <video class="plyr-video" playsinline controlsList="nodownload noremoteplayback" disablePictureInPicture disableRemotePlayback preload="metadata" poster="{{ asset('storage/' . ($video->image ?? $video->post->image)) }}" data-video-id="{{ $video->id }}" data-plyr-config='{"title": "{{ addslashes($video->title ?? $video->post->title) }}"}' oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
+            <source src="{{ asset('storage/' . $video->video_url) }}" type="video/mp4" size="720">
+            {{ __('Your browser does not support the video tag.') }}
+        </video>
+    </div>
+</div>
+@endforeach
+@endif
