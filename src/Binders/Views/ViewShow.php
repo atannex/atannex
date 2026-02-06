@@ -47,7 +47,7 @@ trait ViewShow
             'relatedPosts'      => $this->getPost->hasRelatedPosts($post),
             'medias'            => $this->categoryService->employeeSocial($post->author),
             'icons'             => $icons,
-            'seoTitle'          => seo_title($post->title),
+            'seoTitle'          => seo_title($post->slug),
         ]);
     }
 }

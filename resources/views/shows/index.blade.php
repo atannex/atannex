@@ -1,5 +1,7 @@
 @extends('components.layouts.base')
 
+@section('title', $seoTitle)
+
 @section('og:title', $module->post->title)
 @section('og:description', $module->post->description)
 @section('og:image', asset('storage/' . $module->post->image))

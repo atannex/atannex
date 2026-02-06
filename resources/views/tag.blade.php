@@ -1,6 +1,6 @@
 @extends('components.layouts.page')
 
-@section('og:title', $seoTitle)
+@section('title', $seoTitle)
 
 @section('page')
 

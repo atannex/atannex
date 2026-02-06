@@ -1,6 +1,6 @@
 @extends('components.layouts.guest')
 
-@section('og:title', seo_title())
+@section('title', seo_title())
 
 @section('guest')
 

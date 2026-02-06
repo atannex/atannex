@@ -1,6 +1,6 @@
 @extends('components.layouts.app')
 
-@section('og:title')
+@section('title')
 
 @section('app')
 

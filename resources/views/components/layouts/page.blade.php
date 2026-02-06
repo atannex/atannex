@@ -1,6 +1,6 @@
 @extends('components.layouts.base')
 
-@section('og:title')
+@section('title')
 
 @section('base')
 
