@@ -16,47 +16,49 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- =========================
-         SECURITY & PRIVACY HEADERS (META + CSP hints)
-    ========================== -->
     <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src
-          'self'
-          'unsafe-inline'
-          'unsafe-eval'
-          https://cdnjs.cloudflare.com
-          https://cdn.plyr.io
-          https://www.googletagmanager.com
-          https://www.google-analytics.com
-          https://*.google.com;
-        style-src
-          'self'
-          'unsafe-inline'
-          https://fonts.googleapis.com
-          https://cdn.plyr.io;
-        font-src
-          'self'
-          https://fonts.gstatic.com;
-        img-src
-          'self'
-          data:
-          blob:
-          https:;
-        media-src
-          'self'
-          blob:
-          https:;
-        connect-src
-          'self'
-          blob:
-          https://www.google-analytics.com
-          https://www.googletagmanager.com;
-        frame-src
-          'self'
-          https://www.googletagmanager.com;
-      ">
+    default-src 'self';
+    script-src
+      'self'
+      'unsafe-inline'
+      'unsafe-eval'
+      https://cdnjs.cloudflare.com
+      https://cdn.plyr.io
+      https://www.googletagmanager.com
+      https://www.google-analytics.com
+      https://*.google.com;
+    style-src
+      'self'
+      'unsafe-inline'
+      https://fonts.googleapis.com
+      https://cdn.plyr.io
+      https://cdnjs.cloudflare.com;
+    font-src
+      'self'
+      https://fonts.gstatic.com
+      https://cdnjs.cloudflare.com;
+    img-src
+      'self'
+      data:
+      blob:
+      https:;
+    media-src
+      'self'
+      blob:
+      https:
+      data:;
+    connect-src
+      'self'
+      blob:
+      https://www.google-analytics.com
+      https://www.googletagmanager.com;
+    frame-src
+      'self'
+      https://www.googletagmanager.com;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+  ">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
@@ -249,6 +251,7 @@
     @endverbatim
 
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.2.0/magnific-popup.min.css">
 
     <!-- =========================
          STYLES & SCRIPTS
