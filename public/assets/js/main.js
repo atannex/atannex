@@ -432,551 +432,87 @@
             removalDelay: 260,
             gallery: { enabled: !0 },
         }),
+
+        // ============================================
+        // ✅ SIMPLIFIED VIDEO POPUP INITIALIZATION
+        // ============================================
         e(".popup-video").magnificPopup({
-            type: "inline",
+            type: 'inline',
             midClick: true,
-            closeBtnInside: true,
-            closeMarkup:
-                '<button title="%title%" type="button" class="mfp-close">×</button>',
             removalDelay: 300,
-            mainClass: "mfp-fade",
+            mainClass: 'mfp-fade',
 
             callbacks: {
-                open: function () {
-                    console.log("🎬 Video player opening...");
+                open: function() {
+                    console.log("✅ Popup opened");
 
-                    // Check if Plyr is loaded
-                    if (typeof Plyr === "undefined") {
-                        console.error("❌ Plyr is not loaded!");
-                        alert(
-                            "Video player could not be loaded. Please refresh the page.",
-                        );
-                        return;
-                    }
+                    const $video = this.content.find('video.plyr-video');
 
-                    console.log("✅ Plyr library loaded");
-                    const $video = this.content.find("video.plyr-video");
-                    console.log("📹 Videos found:", $video.length);
-
-                    // Wait for popup animation and DOM to settle
                     setTimeout(() => {
-                        $video.each(function () {
+                        $video.each(function() {
                             const videoElement = this;
-                            const id = e(this).data("video-id");
+                            const id = e(this).data('video-id');
 
-                            console.log("🔧 Initializing video ID:", id);
-
-                            // Destroy existing player instance to prevent conflicts
+                            // Destroy existing player if any
                             if (players[id]) {
-                                console.log(
-                                    "♻️ Destroying previous player instance:",
-                                    id,
-                                );
                                 players[id].destroy();
-                                delete players[id];
                             }
 
-                            // Create professional Plyr instance with ALL controls EXCEPT download
-                            try {
-                                players[id] = new Plyr(videoElement, {
-                                    // ✅ FULL PROFESSIONAL CONTROLS (NO DOWNLOAD)
-                                    controls: [
-                                        "play-large", // Large center play button
-                                        "restart", // Restart from beginning
-                                        "rewind", // Rewind 10 seconds
-                                        "play", // Play/pause toggle
-                                        "fast-forward", // Forward 10 seconds
-                                        "progress", // Progress bar with scrubber
-                                        "current-time", // Current playback time
-                                        "duration", // Total video duration
-                                        "mute", // Mute/unmute toggle
-                                        "volume", // Volume slider
-                                        "captions", // Captions toggle (if available)
-                                        "settings", // Settings menu (quality, speed, loop)
-                                        "pip", // Picture-in-picture
-                                        "airplay", // AirPlay (Safari only)
-                                        "fullscreen", // Fullscreen toggle
-                                        // ❌ 'download' is intentionally EXCLUDED
-                                    ],
+                            // Create new Plyr player
+                            players[id] = new Plyr(videoElement, {
+                                controls: [
+                                    'play-large',
+                                    'play',
+                                    'progress',
+                                    'current-time',
+                                    'duration',
+                                    'mute',
+                                    'volume',
+                                    'settings',
+                                    'fullscreen'
+                                ],
+                                settings: ['quality', 'speed'],
+                                autoplay: false,
+                                clickToPlay: true,
+                                disableContextMenu: true,
+                                hideControls: true,
+                                tooltips: { controls: true, seek: true },
+                                speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] },
+                                quality: { default: 720, options: [1080, 720, 480, 360] }
+                            });
 
-                                    // ✅ SETTINGS MENU OPTIONS (NO DOWNLOAD)
-                                    settings: [
-                                        "captions",
-                                        "quality",
-                                        "speed",
-                                        "loop",
-                                    ],
-
-                                    // ========================================
-                                    // PLAYBACK SETTINGS
-                                    // ========================================
-                                    autoplay: false,
-                                    autopause: true,
-                                    seekTime: 10, // Seek forward/backward by 10 seconds
-                                    volume: 1, // Default volume (0-1)
-                                    muted: false, // Start unmuted
-                                    clickToPlay: true, // Click video to play/pause
-                                    disableContextMenu: true, // 🔒 DISABLE right-click menu
-
-                                    // ========================================
-                                    // DISPLAY SETTINGS
-                                    // ========================================
-                                    hideControls: true, // Auto-hide controls
-                                    resetOnEnd: false, // Don't reset when video ends
-                                    displayDuration: true, // Show total duration
-                                    invertTime: true, // Show time remaining
-                                    toggleInvert: true, // Allow toggling time display
-
-                                    // ========================================
-                                    // KEYBOARD CONTROLS
-                                    // ========================================
-                                    keyboard: {
-                                        focused: true, // Enable keyboard shortcuts when focused
-                                        global: false, // Don't allow global keyboard shortcuts
-                                    },
-
-                                    // ========================================
-                                    // TOOLTIPS & HELP
-                                    // ========================================
-                                    tooltips: {
-                                        controls: true, // Show tooltips on controls
-                                        seek: true, // Show seek tooltips
-                                    },
-
-                                    // ========================================
-                                    // FULLSCREEN SETTINGS
-                                    // ========================================
-                                    fullscreen: {
-                                        enabled: true, // Enable fullscreen
-                                        fallback: true, // Use fallback for browsers without native support
-                                        iosNative: true, // Use native iOS fullscreen
-                                        container: null, // Fullscreen container (null = use player)
-                                    },
-
-                                    // ========================================
-                                    // VIDEO RATIO
-                                    // ========================================
-                                    ratio: "16:9", // Aspect ratio
-
-                                    // ========================================
-                                    // PLAYBACK SPEED OPTIONS
-                                    // ========================================
-                                    speed: {
-                                        selected: 1, // Default speed
-                                        options: [
-                                            0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75,
-                                            2, 2.5, 3,
-                                        ],
-                                    },
-
-                                    // ========================================
-                                    // QUALITY OPTIONS (Multi-resolution)
-                                    // ========================================
-                                    quality: {
-                                        default: 720, // Default quality
-                                        options: [1080, 720, 480, 360, 240],
-                                        forced: false, // Allow quality change
-                                        onChange: (quality) => {
-                                            console.log(
-                                                "🎞️ Quality changed to:",
-                                                quality,
-                                            );
-                                        },
-                                    },
-
-                                    // ========================================
-                                    // LOOP SETTING
-                                    // ========================================
-                                    loop: {
-                                        active: false, // Don't loop by default
-                                    },
-
-                                    // ========================================
-                                    // CAPTIONS/SUBTITLES
-                                    // ========================================
-                                    captions: {
-                                        active: false, // Captions off by default
-                                        language: "auto", // Auto-detect language
-                                        update: true, // Update captions dynamically
-                                    },
-
-                                    // ========================================
-                                    // PREVIEW THUMBNAILS (Hover on progress bar)
-                                    // ========================================
-                                    previewThumbnails: {
-                                        enabled: false, // Disable for now (requires sprite)
-                                        src: "", // Path to thumbnail sprite
-                                    },
-
-                                    // ========================================
-                                    // 🔒 STORAGE (Save user preferences - NO DOWNLOAD)
-                                    // ========================================
-                                    storage: {
-                                        enabled: true, // Remember user settings
-                                        key: "plyr-preferences-" + id,
-                                    },
-
-                                    // ========================================
-                                    // MARKERS (Add chapters/markers)
-                                    // ========================================
-                                    markers: {
-                                        enabled: false, // Enable markers
-                                        points: [], // Array of marker points
-                                    },
-
-                                    // ========================================
-                                    // LOADING & ICONS
-                                    // ========================================
-                                    loadSprite: true,
-                                    iconUrl:
-                                        "https://cdn.plyr.io/3.7.8/plyr.svg",
-                                    blankVideo:
-                                        "https://cdn.plyr.io/static/blank.mp4",
-
-                                    // ========================================
-                                    // CUSTOM LABELS & i18n
-                                    // ========================================
-                                    i18n: {
-                                        restart: "Restart",
-                                        rewind: "Rewind {seektime}s",
-                                        play: "Play",
-                                        pause: "Pause",
-                                        fastForward: "Forward {seektime}s",
-                                        seek: "Seek",
-                                        seekLabel:
-                                            "{currentTime} of {duration}",
-                                        played: "Played",
-                                        buffered: "Buffered",
-                                        currentTime: "Current time",
-                                        duration: "Duration",
-                                        volume: "Volume",
-                                        mute: "Mute",
-                                        unmute: "Unmute",
-                                        enableCaptions: "Enable captions",
-                                        disableCaptions: "Disable captions",
-                                        download: "Download", // Will be hidden anyway
-                                        enterFullscreen: "Enter fullscreen",
-                                        exitFullscreen: "Exit fullscreen",
-                                        frameTitle: "Player for {title}",
-                                        captions: "Captions",
-                                        settings: "Settings",
-                                        pip: "PIP",
-                                        menuBack: "Go back to previous menu",
-                                        speed: "Speed",
-                                        normal: "Normal",
-                                        quality: "Quality",
-                                        loop: "Loop",
-                                    },
-
-                                    // ========================================
-                                    // DEBUG MODE
-                                    // ========================================
-                                    debug: false, // Set to true for debugging
-
-                                    // ========================================
-                                    // 🔒 DISABLE DOWNLOAD & CONTEXT MENU
-                                    // ========================================
-                                    listeners: {
-                                        seek: null,
-                                        play: null,
-                                        pause: null,
-                                        restart: null,
-                                        rewind: null,
-                                        fastForward: null,
-                                        mute: null,
-                                        volume: null,
-                                        captions: null,
-                                        download: (e) => {
-                                            // 🔒 BLOCK DOWNLOAD ATTEMPTS
-                                            e.preventDefault();
-                                            console.warn(
-                                                "🚫 Download blocked - Company policy",
-                                            );
-                                            return false;
-                                        },
-                                        fullscreen: null,
-                                        pip: null,
-                                        airplay: null,
-                                        speed: null,
-                                        quality: null,
-                                        loop: null,
-                                        language: null,
-                                    },
+                            // Auto-play when ready
+                            players[id].on('ready', () => {
+                                console.log("▶️ Player ready, starting playback");
+                                players[id].play().catch(() => {
+                                    console.log("⚠️ Autoplay blocked by browser");
                                 });
+                            });
 
-                                console.log(
-                                    "✅ Professional Plyr player initialized for video:",
-                                    id,
-                                );
-
-                                // ========================================
-                                // EVENT LISTENERS
-                                // ========================================
-
-                                // Event: When player is ready
-                                players[id].on("ready", (event) => {
-                                    console.log("✅ Player ready:", id);
-                                    const instance = event.detail.plyr;
-
-                                    // 🔒 HIDE DOWNLOAD BUTTON (extra security)
-                                    const downloadBtn =
-                                        instance.elements.container.querySelector(
-                                            '[data-plyr="download"]',
-                                        );
-                                    if (downloadBtn) {
-                                        downloadBtn.remove();
-                                        console.log(
-                                            "🔒 Download button removed",
-                                        );
-                                    }
-
-                                    // Auto-play when ready
-                                    instance.play().catch((err) => {
-                                        console.warn(
-                                            "⚠️ Autoplay prevented by browser:",
-                                            err,
-                                        );
-                                    });
-                                });
-
-                                // Event: When video starts playing
-                                players[id].on("play", () => {
-                                    console.log("▶️ Video playing:", id);
-                                });
-
-                                // Event: When video is paused
-                                players[id].on("pause", () => {
-                                    console.log("⏸️ Video paused:", id);
-                                });
-
-                                // Event: When video ends
-                                players[id].on("ended", () => {
-                                    console.log("⏹️ Video ended:", id);
-                                });
-
-                                // Event: When entering fullscreen
-                                players[id].on("enterfullscreen", () => {
-                                    console.log("🖥️ Fullscreen entered:", id);
-                                });
-
-                                // Event: When exiting fullscreen
-                                players[id].on("exitfullscreen", () => {
-                                    console.log("🔲 Fullscreen exited:", id);
-                                });
-
-                                // Event: Volume change
-                                players[id].on("volumechange", (event) => {
-                                    const volume = event.detail.plyr.volume;
-                                    console.log(
-                                        "🔊 Volume:",
-                                        Math.round(volume * 100) + "%",
-                                    );
-                                });
-
-                                // Event: Speed change
-                                players[id].on("ratechange", (event) => {
-                                    const speed = event.detail.plyr.speed;
-                                    console.log(
-                                        "⚡ Playback speed:",
-                                        speed + "x",
-                                    );
-                                });
-
-                                // Event: Quality change
-                                players[id].on("qualitychange", (event) => {
-                                    const quality = event.detail.plyr.quality;
-                                    console.log(
-                                        "🎞️ Quality changed to:",
-                                        quality + "p",
-                                    );
-                                });
-
-                                // Event: Seeking
-                                players[id].on("seeking", () => {
-                                    console.log("⏩ User seeking...");
-                                });
-
-                                // Event: Seeked (completed)
-                                players[id].on("seeked", () => {
-                                    console.log("✅ Seek completed");
-                                });
-
-                                // Event: Time update (for analytics & progress tracking)
-                                players[id].on("timeupdate", (event) => {
-                                    const currentTime =
-                                        event.detail.plyr.currentTime;
-                                    const duration = event.detail.plyr.duration;
-                                    const progress =
-                                        (currentTime / duration) * 100;
-
-                                    // Track engagement milestones
-                                    if (
-                                        progress >= 25 &&
-                                        !players[id].milestone25
-                                    ) {
-                                        console.log("📊 25% watched");
-                                        players[id].milestone25 = true;
-                                        // Send analytics event here
-                                    }
-                                    if (
-                                        progress >= 50 &&
-                                        !players[id].milestone50
-                                    ) {
-                                        console.log("📊 50% watched");
-                                        players[id].milestone50 = true;
-                                        // Send analytics event here
-                                    }
-                                    if (
-                                        progress >= 75 &&
-                                        !players[id].milestone75
-                                    ) {
-                                        console.log("📊 75% watched");
-                                        players[id].milestone75 = true;
-                                        // Send analytics event here
-                                    }
-                                    if (
-                                        progress >= 95 &&
-                                        !players[id].milestone95
-                                    ) {
-                                        console.log(
-                                            "📊 95% watched (completion)",
-                                        );
-                                        players[id].milestone95 = true;
-                                        // Send analytics event here
-                                    }
-                                });
-
-                                // Event: Picture-in-picture
-                                players[id].on("enterpip", () => {
-                                    console.log("📺 PIP mode entered");
-                                });
-
-                                players[id].on("leavepip", () => {
-                                    console.log("📺 PIP mode exited");
-                                });
-
-                                // Event: Error handling
-                                players[id].on("error", (event) => {
-                                    console.error(
-                                        "❌ Player error:",
-                                        event.detail,
-                                    );
-
-                                    const errorCode = event.detail.code;
-                                    let errorMessage =
-                                        "An error occurred while playing the video.";
-
-                                    switch (errorCode) {
-                                        case 1:
-                                            errorMessage =
-                                                "Video loading was aborted.";
-                                            break;
-                                        case 2:
-                                            errorMessage =
-                                                "Network error occurred.";
-                                            break;
-                                        case 3:
-                                            errorMessage =
-                                                "Video decoding failed.";
-                                            break;
-                                        case 4:
-                                            errorMessage =
-                                                "Video format not supported.";
-                                            break;
-                                    }
-
-                                    alert(
-                                        errorMessage +
-                                            " Please try again or contact support.",
-                                    );
-                                });
-
-                                // 🔒 PREVENT DOWNLOAD ATTEMPTS VIA CONTEXT MENU
-                                videoElement.addEventListener(
-                                    "contextmenu",
-                                    (e) => {
-                                        e.preventDefault();
-                                        console.warn(
-                                            "🚫 Right-click disabled - Company video",
-                                        );
-                                        return false;
-                                    },
-                                );
-
-                                // 🔒 PREVENT DRAG & DROP DOWNLOAD
-                                videoElement.addEventListener(
-                                    "dragstart",
-                                    (e) => {
-                                        e.preventDefault();
-                                        console.warn(
-                                            "🚫 Drag disabled - Company video",
-                                        );
-                                        return false;
-                                    },
-                                );
-
-                                // 🔒 DISABLE VIDEO SELECTION
-                                videoElement.style.userSelect = "none";
-                                videoElement.style.webkitUserSelect = "none";
-                                videoElement.style.mozUserSelect = "none";
-                                videoElement.style.msUserSelect = "none";
-                            } catch (error) {
-                                console.error(
-                                    "❌ Error initializing player:",
-                                    error,
-                                );
-                                alert(
-                                    "Video player initialization failed. Please refresh the page.",
-                                );
-                            }
+                            console.log("✅ Player initialized for video:", id);
                         });
-                    }, 150);
+                    }, 200);
                 },
 
-                beforeClose: function () {
-                    console.log("🔄 Closing video player...");
-                },
+                close: function() {
+                    console.log("❌ Popup closed");
 
-                close: function () {
-                    console.log("❌ Video player closed");
-
-                    // Pause and reset all active players
+                    // Pause and reset all players
                     Object.keys(players).forEach((id) => {
-                        const player = players[id];
-
-                        if (player && typeof player.pause === "function") {
-                            console.log("⏸️ Cleaning up video:", id);
-
-                            // Pause playback
-                            player.pause();
-
-                            // Reset to beginning
-                            player.currentTime = 0;
-
-                            // Reset milestone tracking
-                            player.milestone25 = false;
-                            player.milestone50 = false;
-                            player.milestone75 = false;
-                            player.milestone95 = false;
+                        if (players[id]) {
+                            players[id].pause();
+                            players[id].currentTime = 0;
 
                             // Exit fullscreen if active
-                            if (player.fullscreen.active) {
-                                player.fullscreen.exit();
-                            }
-
-                            // Exit PIP if active
-                            if (player.pip && player.pip.active) {
-                                player.pip.exit();
+                            if (players[id].fullscreen && players[id].fullscreen.active) {
+                                players[id].fullscreen.exit();
                             }
                         }
                     });
-                },
-
-                afterClose: function () {
-                    console.log("✅ Video player fully closed and cleaned up");
-                },
-            },
+                }
+            }
         }),
+
         e(".popup-content").magnificPopup({ type: "inline", midClick: !0 }),
         e(".popup-content").on("click", function () {
             e(".slick-slider").slick("refresh");
