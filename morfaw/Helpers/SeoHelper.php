@@ -4,43 +4,56 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 if (! function_exists('seo_title')) {
+
     /**
-     * Generate an SEO-friendly title.
+     * Generate a newsroom-style SEO title.
+     * Example:
+     * Lebialem: Top stories, breaking news & headlines – Atannex
      */
     function seo_title(
-        ?string $subject = null,
-        ?string $suffix = null,
-        int $suffixMaxLength = 60
+        ?string $context = null,
+        ?string $descriptor = null,
+        int $descriptorMaxLength = 60
     ): string {
-        $defaultSuffix = __('Top Stories, Breaking News & Headlines');
-        $suffix = $suffix
-            ? Str::limit($suffix, $suffixMaxLength, '...')
-            : $defaultSuffix;
 
-        $subject ??= Auth::check()
-            ? Str::title(strtolower(Auth::user()->name))
-            : $defaultSuffix;
+        $defaultDescriptor = __('Top stories, breaking news & headlines');
 
-        $appName = config('app.name');
+        $context ??= Auth::check()
+            ? Auth::user()->name
+            : null;
 
-        $parts = [$subject];
+        $descriptor = $descriptor
+            ? Str::limit(sentence_case($descriptor), $descriptorMaxLength, '...')
+            : sentence_case($defaultDescriptor);
 
-        if (strcasecmp(trim($suffix), trim($subject)) !== 0) {
-            $parts[] = $suffix;
+        $brand = config('app.name');
+
+        $title = [];
+
+        if ($context) {
+            $title[] = sentence_case($context) . ':';
         }
 
-        $parts[] = $appName;
+        $title[] = $descriptor;
 
-        return collect($parts)
-            ->map(function ($part) use ($subject, $appName) {
-                if ($part === $appName) {
-                    return $appName;
-                }
+        return implode(' ', $title) . ' – ' . $brand;
+    }
+}
 
-                return $part === $subject
-                    ? Str::title(strtolower($part))
-                    : Str::upper($part);
-            })
-            ->implode(' | ');
+/**
+ * BBC / CNN style sentence case.
+ */
+if (! function_exists('sentence_case')) {
+    function sentence_case(string $value): string
+    {
+        $value = trim($value);
+
+        if ($value === '') {
+            return $value;
+        }
+
+        $lower = mb_strtolower($value);
+
+        return mb_strtoupper(mb_substr($lower, 0, 1)) . mb_substr($lower, 1);
     }
 }

@@ -1,6 +1,6 @@
 @extends('components.layouts.category')
 
-@section('og:title', seo_title($category->name))
+@section('title', seo_title($category->name))
 
 @section('category')
 

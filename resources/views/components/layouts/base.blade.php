@@ -31,7 +31,14 @@
     <!-- =========================
          APPLICATION IDENTITY & BASIC SEO
     ========================== -->
-    <title>@yield('title', config('app.name') . ' - ' . config('app.title'))</title>
+    <title>
+        @hasSection('title')
+        @yield('title')
+        @else
+        {{ config('app.title', config('app.name')) }}
+        @endif
+    </title>
+
     <meta name="description" content="@yield('meta:description', config('app.description'))">
     <meta name="keywords" content="{{ implode(', ', config('site.keywords', [])) }}"> <!-- still used by some engines & tools -->
     <meta name="author" content="{{ config('app.organization') }}">
@@ -48,7 +55,7 @@
     <meta name="bingbot" content="index, follow">
     <meta name="slurp" content="index, follow"> <!-- Yahoo -->
     <meta name="msnbot" content="index, follow">
-    <link rel="canonical" href="{{ url()->current() }}">
+    <link rel="canonical" href="{{ rtrim(url()->current(), '/') }}">
 
     <!-- =========================
          OPEN GRAPH (Facebook, LinkedIn, WhatsApp, etc.)
@@ -155,8 +162,8 @@
     @verbatim
     <script type="application/ld+json">
         {
-            "@@context": "https://schema.org"
-            , "@@type": "Organization"
+            "@context": "https://schema.org"
+            , "@type": "Organization"
             , "name": "{{ config('app.name') }}"
             , "url": "{{ config('app.url') }}"
             , "logo": "{{ asset(config('app.image')) }}"
@@ -170,7 +177,7 @@
                 , "{{ config('social.instagram') }}"
             ]
             , "contactPoint": {
-                "@@type": "ContactPoint"
+                "@type": "ContactPoint"
                 , "telephone": "{{ config('app.phone', '+1-540-242-2572') }}"
                 , "contactType": "customer service"
                 , "email": "{{ config('app.email') }}"
@@ -178,7 +185,7 @@
                 , "availableLanguage": ["English"]
             }
             , "address": {
-                "@@type": "PostalAddress"
+                "@type": "PostalAddress"
                 , "streetAddress": "{{ config('app.address.street') }}"
                 , "addressLocality": "{{ config('app.address.city') }}"
                 , "addressRegion": "{{ config('app.address.state') }}"
@@ -191,8 +198,8 @@
 
     <script type="application/ld+json">
         {
-            "@@context": "https://schema.org"
-            , "@@type": "WebSite"
+            "@context": "https://schema.org"
+            , "@type": "WebSite"
             , "name": "{{ config('app.name') }}"
             , "url": "{{ config('app.url') }}"
             , "potentialAction": {

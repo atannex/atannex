@@ -1,6 +1,6 @@
 @extends('components.layouts.page')
 
-@section('og:title', seo_title($author->user->name))
+@section('title', seo_title($author->user->name))
 
 @section('page')
 

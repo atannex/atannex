@@ -12,7 +12,7 @@ return [
 
     'name'        => env('APP_NAME', 'Atannex'),
     'title'       => env('APP_TITLE', 'Atannex: Lebialem Community News'),
-    'image'       => env('APP_IMAGE', 'assets/img/logo.png'),
+    'image'       => env('APP_IMAGE', '/logo.png'),
     'description' => env(
         'APP_DESCRIPTION',
         'Daily updates, headlines, and reports from Lebialem and beyond.'
