@@ -6,6 +6,14 @@
 @section('og:publishedAt', $module->post->published_at)
 @section('og:updatedAt', $module->post->updated_at)
 
+@php
+$ogVideo = $module->post->videos->first();
+@endphp
+
+@if($ogVideo && $ogVideo->video_url)
+@section('og:video', $ogVideo->video_url)
+@endif
+
 @section('base')
 
 <x-sections.preloader />
