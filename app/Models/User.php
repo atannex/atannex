@@ -84,9 +84,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasVerifiedEmail()
-            && $this->hasAllowedDomain(
-                config('filament.allowed_email_domains', ['gmail.com', 'atannex.org', 'atannex.com'])
-            )
+            && $this->hasAllowedDomain(['gmail.com', 'atannex.org', 'atannex.com'])
             && $this->isEmployee();
     }
 

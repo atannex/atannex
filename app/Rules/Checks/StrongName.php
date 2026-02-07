@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Rules\Auth;
+declare(strict_types=1);
 
-use App\Enums\Auth\RestrictedNames;
-use App\Enums\Auth\SimpleNames;
+namespace App\Rules\Checks;
+
 use Closure;
+use App\Enums\Checks\SimpleNames;
+use App\Enums\Checks\RestrictedNames;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Translation\PotentiallyTranslatedString;
 

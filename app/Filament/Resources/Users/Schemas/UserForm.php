@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Textarea;
@@ -47,13 +48,13 @@ class UserForm
                                             ->image()
                                             ->imageEditor()
                                             ->imageEditorMode(2)
-                                            ->imageEditorAspectRatios([
+                                            ->imageEditorAspectRatioOptions([
                                                 '1:1' => 'Square (Recommended)',
                                             ])
-                                            ->imageResizeMode('cover')
-                                            ->imageCropAspectRatio('1:1')
-                                            ->imageResizeTargetWidth('400')
-                                            ->imageResizeTargetHeight('400')
+                                            ->automaticallyResizeImagesMode('cover')
+                                            ->automaticallyCropImagesToAspectRatio('1:1')
+                                            ->automaticallyResizeImagesToWidth('400')
+                                            ->automaticallyResizeImagesToHeight('400')
                                             ->maxSize(2048)
                                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                             ->helperText('Recommended: 400x400px, max 2MB')
@@ -346,49 +347,6 @@ class UserForm
                                     ]),
                             ])
                             ->collapsible(),
-
-                        Section::make('Status Information')
-                            ->icon('heroicon-o-information-circle')
-                            ->iconColor('info')
-                            ->description('View available status transitions')
-                            ->schema([
-                                Grid::make(2)
-                                    ->schema([
-                                        TextEntry::make('status_info')
-                                            ->label('Current Status')
-                                            ->state(
-                                                fn($record): string => $record && $record->status
-                                                    ? Status::describe($record->status)
-                                                    : 'N/A'
-                                            )
-                                            ->badge()
-                                            ->color(fn($record): string => match ($record?->status ?? null) {
-                                                'active' => 'success',
-                                                'inactive' => 'warning',
-                                                'suspended' => 'danger',
-                                                default => 'gray',
-                                            }),
-
-                                        TextEntry::make('allowed_transitions')
-                                            ->label('Allowed Transitions')
-                                            ->state(function ($record): string {
-                                                if (!$record || !$record->status) {
-                                                    return 'N/A';
-                                                }
-
-                                                $transitions = Status::allowedTransitions($record->status);
-
-                                                return $transitions
-                                                    ? implode(', ', array_map(fn($s) => Status::describe($s), $transitions))
-                                                    : 'None available';
-                                            })
-                                            ->badge()
-                                            ->color('gray'),
-                                    ]),
-                            ])
-                            ->visible(fn(?string $operation) => $operation === 'edit')
-                            ->collapsible()
-                            ->collapsed(),
                     ])
                     ->columnSpan(4),
             ]);

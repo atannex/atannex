@@ -20,48 +20,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 trait HandleUser
 {
     /**
-     * Send the custom email verification notification.
-     *
-     * Overrides Laravel's default implementation.
-     */
-    public function sendEmailVerificationNotification()
-    {
-        $this->notify(new VerifyEmailNotification());
-    }
-
-    /**
-     * Send the custom password reset notification.
-     *
-     * Method signature must remain compatible with
-     * Illuminate\Foundation\Auth\User.
-     */
-     /** @var string $token */
-    public function sendPasswordResetNotification($token): void
-    {
-        $this->notify(new ResetPasswordNotification($token));
-    }
-
-
-    /**
-     * Primary employee relationship.
-     */
-    public function employee(): HasOne
-    {
-        return $this->hasOne(Employee::class);
-    }
-
-    /**
-     * Active employee relationship.
-     *
-     * Used to enforce access and employment status.
-     */
-    public function activeEmployee(): HasOne
-    {
-        return $this->employee()
-            ->where('status', Status::ACTIVE);
-    }
-
-    /**
      * User-authored comments.
      */
     public function comments(): HasMany
@@ -88,6 +46,25 @@ trait HandleUser
     }
 
     /**
+     * Primary employee relationship.
+     */
+    public function employee(): HasOne
+    {
+        return $this->hasOne(Employee::class);
+    }
+
+    /**
+     * Active employee relationship.
+     *
+     * Used to enforce access and employment status.
+     */
+    public function activeEmployee(): HasOne
+    {
+        return $this->employee()
+            ->where('status', Status::ACTIVE);
+    }
+
+    /**
      * Determine whether the user qualifies as an employee.
      *
      * Requires an active employee record and assigned roles.
@@ -96,33 +73,5 @@ trait HandleUser
     {
         return $this->activeEmployee()->exists()
             && $this->roles()->exists();
-    }
-
-    /**
-     * Retrieve allowed status transitions for the user.
-     */
-    public function allowedStatusTransitions(): array
-    {
-        return Status::allowedTransitions($this->status);
-    }
-
-    /**
-     * Determine whether a transition to the given status is allowed.
-     */
-    public function canTransitionTo(Status|string $targetStatus): bool
-    {
-        return Status::canTransition($this->status, $targetStatus);
-    }
-
-    /**
-     * Update the user's status.
-     *
-     * Transition validity is assumed to be enforced externally.
-     */
-    public function updateStatus(Status|string $newStatus): bool
-    {
-        $this->status = $newStatus;
-
-        return $this->save();
     }
 }

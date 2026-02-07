@@ -28,13 +28,14 @@ use App\Filament\Resources\Tags\TagResource;
 use App\Filament\Resources\Users\UserResource;
 use App\Filament\Resources\Videos\VideoResource;
 use App\Filament\Resources\Widgets\WidgetResource;
+use Filament\Auth\Pages\Login;
+use Filament\Auth\Pages\Register;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -54,18 +55,21 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(Login::class)
+            ->registration(Register::class)
+            ->registration(false)
+            ->passwordReset()
+            ->emailVerification()
+            ->profile()
             ->colors([
                 'primary' => Color::Violet,
             ])
-            ->topNavigation()
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
-            ->pages([
-                Dashboard::class,
-            ])
+            ->sidebarCollapsibleOnDesktop()
+            ->brandName('ATANNEX')
 
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 AccountWidget::class,
             ])
@@ -87,6 +91,7 @@ class AdminPanelProvider extends PanelProvider
                 return $builder->groups([
 
                     NavigationGroup::make('Regions & Sections')
+                        ->icon('heroicon-o-map')
                         ->items([
                             ...RegionResource::getNavigationItems(),
                             ...SectionResource::getNavigationItems(),
@@ -95,18 +100,24 @@ class AdminPanelProvider extends PanelProvider
                         ]),
 
                     NavigationGroup::make('Categories')
+                        ->icon('heroicon-o-rectangle-stack')
+                        ->collapsed()
                         ->items([
                             ...CategoryResource::getNavigationItems(),
                             ...CategorySectionResource::getNavigationItems(),
                         ]),
 
                     NavigationGroup::make('Modules')
+                        ->icon('heroicon-o-cube')
+                        ->collapsed()
                         ->items([
                             ...DocumentModuleResource::getNavigationItems(),
                             ...PostModuleResource::getNavigationItems(),
                         ]),
 
                     NavigationGroup::make('Posts')
+                        ->icon('heroicon-o-newspaper')
+                        ->collapsed()
                         ->items([
                             ...PostResource::getNavigationItems(),
                             ...PostTagResource::getNavigationItems(),
@@ -115,6 +126,9 @@ class AdminPanelProvider extends PanelProvider
                         ]),
 
                     NavigationGroup::make('User Management')
+                        ->icon('heroicon-o-users')
+                        // ->visible(fn (): bool => auth()->user()->isAdmin())
+                        ->collapsed()
                         ->items([
                             ...UserResource::getNavigationItems(),
                             ...RoleResource::getNavigationItems(),
@@ -122,6 +136,8 @@ class AdminPanelProvider extends PanelProvider
                         ]),
 
                     NavigationGroup::make('Organization')
+                        ->icon('heroicon-o-building-office')
+                        ->collapsed()
                         ->items([
                             ...DepartmentResource::getNavigationItems(),
                             ...EmployeeResource::getNavigationItems(),
@@ -130,17 +146,23 @@ class AdminPanelProvider extends PanelProvider
                         ]),
 
                     NavigationGroup::make('Engagement')
+                        ->icon('heroicon-o-chat-bubble-left-right')
+                        ->collapsed()
                         ->items([
                             ...CommentResource::getNavigationItems(),
                             ...ReviewResource::getNavigationItems(),
                         ]),
 
                     NavigationGroup::make('Documentation')
+                        ->icon('heroicon-o-document')
+                        ->collapsed()
                         ->items([
                             ...DocumentResource::getNavigationItems(),
                         ]),
 
                     NavigationGroup::make('Miscellaneous')
+                        ->icon('heroicon-o-ellipsis-horizontal-circle')
+                        ->collapsed()
                         ->items([
                             ...AboutResource::getNavigationItems(),
                             ...ColorResource::getNavigationItems(),

@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Rules\Auth;
+declare(strict_types=1);
 
-use App\Enums\Auth\AllowedDomain;
-use App\Enums\Auth\RestrictedDomain;
+namespace App\Rules\Checks;
+
 use Closure;
+use App\Enums\Checks\AllowedDomain;
+use App\Enums\Checks\RestrictedDomain;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class StrongEmail implements ValidationRule

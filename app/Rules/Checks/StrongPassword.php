@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Rules\Auth;
+declare(strict_types=1);
 
-use App\Enums\Auth\CommonPassword;
-use App\Enums\Auth\DictionaryWord;
+namespace App\Rules\Checks;
+
 use Closure;
+use App\Enums\Checks\CommonPassword;
+use App\Enums\Checks\DictionaryWord;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Translation\PotentiallyTranslatedString;
 
