@@ -65,20 +65,4 @@ $menu = displayGuestData($global['mainRegions']);
         </a>
     </li>
 
-    @guest
-    <li class="menu-item-has-children">
-        <a href="{{ route('login') }}">
-            {{ __('navigation.login') }}
-        </a>
-
-        <ul class="sub-menu">
-            <li>
-                <a href="{{ route('register') }}">
-                    {{ __('navigation.register') }}
-                </a>
-            </li>
-        </ul>
-    </li>
-    @endguest
-
 </ul>

@@ -2,21 +2,22 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
-use Filament\Actions\Action;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TrashedFilter;
+use App\Models\User;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Tables\Filters\Filter;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Illuminate\Support\Facades\Password;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Date;
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Actions\ForceDeleteBulkAction;
 
 class UsersTable
 {
@@ -27,7 +28,7 @@ class UsersTable
                 ImageColumn::make('image')
                     ->label('')
                     ->circular()
-                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name='.urlencode($record->name).'&color=7F9CF5&background=EBF4FF')
+                    ->defaultImageUrl(fn($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name) . '&color=7F9CF5&background=EBF4FF')
                     ->imageSize(40)
                     ->toggleable(),
 
@@ -36,7 +37,7 @@ class UsersTable
                     ->searchable()
                     ->sortable()
                     ->weight('semibold')
-                    ->description(fn ($record) => $record->slug)
+                    ->description(fn($record) => $record->slug)
                     ->icon('heroicon-m-user')
                     ->iconColor('primary'),
 
@@ -49,7 +50,7 @@ class UsersTable
                     ->iconColor('gray')
                     ->description(function ($record) {
                         if ($record->email_verified_at) {
-                            return '✅ Verified '.$record->email_verified_at->format('M j, Y');
+                            return '✅ Verified ' . $record->email_verified_at->format('M j, Y');
                         }
 
                         return '⚠️ Unverified';
@@ -128,7 +129,7 @@ class UsersTable
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn ($record) => $record->created_at->format('F j, Y g:i A'))
+                    ->tooltip(fn($record) => $record->created_at->format('F j, Y g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
@@ -136,7 +137,7 @@ class UsersTable
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn ($record) => $record->updated_at->format('F j, Y g:i A'))
+                    ->tooltip(fn($record) => $record->updated_at->format('F j, Y g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('deleted_at')
@@ -144,7 +145,7 @@ class UsersTable
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn ($record) => $record->deleted_at?->format('F j, Y g:i A'))
+                    ->tooltip(fn($record) => $record->deleted_at?->format('F j, Y g:i A'))
                     ->placeholder('—')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -165,12 +166,12 @@ class UsersTable
 
                 Filter::make('email_verified')
                     ->label('Email Verified')
-                    ->query(fn (Builder $query): Builder => $query->whereNotNull('email_verified_at'))
+                    ->query(fn(Builder $query): Builder => $query->whereNotNull('email_verified_at'))
                     ->toggle(),
 
                 Filter::make('email_unverified')
                     ->label('Email Unverified')
-                    ->query(fn (Builder $query): Builder => $query->whereNull('email_verified_at'))
+                    ->query(fn(Builder $query): Builder => $query->whereNull('email_verified_at'))
                     ->toggle(),
 
                 SelectFilter::make('gender')
@@ -191,20 +192,20 @@ class UsersTable
 
                 Filter::make('has_employee_record')
                     ->label('Has Employee Record')
-                    ->query(fn (Builder $query): Builder => $query->has('employee'))
+                    ->query(fn(Builder $query): Builder => $query->has('employee'))
                     ->toggle(),
 
                 Filter::make('recent_login')
                     ->label('Logged in Last 30 Days')
                     ->query(
-                        fn (Builder $query): Builder => $query->where('last_login_at', '>=', now()->subDays(30))
+                        fn(Builder $query): Builder => $query->where('last_login_at', '>=', now()->subDays(30))
                     )
                     ->toggle(),
 
                 Filter::make('inactive_users')
                     ->label('Inactive (No Login 90+ Days)')
                     ->query(
-                        fn (Builder $query): Builder => $query->where('last_login_at', '<=', now()->subDays(90))
+                        fn(Builder $query): Builder => $query->where('last_login_at', '<=', now()->subDays(90))
                             ->orWhereNull('last_login_at')
                     )
                     ->toggle(),
@@ -212,7 +213,7 @@ class UsersTable
                 Filter::make('new_users')
                     ->label('New Users (Last 7 Days)')
                     ->query(
-                        fn (Builder $query): Builder => $query->where('created_at', '>=', now()->subDays(7))
+                        fn(Builder $query): Builder => $query->where('created_at', '>=', now()->subDays(7))
                     )
                     ->toggle(),
             ])
@@ -227,7 +228,7 @@ class UsersTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    Action::make('verify_email')
+                    Action::make('email_verified_at')
                         ->label('Verify Email')
                         ->icon('heroicon-m-check-badge')
                         ->color('success')

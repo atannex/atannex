@@ -18,11 +18,6 @@ return new class extends Migration
                 ->constrained()
                 ->nullOnDelete();
 
-            $table->foreignId('guest_id')
-                ->nullable()
-                ->constrained('guests')
-                ->cascadeOnDelete();
-
             $table->unsignedTinyInteger('rating');
             $table->text('comment')->nullable();
             $table->ipAddress('ip_address')->nullable();
@@ -34,11 +29,6 @@ return new class extends Migration
             $table->unique(
                 ['rateable_type', 'rateable_id', 'user_id'],
                 'unique_user_rateable'
-            );
-
-            $table->unique(
-                ['rateable_type', 'rateable_id', 'guest_id'],
-                'unique_guest_rateable'
             );
 
             $table->index(['rateable_type', 'rateable_id', 'rating_hash']);

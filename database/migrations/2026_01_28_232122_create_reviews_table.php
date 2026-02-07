@@ -22,11 +22,6 @@ return new class extends Migration
                 ->constrained('users')
                 ->cascadeOnDelete();
 
-            $table->foreignId('guest_id')
-                ->nullable()
-                ->constrained('guests')
-                ->cascadeOnDelete();
-
             $table->unsignedTinyInteger('reviewer_rating');
             $table->string('flag')->default(Flag::PENDING_REVIEW);
 
@@ -38,11 +33,6 @@ return new class extends Migration
             $table->unique(
                 ['reviewable_type', 'reviewable_id', 'user_id'],
                 'unique_user_review_per_reviewable'
-            );
-
-            $table->unique(
-                ['reviewable_type', 'reviewable_id', 'guest_id'],
-                'unique_guest_review_per_reviewable'
             );
         });
     }

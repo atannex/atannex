@@ -2,11 +2,11 @@
 
 namespace App\Rules;
 
-use App\Enums\Auth\RestrictedNames;
-use App\Enums\LeetspeakVariants;
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
+use App\Enums\Checks\Variants;
 use Illuminate\Support\Facades\Log;
+use App\Enums\Checks\RestrictedNames;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 class StrongContent implements ValidationRule
 {
@@ -87,8 +87,8 @@ class StrongContent implements ValidationRule
         $pattern = '';
         foreach (str_split($badWord) as $char) {
             $escapedChar = preg_quote($char, '/');
-            $leetVariants = LeetspeakVariants::hasValue($char)
-                ? implode('', LeetspeakVariants::getLeetspeakValues()[$char])
+            $leetVariants = Variants::hasValue($char)
+                ? implode('', Variants::getLeetspeakValues()[$char])
                 : $escapedChar;
             $pattern .= sprintf('[%s]', $leetVariants);
         }
