@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 if (! function_exists('seo_title')) {
 
     /**
      * Generate a newsroom-style SEO title.
+     *
      * Example:
      * Lebialem: Top stories, breaking news & headlines – Atannex
      */
@@ -17,33 +17,29 @@ if (! function_exists('seo_title')) {
     ): string {
 
         $defaultDescriptor = __('Top stories, breaking news & headlines');
-
-        $context ??= Auth::check()
-            ? Auth::user()->name
-            : null;
-
-        $descriptor = $descriptor
-            ? Str::limit(sentence_case($descriptor), $descriptorMaxLength, '...')
-            : sentence_case($defaultDescriptor);
-
         $brand = config('app.name');
 
-        $title = [];
+        $descriptor = $descriptor
+            ? Str::limit(sentence_case($descriptor), $descriptorMaxLength, '…')
+            : sentence_case($defaultDescriptor);
+
+        $titleParts = [];
 
         if ($context) {
-            $title[] = sentence_case($context) . ':';
+            $titleParts[] = sentence_case($context) . ':';
         }
 
-        $title[] = $descriptor;
+        $titleParts[] = $descriptor;
 
-        return implode(' ', $title) . ' – ' . $brand;
+        return implode(' ', $titleParts) . ' – ' . $brand;
     }
 }
 
-/**
- * BBC / CNN style sentence case.
- */
 if (! function_exists('sentence_case')) {
+
+    /**
+     * BBC / CNN style sentence case.
+     */
     function sentence_case(string $value): string
     {
         $value = trim($value);
