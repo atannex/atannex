@@ -8,20 +8,6 @@ use Illuminate\Support\Collection;
 
 trait ByRated
 {
-    /**
-     * Retrieve top-rated posts filtered and ordered by an engagement metric.
-     *
-     * Supports optional filtering by category_id and tag_id, configurable eager loading,
-     * ordering by a specified column, and limiting the number of results.
-     *
-     * @param array $config Optional configuration:
-     *                      - 'limit' (int): Number of posts to retrieve (default 5)
-     *                      - 'orderBy' (string): Column to sort by (default 'rating')
-     *                      - 'category_id' (int|null): Filter by category ID
-     *                      - 'tag_id' (int|null): Filter by tag ID
-     *                      - 'with' (array): Relations to eager load (default ['category', 'tags'])
-     * @return Collection<int, Post> A collection of Post models matching the criteria, ordered descending by the configured engagement column.
-     */
     public function getTopRatedPosts(array $config = []): Collection
     {
         $limit = $config['limit'];
