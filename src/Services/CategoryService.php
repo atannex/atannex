@@ -4,107 +4,208 @@ declare(strict_types=1);
 
 namespace Atannex\Services;
 
+use App\Enums\Flag;
+use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
+use App\Models\Regions\Region;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
-use App\Models\Regions\Region;
-use App\Models\Tags\Tag;
-use Atannex\Contracts\CategoryInterface;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\Others\SocialMedia;
+use Atannex\Traits\HasTree;
+use Atannex\Helpers\HasMedia;
+use Atannex\Concerns\HasResolver;
+use Atannex\Traits\HandlesPostDateResolution;
 use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * Domain layer for category-related operations.
- */
 final class CategoryService
 {
+    use HasMedia;
+    use HasTree;
+    use HasResolver;
+    use HandlesPostDateResolution;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Limits
+    |--------------------------------------------------------------------------
+    */
+    protected const CATEGORY_LIMIT   = 12;
+    protected const POPULAR_LIMIT    = 12;
     protected const PAGINATION_LIMIT = 15;
+    protected const RECENT_LIMIT     = 5;
 
-    protected const RECENT_LIMIT = 5;
+    /*
+    |--------------------------------------------------------------------------
+    | Employee
+    |--------------------------------------------------------------------------
+    */
 
-    protected const POPULAR_LIMIT = 12;
-
-    public function __construct(
-        protected readonly CategoryInterface $interface
-    ) {}
-
-    /**
-     * Paginate posts in category tree.
-     */
-    public function postsByCategory(Category $category, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
-    {
-        return $this->interface->postsByCategory($category, $limit);
-    }
-
-    /**
-     * Paginate posts filtered by region.
-     */
-    public function postsByRegion(Region $region, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
-    {
-        return $this->interface->postsByRegion($region, $limit);
-    }
-
-    /**
-     * Paginate posts filtered by year and month.
-     */
-    public function postsByDate(string $yearMonth, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
-    {
-        return $this->interface->postsByDate($yearMonth, $limit);
-    }
-
-    /**
-     * Published employee social profiles.
-     */
     public function employeeSocial(Employee $employee): Collection
     {
-        return $this->interface->employeeSocial($employee);
+        return $employee->socialMedia()
+            ->nonGlobal()
+            ->ordered()
+            ->get()
+            ->map(fn(SocialMedia $media) => $this->mapSocialMedia($media))
+            ->filter()
+            ->values();
     }
 
-    /**
-     * Related categories in context.
-     */
-    public function relatedCategories(Category $category): Collection
+
+    public function relatedCategories(Category $category, int $limit = self::CATEGORY_LIMIT): Collection
     {
-        return $this->interface->relatedCategories($category);
+        return $this->getLeafNodes(
+            $this->getRoot($category),
+            'posts',
+            Flag::PUBLISHED,
+            $category->id,
+            $limit
+        );
     }
 
-    /**
-     * Recent posts related to the same category tree.
-     */
-    public function recentPosts(?Post $post = null, int $limit = self::RECENT_LIMIT): Collection
+    public function postsByCategory(Category $category, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
     {
-        return $this->interface->recentPosts($post, $limit);
+        return Post::query()
+            ->published()
+            ->whereIn('category_id', $this->getTreeIds($category))
+            ->with('category.parent')
+            ->latest('published_at')
+            ->paginate($limit);
     }
 
-    /**
-     * Popular tags in associated category context.
-     */
-    public function popularTags(Tag $tag, int $limit = self::POPULAR_LIMIT): Collection
+    public function recentPostsByCategory(Category $category, int $limit = 6): Collection
     {
-        return $this->interface->popularTags($tag, $limit);
+        return Post::query()
+            ->published()
+            ->whereIn('category_id', $this->getTreeIds($this->getRoot($category)))
+            ->with([
+                'category.parent',
+                'region',
+                'tags',
+                'author.user',
+            ])
+            ->latest('published_at')
+            ->limit($limit)
+            ->get();
     }
 
-    /**
-     * Paginate posts filtered by tag.
-     */
+    public function postsByDate(string $yearMonth, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
+    {
+        $resolution = $this->resolvePostArchiveBySlug($yearMonth);
+
+        if ($resolution === null) {
+            return Post::query()
+                ->whereRaw('1 = 0')
+                ->paginate($limit);
+        }
+
+        return Post::published()
+            ->when(
+                $resolution['type'] === 'year',
+                fn($query) => $query->whereYear('published_at', $resolution['year'])
+            )
+            ->when(
+                $resolution['type'] === 'month',
+                fn($query) => $query
+                    ->whereYear('published_at', $resolution['year'])
+                    ->whereMonth('published_at', $resolution['month'])
+            )
+            ->with([
+                'category.parent',
+                'region',
+                'tags',
+                'author.user',
+            ])
+            ->latest('published_at')
+            ->paginate($limit);
+    }
+
+
+
+
     public function postsByTag(Tag $tag, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
     {
-        return $this->interface->postsByTag($tag, $limit);
+        return $tag->posts()
+            ->published()
+            ->latest()
+            ->paginate($limit);
     }
 
-    /**
-     * Category suggestions based on tag.
-     */
-    public function relatedCategoriesByTag(?Tag $tag): Collection
+    public function popularTagsByCategory(Category $category, int $limit = self::POPULAR_LIMIT): Collection
     {
-        return $this->interface->relatedCategoriesByTag($tag);
+        $treeIds = $this->getTreeIds($this->getRoot($category));
+
+        return Tag::query()
+            ->withCount([
+                'posts as usage_count' => fn($q) =>
+                $q->published()->whereIn('category_id', $treeIds),
+            ])
+            ->having('usage_count', '>', 0)
+            ->orderByDesc('usage_count')
+            ->limit($limit)
+            ->get();
     }
 
-    /**
-     * Paginate posts from an author.
-     */
-    public function postsByAuthor(string $slug, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
+    public function popularTagsByRegion(Region $region, int $limit = 8): Collection
     {
-        return $this->interface->postsByAuthor($slug, $limit);
+        return Tag::query()
+            ->whereHas('posts', function ($query) use ($region) {
+                $query->published()
+                    ->where('region_id', $region->getKey());
+            })
+            ->withCount(['posts as posts_count' => function ($query) use ($region) {
+                $query->published()
+                    ->where('region_id', $region->getKey());
+            }])
+            ->orderByDesc('posts_count')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function relatedCategoriesByTag(?Tag $tag, int $limit = self::PAGINATION_LIMIT): Collection
+    {
+        $categoryIds = $tag->posts()
+            ->published()
+            ->pluck('category_id')
+            ->unique();
+
+        return Category::query()
+            ->whereIn('id', $categoryIds)
+            ->whereDoesntHave('children')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function relatedCategoriesByRegion(Region $region): Collection
+    {
+        return Category::query()
+            ->whereHas('posts', function ($query) use ($region) {
+                $query->published()
+                    ->where('region_id', $region->getKey());
+            })
+            ->withCount(['posts as posts_count' => function ($query) use ($region) {
+                $query->published()
+                    ->where('region_id', $region->getKey());
+            }])
+            ->orderByDesc('posts_count')
+            ->get();
+    }
+
+    public function relatedCategoriesByPost(Post $post, int $limit = 6): Collection
+    {
+        return Category::query()
+            ->whereKeyNot($post->category_id)
+            ->whereHas('posts', function ($query) use ($post) {
+                $query->published()
+                    ->where('region_id', $post->region_id);
+            })
+            ->withCount(['posts as posts_count' => function ($query) use ($post) {
+                $query->published()
+                    ->where('region_id', $post->region_id);
+            }])
+            ->orderByDesc('posts_count')
+            ->limit($limit)
+            ->get();
     }
 }

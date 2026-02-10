@@ -4,42 +4,53 @@ declare(strict_types=1);
 
 namespace Atannex\Binders\Views;
 
+use Atannex\Traits\HandlesPostDateResolution;
 use Illuminate\View\View;
 
 trait ViewDate
 {
+    use HandlesPostDateResolution;
 
-    public function renderDateView(string $year, string $type = 'year', ?string $month = null): View
+    /**
+     * Render a date-based archive view (year or month).
+     *
+     * Expects a slug in the form:
+     *  - YYYY
+     *  - YYYY/MM
+     */
+    public function renderDateView(string $slug): View
     {
-        if (!preg_match('/^\d{4}$/', $year) || $year < 1900 || $year > date('Y') + 1) {
-            abort(404, 'Invalid year');
+        $resolution = $this->resolvePostArchiveBySlug($slug);
+
+        if ($resolution === null) {
+            abort(404);
         }
 
-        $months = config('dates.months', []);
-        $isMonthView = $type === 'month';
+        $year  = (string) $resolution['year'];
+        $month = $resolution['month'] !== null
+            ? str_pad((string) $resolution['month'], 2, '0', STR_PAD_LEFT)
+            : null;
 
-        if ($isMonthView) {
-            if (!preg_match('/^\d{2}$/', $month) || $month < '01' || $month > '12') {
-                abort(404, 'Invalid month');
-            }
-
+        if ($resolution['type'] === 'month') {
             $monthInt     = (int) $month;
-            $displayValue = $months[$monthInt] ?? 'Unknown Month';
-            $yearMonth    = "{$year}/{$month}";
-            $seoTitle     = "Posts for {$displayValue} {$year}";
+            $monthName    = config("dates.months.{$monthInt}", 'Unknown Month');
+            $period       = "{$year}/{$month}";
+            $displayValue = "{$monthName} {$year}";
+            $seoTitle     = "Posts for {$displayValue}";
         } else {
+            $period       = $year;
             $displayValue = $year;
-            $yearMonth    = $year;
             $seoTitle     = "Posts for the year {$year}";
         }
 
         return view('date', [
-            'posts'         => $this->categoryService->postsByDate($yearMonth),
-            'displayValue'  => $displayValue,
-            'type'          => $type,
-            'year'          => $year,
-            'month'         => $month,
-            'seoTitle'      => seo_title($seoTitle),
+            'posts'        => $this->categoryService->postsByDate($period),
+            'displayValue' => $displayValue,
+            'period'       => $period,
+            'type'         => $resolution['type'],
+            'year'         => $year,
+            'month'        => $month,
+            'seoTitle'     => seo_title($seoTitle),
         ]);
     }
 }

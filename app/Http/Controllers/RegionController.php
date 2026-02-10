@@ -3,21 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Flag;
-use Illuminate\View\View;
-use Atannex\Binders\HasView;
-use App\Models\Posts\Post;
 use App\Models\Tags\Tag;
+use Illuminate\View\View;
+use App\Models\Posts\Post;
+use Atannex\Binders\HasView;
+use Atannex\Traits\HasGlobal;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
+use Atannex\Concerns\HasDocument;
 use Atannex\Concerns\HasResolver;
 use Atannex\Services\RegionService;
-use Atannex\Concerns\HasDocument;
-use Atannex\Traits\HasGlobal;
+use Atannex\Traits\HandlesPostDateResolution;
 
 class RegionController extends Controller
 {
     use HasResolver;
     use HasGlobal;
+    use HandlesPostDateResolution;
     use HasDocument;
 
     public function __construct(
@@ -30,9 +32,12 @@ class RegionController extends Controller
      */
     public function resolve(string $slug): View
     {
-        /**
-         * 1️⃣ Document listing pages (explicit slugs)
-         */
+
+        /*
+     |--------------------------------------------------------------------------
+     | 1️⃣ Explicit document listing pages (lowest collision risk)
+     |--------------------------------------------------------------------------
+     */
         if ($this->isSupportedDocumentType($slug) || $slug === 'testimonials') {
             return view('documents.index', [
                 'documents'           => $this->getDocumentsBySlug($slug),
@@ -42,9 +47,11 @@ class RegionController extends Controller
             ]);
         }
 
-        /**
-         * 2️⃣ Single document page (exact match)
-         */
+        /*
+     |--------------------------------------------------------------------------
+     | 2️⃣ Single document page (exact match)
+     |--------------------------------------------------------------------------
+     */
         if ($this->documentExists($slug)) {
             $document = $this->getDocumentByPath($slug);
             $module   = $this->getDocumentModule($slug);
@@ -59,34 +66,33 @@ class RegionController extends Controller
             ]);
         }
 
-        /**
-         * 3️⃣ Post by date (year/month routes)
-         */
-        if ($date = $this->resolvePostByDate($slug)) {
-            return $this->viewBinder->renderDateView(
-                year: $date['year'],
-                month: $date['month'],
-                type: $date['type']
-            );
+        /*
+     |--------------------------------------------------------------------------
+     | 3️⃣ Date archives (YYYY / YYYY-MM)
+     |--------------------------------------------------------------------------
+     */
+        if ($archive = $this->resolvePostArchiveBySlug($slug)) {
+            return $this->viewBinder->renderDateView($archive['year'], $archive['month'], $archive['type']);
         }
 
-        /**
-         * 4️⃣ Single post
-         */
+        /*
+     |--------------------------------------------------------------------------
+     | 4️⃣ Single post
+     |--------------------------------------------------------------------------
+     */
         if ($this->postExists($slug)) {
             $post = Post::published()
                 ->where('slug_path', $slug)
                 ->firstOrFail();
 
-            return $this->viewBinder->renderPostShow(
-                $post->category,
-                $slug
-            );
+            return $this->viewBinder->renderPostShow($post->category, $slug);
         }
 
-        /**
-         * 5️⃣ Author
-         */
+        /*
+     |--------------------------------------------------------------------------
+     | 5️⃣ Author
+     |--------------------------------------------------------------------------
+     */
         if ($this->authorExists($slug)) {
             $author = Employee::with('user')
                 ->whereHas('user', fn($q) => $q->where('slug', $slug))
@@ -95,18 +101,22 @@ class RegionController extends Controller
             return $this->viewBinder->renderAuthorView($author);
         }
 
-        /**
-         * 6️⃣ Tag
-         */
+        /*
+     |--------------------------------------------------------------------------
+     | 6️⃣ Tag
+     |--------------------------------------------------------------------------
+     */
         if ($this->tagExists($slug)) {
             $tag = Tag::where('slug', $slug)->firstOrFail();
 
             return $this->viewBinder->renderTagView($tag);
         }
 
-        /**
-         * 7️⃣ Category
-         */
+        /*
+     |--------------------------------------------------------------------------
+     | 7️⃣ Category
+     |--------------------------------------------------------------------------
+     */
         if ($this->categoryExists($slug)) {
             $category = Category::where([
                 ['flag', Flag::PUBLISHED],
@@ -116,9 +126,11 @@ class RegionController extends Controller
             return $this->viewBinder->renderCategoryView($category);
         }
 
-        /**
-         * 8️⃣ Region (most generic, highest collision risk)
-         */
+        /*
+     |--------------------------------------------------------------------------
+     | 8️⃣ Region (most generic — LAST)
+     |--------------------------------------------------------------------------
+     */
         if ($region = $this->regionService->getRegionBySlug($slug)) {
             return $this->viewBinder->renderRegionView($region);
         }

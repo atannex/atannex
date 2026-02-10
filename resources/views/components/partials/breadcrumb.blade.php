@@ -1,16 +1,18 @@
 @php
+use Illuminate\Support\Str;
+
 $segments = request()->segments();
-$url = url('/');
-$maxVisible = 3;
 $total = count($segments);
+$maxVisible = 3;
 $limit = 10;
+$baseUrl = url('/');
 @endphp
 
 <div class="breadcumb-wrapper">
     <div class="container">
         <ul class="breadcumb-menu">
 
-            @if($global['headerRegion'])
+            @if (!empty($global['headerRegion']))
             <li>
                 <a href="{{ route('page.index', ['slug' => $global['headerRegion']->slug]) }}">
                     {{ $global['headerRegion']->name }}
@@ -18,17 +20,15 @@ $limit = 10;
             </li>
             @endif
 
-            @foreach($segments as $index => $segment)
+            @foreach ($segments as $index => $segment)
             @php
-            $url .= '/' . $segment;
             $isLast = $index === $total - 1;
-            $label = ucwords(str_replace('-', ' ', $segment));
 
-            if ($total > $maxVisible && $index > 1 && $index < $total - 2) { if ($index===2) echo '<li>…</li>' ; continue; } $output=$isLast ? Str::limit($label, $limit) : $label; @endphp <li title="{{ $label }}">
-                @if($isLast)
-                {{ $output }}
+            if ($total > $maxVisible && $index > 1 && $index < $total - 2) { if ($index===2) { echo '<li class="ellipsis">…</li>' ; } continue; } $baseUrl .='/' . $segment; $label=ucwords(str_replace('-', ' ' , $segment)); $text=$isLast ? Str::limit($label, $limit) : $label; @endphp <li title="{{ $label }}">
+                @if ($isLast)
+                {{ $text }}
                 @else
-                <a href="{{ $url }}">{{ $label }}</a>
+                <a href="{{ $baseUrl }}">{{ $text }}</a>
                 @endif
                 </li>
                 @endforeach

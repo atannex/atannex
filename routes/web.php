@@ -11,6 +11,7 @@ use App\Http\Controllers\RegionController;
 |--------------------------------------------------------------------------
 | Always define exact routes first
 */
+
 Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'index')->name('home');
     Route::get('/about-us', 'about')->name('about');
@@ -23,7 +24,7 @@ Route::controller(HomeController::class)->group(function () {
 |--------------------------------------------------------------------------
 | Prefixed to avoid slug conflicts
 */
-Route::prefix('share')->group(function () {
+Route::prefix('/share')->group(function () {
     Route::get('{platform:platform}/{post:slug}', [ShareController::class, 'share'])
         ->name('share');
 });
@@ -34,6 +35,7 @@ Route::prefix('share')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::controller(RegionController::class)->group(function () {
-    Route::get('{slug}', 'resolve')
+    Route::get('/{slug}', 'resolve')
+        ->where('slug', '.*')
         ->name('page.index');
 });

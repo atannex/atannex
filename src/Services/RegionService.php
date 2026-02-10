@@ -4,48 +4,88 @@ declare(strict_types=1);
 
 namespace Atannex\Services;
 
-use App\Models\Regions\Category;
+use App\Enums\Flag;
+use App\Models\Posts\Post;
 use App\Models\Regions\Region;
-use Atannex\Contracts\RegionInterface;
+use App\Models\Regions\Category;
 use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * Service layer for handling region-related operations.
- */
 final class RegionService
 {
-    public function __construct(
-        protected readonly RegionInterface $interface
-    ) {}
-
-    /**
-     * Retrieve a parent region (main region) by slug.
-     *
-     * @param string $slug
-     * @return Region
-     */
-    public function getRegionBySlug(string $slug): ?Region
+    public function postsByRegion(Region $region, int $limit = 25): LengthAwarePaginator
     {
-        return $this->interface->getRegionBySlug($slug);
+        return Post::query()
+            ->published()
+            ->whereIn('region_id', $region->getSelfAndDescendantIds())
+            ->with('region')
+            ->latest('published_at')
+            ->paginate($limit);
     }
 
-    /**
-     * Retrieve all root category regions.
-     *
-     * @return Collection<int, Category>
-     */
+    public function recentPostsByRegion(Region $region, int $limit): Collection
+    {
+        return Post::query()
+            ->published()
+            ->where('region_id', $region->getKey())
+            ->latest('published_at')
+            ->limit($limit)
+            ->get();
+    }
+
     public function getRootCategoryRegions(): Collection
     {
-        return $this->interface->getRootCategoryRegions();
+        return Category::query()
+            ->flagged(Flag::PUBLISHED)
+            ->whereNull('parent_id')
+            ->with('descendants')
+            ->get();
     }
 
-    /**
-     * Retrieve all root (top-level) regions.
-     *
-     * @return Collection<int, Region>
-     */
     public function getRootRegions(): Collection
     {
-        return $this->interface->getRootRegions();
+        return Region::query()
+            ->flagged(Flag::PUBLISHED)
+            ->whereNull('parent_id')
+            ->with('descendants')
+            ->get();
+    }
+
+    public function getRegionBySlug(string $slug): Region
+    {
+        $normalizedSlug = $this->normalizeSlug($slug);
+
+        return Region::query()
+            ->flagged(Flag::PUBLISHED)
+            ->where('slug_path', $normalizedSlug)
+            ->with([
+                'sections' => static fn($query) =>
+                $query->orderByPivot('position'),
+
+                'sections.widgets' => static fn($query) =>
+                $query->orderByPivot('position'),
+            ])
+            ->firstOrFail();
+    }
+
+    public function getRegionBySlugWithFlatWidgets(string $slug): Region
+    {
+        $normalizedSlug = $this->normalizeSlug($slug);
+
+        return Region::query()
+            ->flagged(Flag::PUBLISHED)
+            ->where('slug_path', $normalizedSlug)
+            ->with([
+                'widgets' => static fn($query) =>
+                $query
+                    ->orderByPivot('position')
+                    ->select('widgets.*'),
+            ])
+            ->firstOrFail();
+    }
+
+    private function normalizeSlug(string $slug): string
+    {
+        return trim($slug, '/');
     }
 }
