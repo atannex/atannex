@@ -11,23 +11,19 @@ trait ViewCategory
 {
     public function renderCategoryView(Category $category): View
     {
-        $posts     = $this->categoryService->postsByCategory($category);
-        $firstPost = $posts->first();
-        $firstTag  = $firstPost?->tags->first();
+        $posts = $this->categoryService->postsByCategory($category);
 
-        $recentPosts = $firstPost
-            ? $this->categoryService->recentPosts($firstPost, 6)
-            : collect();
+        $recentPosts = $this->categoryService->recentPostsByCategory($category, 6);
 
-        $popularTags = $firstTag
-            ? $this->categoryService->popularTags($firstTag, 8)
-            : collect();
+        $popularTags = $this->categoryService->popularTagsByCategory($category, 8);
+
+        $relatedCategories = $this->categoryService->relatedCategories($category);
 
         return view('category', [
             'category'          => $category,
             'posts'             => $posts,
             'recentPosts'       => $recentPosts,
-            'relatedCategories' => $this->categoryService->relatedCategories($category),
+            'relatedCategories' => $relatedCategories,
             'popularTags'       => $popularTags,
             'seoTitle'          => seo_title($category->name),
         ]);

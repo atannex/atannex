@@ -1,11 +1,11 @@
-<li class="menu-item {{ $category->children->isNotEmpty() ? 'menu-item-has-children' : '' }}">
+<li class="menu-item {{ $category->descendants->isNotEmpty() ? 'menu-item-has-children' : '' }}">
     <a href="{{ route('page.index', ['slug' => $category->slug_path]) }}">
         {{ $category->name }}
     </a>
 
-    @if(!empty($category->children) && $category->children->isNotEmpty())
+    @if(!empty($category->descendants) && $category->descendants->isNotEmpty())
     <ul class="sub-menu">
-        @foreach($category->children as $child)
+        @foreach($category->descendants as $child)
 
         <x-partials.category-item :category="$child" />
 

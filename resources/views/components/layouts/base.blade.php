@@ -16,7 +16,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    {{-- <meta http-equiv="Content-Security-Policy" content="
+    <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src
       'self'
@@ -58,7 +58,7 @@
     object-src 'none';
     base-uri 'self';
     form-action 'self';
-  "> --}}
+  ">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
@@ -78,7 +78,7 @@
     </title>
 
     <meta name="description" content="@yield('meta:description', config('app.description'))">
-    <meta name="keywords" content="{{ implode(', ', config('site.keywords', [])) }}"> <!-- still used by some engines & tools -->
+    <meta name="keywords" content="{{ implode(', ', config('site.keywords', [])) }}">
     <meta name="author" content="{{ config('app.organization') }}">
     <meta name="publisher" content="{{ config('app.organization') }}">
     <meta name="application-name" content="{{ config('app.name') }}">

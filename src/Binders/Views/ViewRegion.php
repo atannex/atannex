@@ -15,21 +15,16 @@ trait ViewRegion
 
         $this->resolveSection($region);
 
-        $posts     = $this->categoryService->postsByRegion($region);
-        $firstPost = $posts->first();
-        $firstTag  = $firstPost?->tags->first();
+        $posts = $this->regionService->postsByRegion($region);
 
-        $popularTags = $firstTag
-            ? $this->categoryService->popularTags($firstTag, 8)
-            : collect();
+        $recentPosts = $this->regionService
+            ->recentPostsByRegion($region, 6);
 
-        $relatedCategories = $firstTag
-            ? $this->categoryService->relatedCategoriesByTag($firstTag)
-            : collect();
+        $popularTags = $this->categoryService
+            ->popularTagsByRegion($region, 8);
 
-        $recentPosts = $firstPost
-            ? $this->categoryService->recentPosts($firstPost, 6)
-            : collect();
+        $relatedCategories = $this->categoryService
+            ->relatedCategoriesByRegion($region);
 
         return view('region', [
             'region'            => $region,

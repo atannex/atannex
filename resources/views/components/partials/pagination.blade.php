@@ -1,7 +1,9 @@
 @if ($paginator->hasPages())
 <div id="pagination" class="mt-40 text-center th-pagination">
     <ul>
-        @if (!$paginator->onFirstPage())
+
+        {{-- Previous --}}
+        @if ($paginator->onFirstPage() === false)
         <li>
             <a href="{{ $paginator->previousPageUrl() }}#pagination" aria-label="Previous Page">
                 <i class="fas fa-arrow-left"></i>
@@ -9,43 +11,55 @@
         </li>
         @endif
 
+        @php
+        $current = $paginator->currentPage();
+        $last = $paginator->lastPage();
+
+        $start = max(1, $current - 2);
+        $end = min($last, $current + 2);
+        @endphp
+
+        {{-- First page --}}
+        @if ($start > 1)
         <li>
-            <a href="{{ $paginator->url(1) }}#pagination" @class(['active'=> $paginator->currentPage() === 1])>
-                01
+            <a href="{{ $paginator->url(1) }}#pagination" @class(['active'=> $current === 1])>
+                {{ str_pad(1, 2, '0', STR_PAD_LEFT) }}
             </a>
         </li>
 
-        @if ($paginator->currentPage() > 4)
-        <li><span class="ellipsis">...</span></li>
+        @if ($start > 2)
+        <li><span class="ellipsis">…</span></li>
+        @endif
         @endif
 
-        @foreach (range(max(2, $paginator->currentPage() - 2), min($paginator->lastPage() - 1, $paginator->currentPage() + 2)) as $page)
-        <li>
-            <a href="{{ $paginator->url($page) }}#pagination" @class(['active'=> $page === $paginator->currentPage()])>
+        {{-- Dynamic pages --}}
+        @for ($page = $start; $page <= $end; $page++) <li>
+            <a href="{{ $paginator->url($page) }}#pagination" @class(['active'=> $page === $current])>
                 {{ str_pad($page, 2, '0', STR_PAD_LEFT) }}
             </a>
-        </li>
-        @endforeach
-
-        @if ($paginator->currentPage() < $paginator->lastPage() - 3)
-            <li><span class="ellipsis">...</span></li>
-            @endif
-
-            @if ($paginator->lastPage() > 1)
-            <li>
-                <a href="{{ $paginator->url($paginator->lastPage()) }}#pagination" @class(['active'=> $paginator->currentPage() === $paginator->lastPage()])>
-                    {{ str_pad($paginator->lastPage(), 2, '0', STR_PAD_LEFT) }}
-                </a>
             </li>
-            @endif
+            @endfor
 
-            @if ($paginator->hasMorePages())
-            <li>
-                <a href="{{ $paginator->nextPageUrl() }}#pagination" aria-label="Next Page">
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-            </li>
-            @endif
+            {{-- Last page --}}
+            @if ($end < $last) @if ($end < $last - 1) <li><span class="ellipsis">…</span></li>
+                @endif
+
+                <li>
+                    <a href="{{ $paginator->url($last) }}#pagination" @class(['active'=> $current === $last])>
+                        {{ str_pad($last, 2, '0', STR_PAD_LEFT) }}
+                    </a>
+                </li>
+                @endif
+
+                {{-- Next --}}
+                @if ($paginator->hasMorePages())
+                <li>
+                    <a href="{{ $paginator->nextPageUrl() }}#pagination" aria-label="Next Page">
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </li>
+                @endif
+
     </ul>
 </div>
 @endif

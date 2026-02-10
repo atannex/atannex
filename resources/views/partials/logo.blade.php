@@ -1,3 +1,3 @@
 <a href="{{ route('home') }}">
-    <img class="dark-img" src="{{ asset('storage/'. $global['logo']?->image) }}" class="img-fluid" style="max-width: 98px; height: 98px; object-fit: cover;">
+    <img src="{{ asset('storage/' . $global['logo']?->image) }}" alt="{{ config('app.name') }}" class="img-fluid rounded-circle" style="width: 98px; height: 98px; object-fit: cover;">
 </a>

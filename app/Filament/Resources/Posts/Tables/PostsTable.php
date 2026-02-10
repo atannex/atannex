@@ -66,6 +66,7 @@ class PostsTable
 
                 TextColumn::make('region.name')
                     ->label('Regions')
+                    ->searchable()
                     ->badge(),
 
                 TextColumn::make('is_editor_pick')
