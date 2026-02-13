@@ -6,7 +6,6 @@ namespace App\Models\Traits;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use App\Models\Comments\Rating;
 
 trait HasRatings

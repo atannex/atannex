@@ -12,7 +12,7 @@ trait CanRate
 
     public ?int $myRating = 0;
 
-    protected int $cooldown = 3;
+    protected int $cooldown = 10;
 
     /*
     |--------------------------------------------------------------------------
