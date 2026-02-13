@@ -14,7 +14,7 @@ trait CanReact
     public bool $liked = false;
     public bool $disliked = false;
 
-    protected int $reactCooldown = 3;
+    protected int $reactCooldown = 10;
 
     /*
     |--------------------------------------------------------------------------
