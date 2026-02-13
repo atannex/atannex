@@ -53,7 +53,7 @@ $ogVideo = $module->post->videos->first();
 
                         <div class="blog-content">
 
-                            <livewire:show.info :post="$module->post" wire:key="posts-{{ $module->post->id }}" />
+                            <livewire:show.info :post="$module->post" wire:key="posts-{{ $module->post->id }}" :module="$module" />
 
                             <x-shows.content :module="$module" :headingLevels="$headingLevels" />
 

@@ -9,11 +9,12 @@ use Illuminate\View\View;
 
 trait ViewRegion
 {
+    /**
+     * Render the region view.
+     */
     public function renderRegionView(Region $region): View
     {
-        abort_unless($region->exists, 404);
-
-        $this->resolveSection($region);
+        $this->resolveSection($region, 6, 3);
 
         $posts = $this->regionService->postsByRegion($region);
 

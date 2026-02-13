@@ -1,51 +1,78 @@
 <div class="flex-wrap gap-2 blog-info-wrap d-flex align-items-center gap-md-3">
-
-    @auth
-    <div class="gap-2 engagement-group d-flex">
-        <button class="blog-info d-flex align-items-center gap-1 {{ $post->isLikedBy(auth()->user()) ? 'fw-bold text-primary' : '' }}" wire:click="toggleLike" wire:loading.attr="disabled" type="button">
+    <div class="gap-2 d-flex engagement-group">
+        <button type="button" wire:click="like" wire:target="like" wire:loading.attr="disabled" wire:loading.class="opacity-50" class="blog-info d-flex align-items-center gap-1
+            {{ $liked ? 'fw-bold text-primary' : 'text-muted' }}" aria-pressed="{{ $liked ? 'true' : 'false' }}" aria-label="Like this story">
             <i class="fas fa-thumbs-up"></i>
-            <span>{{ $likeCount ?? 0 }}</span>
-        </button>
 
-        <button class="blog-info d-flex align-items-center gap-1 {{ $post->isDislikedBy(auth()->user()) ? 'fw-bold text-danger' : '' }}" wire:click="toggleDislike" wire:loading.attr="disabled" type="button">
+            <span class="text-nowrap">
+                {{ format_count(number_format($likeCount)) }}
+            </span>
+        </button>
+        <button type="button" wire:click="dislike" wire:target="dislike" wire:loading.attr="disabled" wire:loading.class="opacity-50" class="blog-info d-flex align-items-center gap-1
+            {{ $disliked ? 'fw-bold text-danger' : 'text-muted' }}" aria-pressed="{{ $disliked ? 'true' : 'false' }}" aria-label="Dislike this story">
             <i class="fas fa-thumbs-down"></i>
-            <span>{{ $dislikeCount ?? 0 }}</span>
+
+            <span class="text-nowrap">
+                {{ format_count(number_format($dislikeCount)) }}
+            </span>
         </button>
     </div>
-
     <div class="stats-group">
-        <button class="gap-1 blog-info d-flex align-items-center">
-            <i class="fas fa-eye"></i>
-            <span>126k</span>
-        </button>
-        <button class="gap-1 blog-info d-flex align-items-center">
-            <i class="fas fa-share-nodes"></i>
-            <span>2k</span>
-        </button>
-        <span class="gap-1 blog-info d-flex align-items-center">
-            <i class="fas fa-comments"></i>
-            <span>1.2k</span>
-        </span>
-        <span class="gap-1 blog-info d-flex align-items-center">
-    @for ($i = 1; $i <= 5; $i++)
-        <i
-            class="fas fa-star cursor-pointer {{ $i <= $rating ? 'text-yellow-500' : 'text-gray-300' }}"
-            wire:click="$dispatch('post-rated', {{ $i }})">
-        </i>
-    @endfor
-    <span class="ms-2">{{ $averageRating ?? 0 }}</span>
-</span>
+        <div class="gap-2 d-flex engagement-group">
+            <span class="gap-1 blog-info d-flex align-items-center">
+                <i class="fas fa-eye"></i>
+                <span>
+                    {{ format_count(number_format($totalViews)) }}
+                </span>
+            </span>
+            <span class="gap-1 blog-info d-flex align-items-center">
+                <i class="fas fa-share-nodes"></i>
+                <span>
+                    {{ format_count(number_format($totalShares)) }}
+                </span>
+            </span>
+            <span class="gap-1 blog-info d-flex align-items-center">
+                <i class="fas fa-comments"></i>
+                <span>
+                    {{ format_count(number_format($module->post->comments_count)) }}
+                </span>
+            </span>
+        </div>
+        <div class="gap-2 blog-info d-flex align-items-center">
+            <div class="gap-1 d-flex align-items-center rating-stars">
+                @for ($i = 1; $i <= 5; $i++) <i wire:key="star-{{ $post->id }}-{{ $i }}" wire:click="rate({{ $i }})" wire:loading.class="is-loading" wire:target="rate" class="fas fa-star rating-star
+                        {{ $i <= ($myRating ?? 0) ? 'is-rated' : '' }}
+                        {{ $myRating === $i ? 'is-selected' : '' }}" role="button" tabindex="0" aria-label="Rate {{ $i }} out of 5"></i>
+                    @endfor
+            </div>
+            <span class="ms-2 small rating-meta">
+                {{ number_format($averageRating, 1) }}
+                @if ($ratingCount > 0)
+                <span class="rating-count">
+                    ({{ $ratingCount }})
+                </span>
+                @endif
+            </span>
 
-
+        </div>
     </div>
+
+
     <style>
+        /* =====================================================
+           Blog Info Wrapper
+        ===================================================== */
+
         .blog-info-wrap {
-            background: rgb(22, 22, 22);
+            background: #161616;
             padding: 1rem;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(20, 20, 20, 0);
             max-width: 100%;
         }
+
+        /* =====================================================
+           Blog Info Card
+        ===================================================== */
 
         .blog-info {
             background: #2b2c2c;
@@ -57,22 +84,83 @@
             color: #f1ebeb;
             transition: all 0.2s ease;
             white-space: nowrap;
-            cursor: pointer;
         }
 
         .blog-info:hover {
             background: #303031;
             border-color: #3b3d3f;
             transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
-        .blog-info i {
+        /* =====================================================
+           Rating Stars
+        ===================================================== */
+
+        .rating-stars {
+            --star-default: #5c5f63;
+            --star-rated: #ffc107;
+            --star-hover: #ffd54f;
+        }
+
+        .rating-stars .rating-star {
+            font-size: 1rem;
+            color: var(--star-default);
+            cursor: pointer;
+            transition: color 0.15s ease, transform 0.15s ease;
+        }
+
+        /* Stars at or below the user's rating */
+        .rating-stars .rating-star.is-rated {
+            color: var(--star-rated) !important;
+        }
+
+        /* The exact star the user selected gets a pop */
+        .rating-stars .rating-star.is-selected {
+            color: var(--star-hover) !important;
+            transform: scale(1.2);
+        }
+
+        /* On hover: light up all stars, then dim those after the hovered one */
+        .rating-stars:hover .rating-star {
+            color: var(--star-rated);
+        }
+
+        .rating-stars .rating-star:hover~.rating-star {
+            color: var(--star-default);
+        }
+
+        .rating-stars .rating-star:hover {
+            color: var(--star-hover);
+            transform: scale(1.2);
+        }
+
+        /* Loading: disable interaction while Livewire is processing */
+        .rating-stars .rating-star.is-loading {
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .rating-meta {
+            color: #9ca3af;
+            font-size: 0.8125rem;
+            user-select: none;
+        }
+
+        .rating-count {
+            opacity: 0.7;
+        }
+
+        /* =====================================================
+           Non-Rating Icon Styling
+        ===================================================== */
+
+        .blog-info i:not(.rating-star) {
             font-size: 0.875rem;
-            opacity: 0.8;
+            opacity: 0.85;
         }
 
-        /* Specific icon colors */
         .blog-info .fa-thumbs-up {
             color: #0d6efd;
         }
@@ -93,35 +181,25 @@
             color: #198754;
         }
 
-        .blog-info .fa-star {
-            color: #ffc107;
-        }
+        /* =====================================================
+           Layout Groups
+        ===================================================== */
 
-        /* Active states for buttons */
-        button.blog-info:active {
-            transform: translateY(0);
-        }
-
-        button.blog-info.active .fa-thumbs-up,
-        button.blog-info.active .fa-thumbs-down {
-            opacity: 1;
-        }
-
-        /* Engagement group styling */
-        .engagement-group {
+        .engagement-group,
+        .stats-group {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
         }
 
         .stats-group {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
             margin-left: auto;
         }
 
-        /* Responsive breakpoints */
+        /* =====================================================
+           Responsive
+        ===================================================== */
+
         @media (max-width: 768px) {
             .blog-info-wrap {
                 padding: 0.75rem;
@@ -147,8 +225,7 @@
             .blog-info {
                 padding: 0.4rem 0.625rem;
                 font-size: 0.75rem;
-                flex: 1 1 auto;
-                min-width: 0;
+                width: 100%;
                 justify-content: center;
             }
 
@@ -163,23 +240,5 @@
             }
         }
 
-        @media (max-width: 768px) {
-            .divider {
-                display: none;
-            }
-        }
-
-        /* Demo container */
-        .demo-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            margin-bottom: 2rem;
-            color: #212529;
-        }
-
     </style>
-    @endauth
 </div>

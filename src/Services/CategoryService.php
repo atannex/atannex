@@ -25,21 +25,10 @@ final class CategoryService
     use HasResolver;
     use HandlesPostDateResolution;
 
-    /*
-    |--------------------------------------------------------------------------
-    | Limits
-    |--------------------------------------------------------------------------
-    */
     protected const CATEGORY_LIMIT   = 12;
     protected const POPULAR_LIMIT    = 12;
     protected const PAGINATION_LIMIT = 15;
     protected const RECENT_LIMIT     = 5;
-
-    /*
-    |--------------------------------------------------------------------------
-    | Employee
-    |--------------------------------------------------------------------------
-    */
 
     public function employeeSocial(Employee $employee): Collection
     {
@@ -51,7 +40,6 @@ final class CategoryService
             ->filter()
             ->values();
     }
-
 
     public function relatedCategories(Category $category, int $limit = self::CATEGORY_LIMIT): Collection
     {
@@ -120,9 +108,6 @@ final class CategoryService
             ->latest('published_at')
             ->paginate($limit);
     }
-
-
-
 
     public function postsByTag(Tag $tag, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
     {

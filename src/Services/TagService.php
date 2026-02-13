@@ -10,7 +10,6 @@ use Illuminate\Support\Collection;
 
 class TagService
 {
-
     public function getTagBySlug(string $slug): ?Tag
     {
         return Tag::query()

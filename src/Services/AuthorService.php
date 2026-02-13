@@ -8,7 +8,6 @@ use App\Models\Posts\Post;
 use App\Models\Regions\Employee;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-
 final class AuthorService
 {
     public function postsByAuthor(string $slug, int $limit = 10): LengthAwarePaginator

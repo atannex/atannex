@@ -2,14 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Flag;
-use App\Models\Tags\Tag;
 use Illuminate\View\View;
-use App\Models\Posts\Post;
 use Atannex\Binders\HasView;
-use Atannex\Traits\HasGlobal;
-use App\Models\Regions\Category;
-use App\Models\Regions\Employee;
 use Atannex\Concerns\HasDocument;
 use Atannex\Concerns\HasResolver;
 use Atannex\Services\RegionService;
@@ -18,123 +12,152 @@ use Atannex\Traits\HandlesPostDateResolution;
 class RegionController extends Controller
 {
     use HasResolver;
-    use HasGlobal;
     use HandlesPostDateResolution;
     use HasDocument;
+
+    protected const SUPPORTED_DOCUMENT_TYPES = [
+        'privacy',
+        'terms',
+        'faq',
+        'guidelines',
+        'help-center',
+    ];
 
     public function __construct(
         protected readonly RegionService $regionService,
         protected readonly HasView $viewBinder,
     ) {}
 
-    /**
-     * Resolve a slug into its corresponding content entity.
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | Main Slug Resolver
+    |--------------------------------------------------------------------------
+    */
+
     public function resolve(string $slug): View
     {
-
-        /*
-     |--------------------------------------------------------------------------
-     | 1️⃣ Explicit document listing pages (lowest collision risk)
-     |--------------------------------------------------------------------------
-     */
-        if ($this->isSupportedDocumentType($slug) || $slug === 'testimonials') {
-            return view('documents.index', [
-                'documents'           => $this->getDocumentsBySlug($slug),
-                'type'                => $slug,
-                'isValidDocumentType' => $this->isSupportedDocumentType($slug),
-                'isTestimonialType'   => $slug === 'testimonials',
-            ]);
+        // 1️⃣ Document listings
+        if ($response = $this->resolveDocumentListing($slug)) {
+            return $response;
         }
 
-        /*
-     |--------------------------------------------------------------------------
-     | 2️⃣ Single document page (exact match)
-     |--------------------------------------------------------------------------
-     */
-        if ($this->documentExists($slug)) {
-            $document = $this->getDocumentByPath($slug);
-            $module   = $this->getDocumentModule($slug);
-
-            abort_if(! $module, 404);
-
-            return view('documents.show', [
-                'module'    => $module,
-                'seoTitle'  => $document->title,
-                'type'      => $document->slug,
-                'documents' => $this->getRelatedDocuments($slug),
-            ]);
+        // 2️⃣ Single document
+        if ($response = $this->resolveSingleDocument($slug)) {
+            return $response;
         }
 
-        /*
-     |--------------------------------------------------------------------------
-     | 3️⃣ Date archives (YYYY / YYYY-MM)
-     |--------------------------------------------------------------------------
-     */
-        if ($archive = $this->resolvePostArchiveBySlug($slug)) {
-            return $this->viewBinder->renderDateView($archive['year'], $archive['month'], $archive['type']);
+        // 3️⃣ Date archive
+        if ($response = $this->resolveArchive($slug)) {
+            return $response;
         }
 
-        /*
-     |--------------------------------------------------------------------------
-     | 4️⃣ Single post
-     |--------------------------------------------------------------------------
-     */
-        if ($this->postExists($slug)) {
-            $post = Post::published()
-                ->where('slug_path', $slug)
-                ->firstOrFail();
-
-            return $this->viewBinder->renderPostShow($post->category, $slug);
+        // 4️⃣ Content resolvers (post → author → tag → category)
+        if ($response = $this->resolveContentEntities($slug)) {
+            return $response;
         }
 
-        /*
-     |--------------------------------------------------------------------------
-     | 5️⃣ Author
-     |--------------------------------------------------------------------------
-     */
-        if ($this->authorExists($slug)) {
-            $author = Employee::with('user')
-                ->whereHas('user', fn($q) => $q->where('slug', $slug))
-                ->firstOrFail();
-
-            return $this->viewBinder->renderAuthorView($author);
-        }
-
-        /*
-     |--------------------------------------------------------------------------
-     | 6️⃣ Tag
-     |--------------------------------------------------------------------------
-     */
-        if ($this->tagExists($slug)) {
-            $tag = Tag::where('slug', $slug)->firstOrFail();
-
-            return $this->viewBinder->renderTagView($tag);
-        }
-
-        /*
-     |--------------------------------------------------------------------------
-     | 7️⃣ Category
-     |--------------------------------------------------------------------------
-     */
-        if ($this->categoryExists($slug)) {
-            $category = Category::where([
-                ['flag', Flag::PUBLISHED],
-                ['slug_path', $slug],
-            ])->firstOrFail();
-
-            return $this->viewBinder->renderCategoryView($category);
-        }
-
-        /*
-     |--------------------------------------------------------------------------
-     | 8️⃣ Region (most generic — LAST)
-     |--------------------------------------------------------------------------
-     */
-        if ($region = $this->regionService->getRegionBySlug($slug)) {
-            return $this->viewBinder->renderRegionView($region);
+        // 5️⃣ Region (lowest specificity)
+        if ($response = $this->resolveRegion($slug)) {
+            return $response;
         }
 
         abort(404);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Resolution Layers
+    |--------------------------------------------------------------------------
+    */
+
+    protected function resolveDocumentListing(string $slug): ?View
+    {
+        if (! $this->isSupportedDocumentType($slug) && $slug !== 'testimonials') {
+            return null;
+        }
+
+        return view('documents.index', [
+            'documents'           => $this->getDocumentsBySlug($slug),
+            'type'                => $slug,
+            'isValidDocumentType' => $this->isSupportedDocumentType($slug),
+            'isTestimonialType'   => $slug === 'testimonials',
+        ]);
+    }
+
+    protected function resolveSingleDocument(string $slug): ?View
+    {
+        if (! $this->documentExists($slug)) {
+            return null;
+        }
+
+        $document = $this->getDocumentByPath($slug);
+        $module   = $this->getDocumentModule($slug);
+
+        abort_if(! $module, 404);
+
+        return view('documents.show', [
+            'module'    => $module,
+            'seoTitle'  => $document->title,
+            'type'      => $document->slug,
+            'documents' => $this->getRelatedDocuments($slug),
+        ]);
+    }
+
+    protected function resolveArchive(string $slug): ?View
+    {
+        $archive = $this->resolvePostArchiveBySlug($slug);
+
+        if (! $archive) {
+            return null;
+        }
+
+        return $this->viewBinder
+            ->renderDateView($archive['year'], $archive['month'], $archive['type']);
+    }
+
+    /**
+     * Uses HasResolver trait methods cleanly here.
+     */
+    protected function resolveContentEntities(string $slug): ?View
+    {
+        if ($this->postExists($slug)) {
+            return $this->viewBinder->renderPostShow($slug);
+        }
+
+        if ($this->authorExists($slug)) {
+            return $this->viewBinder->renderAuthorView($slug);
+        }
+
+        if ($this->tagExists($slug)) {
+            return $this->viewBinder->renderTagView($slug);
+        }
+
+        if ($this->categoryExists($slug)) {
+            return $this->viewBinder->renderCategoryView($slug);
+        }
+
+        return null;
+    }
+
+    protected function resolveRegion(string $slug): ?View
+    {
+        $region = $this->regionService->getRegionBySlug($slug);
+
+        if (! $region) {
+            return null;
+        }
+
+        return $this->viewBinder->renderRegionView($region);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helpers
+    |--------------------------------------------------------------------------
+    */
+
+    protected function isSupportedDocumentType(string $slug): bool
+    {
+        return in_array($slug, self::SUPPORTED_DOCUMENT_TYPES, true);
     }
 }

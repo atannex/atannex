@@ -4,51 +4,73 @@ namespace Atannex\Concerns;
 
 use App\Enums\Flag;
 use App\Enums\Status;
+use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
+use App\Models\Docs\Document;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
-use App\Models\Tags\Tag;
-use Atannex\Traits\HasGlobal;
+use Illuminate\Database\Eloquent\Builder;
 
 trait HasResolver
 {
-    use HasGlobal;
+    /*
+    |--------------------------------------------------------------------------
+    | Public Resolvers
+    |--------------------------------------------------------------------------
+    */
 
     /**
-     * Check if an author exists by slug.
+     * Determine whether an active author exists by slug.
      */
     protected function authorExists(string $slug): bool
     {
-        return Employee::where('status', Status::ACTIVE)
-            ->whereHas('user', fn($q) => $q->where('slug', $slug))
+        return Employee::query()
+            ->where('status', Status::ACTIVE)
+            ->whereHas('user', fn (Builder $query) =>
+                $query->where('slug', $slug)
+            )
             ->exists();
     }
 
     /**
-     * Check if a category exists by slug.
+     * Check if a document exists without triggering a 404.
+     */
+    protected function documentExists(string $slug): bool
+    {
+        return Document::query()
+            ->flagged(Flag::PUBLISHED)
+            ->where('slug_path', $slug)
+            ->exists();
+    }
+
+    /**
+     * Determine whether a published category exists by slug path.
      */
     protected function categoryExists(string $slug): bool
     {
-        return Category::where([
-            ['flag', Flag::PUBLISHED],
-            ['slug_path', $slug],
-        ])->exists();
+        return Category::query()
+            ->where('flag', Flag::PUBLISHED)
+            ->where('slug_path', $slug)
+            ->exists();
     }
 
     /**
-     * Check if a tag exists by slug.
+     * Determine whether a tag exists by slug.
      */
     protected function tagExists(string $slug): bool
     {
-        return Tag::where('slug', $slug)->exists();
+        return Tag::query()
+            ->where('slug', $slug)
+            ->exists();
     }
 
     /**
-     * Check if a post exists by slug.
+     * Determine whether a published post exists by slug path.
      */
     protected function postExists(string $slug): bool
     {
-        return Post::published()
+        return Post::query()
+            ->published()
             ->where('slug_path', $slug)
             ->exists();
     }
