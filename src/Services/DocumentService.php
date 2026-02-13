@@ -10,17 +10,8 @@ use App\Enums\Flag;
 use App\Models\Docs\Document;
 use Illuminate\Database\Eloquent\Builder;
 
-/**
- * Service class for handling document-related operations.
- */
 final class DocumentService
 {
-    /**
-     * Retrieve published documents of a specific type.
-     *
-     * @param  string  $type  The document type to filter by
-     * @return Collection<Document>
-     */
     public function getPublishedDocumentsByType(string $type): Collection
     {
         return $this->basePublishedDocumentQuery()
@@ -33,9 +24,6 @@ final class DocumentService
             ->get();
     }
 
-    /**
-     * Find a document module by type and slug.
-     */
     public function findModuleByTypeAndSlug(string $type, string $slug): ?DocumentModule
     {
         $documentConstraints = function (Builder $query) use ($type, $slug): void {
@@ -53,11 +41,6 @@ final class DocumentService
             ->firstOrFail();
     }
 
-    /**
-     * Build base query for published documents.
-     *
-     * @return Builder<Document>
-     */
     private function basePublishedDocumentQuery(): Builder
     {
         return Document::query()->where(function (Builder $query): void {
@@ -65,11 +48,6 @@ final class DocumentService
         });
     }
 
-    /**
-     * Apply published document constraints to the query.
-     *
-     * @param  Builder<Document>  $query
-     */
     private function addPublishedDocumentConstraints(Builder $query): void
     {
         $query->where('flag', Flag::PUBLISHED);

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Atannex\Services;
 
 use App\Models\Posts\Post;
+use App\Models\Modules\PostModule;
 use Illuminate\Support\Collection;
-
 
 final class PostService
 {
@@ -41,5 +41,24 @@ final class PostService
             ->latest('published_at')
             ->limit($limit)
             ->get();
+    }
+
+    public function getPostBySlugPath(string $slug): PostModule
+    {
+        return PostModule::query()
+            ->whereHas('post', function ($query) use ($slug) {
+                $query->where('slug_path', $slug);
+            })
+            ->with([
+                'post' => function ($query) {
+                    $query->withCount('comments')
+                        ->with([
+                            'author.user',
+                            'tags',
+                            'category',
+                        ]);
+                },
+            ])
+            ->firstOrFail();
     }
 }

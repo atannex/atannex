@@ -17,14 +17,6 @@
         {{ $module->created_at->diffForHumans() }}
     </a>
 
-    @auth
-    <a href="{{ route('page.index', $module->post->author->user->slug) }}">
-        <i class="fas fa-comments"></i>
-        ({{ format_count($module->post->comments_count) }}
-        {{ Str::plural('Comment', $module->post->comments_count) }})
-    </a>
-    @endauth
-
     <span>
         <i class="fas fa-book-open"></i>
         {{ $module->readingTime() }} {{ Str::plural('Min', $module->readingTime()) . __(" Read") }}

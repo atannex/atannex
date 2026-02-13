@@ -23,17 +23,6 @@ trait HasDocument
     }
 
     /**
-     * Check if a document exists without triggering a 404.
-     */
-    protected function documentExists(string $slug): bool
-    {
-        return Document::query()
-            ->flagged(Flag::PUBLISHED)
-            ->where('slug_path', $slug)
-            ->exists();
-    }
-
-    /**
      * Retrieve a single document or fail.
      */
     protected function getDocumentByPath(string $slug): Document

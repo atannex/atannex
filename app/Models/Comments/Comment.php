@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models\Comments;
 
-use App\Contracts\Likeably;
 use App\Models\User;
-use App\Models\Guest;
-use App\Models\Comments\Likeable;
 use Illuminate\Support\Collection;
-use App\Models\Traits\HasLikeable;
+use App\Models\Traits\HasReaction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,10 +16,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 
-class Comment extends Model implements Likeably
+class Comment extends Model
 {
     use SoftDeletes;
-    use HasLikeable;
+    use HasReaction;
 
     protected $fillable = [
         'user_id',
@@ -77,11 +74,6 @@ class Comment extends Model implements Likeably
         return $this->belongsTo(User::class);
     }
 
-    public function guest(): BelongsTo
-    {
-        return $this->belongsTo(Guest::class);
-    }
-
     public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
@@ -99,7 +91,7 @@ class Comment extends Model implements Likeably
 
     public function reactions(): MorphMany
     {
-        return $this->morphMany(Likeable::class, 'likeable');
+        return $this->morphMany(Reaction::class, 'likeable');
     }
 
     /* ----------------------------- Scopes ----------------------------- */

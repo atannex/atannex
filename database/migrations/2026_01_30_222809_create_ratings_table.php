@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('rateables', function (Blueprint $table) {
+        Schema::create('ratings', function (Blueprint $table) {
             $table->id();
 
             $table->morphs('rateable');
@@ -18,25 +18,28 @@ return new class extends Migration
                 ->constrained()
                 ->nullOnDelete();
 
+            $table->string('visitor_key');
+
+            $table->string('session_id')->nullable();
+            $table->ipAddress('ip_address')->nullable();
+
             $table->unsignedTinyInteger('rating');
             $table->text('comment')->nullable();
-            $table->ipAddress('ip_address')->nullable();
-            $table->string('rating_hash', 64)->nullable()->unique();
 
-            $table->softDeletes();
             $table->timestamps();
 
-            $table->unique(
-                ['rateable_type', 'rateable_id', 'user_id'],
-                'unique_user_rateable'
-            );
+            $table->unique([
+                'rateable_type',
+                'rateable_id',
+                'visitor_key'
+            ], 'unique_rating_per_visitor');
 
-            $table->index(['rateable_type', 'rateable_id', 'rating_hash']);
+            $table->index(['rateable_type', 'rateable_id', 'visitor_key']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('rateables');
+        Schema::dropIfExists('ratings');
     }
 };

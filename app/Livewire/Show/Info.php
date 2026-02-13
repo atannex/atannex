@@ -3,70 +3,124 @@
 namespace App\Livewire\Show;
 
 use Livewire\Component;
-use App\Models\Posts\Post;
 use Livewire\Attributes\On;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Posts\Post;
+use App\Enums\ReactionType;
+use App\Livewire\Concerns\CanRate;
+use App\Livewire\Concerns\CanReact;
 
 class Info extends Component
 {
+    use CanRate;
+    use CanReact;
+
     public Post $post;
+    public mixed $module;
 
-    public $likeCount;
-    public $dislikeCount;
-    public $rating;
-    public $averageRating;
+    public int $totalShares = 0;
+    public int $totalViews  = 0;
 
-    public function mount($post)
+    /*
+    |--------------------------------------------------------------------------
+    | Lifecycle
+    |--------------------------------------------------------------------------
+    */
+
+    public function mount(Post $post, $module): void
     {
-        $this->post = $post;
-        $this->refreshCounts();
-        $this->refreshRating();
+        $this->post   = $post;
+        $this->module = $module;
+
+        $this->post->addView();
+
+        $this->syncRatingState();
+        $this->syncReactionState();
+        $this->syncShareState();
+        $this->syncViewState();
     }
 
     public function render()
     {
-        return view('livewire.show.info');
+        return view('livewire.show.info', [
+            'module'      => $this->module,
+            'totalShares' => $this->totalShares,
+            'totalViews'  => $this->totalViews,
+        ]);
     }
 
-    #[On('post-liked')]
-    public function toggleLike()
-    {
-        $this->post->isLikedBy(Auth::user())
-            ? $this->post->removeReaction(Auth::user())
-            : $this->post->like(Auth::user());
+    /*
+    |--------------------------------------------------------------------------
+    | Reaction Events
+    |--------------------------------------------------------------------------
+    */
 
-        $this->refreshCounts();
+    #[On('post-liked')]
+    public function like(): void
+    {
+        $this->handleReaction(ReactionType::LIKE());
     }
 
     #[On('post-disliked')]
-    public function toggleDislike()
+    public function dislike(): void
     {
-        $this->post->isDislikedBy(Auth::user())
-            ? $this->post->removeReaction(Auth::user())
-            : $this->post->dislike(Auth::user());
-
-        $this->refreshCounts();
+        $this->handleReaction(ReactionType::DISLIKE());
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Rating Events
+    |--------------------------------------------------------------------------
+    */
 
     #[On('post-rated')]
-    public function ratePost($rating)
+    public function rate(int $value): void
     {
-        $rating === 0
-            ? $this->post->removeRating(Auth::id())
-            : $this->post->addRating($rating, null, Auth::id());
-
-        $this->refreshRating();
+        $this->handleRate($value);
     }
 
-    protected function refreshCounts()
+    /*
+    |--------------------------------------------------------------------------
+    | Sync Helpers
+    |--------------------------------------------------------------------------
+    */
+
+    protected function syncShareState(): void
     {
-        $this->likeCount    = $this->post->likes()->count();
-        $this->dislikeCount = $this->post->dislikes()->count();
+        if (method_exists($this->post, 'totalShareClicks')) {
+            $this->totalShares = $this->post->totalShareClicks();
+        }
     }
 
-    protected function refreshRating()
+    protected function syncViewState(): void
     {
-        $this->rating        = $this->post->ratingByUser(Auth::id())?->rating ?? 0;
-        $this->averageRating = $this->post->averageRating() ?: 0;
+        if (method_exists($this->post, 'viewCount')) {
+            $this->totalViews = $this->post->viewCount();
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Trait Contracts
+    |--------------------------------------------------------------------------
+    */
+
+    protected function getRateableModel(): Post
+    {
+        return $this->post;
+    }
+
+    protected function getRateLimitPrefix(): string
+    {
+        return 'post-rating';
+    }
+
+    protected function getReactableModel(): Post
+    {
+        return $this->post;
+    }
+
+    protected function getReactionPrefix(): string
+    {
+        return 'post-reaction';
     }
 }

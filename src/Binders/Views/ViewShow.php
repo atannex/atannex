@@ -6,9 +6,6 @@ namespace Atannex\Binders\Views;
 
 use App\Enums\HeadingLevel;
 use App\Enums\Icon;
-use App\Models\Modules\PostModule;
-use App\Models\Regions\Category;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 
 trait ViewShow
@@ -20,23 +17,9 @@ trait ViewShow
         Icon::TELEGRAM,
     ];
 
-    public function renderPostShow(Category $category, string $slug): View
+    public function renderPostShow(string $slug): View
     {
-        $module = PostModule::query()
-            ->with([
-                'post' => fn($query) => $query
-                    ->withCount('comments')
-                    ->with([
-                        'author.user',
-                        'tags',
-                        'category',
-                    ]),
-            ])
-            ->whereHas(
-                'post',
-                fn(Builder $query) => $query->where('slug_path', $slug)
-            )
-            ->firstOrFail();
+        $module = $this->postService->getPostBySlugPath($slug);
 
         $post = $module->post;
 

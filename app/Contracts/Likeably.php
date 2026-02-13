@@ -4,50 +4,33 @@ declare(strict_types=1);
 
 namespace App\Contracts;
 
-use App\Models\User;
+use App\Enums\ReactionType;
 
 /**
- * Interface Likeably
+ * Interface Reactable
  *
- * Defines the contract for any model that can be "liked" or "disliked" by a user.
- * Implementing this interface ensures that the model supports basic reaction functionality.
+ * Contract for any model that supports reactions
+ * (like / dislike) via identifier-based tracking.
  */
 interface Likeably
 {
     /**
-     * Check if the given user has liked this model.
-     *
-     * @param User $user The user to check against.
-     * @return bool True if the user has liked this model, false otherwise.
+     * Determine if the identifier has liked this model.
      */
-    public function isLikedBy(User $user): bool;
+    public function isLiked(?string $identifier): bool;
 
     /**
-     * Check if the given user has disliked this model.
-     *
-     * @param User $user The user to check against.
-     * @return bool True if the user has disliked this model, false otherwise.
+     * Determine if the identifier has disliked this model.
      */
-    public function isDislikedBy(User $user): bool;
+    public function isDisliked(?string $identifier): bool;
 
     /**
-     * Record a "like" from the given user for this model.
-     *
-     * @param User $user The user performing the like action.
+     * Add or update a reaction for the given identifier.
      */
-    public function like(User $user): void;
+    public function react(?string $identifier, ReactionType $type, ?string $ipAddress = null): void;
 
     /**
-     * Record a "dislike" from the given user for this model.
-     *
-     * @param User $user The user performing the dislike action.
+     * Remove any reaction associated with the identifier.
      */
-    public function dislike(User $user): void;
-
-    /**
-     * Remove any reaction (like or dislike) from the given user.
-     *
-     * @param User $user The user whose reaction should be removed.
-     */
-    public function removeReaction(User $user): void;
+    public function removeReaction(?string $identifier): void;
 }
