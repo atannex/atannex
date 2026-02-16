@@ -1,4 +1,4 @@
-    <div class="space dark-theme bg-title-dark">
+    {{-- <div class="space dark-theme bg-title-dark">
         <div class="container">
             <h2 class="sec-title has-line">Latest Video Playlist</h2>
             <div class="row">
@@ -11,7 +11,9 @@
                                     <div class="icon">
                                         <i class="fal fa-waveform-lines"></i>
                                     </div>
-                                    <a href="https://www.youtube.com/watch?v=_sI_Ps7JSEk" class="play-btn popup-video"><i class="fas fa-play"></i></a>
+                                    <a href="https://www.youtube.com/watch?v=_sI_Ps7JSEk" class="play-btn popup-video">
+                                        <i class="fas fa-play"></i>
+                                    </a>
                                 </div>
                                 <div class="blog-content">
                                     <a data-theme-color="#019D9E" href="blog.html" class="category">Animals</a>
@@ -46,48 +48,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-btn">
-                            <div class="blog-style2">
-                                <div class="blog-img img-100">
-                                    <img src="assets/img/blog/blog_3_11.jpg" alt="blog image" />
-                                    <div class="icon">
-                                        <i class="fal fa-waveform-lines"></i>
-                                    </div>
-                                    <a href="https://www.youtube.com/watch?v=_sI_Ps7JSEk" class="play-btn popup-video"><i class="fas fa-play"></i></a>
-                                </div>
-                                <div class="blog-content">
-                                    <a data-theme-color="#FF1D50" href="blog.html" class="category">Fitness</a>
-                                    <h3 class="box-title-20">
-                                        <a class="hover-line" href="blog-details.html">Sweat and Success Tales of
-                                            Dedication in Fitness</a>
-                                    </h3>
-                                    <div class="blog-meta">
-                                        <a href="blog.html"><i class="fal fa-calendar-days"></i>24 Mar, 2023</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-btn">
-                            <div class="blog-style2">
-                                <div class="blog-img img-100">
-                                    <img src="assets/img/blog/blog_3_12.jpg" alt="blog image" />
-                                    <div class="icon">
-                                        <i class="fal fa-waveform-lines"></i>
-                                    </div>
-                                    <a href="https://www.youtube.com/watch?v=_sI_Ps7JSEk" class="play-btn popup-video"><i class="fas fa-play"></i></a>
-                                </div>
-                                <div class="blog-content">
-                                    <a data-theme-color="#007BFF" href="blog.html" class="category">Technology</a>
-                                    <h3 class="box-title-20">
-                                        <a class="hover-line" href="blog-details.html">Tech Horizons Navigating the
-                                            Digital Landscape</a>
-                                    </h3>
-                                    <div class="blog-meta">
-                                        <a href="blog.html"><i class="fal fa-calendar-days"></i>30 Mar, 2023</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="col-xl-8 col-lg-10">
@@ -113,4 +73,4 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
