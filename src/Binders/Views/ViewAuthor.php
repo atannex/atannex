@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Atannex\Binders\Views;
 
-use App\Models\Regions\Employee;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 
 trait ViewAuthor
@@ -15,7 +13,7 @@ trait ViewAuthor
      */
     public function renderAuthorView(string $slug): View
     {
-        $author = $this->resolveAuthorBySlug($slug);
+        $author = $this->authorService->resolveAuthorBySlug($slug);
 
         return view('author', [
             'author'      => $author,
@@ -23,20 +21,5 @@ trait ViewAuthor
             'user_medias' => $this->categoryService->employeeSocial($author),
             'seoTitle'    => seo_title($author->name),
         ]);
-    }
-
-    /**
-     * Resolve author by user slug.
-     */
-    protected function resolveAuthorBySlug(string $slug): Employee
-    {
-        return Employee::query()
-            ->with(['user:id,slug'])
-            ->whereHas(
-                'user',
-                fn(Builder $query) =>
-                $query->where('slug', $slug)
-            )
-            ->firstOrFail();
     }
 }
