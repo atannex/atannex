@@ -6,6 +6,7 @@ namespace Atannex\Services;
 
 use App\Models\Posts\Post;
 use App\Models\Regions\Employee;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 final class AuthorService
@@ -33,5 +34,21 @@ final class AuthorService
             ])
             ->latest()
             ->paginate($limit);
+    }
+
+
+    /**
+     * Resolve author by user slug.
+     */
+    public function resolveAuthorBySlug(string $slug): Employee
+    {
+        return Employee::query()
+            ->with(['user:id,slug'])
+            ->whereHas(
+                'user',
+                fn(Builder $query) =>
+                $query->where('slug', $slug)
+            )
+            ->firstOrFail();
     }
 }

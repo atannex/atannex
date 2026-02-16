@@ -5,6 +5,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\RegionController;
 
+// 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
+
 /*
 |--------------------------------------------------------------------------
 | Static / Core Pages

@@ -14,7 +14,7 @@ class TagService
     {
         return Tag::query()
             ->where('slug', $slug)
-            ->first();
+            ->firstOrFail();
     }
 
     public function getTagsForPost(int $postId): Collection
@@ -36,6 +36,17 @@ class TagService
             ->get();
     }
 
+    /**
+     * Get latest published posts for a specific tag.
+     */
+    public function getRecentPostsForTag(Tag $tag, int $limit = 1): Collection
+    {
+        return $tag->posts()
+            ->published()
+            ->latest('published_at')
+            ->limit($limit)
+            ->get();
+    }
 
     public function searchTags(string $searchTerm): Collection
     {

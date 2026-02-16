@@ -30,6 +30,18 @@ final class CategoryService
     protected const PAGINATION_LIMIT = 15;
     protected const RECENT_LIMIT     = 5;
 
+    /**
+     * Resolve published category by slug.
+     */
+    public function resolveCategoryBySlug(string $slug): Category
+    {
+        return Category::query()
+            ->where('slug_path', $slug)
+            ->flagged(Flag::PUBLISHED)
+            ->latest()
+            ->firstOrFail();
+    }
+
     public function employeeSocial(Employee $employee): Collection
     {
         return $employee->socialMedia()
