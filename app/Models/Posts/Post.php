@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace App\Models\Posts;
 
 use App\Models\Tags\Tag;
-use App\Contracts\Likeably;
-use App\Contracts\Rateably;
 use Illuminate\Support\Str;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
-use App\Contracts\Commentable;
+use App\Models\Traits\HasComments;
 use App\Models\Pivots\PostTag;
 use App\Models\Regions\Region;
 use App\Models\Comments\Comment;
@@ -31,7 +29,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Post extends Model implements Commentable
+class Post extends Model
 {
     use HandlePost;
     use Scoping;
@@ -40,6 +38,7 @@ class Post extends Model implements Commentable
     use HasRatings;
     use HasReaction;
     use HasViews;
+    use HasComments;
     use HasShares;
 
     /**
