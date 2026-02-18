@@ -2,17 +2,30 @@
 use Illuminate\Support\Str;
 
 $segments = request()->segments();
-$total = count($segments);
-$maxVisible = 3;
-$limit = 10;
 $baseUrl = url('/');
+$maxVisible = 3; // Maximum visible segments (excluding region)
+$limit = 10;
+$total = count($segments);
+
+$breadcrumbs = [];
+$currentUrl = $baseUrl;
+
+foreach ($segments as $segment) {
+$currentUrl .= '/' . $segment;
+
+$breadcrumbs[] = [
+'label' => ucwords(str_replace('-', ' ', $segment)),
+'url' => $currentUrl,
+];
+}
 @endphp
 
 <div class="breadcumb-wrapper">
     <div class="container">
         <ul class="breadcumb-menu">
 
-            @if (!empty($global['headerRegion']))
+            {{-- Optional Header Region --}}
+            @if(!empty($global['headerRegion']))
             <li>
                 <a href="{{ route('page.index', ['slug' => $global['headerRegion']->slug]) }}">
                     {{ $global['headerRegion']->name }}
@@ -20,16 +33,25 @@ $baseUrl = url('/');
             </li>
             @endif
 
-            @foreach ($segments as $index => $segment)
+            @foreach($breadcrumbs as $index => $crumb)
             @php
             $isLast = $index === $total - 1;
+            @endphp
 
-            if ($total > $maxVisible && $index > 1 && $index < $total - 2) { if ($index===2) { echo '<li class="ellipsis">…</li>' ; } continue; } $baseUrl .='/' . $segment; $label=ucwords(str_replace('-', ' ' , $segment)); $text=$isLast ? Str::limit($label, $limit) : $label; @endphp <li title="{{ $label }}">
-                @if ($isLast)
-                {{ $text }}
-                @else
-                <a href="{{ $baseUrl }}">{{ $text }}</a>
+            {{-- Collapse middle breadcrumbs if too many --}}
+            @if($total > $maxVisible && $index > 0 && $index < $total - 1) @if($index===1) <li>…</li>
                 @endif
+                @continue
+                @endif
+
+                <li title="{{ $crumb['label'] }}">
+                    @if($isLast)
+                    {{ Str::limit($crumb['label'], $limit) }}
+                    @else
+                    <a href="{{ $crumb['url'] }}">
+                        {{ $crumb['label'] }}
+                    </a>
+                    @endif
                 </li>
                 @endforeach
 
