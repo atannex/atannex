@@ -1,286 +1,5 @@
 <div x-data="{}" class="fb-comments-root">
 
-<style>
-    .fb-comments-root {
-        --fb-bg:        #18191a;
-        --fb-surface:   #161616;
-        --fb-surface:   #161616;
-        --fb-bubble:    #3a3b3c;
-        --fb-bubble-h:  #4e4f50;
-        --fb-primary:   #2d88ff;
-        --fb-primary-h: #4d9fff;
-        --fb-text:      #e4e6eb;
-        --fb-sub:       #b0b3b8;
-        --fb-border:    #3e4042;
-        --fb-danger:    #f56565;
-        --fb-mention:   #4d9fff;
-        --fb-radius:    20px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-        background: var(--fb-bg);
-        border-radius: 14px;
-        border: 1px solid var(--fb-border);
-        overflow: hidden;
-        width: 100%;
-    }
-
-    /* Header */
-    .fb-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 16px 20px 14px;
-        background: var(--fb-surface);
-        border-bottom: 1px solid var(--fb-border);
-    }
-    .fb-header h2 { font-size: 15px; font-weight: 700; color: var(--fb-text); margin: 0; }
-    .fb-header-count {
-        font-size: 13px; font-weight: 500; color: var(--fb-sub);
-        background: var(--fb-bubble); padding: 2px 10px;
-        border-radius: 20px; border: 1px solid var(--fb-border);
-    }
-
-    /* Comment list */
-    .fb-comment-list {
-        background: var(--fb-surface);
-        padding: 16px 20px 8px;
-        display: flex; flex-direction: column; gap: 20px;
-        list-style: none; margin: 0;
-    }
-
-    /* Comment row */
-    .fb-comment-row { display: flex; align-items: flex-start; gap: 10px; }
-
-    /* Avatar */
-    .fb-avatar {
-        width: 36px; height: 36px;
-        border-radius: 50%; object-fit: cover; flex-shrink: 0;
-        border: 2px solid var(--fb-border);
-    }
-    .fb-avatar.sm { width: 30px; height: 30px; }
-
-    /* Bubble */
-    .fb-bubble-wrap { display: flex; flex-direction: column; flex: 1; min-width: 0; }
-    .fb-bubble {
-        background: var(--fb-bubble);
-        border-radius: 4px var(--fb-radius) var(--fb-radius) var(--fb-radius);
-        padding: 10px 14px; display: inline-block; max-width: 100%;
-        transition: background .15s; border: 1px solid transparent;
-    }
-    .fb-bubble:hover { background: var(--fb-bubble-h); border-color: var(--fb-border); }
-    .fb-bubble .fb-name {
-        font-size: 13px; font-weight: 700; color: var(--fb-text);
-        margin: 0 0 4px; display: block;
-    }
-    .fb-bubble .fb-name:hover { color: var(--fb-primary); cursor: pointer; }
-    .fb-bubble .fb-text {
-        font-size: 14px; color: var(--fb-text); line-height: 1.5; margin: 0; word-break: break-word;
-    }
-    .fb-bubble .fb-text .fb-at { color: var(--fb-mention); font-weight: 600; }
-
-    /* ── Reaction bar ─────────────────────────────── */
-    .fb-reaction-bar {
-        display: flex; align-items: center; gap: 2px;
-        margin-top: 6px; padding-left: 2px; flex-wrap: wrap;
-    }
-    .fb-reaction-bar .fb-time {
-        font-size: 11px; color: var(--fb-sub); padding: 3px 6px; cursor: default;
-    }
-    .fb-reaction-bar .fb-sep {
-        color: var(--fb-border); font-size: 12px; line-height: 1;
-        user-select: none; padding: 0 1px;
-    }
-
-    /* ── Icon action buttons ──────────────────────── */
-    .fb-react-btn {
-        display: inline-flex; align-items: center; gap: 4px;
-        font-size: 11px; font-weight: 700; color: var(--fb-sub);
-        background: none; border: none; padding: 4px 6px;
-        cursor: pointer; border-radius: 6px; line-height: 1;
-        transition: color .15s, background .15s;
-    }
-    .fb-react-btn svg { flex-shrink: 0; }
-    .fb-react-btn:hover        { color: var(--fb-primary); background: #2d88ff10; }
-    .fb-react-btn.fb-liked     { color: var(--fb-primary); }
-    .fb-react-btn.fb-liked svg { fill: var(--fb-primary); }
-    .fb-react-btn.fb-active    { color: var(--fb-primary); background: #2d88ff10; }
-    .fb-react-btn.fb-cancel    { color: var(--fb-sub); }
-    .fb-react-btn.fb-cancel:hover { color: var(--fb-text); background: #ffffff10; }
-    .fb-react-btn.fb-danger:hover { color: var(--fb-danger); background: #f5656510; }
-    .fb-react-btn.fb-danger:hover svg { stroke: var(--fb-danger); }
-
-    /* Like badge */
-    .fb-like-badge {
-        display: inline-flex; align-items: center; gap: 4px;
-        font-size: 12px; color: var(--fb-sub); margin-top: 6px; padding-left: 2px;
-    }
-    .fb-like-badge .like-icon {
-        width: 17px; height: 17px; background: var(--fb-primary); border-radius: 50%;
-        display: inline-flex; align-items: center; justify-content: center;
-        color: #fff; font-size: 9px; box-shadow: 0 1px 3px #0006;
-    }
-
-    /* View replies toggle */
-    .fb-view-replies {
-        display: inline-flex; align-items: center; gap: 5px;
-        margin-top: 6px;
-        font-size: 12px; font-weight: 700; color: var(--fb-sub);
-        cursor: pointer; user-select: none; padding: 4px 8px;
-        border-radius: 6px; transition: color .15s, background .15s;
-    }
-    .fb-view-replies:hover { color: var(--fb-primary); background: #2d88ff10; }
-    .fb-view-replies svg { transition: transform .2s; flex-shrink: 0; }
-    .fb-view-replies.open svg { transform: rotate(180deg); }
-
-    /* Thread levels */
-    .fb-thread-l1 {
-        margin-top: 10px; margin-left: 46px;
-        border-left: 2px solid var(--fb-border);
-        padding-left: 14px;
-        display: flex; flex-direction: column; gap: 12px;
-    }
-    .fb-thread-l2 {
-        margin-top: 6px; margin-left: 40px;
-        border-left: 2px solid #2d88ff30;
-        padding-left: 12px;
-        display: flex; flex-direction: column; gap: 10px;
-    }
-
-    /* Reply composer */
-    .fb-composer-reply {
-        display: flex; align-items: flex-end; gap: 8px; margin-top: 8px;
-    }
-    .fb-composer-reply.indent-l1 { margin-left: 46px; }
-
-    /* Input box */
-    .fb-input-box {
-        flex: 1; position: relative; display: flex; align-items: flex-end;
-        background: var(--fb-bubble); border-radius: var(--fb-radius);
-        padding: 9px 44px 9px 14px;
-        border: 1px solid var(--fb-border);
-        transition: background .15s, border-color .15s, box-shadow .15s;
-    }
-    .fb-input-box:focus-within {
-        background: var(--fb-bubble-h); border-color: #5a5b5c;
-        box-shadow: 0 0 0 3px #2d88ff18;
-    }
-    .fb-input-box textarea {
-        flex: 1; border: none; background: transparent; resize: none;
-        outline: none; font-size: 14px; color: var(--fb-text);
-        font-family: inherit; line-height: 1.5;
-        min-height: 22px; max-height: 120px; overflow-y: auto; padding: 0;
-    }
-    .fb-input-box textarea::placeholder { color: var(--fb-sub); }
-    .fb-input-actions {
-        position: absolute; right: 8px; bottom: 6px;
-        display: flex; align-items: center; gap: 2px;
-    }
-    .fb-emoji-btn {
-        background: none; border: none; cursor: pointer;
-        color: var(--fb-sub); padding: 4px; font-size: 17px; line-height: 1;
-        border-radius: 50%; transition: color .15s, background .15s, transform .15s;
-    }
-    .fb-emoji-btn:hover { color: #f7b928; background: #f7b92818; transform: scale(1.15); }
-    .fb-send-btn {
-        background: none; border: none; cursor: pointer;
-        color: var(--fb-primary); padding: 4px; line-height: 1; border-radius: 50%;
-        opacity: 0; pointer-events: none; transform: scale(0.6);
-        transition: opacity .15s, transform .2s, background .15s;
-    }
-    .fb-send-btn.visible { opacity: 1; pointer-events: auto; transform: scale(1); }
-    .fb-send-btn:hover { background: #2d88ff18; }
-
-    /* Validation error */
-    .fb-error {
-        font-size: 11px; color: var(--fb-danger);
-        padding: 2px 4px; margin-top: 2px;
-    }
-
-    /* Main composer */
-    .fb-composer {
-        display: flex; align-items: flex-end; gap: 10px;
-        padding: 14px 20px 16px;
-        background: var(--fb-surface2);
-        border-top: 1px solid var(--fb-border);
-    }
-
-    /* Load more */
-    .fb-load-more {
-        display: flex; justify-content: center;
-        padding: 6px 20px 4px;
-        background: var(--fb-surface);
-        border-top: 1px solid var(--fb-border);
-    }
-    .fb-load-more button {
-        font-size: 13px; font-weight: 700; color: var(--fb-sub);
-        background: var(--fb-bubble); border: 1px solid var(--fb-border); cursor: pointer;
-        padding: 7px 20px; border-radius: 8px;
-        transition: background .15s, color .15s, border-color .15s;
-    }
-    .fb-load-more button:hover { background: var(--fb-bubble-h); color: var(--fb-text); border-color: #5a5b5c; }
-
-    /* Guest prompt */
-    .fb-guest-prompt {
-        display: flex; align-items: center; justify-content: center; gap: 6px;
-        padding: 14px 20px 16px;
-        background: var(--fb-surface2); border-top: 1px solid var(--fb-border);
-        font-size: 13px; color: var(--fb-sub);
-    }
-    .fb-guest-prompt a { color: var(--fb-primary); font-weight: 700; text-decoration: none; }
-    .fb-guest-prompt a:hover { color: var(--fb-primary-h); text-decoration: underline; }
-
-    /* Empty state */
-    .fb-empty {
-        display: flex; flex-direction: column; align-items: center; gap: 6px;
-        padding: 32px 20px 20px; color: var(--fb-sub); font-size: 14px;
-    }
-    .fb-empty-icon { font-size: 32px; opacity: .5; margin-bottom: 4px; }
-    .fb-empty strong { color: var(--fb-text); font-size: 15px; }
-
-    /* Animations */
-    .fb-entering { animation: fbSlideIn .2s ease forwards; }
-    @keyframes fbSlideIn {
-        from { opacity: 0; transform: translateY(6px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── Mobile ──────────────────────────────────────── */
-    @media (max-width: 480px) {
-        .fb-header                { padding: 11px 12px 9px; }
-        .fb-header h2             { font-size: 13px; }
-        .fb-header-count          { font-size: 11px; padding: 2px 8px; }
-        .fb-comment-list          { padding: 10px 10px 6px; gap: 14px; }
-        .fb-avatar                { width: 28px; height: 28px; border-width: 1px; }
-        .fb-avatar.sm             { width: 24px; height: 24px; }
-        .fb-comment-row           { gap: 7px; }
-        .fb-bubble                { padding: 7px 10px; border-radius: 4px 14px 14px 14px; }
-        .fb-bubble .fb-name       { font-size: 12px; margin-bottom: 2px; }
-        .fb-bubble .fb-text       { font-size: 13px; line-height: 1.4; }
-        .fb-reaction-bar          { margin-top: 4px; gap: 1px; }
-        .fb-reaction-bar .fb-time { font-size: 10px; padding: 2px 4px; }
-        .fb-react-btn             { font-size: 10px; padding: 3px 5px; gap: 3px; }
-        .fb-react-btn svg         { width: 12px; height: 12px; }
-        .fb-like-badge            { font-size: 11px; margin-top: 4px; }
-        .fb-like-badge .like-icon { width: 14px; height: 14px; font-size: 8px; }
-        .fb-thread-l1             { margin-left: 32px; padding-left: 10px; gap: 10px; margin-top: 8px; }
-        .fb-thread-l2             { margin-left: 28px; padding-left: 8px; gap: 8px; }
-        .fb-view-replies          { font-size: 11px; padding: 3px 6px; margin-top: 4px; }
-        .fb-composer-reply.indent-l1 { margin-left: 32px; }
-        .fb-input-box             { padding: 7px 38px 7px 11px; border-radius: 14px; }
-        .fb-input-box textarea    { font-size: 13px; min-height: 18px; }
-        .fb-emoji-btn             { font-size: 15px; padding: 3px; }
-        .fb-composer              { padding: 10px 12px 12px; gap: 7px; }
-        .fb-load-more button      { font-size: 12px; padding: 6px 14px; }
-    }
-
-    @media (max-width: 360px) {
-        .fb-comment-list          { padding: 8px 8px 4px; gap: 12px; }
-        .fb-avatar                { width: 26px; height: 26px; }
-        .fb-avatar.sm             { width: 22px; height: 22px; }
-        .fb-bubble .fb-text       { font-size: 12px; }
-        .fb-thread-l1             { margin-left: 26px; padding-left: 8px; }
-        .fb-thread-l2             { margin-left: 22px; padding-left: 6px; }
-        .fb-composer-reply.indent-l1 { margin-left: 26px; }
-    }
-</style>
-
 {{-- ════════════════════════════
      SVG ICON MACROS
      Used inline to avoid repeated markup
@@ -297,7 +16,7 @@
      HEADER
 ════════════════════════════ --}}
 <div class="fb-header">
-    <h2>💬 Comments</h2>
+    <h2>{{ __("💬 Comments") }}</h2>
     @if ($totalCount > 0)
         <span class="fb-header-count">{{ number_format($totalCount) }}</span>
     @endif
@@ -322,7 +41,7 @@
                     <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                         @if ($comment['likesCount'] > 0)
                             <div class="fb-like-badge">
-                                <span class="like-icon">👍</span> {{ $comment['likesCount'] }}
+                                <span class="like-icon">{{ __("👍") }}</span> {{ $comment['likesCount'] }}
                             </div>
                         @endif
 
@@ -547,7 +266,7 @@
                                                 x-on:keydown.enter.prevent="if(text.trim()){$wire.postReply();text='';}">
                                             </textarea>
                                             <div class="fb-input-actions">
-                                                <button class="fb-emoji-btn" type="button" tabindex="-1">😊</button>
+                                                <button class="fb-emoji-btn" type="button" tabindex="-1">{{ __('😊') }}</button>
                                                 <button type="button" class="fb-send-btn" :class="{visible:text.trim().length>0}"
                                                     x-on:click="$wire.postReply();text=''">
                                                     <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
@@ -601,7 +320,7 @@
     @empty
         <li>
             <div class="fb-empty">
-                <div class="fb-empty-icon">💭</div>
+                <div class="fb-empty-icon">{{ __("💭") }}</div>
                 <strong>{{ __("No comments yet") }}</strong>
                 <span>{{ __("Be the first to share your thoughts!") }}</span>
             </div>
@@ -631,7 +350,7 @@
                 x-on:keydown.enter.prevent="if(text.trim()){$wire.postComment();text='';}">
             </textarea>
             <div class="fb-input-actions">
-                <button class="fb-emoji-btn" type="button" tabindex="-1">😊</button>
+                <button class="fb-emoji-btn" type="button" tabindex="-1">{{ __("😊") }}</button>
                 <button type="button" class="fb-send-btn" :class="{visible:text.trim().length>0}"
                     x-on:click="$wire.postComment();text=''">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
@@ -644,7 +363,7 @@
     @error('newComment') <div class="fb-error" style="padding:4px 20px 8px;background:var(--fb-surface2);">{{ $message }}</div> @enderror
 @else
     <div class="fb-guest-prompt">
-        <span>to join the conversation.</span>
+        <span>{{ __("to join the conversation.") }}</span>
     </div>
 @endauth
 

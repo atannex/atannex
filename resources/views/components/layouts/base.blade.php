@@ -250,9 +250,6 @@
     </script>
     @endverbatim
 
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.2.0/magnific-popup.min.css">
-
     <!-- =========================
          STYLES & SCRIPTS
     ========================== -->
@@ -268,6 +265,8 @@
 
 <body>
 
+    <x-sections.preloader />
+
     @yield('base')
 
     @livewireScripts
@@ -280,8 +279,6 @@
     </div>
 
     <script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}?v={{ $assetVersion }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.2.0/jquery.magnific-popup.min.js"></script>
-    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js.map"></script>
     <script src="{{ asset('assets/js/app.min.js') }}?v={{ $assetVersion }}"></script>
