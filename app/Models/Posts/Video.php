@@ -13,9 +13,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Video extends Model
 {
-    use SoftDeletes;
-    use Slugging;
     use Scoping;
+    use Slugging;
+    use SoftDeletes;
 
     /**
      * The attribute used to generate the slug.
@@ -40,7 +40,7 @@ class Video extends Model
      * Attribute casting.
      */
     protected $casts = [
-        'flag'         => Flag::class,
+        'flag' => Flag::class,
         'published_at' => 'datetime',
     ];
 

@@ -5,83 +5,31 @@ declare(strict_types=1);
 namespace App\Models\Comments;
 
 use App\Models\User;
-use Illuminate\Support\Collection;
-use App\Models\Traits\HasReaction;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Str;
 
 class Comment extends Model
 {
-    use SoftDeletes;
-    use HasReaction;
+    use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'guest_id',
         'commentable_type',
         'commentable_id',
         'parent_id',
-        'reply_count',
-        'comment',
-        'name',
-        'ip_address',
-        'comment_hash',
-        'edited_at',
-        'like_count',
-        'dislike_count',
+        'root_id',
+        'body',
     ];
 
-    protected $casts = [
-        'edited_at'     => 'datetime',
-        'reply_count'   => 'integer',
-        'like_count'    => 'integer',
-        'dislike_count' => 'integer',
-    ];
-
-    protected static function booted(): void
-    {
-        static::creating(function (self $comment) {
-            if (!$comment->comment_hash) {
-                $comment->comment_hash = self::generateCommentHash($comment);
-            }
-        });
-    }
-
-    public static function generateCommentHash(self $comment): string
-    {
-        return hash(
-            'sha256',
-            implode('|', [
-                $comment->commentable_type,
-                $comment->commentable_id,
-                $comment->user_id ?? '',
-                $comment->guest_id ?? '',
-                Str::limit($comment->comment, 100, ''),
-            ])
-        );
-    }
-
-    /* ----------------------------- Relationships ----------------------------- */
+    // ── Relationships ─────────────────────────────────────────
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(self::class, 'parent_id');
-    }
-
-    public function replies(): HasMany
-    {
-        return $this->hasMany(self::class, 'parent_id')->latest();
     }
 
     public function commentable(): MorphTo
@@ -89,69 +37,37 @@ class Comment extends Model
         return $this->morphTo();
     }
 
-    public function reactions(): MorphMany
+    /** Immediate parent (top-level comment OR another reply) */
+    public function parent(): BelongsTo
     {
-        return $this->morphMany(Reaction::class, 'likeable');
+        return $this->belongsTo(Comment::class, 'parent_id');
     }
 
-    /* ----------------------------- Scopes ----------------------------- */
+    /** The top-level comment this belongs to */
+    public function root(): BelongsTo
+    {
+        return $this->belongsTo(Comment::class, 'root_id');
+    }
 
-    public function scopeTopLevel(Builder $query): Builder
+    /** Direct children of THIS comment (one level down) */
+    public function directReplies(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'parent_id')
+            ->with(['user', 'likes', 'directReplies.user', 'directReplies.likes'])
+            ->withCount('likes')
+            ->oldest();
+    }
+
+    /** Users who liked this comment */
+    public function likes(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'comment_likes')->withTimestamps();
+    }
+
+    // ── Scopes ────────────────────────────────────────────────
+
+    public function scopeTopLevel($query)
     {
         return $query->whereNull('parent_id');
-    }
-
-    /* ----------------------------- Attributes ----------------------------- */
-
-    public function getAuthorTypeAttribute(): ?string
-    {
-        return $this->user_id ? 'user' : ($this->guest_id ? 'guest' : null);
-    }
-
-    public function getAuthorIdAttribute(): ?int
-    {
-        return $this->user_id ?? $this->guest_id;
-    }
-
-    public function getAuthorNameAttribute(): string
-    {
-        if ($this->user) return $this->user->name;
-        if ($this->guest) return $this->guest->name ?? 'Guest';
-        return 'Unknown';
-    }
-
-    public function getAllRepliesAttribute(): Collection
-    {
-        return $this->replies;
-    }
-
-    /* ----------------------------- Helpers ----------------------------- */
-
-    public function isReply(): bool
-    {
-        return $this->parent_id !== null;
-    }
-
-    public function hasReplies(): bool
-    {
-        return $this->reply_count > 0;
-    }
-
-    public function markEdited(): void
-    {
-        $this->forceFill(['edited_at' => now()])->save();
-    }
-
-    public function incrementReplyCount(int $by = 1): void
-    {
-        $this->increment('reply_count', $by);
-    }
-
-    public function addReply(self $reply): self
-    {
-        $reply->forceFill(['parent_id' => $this->id])->save();
-        $this->incrementReplyCount();
-
-        return $reply;
     }
 }

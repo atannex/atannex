@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Galleries\Tables;
 
-use Filament\Actions\BulkActionGroup;
 use App\Models\Others\Gallery;
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
@@ -23,7 +23,7 @@ class GalleriesTable
      * Configures columns, default sorting, filters, record actions, toolbar bulk actions,
      * empty state, visuals (striped rows, pagination), and polling behavior for the galleries table.
      *
-     * @param \Filament\Tables\Table $table The Filament Table instance to configure for the galleries resource.
+     * @param  \Filament\Tables\Table  $table  The Filament Table instance to configure for the galleries resource.
      * @return \Filament\Tables\Table The configured Table instance.
      */
     public static function configure(Table $table): Table
@@ -45,7 +45,7 @@ class GalleriesTable
                     ->sortable()
                     ->weight(FontWeight::Medium)
                     ->limit(40)
-                    ->tooltip(fn($record) => $record->original_name)
+                    ->tooltip(fn ($record) => $record->original_name)
                     ->icon('heroicon-o-document')
                     ->iconColor('gray')
                     ->copyable()
@@ -60,19 +60,19 @@ class GalleriesTable
                     ->sortable()
                     ->searchable()
                     ->icon('heroicon-o-tag')
-                    ->formatStateUsing(fn(string $state): string => str($state)->headline()),
+                    ->formatStateUsing(fn (string $state): string => str($state)->headline()),
 
                 TextColumn::make('flag')
                     ->label('Status')
                     ->badge()
-                    ->color(fn(string $state): string => match (strtolower($state)) {
+                    ->color(fn (string $state): string => match (strtolower($state)) {
                         'published' => 'success',
                         'draft' => 'warning',
                         'archived' => 'danger',
                         'pending' => 'info',
                         default => 'gray',
                     })
-                    ->icon(fn(string $state): string => match (strtolower($state)) {
+                    ->icon(fn (string $state): string => match (strtolower($state)) {
                         'published' => 'heroicon-o-check-circle',
                         'draft' => 'heroicon-o-pencil',
                         'archived' => 'heroicon-o-archive-box',
@@ -81,7 +81,7 @@ class GalleriesTable
                     })
                     ->sortable()
                     ->searchable()
-                    ->formatStateUsing(fn(string $state): string => str($state)->headline()),
+                    ->formatStateUsing(fn (string $state): string => str($state)->headline()),
 
                 TextColumn::make('created_at')
                     ->label('Created')
@@ -90,7 +90,7 @@ class GalleriesTable
                     ->since()
                     ->icon('heroicon-o-calendar')
                     ->iconColor('success')
-                    ->tooltip(fn($record) => $record->created_at?->format('F j, Y \a\t g:i A'))
+                    ->tooltip(fn ($record) => $record->created_at?->format('F j, Y \a\t g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
@@ -100,7 +100,7 @@ class GalleriesTable
                     ->since()
                     ->icon('heroicon-o-pencil-square')
                     ->iconColor('warning')
-                    ->tooltip(fn($record) => $record->updated_at?->format('F j, Y \a\t g:i A'))
+                    ->tooltip(fn ($record) => $record->updated_at?->format('F j, Y \a\t g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('deleted_at')
@@ -111,7 +111,7 @@ class GalleriesTable
                     ->color('danger')
                     ->icon('heroicon-o-trash')
                     ->iconColor('danger')
-                    ->tooltip(fn($record) => $record->deleted_at?->format('F j, Y \a\t g:i A'))
+                    ->tooltip(fn ($record) => $record->deleted_at?->format('F j, Y \a\t g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('created_at', 'desc')

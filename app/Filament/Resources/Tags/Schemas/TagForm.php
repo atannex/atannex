@@ -2,12 +2,10 @@
 
 namespace App\Filament\Resources\Tags\Schemas;
 
-use Filament\Forms\Set;
-use Illuminate\Support\Str;
-use Filament\Schemas\Schema;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 /**
  * Tag Form Schema
@@ -19,9 +17,6 @@ class TagForm
 {
     /**
      * Configure the tag form schema
-     *
-     * @param Schema $schema
-     * @return Schema
      */
     public static function configure(Schema $schema): Schema
     {

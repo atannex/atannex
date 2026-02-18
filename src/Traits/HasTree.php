@@ -28,7 +28,7 @@ trait HasTree
             ->push($node->getKey());
 
         if ($excludeId !== null) {
-            $ids = $ids->reject(fn($id) => $id === $excludeId);
+            $ids = $ids->reject(fn ($id) => $id === $excludeId);
         }
 
         return $ids->unique()->values();
@@ -48,7 +48,7 @@ trait HasTree
 
         if ($contentRelation && $filterScope) {
             $query->withCount([
-                "{$contentRelation} as total_count" => fn(Builder $q) => $q->{$filterScope}()
+                "{$contentRelation} as total_count" => fn (Builder $q) => $q->{$filterScope}(),
             ])->orderBy('total_count', $direction);
         }
 
@@ -60,7 +60,7 @@ trait HasTree
      */
     protected function collectLeafContent(Model $node, string $childrenRelation, string $contentRelation, int $leafLimit): Collection
     {
-        $stack   = [$node];
+        $stack = [$node];
         $content = collect();
 
         while (! empty($stack)) {
@@ -70,6 +70,7 @@ trait HasTree
                 $content->push(
                     ...$current->$contentRelation->take($leafLimit)
                 );
+
                 continue;
             }
 

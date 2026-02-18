@@ -2,22 +2,22 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
-use Illuminate\Support\Str;
-use Filament\Schemas\Schema;
-use App\Models\Regions\Region;
 use App\Models\Regions\Category;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Regions\Region;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
-use Filament\Forms\Components\Textarea;
-use Illuminate\Support\Facades\Storage;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PostForm
 {
@@ -27,7 +27,7 @@ class PostForm
      * Features enhanced UX with visual indicators, character counters, smart defaults, decorative elements,
      * SEO optimization helpers, social media preview, and streamlined workflows.
      *
-     * @param Schema $schema The base Schema instance to augment with post form components.
+     * @param  Schema  $schema  The base Schema instance to augment with post form components.
      * @return Schema The configured Schema containing the complete post form.
      */
     public static function configure(Schema $schema): Schema
@@ -54,8 +54,7 @@ class PostForm
                                         }
                                     })
                                     ->helperText(
-                                        fn($state) =>
-                                        'Length: ' . strlen($state ?? '') . ' characters' .
+                                        fn ($state) => 'Length: '.strlen($state ?? '').' characters'.
                                             (strlen($state ?? '') > 0 && strlen($state ?? '') < 50
                                                 ? ' ⚠️ Too short - aim for 50-60'
                                                 : (strlen($state ?? '') > 70
@@ -94,8 +93,8 @@ class PostForm
                                         $status = $length >= 150 && $length <= 160
                                             ? '✓ Perfect for SEO!'
                                             : ($length < 150
-                                                ? '⚠️ Add more detail (' . (150 - $length) . ' more chars recommended)'
-                                                : '⚠️ Too long (' . ($length - 160) . ' chars over limit)');
+                                                ? '⚠️ Add more detail ('.(150 - $length).' more chars recommended)'
+                                                : '⚠️ Too long ('.($length - 160).' chars over limit)');
                                         $component->helperText("📊 {$length}/500 characters | {$status}");
                                     })
                                     ->helperText('📊 0/500 characters | ⚠️ Add more detail (150 more chars recommended)'),
@@ -184,7 +183,7 @@ class PostForm
                                                     ])
                                                     ->createOptionModalHeading('Create New Category')
                                                     ->createOptionAction(
-                                                        fn($action) => $action
+                                                        fn ($action) => $action
                                                             ->modalHeading('Create Category')
                                                             ->modalDescription('Add a new category or subcategory to organize your content.')
                                                             ->modalSubmitActionLabel('Create Category')
@@ -213,7 +212,7 @@ class PostForm
                                             ->required()
                                             ->searchable()
                                             ->preload()
-                                            ->default(fn() => Auth::id())
+                                            ->default(fn () => Auth::id())
                                             ->prefixIcon('heroicon-o-user-circle')
                                             ->helperText('Content creator for this post')
                                             ->suffixIcon('heroicon-o-check-circle'),
@@ -241,7 +240,7 @@ class PostForm
                                             ->state(function ($get, $record) {
                                                 $publishAt = $get('published_at');
 
-                                                if (!$publishAt) {
+                                                if (! $publishAt) {
                                                     return new \Illuminate\Support\HtmlString("
                                                         <div class='px-3 py-2 font-semibold text-green-800 bg-green-100 rounded-lg dark:bg-green-900 dark:text-green-200'>
                                                             ✓ Will publish immediately on save
@@ -268,7 +267,7 @@ class PostForm
                                         TextEntry::make('updated_tracking')
                                             ->label('📝 Update History')
                                             ->state(function ($record) {
-                                                if (!$record) {
+                                                if (! $record) {
                                                     return '🆕 Not yet created';
                                                 }
 
@@ -302,8 +301,8 @@ class PostForm
                                             ->imageEditor()
                                             ->imageEditorAspectRatioOptions([
                                                 '16:9' => '📺 16:9 (Widescreen - Recommended)',
-                                                '4:3'  => '📱 4:3 (Standard)',
-                                                '1:1'  => '⬛ 1:1 (Square - Instagram)',
+                                                '4:3' => '📱 4:3 (Standard)',
+                                                '1:1' => '⬛ 1:1 (Square - Instagram)',
                                                 '21:9' => '🎬 21:9 (Cinematic)',
                                                 '9:16' => '📱 9:16 (Stories)',
                                             ])
@@ -363,7 +362,7 @@ class PostForm
                                         TextEntry::make('editor_pick_badge')
                                             ->label('')
                                             ->state(function ($get) {
-                                                if (!$get('is_editor_pick')) {
+                                                if (! $get('is_editor_pick')) {
                                                     return null;
                                                 }
 
@@ -383,7 +382,7 @@ class PostForm
                                                     </div>
                                                 ");
                                             })
-                                            ->visible(fn($get) => $get('is_editor_pick')),
+                                            ->visible(fn ($get) => $get('is_editor_pick')),
 
                                         Grid::make(2)
                                             ->schema([
@@ -400,9 +399,9 @@ class PostForm
                                                     ->displayFormat('M d, Y - H:i')
                                                     ->seconds(false)
                                                     ->helperText('Auto-remove after')
-                                                    ->minDate(fn($get) => $get('editor_pick_at')),
+                                                    ->minDate(fn ($get) => $get('editor_pick_at')),
                                             ])
-                                            ->visible(fn($get) => $get('is_editor_pick')),
+                                            ->visible(fn ($get) => $get('is_editor_pick')),
                                     ])
                                     ->compact()
                                     ->collapsed()
@@ -431,7 +430,7 @@ class PostForm
                                         TextEntry::make('breaking_badge')
                                             ->label('')
                                             ->state(function ($get) {
-                                                if (!$get('is_breaking')) {
+                                                if (! $get('is_breaking')) {
                                                     return null;
                                                 }
 
@@ -451,7 +450,7 @@ class PostForm
                                                     </div>
                                                 ");
                                             })
-                                            ->visible(fn($get) => $get('is_breaking')),
+                                            ->visible(fn ($get) => $get('is_breaking')),
 
                                         Grid::make(2)
                                             ->schema([
@@ -468,9 +467,9 @@ class PostForm
                                                     ->displayFormat('M d, Y - H:i')
                                                     ->seconds(false)
                                                     ->helperText('Auto-remove after')
-                                                    ->minDate(fn($get) => $get('breaking_at')),
+                                                    ->minDate(fn ($get) => $get('breaking_at')),
                                             ])
-                                            ->visible(fn($get) => $get('is_breaking')),
+                                            ->visible(fn ($get) => $get('is_breaking')),
                                     ])
                                     ->compact()
                                     ->collapsed()

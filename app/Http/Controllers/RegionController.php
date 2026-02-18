@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
 use Atannex\Binders\HasView;
 use Atannex\Concerns\HasDocument;
 use Atannex\Concerns\HasResolver;
 use Atannex\Services\RegionService;
 use Atannex\Traits\HandlesPostDateResolution;
+use Illuminate\View\View;
 
 class RegionController extends Controller
 {
-    use HasResolver;
     use HandlesPostDateResolution;
     use HasDocument;
+    use HasResolver;
 
     protected const SUPPORTED_DOCUMENT_TYPES = [
         'privacy',
@@ -77,10 +77,10 @@ class RegionController extends Controller
         }
 
         return view('documents.index', [
-            'documents'           => $this->getDocumentsBySlug($slug),
-            'type'                => $slug,
+            'documents' => $this->getDocumentsBySlug($slug),
+            'type' => $slug,
             'isValidDocumentType' => $this->isSupportedDocumentType($slug),
-            'isTestimonialType'   => $slug === 'testimonials',
+            'isTestimonialType' => $slug === 'testimonials',
         ]);
     }
 
@@ -91,14 +91,14 @@ class RegionController extends Controller
         }
 
         $document = $this->getDocumentByPath($slug);
-        $module   = $this->getDocumentModule($slug);
+        $module = $this->getDocumentModule($slug);
 
         abort_if(! $module, 404);
 
         return view('documents.show', [
-            'module'    => $module,
-            'seoTitle'  => $document->title,
-            'type'      => $document->slug,
+            'module' => $module,
+            'seoTitle' => $document->title,
+            'type' => $document->slug,
             'documents' => $this->getRelatedDocuments($slug),
         ]);
     }

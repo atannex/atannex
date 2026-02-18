@@ -14,7 +14,7 @@ class Color extends Model
     /**
      * Retrieve the hex color code for the given color name.
      *
-     * @param string $name The color name to look up.
+     * @param  string  $name  The color name to look up.
      * @return string The hex code associated with the color name.
      */
     public static function hex(string $name): string
@@ -32,6 +32,7 @@ class Color extends Model
     public static function randomHex(): string
     {
         $colors = static::pluck('hex')->toArray();
+
         return $colors[array_rand($colors)];
     }
 }

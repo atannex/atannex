@@ -2,11 +2,11 @@
 
 namespace App\Rules;
 
-use Closure;
-use App\Enums\Checks\Variants;
-use Illuminate\Support\Facades\Log;
 use App\Enums\Checks\RestrictedNames;
+use App\Enums\Checks\Variants;
+use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Facades\Log;
 
 class StrongContent implements ValidationRule
 {

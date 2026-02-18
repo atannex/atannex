@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Traits;
 
-use Illuminate\Support\Facades\Auth;
 use App\Models\Posts\Post;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Trait PostRelation
@@ -31,7 +33,7 @@ trait HandlePost
             ->first();
 
         $this->slug_path = trim(
-            ($category->slug_path ?? '') . '/' . $this->slug,
+            ($category->slug_path ?? '').'/'.$this->slug,
             '/'
         );
     }

@@ -14,7 +14,7 @@ final class AuthorService
     public function postsByAuthor(string $slug, int $limit = 10): LengthAwarePaginator
     {
         $authorId = Employee::query()
-            ->whereHas('user', fn($q) => $q->where('slug', $slug))
+            ->whereHas('user', fn ($q) => $q->where('slug', $slug))
             ->value('id');
 
         if ($authorId === null) {
@@ -36,7 +36,6 @@ final class AuthorService
             ->paginate($limit);
     }
 
-
     /**
      * Resolve author by user slug.
      */
@@ -46,8 +45,7 @@ final class AuthorService
             ->with(['user:id,slug'])
             ->whereHas(
                 'user',
-                fn(Builder $query) =>
-                $query->where('slug', $slug)
+                fn (Builder $query) => $query->where('slug', $slug)
             )
             ->firstOrFail();
     }

@@ -5,30 +5,33 @@ declare(strict_types=1);
 namespace Atannex\Services;
 
 use App\Enums\Flag;
-use App\Models\Tags\Tag;
+use App\Models\Others\SocialMedia;
 use App\Models\Posts\Post;
-use App\Models\Regions\Region;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
-use App\Models\Others\SocialMedia;
-use Atannex\Traits\HasTree;
-use Atannex\Helpers\HasMedia;
+use App\Models\Regions\Region;
+use App\Models\Tags\Tag;
 use Atannex\Concerns\HasResolver;
+use Atannex\Helpers\HasMedia;
 use Atannex\Traits\HandlesPostDateResolution;
-use Illuminate\Support\Collection;
+use Atannex\Traits\HasTree;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 final class CategoryService
 {
-    use HasMedia;
-    use HasTree;
-    use HasResolver;
     use HandlesPostDateResolution;
+    use HasMedia;
+    use HasResolver;
+    use HasTree;
 
-    protected const CATEGORY_LIMIT   = 12;
-    protected const POPULAR_LIMIT    = 12;
+    protected const CATEGORY_LIMIT = 12;
+
+    protected const POPULAR_LIMIT = 12;
+
     protected const PAGINATION_LIMIT = 15;
-    protected const RECENT_LIMIT     = 5;
+
+    protected const RECENT_LIMIT = 5;
 
     /**
      * Resolve published category by slug.
@@ -48,7 +51,7 @@ final class CategoryService
             ->nonGlobal()
             ->ordered()
             ->get()
-            ->map(fn(SocialMedia $media) => $this->mapSocialMedia($media))
+            ->map(fn (SocialMedia $media) => $this->mapSocialMedia($media))
             ->filter()
             ->values();
     }
@@ -103,11 +106,11 @@ final class CategoryService
         return Post::published()
             ->when(
                 $resolution['type'] === 'year',
-                fn($query) => $query->whereYear('published_at', $resolution['year'])
+                fn ($query) => $query->whereYear('published_at', $resolution['year'])
             )
             ->when(
                 $resolution['type'] === 'month',
-                fn($query) => $query
+                fn ($query) => $query
                     ->whereYear('published_at', $resolution['year'])
                     ->whereMonth('published_at', $resolution['month'])
             )
@@ -135,8 +138,7 @@ final class CategoryService
 
         return Tag::query()
             ->withCount([
-                'posts as usage_count' => fn($q) =>
-                $q->published()->whereIn('category_id', $treeIds),
+                'posts as usage_count' => fn ($q) => $q->published()->whereIn('category_id', $treeIds),
             ])
             ->having('usage_count', '>', 0)
             ->orderByDesc('usage_count')

@@ -25,25 +25,25 @@ trait ViewShow
 
         $icons = collect(self::SUPPORTED_PLATFORMS)
             ->mapWithKeys(
-                fn(string $platform) => [$platform => Icon::getData($platform)]
+                fn (string $platform) => [$platform => Icon::getData($platform)]
             )
             ->toArray();
 
         return view('shows.index', [
-            'headingLevels'     => HeadingLevel::asSelectArray(),
-            'module'            => $module,
-            'post'              => $post,
+            'headingLevels' => HeadingLevel::asSelectArray(),
+            'module' => $module,
+            'post' => $post,
 
-            'popularTags'       => $this->tagService->popularTagsByPost($post),
-            'relatedTags'       => $this->tagService->relatedTagsByPost($post),
+            'popularTags' => $this->tagService->popularTagsByPost($post),
+            'relatedTags' => $this->tagService->relatedTagsByPost($post),
             'relatedCategories' => $this->categoryService->relatedCategoriesByPost($post),
-            'recentPosts'       => $this->postService->recentPostsByPost($post),
-            'relatedPosts'      => $this->postService->relatedPosts($post),
+            'recentPosts' => $this->postService->recentPostsByPost($post),
+            'relatedPosts' => $this->postService->relatedPosts($post),
 
-            'navigation'        => $this->getPost->hasPostNavigation($post),
-            'medias'            => $this->categoryService->employeeSocial($post->author),
-            'icons'             => $icons,
-            'seoTitle'          => seo_title($post->title ?? $post->slug),
+            'navigation' => $this->getPost->hasPostNavigation($post),
+            'medias' => $this->categoryService->employeeSocial($post->author),
+            'icons' => $icons,
+            'seoTitle' => seo_title($post->title ?? $post->slug),
         ]);
     }
 }

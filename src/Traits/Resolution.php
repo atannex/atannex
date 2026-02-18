@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Atannex\Traits;
 
 use App\Models\Regions\Region;
-use Illuminate\Support\Collection;
 
 trait Resolution
 {
@@ -25,9 +24,8 @@ trait Resolution
         $sections = $region->sections()
             ->limit($sectionLimit)
             ->with([
-                'widgets' => fn($query) =>
-                $query->wherePivot('region_id', $region->id)
-                    ->limit($widgetLimit)
+                'widgets' => fn ($query) => $query->wherePivot('region_id', $region->id)
+                    ->limit($widgetLimit),
             ])
             ->get();
 
@@ -63,11 +61,12 @@ trait Resolution
     ): void {
         if (empty($config[$tabKey]) || ! is_array($config[$tabKey])) {
             $entity->setRelation('tabs', collect());
+
             return;
         }
 
         $tabs = collect($config[$tabKey])
-            ->map(fn(array $tab) => $this->resolveSingleTab($tab))
+            ->map(fn (array $tab) => $this->resolveSingleTab($tab))
             ->values();
 
         $entity->setRelation('tabs', $tabs);
@@ -78,10 +77,11 @@ trait Resolution
      */
     private function resolveSingleTab(array $tab): array
     {
-        $mapping = $this->getMapping($tab['type'] );
+        $mapping = $this->getMapping($tab['type']);
 
         if (! $mapping || empty($mapping['method'])) {
             $tab['content'] = collect();
+
             return $tab;
         }
 
@@ -101,11 +101,11 @@ trait Resolution
         ?string $key = null
     ): mixed {
         $params = [
-            'limit'               => $tab['limit'],
-            'relation_limit'      => $tab['relation_limit'],
+            'limit' => $tab['limit'],
+            'relation_limit' => $tab['relation_limit'],
             'leaf_relation_limit' => $tab['leaf_relation_limit'],
-            'sort'                => $tab['sort'],
-            'order'               => $tab['order'],
+            'sort' => $tab['sort'],
+            'order' => $tab['order'],
         ];
 
         if ($key && isset($tab[$key])) {

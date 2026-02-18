@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Posts\Post;
+use Illuminate\Console\Command;
 
 class UpdateEditorPicks extends Command
 {

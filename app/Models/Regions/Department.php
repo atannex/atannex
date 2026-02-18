@@ -3,16 +3,15 @@
 namespace App\Models\Regions;
 
 use App\Enums\Status;
+use App\Models\Pivots\EmployeeDepartment;
+use Atannex\Concerns\DepartmentCode;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
-use App\Models\Regions\Employee;
-use Atannex\Concerns\DepartmentCode;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Pivots\EmployeeDepartment;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Department extends Model
 {

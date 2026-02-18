@@ -42,9 +42,9 @@ class RegionSectionWidget extends Pivot
      * Attribute casting for type safety.
      */
     protected $casts = [
-        'config'   => 'array',
+        'config' => 'array',
         'metadata' => 'array',
-        'flag'     => Flag::class,
+        'flag' => Flag::class,
         'position' => 'int',
     ];
 

@@ -2,13 +2,13 @@
 
 namespace App\Providers\Atannex;
 
-use App\Models\User;
-use App\Policies\UserPolicy;
-use Atannex\Facades\Lebialem;
 use App\Models\Posts\Post;
 use App\Models\Posts\Review;
+use App\Models\User;
 use App\Policies\PostPolicy;
 use App\Policies\ReviewPolicy;
+use App\Policies\UserPolicy;
+use Atannex\Facades\Lebialem;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -23,8 +23,6 @@ class AtannexProvider extends ServiceProvider
      *
      * This method is automatically called after all other services are registered.
      * It shares global data across all views.
-     *
-     * @param  Lebialem  $navigation  The navigation handler instance.
      */
     public function boot(Lebialem $lebialem): void
     {

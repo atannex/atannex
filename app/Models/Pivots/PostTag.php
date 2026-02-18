@@ -33,7 +33,7 @@ class PostTag extends Pivot
      */
     protected $casts = [
         'post_id' => 'int',
-        'tag_id'  => 'int',
+        'tag_id' => 'int',
     ];
 
     /**
@@ -52,10 +52,10 @@ class PostTag extends Pivot
     }
 
     /**
-         * Get the tag that owns this pivot record.
-         *
-         * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The tag relationship instance.
-         */
+     * Get the tag that owns this pivot record.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The tag relationship instance.
+     */
     public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class);

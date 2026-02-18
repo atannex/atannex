@@ -2,15 +2,15 @@
 
 namespace App\Filament\Resources\PostTags\Tables;
 
-use Filament\Tables\Table;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -23,9 +23,6 @@ class PostTagsTable
 {
     /**
      * Configure the post-tag associations table
-     *
-     * @param Table $table
-     * @return Table
      */
     public static function configure(Table $table): Table
     {
@@ -44,17 +41,17 @@ class PostTagsTable
                     ->searchable()
                     ->sortable()
                     ->limit(50)
-                    ->tooltip(fn($record) => $record->post?->title)
+                    ->tooltip(fn ($record) => $record->post?->title)
                     ->icon('heroicon-o-document-text')
                     ->iconColor('primary')
                     ->url(
-                        fn($record) => $record->post
+                        fn ($record) => $record->post
                             ? route('filament.admin.resources.posts.edit', ['record' => $record->post])
                             : null
                     )
                     ->openUrlInNewTab()
                     ->description(
-                        fn($record) => $record->post?->slug
+                        fn ($record) => $record->post?->slug
                             ? "Slug: {$record->post->slug}"
                             : null
                     )
@@ -69,39 +66,38 @@ class PostTagsTable
                     ->badge()
                     ->color('info')
                     ->url(
-                        fn($record) => $record->tag
+                        fn ($record) => $record->tag
                             ? route('filament.admin.resources.tags.edit', ['record' => $record->tag])
                             : null
                     )
                     ->openUrlInNewTab()
                     ->description(
-                        fn($record) => $record->tag?->slug
+                        fn ($record) => $record->tag?->slug
                             ? "Slug: {$record->tag->slug}"
                             : null
                     ),
 
                 TextColumn::make('posts_count')
                     ->label('Tag Usage')
-                    ->state(fn($record) => $record->tag?->posts_count ?? 0)
+                    ->state(fn ($record) => $record->tag?->posts_count ?? 0)
                     ->alignCenter()
                     ->badge()
                     ->suffix(' posts')
-                    ->color(fn(int $state) => match (true) {
+                    ->color(fn (int $state) => match (true) {
                         $state === 0 => 'gray',
-                        $state < 5   => 'warning',
-                        $state < 20  => 'info',
-                        default      => 'success',
+                        $state < 5 => 'warning',
+                        $state < 20 => 'info',
+                        default => 'success',
                     })
                     ->icon('heroicon-o-chart-bar')
                     ->sortable()
                     ->toggleable(),
 
-
                 TextColumn::make('created_at')
                     ->label('Associated On')
                     ->dateTime('M j, Y')
                     ->sortable()
-                    ->description(fn($record) => $record->created_at?->diffForHumans())
+                    ->description(fn ($record) => $record->created_at?->diffForHumans())
                     ->icon('heroicon-o-calendar')
                     ->color('gray')
                     ->toggleable(isToggledHiddenByDefault: true),

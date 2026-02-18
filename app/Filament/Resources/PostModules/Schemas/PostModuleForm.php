@@ -3,19 +3,18 @@
 namespace App\Filament\Resources\PostModules\Schemas;
 
 use App\Enums\HeadingLevel;
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\Builder;
-use Filament\Schemas\Components\Group;
+use Filament\Forms\Components\Builder\Block;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Builder\Block;
+use Filament\Schemas\Schema;
 
 class PostModuleForm
 {
@@ -213,8 +212,7 @@ class PostModuleForm
                                                         ])
                                                         ->addActionLabel('+ Add Highlight')
                                                         ->collapsible()
-                                                        ->itemLabel(fn(array $state): ?string =>
-                                                        '✓ ' . ($state['text'] ?? 'New'))
+                                                        ->itemLabel(fn (array $state): ?string => '✓ '.($state['text'] ?? 'New'))
                                                         ->defaultItems(0)
                                                         ->columnSpanFull(),
                                                 ]),

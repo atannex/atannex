@@ -4,43 +4,42 @@ declare(strict_types=1);
 
 namespace App\Models\Posts;
 
-use App\Models\Tags\Tag;
-use App\Contracts\Likeably;
-use App\Contracts\Rateably;
-use Illuminate\Support\Str;
-use Atannex\Enables\Scoping;
-use Atannex\Enables\Slugging;
-use App\Contracts\Commentable;
-use App\Models\Pivots\PostTag;
-use App\Models\Regions\Region;
 use App\Models\Comments\Comment;
+use App\Models\Modules\PostModule;
+use App\Models\Pivots\PostTag;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
+use App\Models\Regions\Region;
+use App\Models\Tags\Tag;
 use App\Models\Traits\HandlePost;
+use App\Models\Traits\HasComments;
 use App\Models\Traits\HasRatings;
-use App\Models\Modules\PostModule;
 use App\Models\Traits\HasReaction;
 use App\Models\Traits\HasShares;
 use App\Models\Traits\HasViews;
-use Illuminate\Support\Facades\Auth;
+use Atannex\Enables\Scoping;
+use Atannex\Enables\Slugging;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
-class Post extends Model implements Commentable
+class Post extends Model
 {
     use HandlePost;
+    use HasComments;
+    use HasRatings;
+    use HasReaction;
+    use HasShares;
+    use HasViews;
     use Scoping;
     use Slugging;
     use SoftDeletes;
-    use HasRatings;
-    use HasReaction;
-    use HasViews;
-    use HasShares;
 
     /**
      * Slug source field.
@@ -75,13 +74,13 @@ class Post extends Model implements Commentable
      * Attribute casting.
      */
     protected $casts = [
-        'published_at'        => 'datetime',
-        'is_breaking'         => 'boolean',
-        'breaking_at'         => 'datetime',
-        'breaking_expires'    => 'datetime',
+        'published_at' => 'datetime',
+        'is_breaking' => 'boolean',
+        'breaking_at' => 'datetime',
+        'breaking_expires' => 'datetime',
 
-        'is_editor_pick'      => 'boolean',
-        'editor_pick_at'      => 'datetime',
+        'is_editor_pick' => 'boolean',
+        'editor_pick_at' => 'datetime',
         'editor_pick_expires' => 'datetime',
     ];
 
@@ -89,6 +88,7 @@ class Post extends Model implements Commentable
     {
         return 'slug';
     }
+
     /**
      * A post can have many videos.
      */
@@ -179,7 +179,7 @@ class Post extends Model implements Commentable
     protected function resolveVisitorKey(): string
     {
         if (Auth::check()) {
-            return 'user_' . Auth::id();
+            return 'user_'.Auth::id();
         }
 
         $visitorId = request()->cookie('visitor_id');
@@ -192,6 +192,6 @@ class Post extends Model implements Commentable
             );
         }
 
-        return 'guest_' . $visitorId;
+        return 'guest_'.$visitorId;
     }
 }

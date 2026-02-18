@@ -10,7 +10,7 @@ trait ByRecent
     public function getRecentPosts(array $config): Collection
     {
         $limit = $config['limit'];
-        $sort  = $config['sort'];
+        $sort = $config['sort'];
         $order = $config['order'];
 
         return Post::query()

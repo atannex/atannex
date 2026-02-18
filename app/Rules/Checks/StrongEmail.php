@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Rules\Checks;
 
-use Closure;
 use App\Enums\Checks\AllowedDomain;
 use App\Enums\Checks\RestrictedDomain;
+use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class StrongEmail implements ValidationRule

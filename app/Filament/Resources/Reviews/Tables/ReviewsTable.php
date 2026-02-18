@@ -3,26 +3,26 @@
 namespace App\Filament\Resources\Reviews\Tables;
 
 use App\Enums\Flag;
-use Illuminate\Support\Str;
-use Filament\Tables\Enums\FiltersLayout;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\ForceDeleteAction;
-use Filament\Actions\RestoreAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class ReviewsTable
 {
@@ -39,8 +39,7 @@ class ReviewsTable
                     ->sortable()
                     ->weight(FontWeight::Medium)
                     ->description(
-                        fn($record) =>
-                        'ID: ' . Str::limit($record->reviewable->slug, 20)
+                        fn ($record) => 'ID: '.Str::limit($record->reviewable->slug, 20)
                     )
                     ->tooltip('Type of entity being reviewed'),
 
@@ -74,28 +73,28 @@ class ReviewsTable
                     ->sortable()
                     ->alignCenter()
                     ->badge()
-                    ->color(fn(int $state): string => match (true) {
+                    ->color(fn (int $state): string => match (true) {
                         $state >= 4 => 'success',
                         $state >= 3 => 'warning',
                         default => 'danger',
                     })
-                    ->icon(fn(int $state): string => match (true) {
+                    ->icon(fn (int $state): string => match (true) {
                         $state >= 4 => 'heroicon-o-star',
                         $state >= 3 => 'heroicon-o-hand-thumb-up',
                         default => 'heroicon-o-hand-thumb-down',
                     })
-                    ->formatStateUsing(fn($state) => number_format($state, 1) . ' / 5.0')
+                    ->formatStateUsing(fn ($state) => number_format($state, 1).' / 5.0')
                     ->weight(FontWeight::Bold),
 
                 TextColumn::make('flag')
                     ->label('Status')
                     ->badge()
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn (string $state): string => match ($state) {
                         Flag::APPROVED => 'success',
                         Flag::PENDING_REVIEW => 'warning',
                         default => 'gray',
                     })
-                    ->icon(fn(string $state): string => match ($state) {
+                    ->icon(fn (string $state): string => match ($state) {
                         Flag::APPROVED => 'heroicon-o-check-circle',
                         Flag::PENDING_REVIEW => 'heroicon-o-clock',
                         default => 'heroicon-o-question-mark-circle',
@@ -111,7 +110,7 @@ class ReviewsTable
                     ->sortable()
                     ->toggleable()
                     ->placeholder('Guest')
-                    ->description(fn($record) => $record->reviewer_name ?? null)
+                    ->description(fn ($record) => $record->reviewer_name ?? null)
                     ->tooltip('Registered user or guest reviewer'),
 
                 TextColumn::make('reviewer_name')
@@ -150,8 +149,8 @@ class ReviewsTable
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->icon('heroicon-o-calendar')
                     ->since()
-                    ->description(fn($record) => $record->created_at->format('M j, Y g:i A'))
-                    ->tooltip(fn($record) => $record->created_at->format('l, F j, Y \a\t g:i A')),
+                    ->description(fn ($record) => $record->created_at->format('M j, Y g:i A'))
+                    ->tooltip(fn ($record) => $record->created_at->format('l, F j, Y \a\t g:i A')),
 
                 TextColumn::make('updated_at')
                     ->label('Updated')
@@ -160,8 +159,8 @@ class ReviewsTable
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->icon('heroicon-o-arrow-path')
                     ->since()
-                    ->description(fn($record) => $record->updated_at->format('M j, Y g:i A'))
-                    ->tooltip(fn($record) => $record->updated_at->format('l, F j, Y \a\t g:i A')),
+                    ->description(fn ($record) => $record->updated_at->format('M j, Y g:i A'))
+                    ->tooltip(fn ($record) => $record->updated_at->format('l, F j, Y \a\t g:i A')),
             ])
             ->filters([
                 SelectFilter::make('flag')
@@ -183,8 +182,8 @@ class ReviewsTable
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['value'],
-                            fn(Builder $query, $rating): Builder => $query->where('reviewer_rating', '>=', $rating)
-                                ->where('reviewer_rating', '<', (int)$rating + 1),
+                            fn (Builder $query, $rating): Builder => $query->where('reviewer_rating', '>=', $rating)
+                                ->where('reviewer_rating', '<', (int) $rating + 1),
                         );
                     })
                     ->indicator('Rating'),

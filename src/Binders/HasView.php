@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace Atannex\Binders;
 
-use Atannex\Facades\Atannex;
-use Atannex\Traits\Resolution;
-use Atannex\Services\TagService;
-use Atannex\Binders\Views\ViewTag;
-use Atannex\Services\ShareService;
-use Atannex\Binders\Views\ViewDate;
-use Atannex\Binders\Views\ViewShow;
-
-use Atannex\Services\RegionService;
-use Atannex\Binders\Views\ViewAuthor;
-use Atannex\Binders\Views\ViewRegion;
-use Atannex\Services\CategoryService;
 use App\Enums\Traits\HasEntityMapping;
+use Atannex\Binders\Views\ViewAuthor;
 use Atannex\Binders\Views\ViewCategory;
+use Atannex\Binders\Views\ViewDate;
+use Atannex\Binders\Views\ViewRegion;
+use Atannex\Binders\Views\ViewShow;
+use Atannex\Binders\Views\ViewTag;
+use Atannex\Facades\Atannex;
 use Atannex\Services\AuthorService;
+use Atannex\Services\CategoryService;
 use Atannex\Services\PostService;
+use Atannex\Services\RegionService;
+use Atannex\Services\ShareService;
+use Atannex\Services\TagService;
+use Atannex\Traits\Resolution;
 
 /**
  * Class HasView

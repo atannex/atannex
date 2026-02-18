@@ -28,12 +28,12 @@ class About extends Model
     ];
 
     protected $casts = [
-        'image'     => 'array',
-        'features'  => 'array',
-        'story'     => 'array',
-        'counters'  => 'array',
-        'cta'       => 'array',
-        'info'      => 'array',
+        'image' => 'array',
+        'features' => 'array',
+        'story' => 'array',
+        'counters' => 'array',
+        'cta' => 'array',
+        'info' => 'array',
     ];
 
     protected $dates = [

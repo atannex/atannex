@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models\Traits;
 
-use Illuminate\Support\Str;
 use App\Models\Comments\View;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Str;
 
 trait HasViews
 {
@@ -63,7 +63,6 @@ trait HasViews
             || str_contains($agent, 'crawl')
             || str_contains($agent, 'spider');
     }
-
 
     /**
      * Check if current visitor has already viewed.
@@ -125,6 +124,6 @@ trait HasViews
             );
         }
 
-        return 'guest_' . $visitorId;
+        return 'guest_'.$visitorId;
     }
 }

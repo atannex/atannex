@@ -4,28 +4,28 @@ declare(strict_types=1);
 
 namespace App\Models\Regions;
 
+use App\Contracts\Sluggable;
 use App\Enums\Flag;
+use App\Models\Pivots\CategorySection;
 use App\Models\Posts\Post;
 use App\Models\Posts\Video;
-use App\Contracts\Sluggable;
+use Atannex\Concerns\HasResolver;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Filters\Hierarchy;
 use Atannex\Traits\HasSlugPath;
-use Atannex\Concerns\HasResolver;
-use App\Models\Pivots\CategorySection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model implements Sluggable
 {
-    use Hierarchy;
     use HasResolver;
-    use Slugging;
     use HasSlugPath;
+    use Hierarchy;
     use Scoping;
+    use Slugging;
     use SoftDeletes;
 
     protected $table = 'categories';
@@ -68,7 +68,6 @@ class Category extends Model implements Sluggable
             ->withPivot('flag')
             ->withTimestamps();
     }
-
 
     public function descendants(): HasMany
     {

@@ -19,10 +19,10 @@ trait WithCategory
         $categories = Category::query()
             ->whereIn('id', $categoryIds)
             ->with([
-                'posts' => fn($q) => $q->published()
+                'posts' => fn ($q) => $q->published()
                     ->orderBy($sortBy, $sortDir)
                     ->take($postLimit),
-                'descendants.posts' => fn($q) => $q->published()
+                'descendants.posts' => fn ($q) => $q->published()
                     ->orderBy($sortBy, $sortDir)
                     ->take($leafPostLimit),
             ])
@@ -31,7 +31,7 @@ trait WithCategory
 
         return $categories->map(function (Category $category) {
             $allPosts = $category->posts->concat(
-                $category->descendants->flatMap(fn($desc) => $desc->posts)
+                $category->descendants->flatMap(fn ($desc) => $desc->posts)
             );
             $category->setRelation('posts', $allPosts);
 

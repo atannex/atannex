@@ -2,10 +2,10 @@
 
 namespace Atannex\Concerns;
 
-use Illuminate\Support\Collection;
 use App\Enums\Flag;
-use App\Models\Modules\DocumentModule;
 use App\Models\Docs\Document;
+use App\Models\Modules\DocumentModule;
+use Illuminate\Support\Collection;
 
 trait HasDocument
 {

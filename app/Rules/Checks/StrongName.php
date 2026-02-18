@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Rules\Checks;
 
-use Closure;
-use App\Enums\Checks\SimpleNames;
 use App\Enums\Checks\RestrictedNames;
+use App\Enums\Checks\SimpleNames;
+use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Translation\PotentiallyTranslatedString;
 

@@ -2,21 +2,21 @@
 
 return [
 
-    'home'         => 'Home',
-    'video'         => 'Videos',
-    'about'        => 'About Us',
-    'faqs'         => 'FAQs',
+    'home' => 'Home',
+    'video' => 'Videos',
+    'about' => 'About Us',
+    'faqs' => 'FAQs',
     'testimonials' => 'Testimonials',
-    'contact'      => 'Contact Us',
+    'contact' => 'Contact Us',
 
-    'help'         => 'Help',
-    'help_center'  => 'Help Center',
-    'guidelines'   => 'Guidelines',
+    'help' => 'Help',
+    'help_center' => 'Help Center',
+    'guidelines' => 'Guidelines',
 
-    'policy'            => 'Policy',
-    'privacy_policy'    => 'Privacy Policy',
-    'terms_conditions'  => 'Terms & Conditions',
+    'policy' => 'Policy',
+    'privacy_policy' => 'Privacy Policy',
+    'terms_conditions' => 'Terms & Conditions',
 
-    'login'        => 'Login',
-    'register'     => 'Register',
+    'login' => 'Login',
+    'register' => 'Register',
 ];

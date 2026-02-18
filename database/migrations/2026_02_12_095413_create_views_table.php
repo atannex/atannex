@@ -29,7 +29,7 @@ return new class extends Migration
             $table->unique([
                 'viewable_type',
                 'viewable_id',
-                'visitor_key'
+                'visitor_key',
             ], 'unique_view_per_visitor');
         });
     }

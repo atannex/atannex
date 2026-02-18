@@ -17,8 +17,7 @@ trait HasRecent
     /**
      * Retrieve the most recent published posts.
      *
-     * @param int $limit Number of posts to retrieve.
-     *
+     * @param  int  $limit  Number of posts to retrieve.
      * @return Collection<int, Post>
      */
     public function hasRecentPosts(int $limit = 5): Collection

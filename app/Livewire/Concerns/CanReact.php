@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Request;
 trait CanReact
 {
     public int $likeCount = 0;
+
     public int $dislikeCount = 0;
 
     public bool $liked = false;
+
     public bool $disliked = false;
 
     protected int $reactCooldown = 10;
@@ -43,10 +45,10 @@ trait CanReact
     {
         $model = $this->getReactableModel();
 
-        $this->likeCount    = $model->reactionCountByType(ReactionType::LIKE());
+        $this->likeCount = $model->reactionCountByType(ReactionType::LIKE());
         $this->dislikeCount = $model->reactionCountByType(ReactionType::DISLIKE());
 
-        $this->liked    = $model->isLiked();
+        $this->liked = $model->isLiked();
         $this->disliked = $model->isDisliked();
     }
 
@@ -61,7 +63,7 @@ trait CanReact
         return RateLimiter::attempt(
             $this->reactLimitKey(),
             1,
-            fn() => true,
+            fn () => true,
             $this->reactCooldown
         );
     }

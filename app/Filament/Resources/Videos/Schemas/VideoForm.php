@@ -3,24 +3,22 @@
 namespace App\Filament\Resources\Videos\Schemas;
 
 use App\Enums\Flag;
-use Filament\Schemas\Schema;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
-use Filament\Forms\Components\Textarea;
-use Illuminate\Support\Facades\Storage;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Video Form Schema Configuration
  *
  * Defines the structure and validation rules for video resource forms.
  * Organizes form fields into logical sections for improved user experience.
- *
- * @package App\Filament\Resources\Videos\Schemas
  */
 class VideoForm
 {
@@ -30,7 +28,7 @@ class VideoForm
      * Creates a comprehensive form layout with sections for video information,
      * media files, publishing settings, classification, and metadata.
      *
-     * @param Schema $schema The schema instance to configure
+     * @param  Schema  $schema  The schema instance to configure
      * @return Schema The configured schema with all form components
      */
     public static function configure(Schema $schema): Schema
@@ -45,8 +43,6 @@ class VideoForm
 
     /**
      * Get the main content group containing video information and media files
-     *
-     * @return Group
      */
     private static function getMainContentGroup(): Group
     {
@@ -60,8 +56,6 @@ class VideoForm
 
     /**
      * Get the video information section
-     *
-     * @return Section
      */
     private static function getVideoInformationSection(): Section
     {
@@ -102,8 +96,6 @@ class VideoForm
 
     /**
      * Get the media files section
-     *
-     * @return Section
      */
     private static function getMediaFilesSection(): Section
     {
@@ -192,8 +184,6 @@ class VideoForm
 
     /**
      * Get the sidebar group containing publishing, classification, and metadata
-     *
-     * @return Group
      */
     private static function getSidebarGroup(): Group
     {
@@ -208,8 +198,6 @@ class VideoForm
 
     /**
      * Get the publishing section
-     *
-     * @return Section
      */
     private static function getPublishingSection(): Section
     {
@@ -256,8 +244,6 @@ class VideoForm
 
     /**
      * Get the classification section
-     *
-     * @return Section
      */
     private static function getClassificationSection(): Section
     {
@@ -290,15 +276,13 @@ class VideoForm
                             ->required()
                             ->maxLength(255),
                     ])
-                    ->getOptionLabelFromRecordUsing(fn($record) => $record->title)
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->title)
                     ->live(),
             ]);
     }
 
     /**
      * Get the metadata section
-     *
-     * @return Section
      */
     private static function getMetadataSection(): Section
     {

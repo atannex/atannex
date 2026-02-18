@@ -1,9 +1,9 @@
 <?php
 
+use App\Enums\ReactionType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Enums\ReactionType;
 
 return new class extends Migration
 {
@@ -32,7 +32,7 @@ return new class extends Migration
                 'reactable_type',
                 'reactable_id',
                 'visitor_key',
-                'type'
+                'type',
             ], 'unique_reaction_per_visitor');
 
             $table->index(['reactable_type', 'reactable_id', 'type']);

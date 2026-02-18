@@ -2,12 +2,12 @@
 
 namespace App\Livewire\Show;
 
-use Livewire\Component;
-use Livewire\Attributes\On;
-use App\Models\Posts\Post;
 use App\Enums\ReactionType;
 use App\Livewire\Concerns\CanRate;
 use App\Livewire\Concerns\CanReact;
+use App\Models\Posts\Post;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
 class Info extends Component
 {
@@ -15,10 +15,12 @@ class Info extends Component
     use CanReact;
 
     public Post $post;
+
     public mixed $module;
 
     public int $totalShares = 0;
-    public int $totalViews  = 0;
+
+    public int $totalViews = 0;
 
     /*
     |--------------------------------------------------------------------------
@@ -28,7 +30,7 @@ class Info extends Component
 
     public function mount(Post $post, $module): void
     {
-        $this->post   = $post;
+        $this->post = $post;
         $this->module = $module;
 
         $this->post->addView();
@@ -42,9 +44,9 @@ class Info extends Component
     public function render()
     {
         return view('livewire.show.info', [
-            'module'      => $this->module,
+            'module' => $this->module,
             'totalShares' => $this->totalShares,
-            'totalViews'  => $this->totalViews,
+            'totalViews' => $this->totalViews,
         ]);
     }
 

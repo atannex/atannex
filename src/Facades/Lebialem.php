@@ -26,21 +26,21 @@ final class Lebialem
         $breakingPosts = $this->getPosts->hasBreakingPosts();
 
         return [
-            'cover'           => $this->getGalleryImage(Image::COVER()),
-            'logo'            => $this->getGalleryImage(Image::LOGO()),
-            'favicon'         => $this->getGalleryImage(Image::FAVICON()),
-            'banner'          => $this->getGalleryImage(Image::BANNER()),
+            'cover' => $this->getGalleryImage(Image::COVER()),
+            'logo' => $this->getGalleryImage(Image::LOGO()),
+            'favicon' => $this->getGalleryImage(Image::FAVICON()),
+            'banner' => $this->getGalleryImage(Image::BANNER()),
 
-            'global_icons'    => $this->getSocialMediaIcons(),
-            'popularTags'     => $this->tagService->popularTagsGlobal(10),
+            'global_icons' => $this->getSocialMediaIcons(),
+            'popularTags' => $this->tagService->popularTagsGlobal(10),
 
-            'mainRegions'     => $regions,
-            'headerRegion'    => $regions->first(),
+            'mainRegions' => $regions,
+            'headerRegion' => $regions->first(),
             'categoryRegions' => $this->regionService->getRootCategoryRegions(),
 
             'recentPosts' => $recentPosts,
 
-            'breaking'    => $breakingPosts->isNotEmpty() ? $breakingPosts : $recentPosts,
+            'breaking' => $breakingPosts->isNotEmpty() ? $breakingPosts : $recentPosts,
         ];
     }
 }

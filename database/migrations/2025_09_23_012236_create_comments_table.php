@@ -10,54 +10,29 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->morphs('commentable');
-
-            $table->foreignId('parent_id')
-                ->nullable()
-                ->constrained('comments')
-                ->cascadeOnDelete();
-
-            $table->unsignedInteger('reply_count')->default(0);
-
-            $table->foreignId('user_id')
-                ->nullable()
-                ->constrained('users')
-                ->nullOnDelete();
-
-            $table->foreignId('guest_id')
-                ->nullable()
-                ->constrained('guests')
-                ->cascadeOnDelete();
-
-            $table->text('comment');
-            $table->string('comment_hash', 64)->unique();
-
-            $table->ipAddress('ip_address')->nullable();
-            $table->timestamp('edited_at')->nullable();
-
-            $table->unsignedInteger('like_count')->default(0);
-            $table->unsignedInteger('dislike_count')->default(0);
-
-            $table->softDeletes();
+            $table->foreignId('parent_id')->nullable()->constrained('comments')->cascadeOnDelete();
+            $table->text('body');
             $table->timestamps();
 
-            $table->unique(
-                ['commentable_type', 'commentable_id', 'guest_id', 'parent_id'],
-                'unique_guest_comment_per_thread'
-            );
+            $table->index(['commentable_type', 'commentable_id', 'user_id']);
+            $table->index('parent_id');
+        });
 
-            $table->unique(
-                ['commentable_type', 'commentable_id', 'user_id', 'parent_id'],
-                'unique_user_comment_per_thread'
-            );
+        Schema::create('comment_likes', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('comment_id')->constrained()->cascadeOnDelete();
+            $table->timestamps();
 
-            $table->index(['parent_id', 'created_at']);
+            $table->unique(['user_id', 'comment_id']);
         });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('comment_likes');
         Schema::dropIfExists('comments');
     }
 };

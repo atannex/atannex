@@ -73,10 +73,10 @@ class RegionSectionWidgetForm
     }
 
     /**
-         * Builds the "Display Options" form section for configuring a widget's display order and flag.
-         *
-         * @return \Filament\Forms\Components\Section A Section containing the display order and flag fields.
-         */
+     * Builds the "Display Options" form section for configuring a widget's display order and flag.
+     *
+     * @return \Filament\Forms\Components\Section A Section containing the display order and flag fields.
+     */
     protected static function displayOptionsConfiguration(): Section
     {
         return Section::make('Display Options')
@@ -123,7 +123,7 @@ class RegionSectionWidgetForm
             ->schema([
                 self::tabRepeater('config.widget_tab', 'widget'),
             ])
-            ->visible(fn($get) => filled($get('widget_id')))
+            ->visible(fn ($get) => filled($get('widget_id')))
             ->collapsible()
             ->collapsed()
             ->persistCollapsed();
@@ -144,13 +144,13 @@ class RegionSectionWidgetForm
     }
 
     /**
-         * Creates a Select field for choosing a section within the page.
-         *
-         * The field presents sections by name with option labels formatted as `#<slug>: <name>`,
-         * is required, searchable, and preloaded, and includes helper text explaining its purpose.
-         *
-         * @return \Filament\Forms\Components\Select The configured select field for `section_id`.
-         */
+     * Creates a Select field for choosing a section within the page.
+     *
+     * The field presents sections by name with option labels formatted as `#<slug>: <name>`,
+     * is required, searchable, and preloaded, and includes helper text explaining its purpose.
+     *
+     * @return \Filament\Forms\Components\Select The configured select field for `section_id`.
+     */
     protected static function sectionField(): Select
     {
         return Select::make('section_id')
@@ -159,7 +159,7 @@ class RegionSectionWidgetForm
             ->required()
             ->searchable()
             ->preload()
-            ->getOptionLabelFromRecordUsing(fn($record) => sprintf(
+            ->getOptionLabelFromRecordUsing(fn ($record) => sprintf(
                 '#%s: %s',
                 $record->slug,
                 $record->name
@@ -182,7 +182,7 @@ class RegionSectionWidgetForm
             ->searchable()
             ->preload()
             ->reactive()
-            ->afterStateUpdated(fn($state, callable $set) => $set('selected_widget', $state))
+            ->afterStateUpdated(fn ($state, callable $set) => $set('selected_widget', $state))
             ->helperText('Select the widget to load its specific configuration');
     }
 
@@ -220,16 +220,16 @@ class RegionSectionWidgetForm
     }
 
     /**
-         * Create a collapsible repeater for configuring tabs of a specific type.
-         *
-         * The repeater contains basic tab information and content-filtering blocks, applies a single-column layout,
-         * and enforces item behavior (reorderable, cloneable) and limits (minimum 1, maximum 6, default 1). The provided
-         * `$type` selects context-specific helper text.
-         *
-         * @param string $name The field name.
-         * @param string $type The tab type; expected values are `'section'` or `'widget'`, which determine helper text.
-         * @return Repeater The configured Repeater instance.
-         */
+     * Create a collapsible repeater for configuring tabs of a specific type.
+     *
+     * The repeater contains basic tab information and content-filtering blocks, applies a single-column layout,
+     * and enforces item behavior (reorderable, cloneable) and limits (minimum 1, maximum 6, default 1). The provided
+     * `$type` selects context-specific helper text.
+     *
+     * @param  string  $name  The field name.
+     * @param  string  $type  The tab type; expected values are `'section'` or `'widget'`, which determine helper text.
+     * @return Repeater The configured Repeater instance.
+     */
     protected static function tabRepeater(string $name, string $type): Repeater
     {
         $helperTexts = [
@@ -244,7 +244,7 @@ class RegionSectionWidgetForm
                     ContentFiltering::make(),
                 ])
                 ->columns(1)
-                ->itemLabel(fn(array $state): ?string => $state['title'] ?? 'Untitled Tab')
+                ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Untitled Tab')
                 ->addActionLabel('Add New Tab')
                 ->reorderable()
                 ->cloneable()

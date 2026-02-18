@@ -61,7 +61,7 @@ trait CleansUpContentFiles
 
             return array_filter(
                 array_map(
-                    fn($item) => data_get($item, $segments[1]),
+                    fn ($item) => data_get($item, $segments[1]),
                     $parent
                 )
             );

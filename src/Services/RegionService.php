@@ -6,10 +6,10 @@ namespace Atannex\Services;
 
 use App\Enums\Flag;
 use App\Models\Posts\Post;
-use App\Models\Regions\Region;
 use App\Models\Regions\Category;
-use Illuminate\Support\Collection;
+use App\Models\Regions\Region;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 final class RegionService
 {
@@ -59,11 +59,9 @@ final class RegionService
             ->flagged(Flag::PUBLISHED)
             ->where('slug_path', $normalizedSlug)
             ->with([
-                'sections' => static fn($query) =>
-                $query->orderByPivot('position'),
+                'sections' => static fn ($query) => $query->orderByPivot('position'),
 
-                'sections.widgets' => static fn($query) =>
-                $query->orderByPivot('position'),
+                'sections.widgets' => static fn ($query) => $query->orderByPivot('position'),
             ])
             ->firstOrFail();
     }
@@ -76,8 +74,7 @@ final class RegionService
             ->flagged(Flag::PUBLISHED)
             ->where('slug_path', $normalizedSlug)
             ->with([
-                'widgets' => static fn($query) =>
-                $query
+                'widgets' => static fn ($query) => $query
                     ->orderByPivot('position')
                     ->select('widgets.*'),
             ])

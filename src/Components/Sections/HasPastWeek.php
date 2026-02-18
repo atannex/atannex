@@ -6,7 +6,6 @@ namespace Atannex\Components\Sections;
 
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 
 trait HasPastWeek
@@ -16,7 +15,7 @@ trait HasPastWeek
      *
      * If $limit is greater than 0, the result is limited to that many posts; if 0, no limit is applied.
      *
-     * @param int $limit Number of posts to return; 0 to return all matching posts.
+     * @param  int  $limit  Number of posts to return; 0 to return all matching posts.
      * @return \Illuminate\Support\Collection Collection of Post models with a `comments_count` attribute, ordered by `comments_count` descending.
      */
     public function hasPastWeekPosts(int $limit = 5): Collection

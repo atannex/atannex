@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models\Traits;
 
-use Illuminate\Support\Str;
 use App\Models\Comments\Share;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Str;
 
 trait HasShares
 {
@@ -41,7 +41,7 @@ trait HasShares
 
         $share = $this->shares()->firstOrNew([
             'visitor_key' => $visitorKey,
-            'platform'    => $platform,
+            'platform' => $platform,
         ]);
 
         if ($share->exists) {
@@ -49,11 +49,11 @@ trait HasShares
         } else {
             $share->fill([
                 'visitor_key' => $visitorKey,
-                'platform'    => $platform,
+                'platform' => $platform,
                 'share_count' => 1,
-                'session_id'  => Request::session()->getId(),
-                'ip_address'  => Request::ip(),
-                'user_agent'  => Request::userAgent(),
+                'session_id' => Request::session()->getId(),
+                'ip_address' => Request::ip(),
+                'user_agent' => Request::userAgent(),
             ])->save();
         }
 
@@ -140,6 +140,6 @@ trait HasShares
             );
         }
 
-        return 'guest_' . $visitorId;
+        return 'guest_'.$visitorId;
     }
 }

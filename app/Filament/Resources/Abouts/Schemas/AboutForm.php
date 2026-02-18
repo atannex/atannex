@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Abouts\Schemas;
 
 use App\Enums\Flag;
-use Filament\Schemas\Schema;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
-use Filament\Forms\Components\Repeater;
-use Illuminate\Support\Facades\Storage;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class AboutForm
 {
@@ -121,7 +121,7 @@ class AboutForm
                     ->addActionLabel('Add Timeline Event')
                     ->reorderable()
                     ->collapsed()
-                    ->itemLabel(fn(array $state): ?string => ($state['year'] ?? '') . ' - ' . ($state['title'] ?? 'New Event'))
+                    ->itemLabel(fn (array $state): ?string => ($state['year'] ?? '').' - '.($state['title'] ?? 'New Event'))
                     ->orderColumn('year'),
             ]);
     }
@@ -161,7 +161,7 @@ class AboutForm
                     ->collapsible()
                     ->collapsed()
                     ->addActionLabel('Add New Contact')
-                    ->itemLabel(fn(array $state): ?string => $state['title'] ?? 'New Contact')
+                    ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'New Contact')
                     ->reorderable()
                     ->schema([
                         self::createImageUpload('icon', 'abouts/icons')
@@ -177,7 +177,7 @@ class AboutForm
                             ->label('Contact Details')
                             ->collapsible()
                             ->collapsed()
-                            ->itemLabel(fn(array $state): ?string => ($state['type'] ?? 'New') . ': ' . ($state['value'] ?? 'Detail'))
+                            ->itemLabel(fn (array $state): ?string => ($state['type'] ?? 'New').': '.($state['value'] ?? 'Detail'))
                             ->schema([
                                 Select::make('type')
                                     ->label('Type')
@@ -243,7 +243,7 @@ class AboutForm
                     ->addActionLabel('Add Image')
                     ->reorderable()
                     ->collapsed()
-                    ->itemLabel(fn(array $state): ?string => 'Image ' . ($state['path'] ? '(Uploaded)' : '(New)'))
+                    ->itemLabel(fn (array $state): ?string => 'Image '.($state['path'] ? '(Uploaded)' : '(New)'))
                     ->grid(1),
 
                 TextInput::make('video_url')
@@ -275,7 +275,7 @@ class AboutForm
                     ->addActionLabel('Add Feature')
                     ->reorderable()
                     ->collapsed()
-                    ->itemLabel(fn(array $state): ?string => $state['text'] ?? 'New Feature')
+                    ->itemLabel(fn (array $state): ?string => $state['text'] ?? 'New Feature')
                     ->grid(1),
             ]);
     }
@@ -320,7 +320,7 @@ class AboutForm
                             ->numeric()
                             ->placeholder('100')
                             ->helperText('Enter the counter value')
-                            ->visible(fn(Get $get): bool => $get('type') === 'manual'),
+                            ->visible(fn (Get $get): bool => $get('type') === 'manual'),
 
                         TextInput::make('base_year')
                             ->label('Base Year')
@@ -329,12 +329,12 @@ class AboutForm
                             ->minValue(1900)
                             ->maxValue(2100)
                             ->helperText('Year when experience started')
-                            ->visible(fn(Get $get): bool => $get('type') === 'years_experience'),
+                            ->visible(fn (Get $get): bool => $get('type') === 'years_experience'),
                     ])
                     ->addActionLabel('Add Counter')
                     ->reorderable()
                     ->collapsed()
-                    ->itemLabel(fn(array $state): ?string => $state['label'] ?? 'New Counter'),
+                    ->itemLabel(fn (array $state): ?string => $state['label'] ?? 'New Counter'),
             ]);
     }
 
@@ -353,7 +353,7 @@ class AboutForm
                 '4:3',
                 '1:1',
             ])->afterStateUpdated(function ($state, $record) use ($name) {
-                if ($record && $record->$name && $record->$name !== $state) {
+                if ($record && $record->$name && $state !== $record->$name) {
                     Storage::disk('public')->delete($record->$name);
                 }
             })

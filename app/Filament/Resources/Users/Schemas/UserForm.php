@@ -4,25 +4,23 @@ namespace App\Filament\Resources\Users\Schemas;
 
 use App\Enums\Gender;
 use App\Enums\Status;
-use Illuminate\Support\Str;
-use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Hash;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
-use Filament\Forms\Components\Textarea;
-use Illuminate\Support\Facades\Storage;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use Spatie\Permission\Models\Permission;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
-use Illuminate\Validation\Rules\Password;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
+use Spatie\Permission\Models\Permission;
 
 class UserForm
 {
@@ -94,7 +92,7 @@ class UserForm
                                                     ->prefixIcon('heroicon-o-link')
                                                     ->disabled()
                                                     ->dehydrated()
-                                                    ->visible(fn(?string $operation) => $operation === 'edit')
+                                                    ->visible(fn (?string $operation) => $operation === 'edit')
                                                     ->columnSpanFull(),
 
                                                 Grid::make(2)
@@ -252,22 +250,22 @@ class UserForm
                                             ->label('Password')
                                             ->password()
                                             ->revealable()
-                                            ->required(fn(string $operation): bool => $operation === 'create')
+                                            ->required(fn (string $operation): bool => $operation === 'create')
                                             ->confirmed()
                                             ->rule(Password::default())
                                             ->autocomplete('new-password')
                                             ->placeholder('Enter secure password')
                                             ->helperText('Min 8 characters with mixed case, numbers & symbols')
                                             ->prefixIcon('heroicon-o-key')
-                                            ->dehydrateStateUsing(fn($state) => Hash::make($state))
-                                            ->dehydrated(fn($state) => filled($state))
+                                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                                            ->dehydrated(fn ($state) => filled($state))
                                             ->live(debounce: 500),
 
                                         TextInput::make('password_confirmation')
                                             ->label('Confirm Password')
                                             ->password()
                                             ->revealable()
-                                            ->required(fn(Get $get): bool => filled($get('password')))
+                                            ->required(fn (Get $get): bool => filled($get('password')))
                                             ->same('password')
                                             ->placeholder('Confirm password')
                                             ->prefixIcon('heroicon-o-lock-closed')
@@ -340,7 +338,7 @@ class UserForm
                                             ->prefixIcon('heroicon-o-key')
                                             ->optionsLimit(50)
                                             ->getSearchResultsUsing(
-                                                fn(string $search) => Permission::where('name', 'like', sprintf('%%%s%%', $search))
+                                                fn (string $search) => Permission::where('name', 'like', sprintf('%%%s%%', $search))
                                                     ->limit(50)
                                                     ->pluck('name', 'id')
                                             ),

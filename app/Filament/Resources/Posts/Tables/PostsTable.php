@@ -28,7 +28,7 @@ class PostsTable
      * toolbar actions (individual edit/delete and grouped bulk actions), empty state,
      * pagination, styling, and polling behavior.
      *
-     * @param \Filament\Tables\Table $table The Filament Table instance to configure.
+     * @param  \Filament\Tables\Table  $table  The Filament Table instance to configure.
      * @return \Filament\Tables\Table The configured Table instance.
      */
     public static function configure(Table $table): Table
@@ -51,8 +51,8 @@ class PostsTable
                     ->sortable()
                     ->weight(FontWeight::Medium)
                     ->limit(50)
-                    ->tooltip(fn($record) => $record->title)
-                    ->description(fn($record) => $record->description ? Str::limit($record->description, 60) : null)
+                    ->tooltip(fn ($record) => $record->title)
+                    ->description(fn ($record) => $record->description ? Str::limit($record->description, 60) : null)
                     ->wrap(),
 
                 // TextColumn::make('is_breaking')
@@ -72,9 +72,9 @@ class PostsTable
                 TextColumn::make('is_editor_pick')
                     ->label("Editor's Pick")
                     ->badge()
-                    ->color(fn($state) => $state ? 'success' : 'gray')
-                    ->formatStateUsing(fn($state) => $state ? 'FEATURED' : 'Standard')
-                    ->icon(fn($state) => $state ? 'heroicon-o-star' : null)
+                    ->color(fn ($state) => $state ? 'success' : 'gray')
+                    ->formatStateUsing(fn ($state) => $state ? 'FEATURED' : 'Standard')
+                    ->icon(fn ($state) => $state ? 'heroicon-o-star' : null)
                     ->sortable()
                     ->toggleable(),
 
@@ -125,7 +125,7 @@ class PostsTable
                     ->icon('heroicon-o-calendar')
                     ->iconColor('success')
                     ->since()
-                    ->tooltip(fn($record) => $record->published_at?->format('F j, Y \a\t g:i A')),
+                    ->tooltip(fn ($record) => $record->published_at?->format('F j, Y \a\t g:i A')),
 
                 TextColumn::make('views_count')
                     ->label('Views')
@@ -133,7 +133,7 @@ class PostsTable
                     ->sortable()
                     ->icon('heroicon-o-eye')
                     ->iconColor('primary')
-                    ->formatStateUsing(fn($state) => number_format($state ?: 0))
+                    ->formatStateUsing(fn ($state) => number_format($state ?: 0))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_by')
@@ -149,7 +149,7 @@ class PostsTable
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn($record) => $record->created_at->format('F j, Y \a\t g:i A'))
+                    ->tooltip(fn ($record) => $record->created_at->format('F j, Y \a\t g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
@@ -157,7 +157,7 @@ class PostsTable
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn($record) => $record->updated_at->format('F j, Y \a\t g:i A'))
+                    ->tooltip(fn ($record) => $record->updated_at->format('F j, Y \a\t g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('breaking_at')
@@ -167,7 +167,7 @@ class PostsTable
                     ->since()
                     ->icon('heroicon-o-bolt')
                     ->iconColor('danger')
-                    ->tooltip(fn($record) => $record->breaking_at?->format('F j, Y \a\t g:i A'))
+                    ->tooltip(fn ($record) => $record->breaking_at?->format('F j, Y \a\t g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('breaking_expires')
@@ -176,7 +176,7 @@ class PostsTable
                     ->sortable()
                     ->icon('heroicon-o-clock')
                     ->iconColor('warning')
-                    ->tooltip(fn($record) => $record->breaking_expires?->format('F j, Y \a\t g:i A'))
+                    ->tooltip(fn ($record) => $record->breaking_expires?->format('F j, Y \a\t g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('editor_pick_at')
@@ -186,7 +186,7 @@ class PostsTable
                     ->since()
                     ->icon('heroicon-o-star')
                     ->iconColor('success')
-                    ->tooltip(fn($record) => $record->editor_pick_at?->format('F j, Y \a\t g:i A'))
+                    ->tooltip(fn ($record) => $record->editor_pick_at?->format('F j, Y \a\t g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('editor_pick_expires')
@@ -195,7 +195,7 @@ class PostsTable
                     ->sortable()
                     ->icon('heroicon-o-clock')
                     ->iconColor('warning')
-                    ->tooltip(fn($record) => $record->editor_pick_expires?->format('F j, Y \a\t g:i A'))
+                    ->tooltip(fn ($record) => $record->editor_pick_expires?->format('F j, Y \a\t g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('deleted_at')
@@ -227,17 +227,17 @@ class PostsTable
 
                 Filter::make('is_breaking')
                     ->label('Breaking News Only')
-                    ->query(fn(Builder $query): Builder => $query->where('is_breaking', true))
+                    ->query(fn (Builder $query): Builder => $query->where('is_breaking', true))
                     ->toggle(),
 
                 Filter::make('is_editor_pick')
                     ->label("Editor's Picks Only")
-                    ->query(fn(Builder $query): Builder => $query->where('is_editor_pick', true))
+                    ->query(fn (Builder $query): Builder => $query->where('is_editor_pick', true))
                     ->toggle(),
 
                 Filter::make('published_recently')
                     ->label('Published This Month')
-                    ->query(fn(Builder $query): Builder => $query->where('published_at', '>=', now()->startOfMonth()))
+                    ->query(fn (Builder $query): Builder => $query->where('published_at', '>=', now()->startOfMonth()))
                     ->toggle(),
             ])
             ->filtersFormColumns(2)

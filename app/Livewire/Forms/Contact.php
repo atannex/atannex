@@ -12,9 +12,13 @@ use Livewire\Component;
 class Contact extends Component
 {
     public string $name = '';
+
     public string $email = '';
+
     public ?string $number = null;
+
     public string $subject = '';
+
     public string $message = '';
 
     public array $subjects = [];
@@ -22,10 +26,10 @@ class Contact extends Component
     protected function rules(): array
     {
         return [
-            'name'    => ['required', 'string', 'max:255'],
-            'email'   => ['required', 'email', 'max:255'],
-            'number'  => [Auth::check() ? 'nullable' : 'required', 'string', 'max:20'],
-            'subject' => ['required', 'in:' . implode(',', Subject::asSelectArray())],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'number' => [Auth::check() ? 'nullable' : 'required', 'string', 'max:20'],
+            'subject' => ['required', 'in:'.implode(',', Subject::asSelectArray())],
             'message' => ['required', 'string', 'max:2000'],
         ];
     }
@@ -38,8 +42,8 @@ class Contact extends Component
             $user = Auth::user();
 
             $this->fill([
-                'name'   => $user->name,
-                'email'  => $user->email,
+                'name' => $user->name,
+                'email' => $user->email,
                 'number' => $user->phone,
             ]);
         }

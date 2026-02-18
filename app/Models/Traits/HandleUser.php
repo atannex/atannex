@@ -7,8 +7,6 @@ namespace App\Models\Traits;
 use App\Enums\Status;
 use App\Models\Comments\Comment;
 use App\Models\Regions\Employee;
-use App\Notifications\ResetPasswordNotification;
-use App\Notifications\VerifyEmailNotification;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 

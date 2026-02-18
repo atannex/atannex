@@ -8,7 +8,7 @@ if (! function_exists('category_display_data')) {
      * and the category has a parent — in that case the label is formatted as "ParentName → CategoryName".
      * The `bgSrc` is the public URL for the first related post's image if present, or an empty string otherwise.
      *
-     * @param \App\Models\Category $category The category to derive display data from.
+     * @param  \App\Models\Category  $category  The category to derive display data from.
      * @return array{label: string, bgSrc: string} Associative array with keys `label` and `bgSrc`.
      */
     function category_display_data($category): array
@@ -21,7 +21,7 @@ if (! function_exists('category_display_data')) {
             : $category->name;
 
         $bgSrc = $category->posts->first()?->image
-            ? asset('storage/' . $category->posts->first()->image)
+            ? asset('storage/'.$category->posts->first()->image)
             : '';
 
         return compact('label', 'bgSrc');

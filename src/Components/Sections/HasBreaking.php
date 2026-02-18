@@ -12,7 +12,7 @@ trait HasBreaking
     /**
      * Retrieve up to the given number of published posts marked as breaking, ordered by most recent `breaking_at`.
      *
-     * @param int $limit Maximum number of breaking posts to return (default 10).
+     * @param  int  $limit  Maximum number of breaking posts to return (default 10).
      * @return Collection<Post> Collection of breaking Post models.
      */
     public function hasBreakingPosts(int $limit = 10): Collection
