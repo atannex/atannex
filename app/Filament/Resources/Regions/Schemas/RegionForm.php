@@ -4,17 +4,17 @@ namespace App\Filament\Resources\Regions\Schemas;
 
 use App\Enums\Flag;
 use App\Enums\Territories;
-use Illuminate\Support\Str;
-use Filament\Schemas\Schema;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
-use Filament\Forms\Components\Textarea;
-use Illuminate\Support\Facades\Storage;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
-use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class RegionForm
 {
@@ -24,7 +24,7 @@ class RegionForm
      * Adds grouped sections, fields, and layout optimized for creating and editing regions,
      * including basic information, classification and hierarchy, media, and metadata.
      *
-     * @param Schema $schema The base schema to augment with Region form components.
+     * @param  Schema  $schema  The base schema to augment with Region form components.
      * @return Schema The configured Schema containing the form components and a 3-column layout.
      */
     public static function configure(Schema $schema): Schema
@@ -45,7 +45,7 @@ class RegionForm
                                             ->maxLength(255)
                                             ->live(onBlur: true)
                                             ->afterStateUpdated(
-                                                fn($state, callable $set) => $set('slug', Str::slug($state))
+                                                fn ($state, callable $set) => $set('slug', Str::slug($state))
                                             )
                                             ->placeholder('e.g., North America')
                                             ->helperText('This will be the primary display name')
@@ -137,7 +137,7 @@ class RegionForm
                                     ])
                                     ->maxSize(2048)
                                     ->disk('public')
-                                    ->directory(fn($record) => $record?->dir() ?? 'regions/logos')
+                                    ->directory(fn ($record) => $record?->dir() ?? 'regions/logos')
                                     ->visibility('public')
                                     ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/svg+xml'])
                                     ->helperText('PNG, JPG, or SVG. Max 2MB.')
@@ -155,26 +155,26 @@ class RegionForm
                             ->schema([
                                 TextEntry::make('created_at')
                                     ->label('Created At')
-                                    ->state(fn($record): string => $record?->created_at
+                                    ->state(fn ($record): string => $record?->created_at
                                         ? $record->created_at->diffForHumans()
                                         : '-')
-                                    ->visible(fn($record) => $record !== null),
+                                    ->visible(fn ($record) => $record !== null),
 
                                 TextEntry::make('updated_at')
                                     ->label('Last Updated')
-                                    ->state(fn($record): string => $record?->updated_at
+                                    ->state(fn ($record): string => $record?->updated_at
                                         ? $record->updated_at->diffForHumans()
                                         : '-')
-                                    ->visible(fn($record) => $record !== null),
+                                    ->visible(fn ($record) => $record !== null),
 
                                 TextEntry::make('slug_path')
                                     ->label('Full Path')
-                                    ->state(fn($record): string => $record?->slug_path ?? '-')
-                                    ->visible(fn($record) => $record !== null && $record->slug_path),
+                                    ->state(fn ($record): string => $record?->slug_path ?? '-')
+                                    ->visible(fn ($record) => $record !== null && $record->slug_path),
                             ])
                             ->collapsible()
                             ->collapsed()
-                            ->visible(fn($record) => $record !== null),
+                            ->visible(fn ($record) => $record !== null),
                     ])
                     ->columnSpan(['lg' => 1]),
             ])

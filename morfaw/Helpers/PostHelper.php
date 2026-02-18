@@ -10,10 +10,9 @@ if (! function_exists('get_posts_from_tabs')) {
     {
         return collect($tabs)
             ->flatMap(
-                fn($tab) =>
-                $tab['content']
+                fn ($tab) => $tab['content']
                     ?? collect($tab['entities'])
-                    ->flatMap(fn($region) => $region['posts'])
+                        ->flatMap(fn ($region) => $region['posts'])
             )
             ->unique('id')
             ->values();

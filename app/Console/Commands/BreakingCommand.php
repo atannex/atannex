@@ -35,9 +35,9 @@ class BreakingCommand extends Command
             ->whereNotNull('breaking_expires')
             ->where('breaking_expires', '<=', now())
             ->update([
-                'is_breaking'       => false,
-                'breaking_at'       => null,
-                'breaking_expires'  => null,
+                'is_breaking' => false,
+                'breaking_at' => null,
+                'breaking_expires' => null,
             ]);
 
         $this->info("Breaking cleanup completed. {$affected} post(s) updated.");

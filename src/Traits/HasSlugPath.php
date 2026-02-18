@@ -24,24 +24,24 @@ trait HasSlugPath
 
     public function generateSlugPath(): string
     {
-        if (!$this->parent_id) {
+        if (! $this->parent_id) {
             return $this->slug;
         }
 
         $parent = $this->relationLoaded('parent')
             ? $this->parent
             : $this->parent()
-            ->withoutGlobalScopes()
-            ->select(['id', 'slug', 'slug_path'])
-            ->first();
+                ->withoutGlobalScopes()
+                ->select(['id', 'slug', 'slug_path'])
+                ->first();
 
-        if (!$parent) {
+        if (! $parent) {
             return $this->slug;
         }
 
         $base = $parent->slug_path ?: $parent->slug;
 
-        return trim($base . '/' . $this->slug, '/');
+        return trim($base.'/'.$this->slug, '/');
     }
 
     public function updateSlugPathIfNeeded(): void

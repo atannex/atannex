@@ -22,13 +22,19 @@ class PostComment extends Component
     //  State
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    public string  $newComment   = '';
-    public string  $replyText    = '';
+    public string $newComment = '';
+
+    public string $replyText = '';
+
     public ?string $replyMention = null;
-    public ?int    $replyingTo   = null;
-    public ?int    $rootId       = null;
-    public array   $openReplies  = [];
-    public int     $perPage      = 10;
+
+    public ?int $replyingTo = null;
+
+    public ?int $rootId = null;
+
+    public array $openReplies = [];
+
+    public int $perPage = 10;
 
     #[Locked]
     public bool $hasMore = false;
@@ -37,12 +43,17 @@ class PostComment extends Component
     //  Rate-limit constants
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    private const COMMENT_MAX  = 2;    // 5 comments
-    private const COMMENT_TTL  = 60;   // per 60 seconds
-    private const REPLY_MAX    = 10;   // 10 replies
-    private const REPLY_TTL    = 60;   // per 60 seconds
-    private const LIKE_MAX     = 30;   // 30 likes
-    private const LIKE_TTL     = 60;   // per 60 seconds
+    private const COMMENT_MAX = 2;    // 5 comments
+
+    private const COMMENT_TTL = 60;   // per 60 seconds
+
+    private const REPLY_MAX = 10;   // 10 replies
+
+    private const REPLY_TTL = 60;   // per 60 seconds
+
+    private const LIKE_MAX = 30;   // 30 likes
+
+    private const LIKE_TTL = 60;   // per 60 seconds
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     //  Lifecycle
@@ -56,7 +67,7 @@ class PostComment extends Component
     public function render()
     {
         return view('livewire.forms.post-comment', [
-            'comments'   => $this->comments,
+            'comments' => $this->comments,
             'totalCount' => $this->totalCount,
         ]);
     }
@@ -80,7 +91,7 @@ class PostComment extends Component
 
         return $results
             ->take($this->perPage)
-            ->map(fn(Comment $c) => $this->formatComment($c, Auth::user()));
+            ->map(fn (Comment $c) => $this->formatComment($c, Auth::user()));
     }
 
     public function getTotalCountProperty(): int
@@ -98,16 +109,16 @@ class PostComment extends Component
     public function postComment(): void
     {
         $this->requireAuth();
-        $this->throttle('comment:' . Auth::id(), self::COMMENT_MAX, self::COMMENT_TTL, 'newComment');
+        $this->throttle('comment:'.Auth::id(), self::COMMENT_MAX, self::COMMENT_TTL, 'newComment');
         $this->validate(['newComment' => 'required|string|min:2|max:2000']);
 
         Comment::create([
-            'user_id'          => Auth::id(),
+            'user_id' => Auth::id(),
             'commentable_type' => get_class($this->commentable),
-            'commentable_id'   => $this->commentable->getKey(),
-            'parent_id'        => null,
-            'root_id'          => null,
-            'body'             => $this->newComment,
+            'commentable_id' => $this->commentable->getKey(),
+            'parent_id' => null,
+            'root_id' => null,
+            'body' => $this->newComment,
         ]);
 
         $this->reset('newComment');
@@ -119,19 +130,19 @@ class PostComment extends Component
     public function postReply(): void
     {
         $this->requireAuth();
-        $this->throttle('reply:' . Auth::id(), self::REPLY_MAX, self::REPLY_TTL, 'replyText');
+        $this->throttle('reply:'.Auth::id(), self::REPLY_MAX, self::REPLY_TTL, 'replyText');
         $this->validate(['replyText' => 'required|string|min:2|max:1000']);
 
         $parent = Comment::findOrFail($this->replyingTo);
         $rootId = $parent->parent_id === null ? $parent->id : $this->rootId;
 
         Comment::create([
-            'user_id'          => Auth::id(),
+            'user_id' => Auth::id(),
             'commentable_type' => get_class($this->commentable),
-            'commentable_id'   => $this->commentable->getKey(),
-            'parent_id'        => $parent->id,
-            'root_id'          => $rootId,
-            'body'             => $this->replyText,
+            'commentable_id' => $this->commentable->getKey(),
+            'parent_id' => $parent->id,
+            'root_id' => $rootId,
+            'body' => $this->replyText,
         ]);
 
         // Auto-expand the thread the new reply landed in
@@ -168,7 +179,7 @@ class PostComment extends Component
     public function toggleLike(int $commentId): void
     {
         $this->requireAuth();
-        $this->throttle('like:' . Auth::id(), self::LIKE_MAX, self::LIKE_TTL, 'newComment');
+        $this->throttle('like:'.Auth::id(), self::LIKE_MAX, self::LIKE_TTL, 'newComment');
 
         $comment = Comment::findOrFail($commentId);
 
@@ -189,13 +200,14 @@ class PostComment extends Component
     {
         if ($this->replyingTo === $targetId) {
             $this->resetReplyState();
+
             return;
         }
 
-        $this->replyingTo   = $targetId;
-        $this->rootId       = $rootId;
+        $this->replyingTo = $targetId;
+        $this->rootId = $rootId;
         $this->replyMention = $mention;
-        $this->replyText    = $mention ? "@{$mention} " : '';
+        $this->replyText = $mention ? "@{$mention} " : '';
     }
 
     /**
@@ -233,9 +245,14 @@ class PostComment extends Component
             '/@([A-Za-z][A-Za-z0-9]*)(?:\s([A-Za-z][A-Za-z0-9]*)(?:\s([A-Za-z][A-Za-z0-9]*))?)?/',
             static function (array $m): string {
                 $name = $m[1];
-                if (!empty($m[2])) $name .= ' ' . $m[2];
-                if (!empty($m[3])) $name .= ' ' . $m[3];
-                return '<span class="fb-at">@' . e($name) . '</span>';
+                if (! empty($m[2])) {
+                    $name .= ' '.$m[2];
+                }
+                if (! empty($m[3])) {
+                    $name .= ' '.$m[3];
+                }
+
+                return '<span class="fb-at">@'.e($name).'</span>';
             },
             e($body)
         );
@@ -248,16 +265,16 @@ class PostComment extends Component
     private function formatComment(Comment $comment, ?object $user): array
     {
         return [
-            'id'         => $comment->id,
-            'name'       => $comment->user->name,
-            'avatar'     => $this->avatarUrl($comment->user),
-            'body'       => $comment->body,
-            'time'       => $comment->created_at->diffForHumans(),
+            'id' => $comment->id,
+            'name' => $comment->user->name,
+            'avatar' => $this->avatarUrl($comment->user),
+            'body' => $comment->body,
+            'time' => $comment->created_at->diffForHumans(),
             'likesCount' => $comment->likes_count,
-            'isLiked'    => $user ? $comment->likes->contains('id', $user->id) : false,
-            'isOwner'    => $user?->id === $comment->user_id,
-            'replies'    => $comment->directReplies
-                ->map(fn(Comment $r) => $this->formatReply($r, $comment->id, $user))
+            'isLiked' => $user ? $comment->likes->contains('id', $user->id) : false,
+            'isOwner' => $user?->id === $comment->user_id,
+            'replies' => $comment->directReplies
+                ->map(fn (Comment $r) => $this->formatReply($r, $comment->id, $user))
                 ->all(),
         ];
     }
@@ -265,17 +282,17 @@ class PostComment extends Component
     private function formatReply(Comment $reply, int $rootId, ?object $user): array
     {
         return [
-            'id'         => $reply->id,
-            'rootId'     => $rootId,
-            'name'       => $reply->user->name,
-            'avatar'     => $this->avatarUrl($reply->user),
-            'body'       => $reply->body,
-            'time'       => $reply->created_at->diffForHumans(),
+            'id' => $reply->id,
+            'rootId' => $rootId,
+            'name' => $reply->user->name,
+            'avatar' => $this->avatarUrl($reply->user),
+            'body' => $reply->body,
+            'time' => $reply->created_at->diffForHumans(),
             'likesCount' => $reply->likes_count ?? $reply->likes->count(),
-            'isLiked'    => $user ? $reply->likes->contains('id', $user->id) : false,
-            'isOwner'    => $user?->id === $reply->user_id,
+            'isLiked' => $user ? $reply->likes->contains('id', $user->id) : false,
+            'isOwner' => $user?->id === $reply->user_id,
             'subReplies' => $reply->directReplies
-                ->map(fn(Comment $s) => $this->formatReply($s, $rootId, $user))
+                ->map(fn (Comment $s) => $this->formatReply($s, $rootId, $user))
                 ->all(),
         ];
     }
@@ -283,7 +300,7 @@ class PostComment extends Component
     private function avatarUrl(object $user): string
     {
         return $user->image
-            ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=2d88ff&color=fff&bold=true';
+            ?? 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=2d88ff&color=fff&bold=true';
     }
 
     private function eagerLoadRelations(): array
@@ -311,10 +328,10 @@ class PostComment extends Component
      * Sliding-window rate limiter.
      * Adds a Livewire field error and halts execution if the limit is exceeded.
      *
-     * @param string $key          Unique key e.g. "comment:42"
-     * @param int    $maxAttempts  Allowed attempts in the window
-     * @param int    $decaySeconds Window length in seconds
-     * @param string $field        Livewire field to attach the error to
+     * @param  string  $key  Unique key e.g. "comment:42"
+     * @param  int  $maxAttempts  Allowed attempts in the window
+     * @param  int  $decaySeconds  Window length in seconds
+     * @param  string  $field  Livewire field to attach the error to
      */
     private function throttle(string $key, int $maxAttempts, int $decaySeconds, string $field): void
     {
@@ -323,7 +340,7 @@ class PostComment extends Component
 
             $this->addError(
                 $field,
-                "Slow down! You can try again in {$seconds} " . ($seconds === 1 ? 'second' : 'seconds') . '.'
+                "Slow down! You can try again in {$seconds} ".($seconds === 1 ? 'second' : 'seconds').'.'
             );
 
             return;
@@ -334,9 +351,9 @@ class PostComment extends Component
 
     private function resetReplyState(): void
     {
-        $this->replyingTo   = null;
-        $this->rootId       = null;
+        $this->replyingTo = null;
+        $this->rootId = null;
         $this->replyMention = null;
-        $this->replyText    = '';
+        $this->replyText = '';
     }
 }

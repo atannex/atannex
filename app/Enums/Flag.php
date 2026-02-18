@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
 use BenSampo\Enum\Attributes\Description;
+use BenSampo\Enum\Enum;
 
 /**
  * Flag Enum
@@ -48,9 +48,6 @@ final class Flag extends Enum
 
     /**
      * Determines if the given flag allows editing.
-     *
-     * @param string|self $flag
-     * @return bool
      */
     public static function allowsEditing(string|self $flag): bool
     {

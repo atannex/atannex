@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Atannex\Services;
 
-use App\Models\Modules\DocumentModule;
-use Illuminate\Support\Collection;
 use App\Enums\Flag;
 use App\Models\Docs\Document;
+use App\Models\Modules\DocumentModule;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 final class DocumentService
 {
@@ -56,7 +56,7 @@ final class DocumentService
     public function getRelatedDocuments(string $type, string $excludeSlug)
     {
         return $this->getPublishedDocumentsByType($type)
-            ->filter(fn($doc) => $doc->slug !== $excludeSlug)
+            ->filter(fn ($doc) => $doc->slug !== $excludeSlug)
             ->values()
             ->load(['author']);
     }

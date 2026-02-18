@@ -3,21 +3,21 @@
 namespace App\Filament\Resources\Categories\Schemas;
 
 use App\Enums\Flag;
-use Illuminate\Support\Str;
-use Filament\Schemas\Schema;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
-use Filament\Forms\Components\Textarea;
-use Illuminate\Support\Facades\Storage;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CategoryForm
 {
@@ -99,7 +99,7 @@ class CategoryForm
                                                     ->placeholder('auto-generated-slug'),
                                             ])
                                             ->createOptionAction(
-                                                fn($action) => $action
+                                                fn ($action) => $action
                                                     ->modalHeading('Create New Parent Category')
                                                     ->modalDescription('Add a new parent category for hierarchical organization')
                                                     ->modalSubmitActionLabel('Create Category')
@@ -133,8 +133,8 @@ class CategoryForm
                                     ->imageEditor()
                                     ->imageEditorAspectRatioOptions([
                                         '16:9' => '16:9 (Landscape)',
-                                        '4:3'  => '4:3 (Standard)',
-                                        '1:1'  => '1:1 (Square)',
+                                        '4:3' => '4:3 (Standard)',
+                                        '1:1' => '1:1 (Square)',
                                         '9:16' => '9:16 (Portrait)',
                                     ])
                                     ->maxSize(5120)
@@ -266,11 +266,11 @@ class CategoryForm
                             ->schema([
                                 TextEntry::make('created_at')
                                     ->label('Created')
-                                    ->state(fn($record) => $record?->created_at?->format('M j, Y g:i A') ?? 'Not yet created'),
+                                    ->state(fn ($record) => $record?->created_at?->format('M j, Y g:i A') ?? 'Not yet created'),
 
                                 TextEntry::make('updated_at')
                                     ->label('Last Updated')
-                                    ->state(fn($record) => $record?->updated_at?->format('M j, Y g:i A') ?? 'Not yet updated'),
+                                    ->state(fn ($record) => $record?->updated_at?->format('M j, Y g:i A') ?? 'Not yet updated'),
                             ])
                             ->collapsible()
                             ->collapsed()

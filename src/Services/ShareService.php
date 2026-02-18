@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace Atannex\Services;
 
 use App\Enums\Icon;
-use Illuminate\Support\Str;
-use App\Models\Comments\Share;
-use Jorenvh\Share\ShareFacade;
 use Atannex\Concerns\HasPlatforms;
-use Illuminate\Support\Facades\Request;
+use Jorenvh\Share\ShareFacade;
 
 class ShareService
 {
@@ -33,10 +30,10 @@ class ShareService
 
         foreach (self::SUPPORTED_PLATFORMS as $platform) {
             $links[$platform] = match ($platform) {
-                Icon::FACEBOOK  => $baseLinks[Icon::FACEBOOK],
-                Icon::TWITTER   => $baseLinks[Icon::TWITTER],
-                Icon::WHATSAPP  => $baseLinks[Icon::WHATSAPP],
-                Icon::TELEGRAM  => $baseLinks[Icon::TELEGRAM],
+                Icon::FACEBOOK => $baseLinks[Icon::FACEBOOK],
+                Icon::TWITTER => $baseLinks[Icon::TWITTER],
+                Icon::WHATSAPP => $baseLinks[Icon::WHATSAPP],
+                Icon::TELEGRAM => $baseLinks[Icon::TELEGRAM],
             };
         }
 
@@ -49,6 +46,7 @@ class ShareService
     public function generateFor(string $platform, string $url, string $title): string
     {
         $links = $this->generate($url, $title);
+
         return $links[$platform];
     }
 }

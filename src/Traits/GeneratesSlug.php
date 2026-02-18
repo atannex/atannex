@@ -2,8 +2,8 @@
 
 namespace Atannex\Traits;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 trait GeneratesSlug
 {
@@ -40,8 +40,8 @@ trait GeneratesSlug
     {
         return match ($this->slugMode()) {
             'random' => $this->generateRandomId(),
-            'mixed'  => $this->buildWordSlug() . $this->separator() . $this->generateRandomId(),
-            default  => $this->buildWordSlug(),
+            'mixed' => $this->buildWordSlug().$this->separator().$this->generateRandomId(),
+            default => $this->buildWordSlug(),
         };
     }
 
@@ -52,6 +52,7 @@ trait GeneratesSlug
     {
         $source = $this->slugSourceValue();
         $source = $this->transformSource($source);
+
         return Str::slug($source, $this->separator());
     }
 
@@ -64,7 +65,7 @@ trait GeneratesSlug
 
         if (is_array($source)) {
             return collect($source)
-                ->map(fn($field) => $this->{$field})
+                ->map(fn ($field) => $this->{$field})
                 ->filter()
                 ->implode(' ');
         }
@@ -104,7 +105,7 @@ trait GeneratesSlug
         $count = 1;
 
         while ($this->slugExists($slug)) {
-            $slug = $base . $this->separator() . $count++;
+            $slug = $base.$this->separator().$count++;
         }
 
         return $slug;

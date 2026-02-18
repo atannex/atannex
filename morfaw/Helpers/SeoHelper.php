@@ -26,12 +26,12 @@ if (! function_exists('seo_title')) {
         $titleParts = [];
 
         if ($context) {
-            $titleParts[] = sentence_case($context) . ':';
+            $titleParts[] = sentence_case($context).':';
         }
 
         $titleParts[] = $descriptor;
 
-        return implode(' ', $titleParts) . ' – ' . $brand;
+        return implode(' ', $titleParts).' – '.$brand;
     }
 }
 
@@ -50,6 +50,6 @@ if (! function_exists('sentence_case')) {
 
         $lower = mb_strtolower($value);
 
-        return mb_strtoupper(mb_substr($lower, 0, 1)) . mb_substr($lower, 1);
+        return mb_strtoupper(mb_substr($lower, 0, 1)).mb_substr($lower, 1);
     }
 }

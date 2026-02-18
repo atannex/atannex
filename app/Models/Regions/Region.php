@@ -4,28 +4,27 @@ declare(strict_types=1);
 
 namespace App\Models\Regions;
 
+use App\Contracts\Sluggable;
 use App\Enums\Flag;
 use App\Enums\Territories;
+use App\Models\Pivots\RegionSectionWidget;
 use App\Models\Posts\Post;
-use App\Contracts\Sluggable;
 use Atannex\Enables\Scoping;
-use App\Models\Regions\Ruler;
 use Atannex\Enables\Slugging;
 use Atannex\Filters\Hierarchy;
 use Atannex\Traits\HasSlugPath;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Pivots\RegionSectionWidget;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Region extends Model implements Sluggable
 {
-    use Hierarchy;
-    use Slugging;
     use HasSlugPath;
+    use Hierarchy;
     use Scoping;
+    use Slugging;
     use SoftDeletes;
 
     protected $table = 'regions';
@@ -45,8 +44,8 @@ class Region extends Model implements Sluggable
     ];
 
     protected $casts = [
-        'flag'      => Flag::class,
-        'metadata'  => 'array',
+        'flag' => Flag::class,
+        'metadata' => 'array',
         'territory' => Territories::class,
     ];
 

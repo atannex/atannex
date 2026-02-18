@@ -28,12 +28,12 @@ trait ViewRegion
             ->relatedCategoriesByRegion($region);
 
         return view('region', [
-            'region'            => $region,
-            'posts'             => $posts,
-            'recentPosts'       => $recentPosts,
-            'popularTags'       => $popularTags,
+            'region' => $region,
+            'posts' => $posts,
+            'recentPosts' => $recentPosts,
+            'popularTags' => $popularTags,
             'relatedCategories' => $relatedCategories,
-            'seoTitle'          => seo_title($region->name),
+            'seoTitle' => seo_title($region->name),
         ]);
     }
 }

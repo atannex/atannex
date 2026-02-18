@@ -2,15 +2,15 @@
 
 namespace App\Models\Docs;
 
-use Illuminate\Support\Str;
+use App\Models\Modules\DocumentModule;
+use App\Models\Regions\Employee;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
-use App\Models\Regions\Employee;
-use App\Models\Modules\DocumentModule;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Document extends Model
 {
@@ -83,7 +83,7 @@ class Document extends Model
     {
         if (! empty($this->type) && ! empty($this->slug)) {
             $this->slug_path = Str::lower(
-                trim($this->type, '/') . '/' . trim($this->slug, '/')
+                trim($this->type, '/').'/'.trim($this->slug, '/')
             );
         }
     }

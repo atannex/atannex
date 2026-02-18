@@ -2,12 +2,13 @@
 
 namespace App\Livewire\Concerns;
 
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Request;
 
 trait CanRate
 {
     public int $ratingCount = 0;
+
     public float $averageRating = 0.0;
 
     public ?int $myRating = 0;
@@ -41,9 +42,9 @@ trait CanRate
     {
         $model = $this->getRateableModel();
 
-        $this->ratingCount   = $model->ratingCount();
+        $this->ratingCount = $model->ratingCount();
         $this->averageRating = $model->averageRating();
-        $this->myRating      = $model->userRating();
+        $this->myRating = $model->userRating();
     }
 
     /*
@@ -57,7 +58,7 @@ trait CanRate
         return RateLimiter::attempt(
             $this->rateLimitKey(),
             1,
-            fn() => true,
+            fn () => true,
             $this->cooldown
         );
     }

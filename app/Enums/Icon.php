@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
 use BenSampo\Enum\Attributes\Description;
+use BenSampo\Enum\Enum;
 
 /**
  * Icon Enum
@@ -109,13 +109,13 @@ final class Icon extends Enum
     ];
 
     /**
-         * Retrieve a metadata field for this enum instance by key.
-         *
-         * Valid keys: 'label', 'icon', 'color'.
-         *
-         * @param string $key The metadata key to retrieve ('label', 'icon', or 'color').
-         * @return string The metadata value for the given key.
-         */
+     * Retrieve a metadata field for this enum instance by key.
+     *
+     * Valid keys: 'label', 'icon', 'color'.
+     *
+     * @param  string  $key  The metadata key to retrieve ('label', 'icon', or 'color').
+     * @return string The metadata value for the given key.
+     */
     private function meta(string $key): string
     {
         return self::$data[$this->value][$key];
@@ -144,7 +144,7 @@ final class Icon extends Enum
     /**
      * Retrieve the metadata array associated with the specified icon constant.
      *
-     * @param string $icon The enum value key for the icon (e.g., self::FACEBOOK).
+     * @param  string  $icon  The enum value key for the icon (e.g., self::FACEBOOK).
      * @return array Associative array with keys `label`, `icon`, and `color` for the specified icon.
      */
     public static function getData(string $icon): array

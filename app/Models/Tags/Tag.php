@@ -11,14 +11,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tag extends Model
 {
-    use SoftDeletes;
     use GeneratesSlug;
+    use SoftDeletes;
 
     /**
      * Source field for slug generation.
      */
     protected string $slugMode = 'mixed';
-
 
     protected string $slugSource = 'name';
 

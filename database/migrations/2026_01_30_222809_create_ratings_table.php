@@ -31,7 +31,7 @@ return new class extends Migration
             $table->unique([
                 'rateable_type',
                 'rateable_id',
-                'visitor_key'
+                'visitor_key',
             ], 'unique_rating_per_visitor');
 
             $table->index(['rateable_type', 'rateable_id', 'visitor_key']);

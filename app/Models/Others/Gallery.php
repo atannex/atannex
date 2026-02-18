@@ -7,15 +7,15 @@ namespace App\Models\Others;
 use App\Enums\Flag;
 use App\Enums\Image;
 use Atannex\Enables\Scoping;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Gallery extends Model
 {
     use HasFactory;
-    use SoftDeletes;
     use Scoping;
+    use SoftDeletes;
 
     /**
      * Mass-assignable attributes.

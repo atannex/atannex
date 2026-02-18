@@ -27,7 +27,7 @@ class SectionsTable
      * This method defines the table's columns (including display, formatting, and interactivity), filter controls, per-record action group,
      * bulk toolbar actions, default sort order, persistence settings, empty state content, deferred loading, and pagination options.
      *
-     * @param Table $table The Filament Table instance to configure.
+     * @param  Table  $table  The Filament Table instance to configure.
      * @return Table The configured Table instance.
      */
     public static function configure(Table $table): Table

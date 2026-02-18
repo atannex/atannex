@@ -35,7 +35,7 @@ class UpdateDocumentSlugPaths extends Command
             ->chunkById(200, function ($documents) use ($dryRun) {
                 foreach ($documents as $document) {
                     $newSlugPath = Str::lower(
-                        trim($document->type, '/') . '/' . trim($document->slug, '/')
+                        trim($document->type, '/').'/'.trim($document->slug, '/')
                     );
 
                     if ($document->slug_path === $newSlugPath) {

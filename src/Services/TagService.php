@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Atannex\Services;
 
-use App\Models\Tags\Tag;
 use App\Models\Posts\Post;
+use App\Models\Tags\Tag;
 use Illuminate\Support\Collection;
 
 class TagService
@@ -51,7 +51,7 @@ class TagService
     public function searchTags(string $searchTerm): Collection
     {
         return Tag::query()
-            ->where('name', 'like', '%' . $searchTerm . '%')
+            ->where('name', 'like', '%'.$searchTerm.'%')
             ->orderBy('name')
             ->get();
     }
@@ -75,7 +75,6 @@ class TagService
             ->get();
     }
 
-
     public function popularTagsByPost(Post $post, int $limit = 8): Collection
     {
         return Tag::query()
@@ -95,8 +94,8 @@ class TagService
     public function popularTagsGlobal(int $limit = 10): Collection
     {
         return Tag::query()
-            ->whereHas('posts', fn($q) => $q->published())
-            ->withCount(['posts as posts_count' => fn($q) => $q->published()])
+            ->whereHas('posts', fn ($q) => $q->published())
+            ->withCount(['posts as posts_count' => fn ($q) => $q->published()])
             ->orderByDesc('posts_count')
             ->limit($limit)
             ->get();

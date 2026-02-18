@@ -2,10 +2,10 @@
 
 namespace App\Models\Posts;
 
-use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 use App\Enums\Flag;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -54,12 +54,11 @@ class Review extends Model
 
     /**
      * Determines if the review can still be edited by its author.
-     *
-     * @return bool
      */
     public function canEdit(): bool
     {
         $createdAt = Carbon::parse($this->created_at);
+
         return $createdAt->diffInMinutes(now()) < 15
             && Flag::allowsEditing($this->flag);
     }

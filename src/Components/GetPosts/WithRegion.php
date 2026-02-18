@@ -19,19 +19,19 @@ trait WithRegion
         $regions = Region::query()
             ->whereIn('id', $regionIds)
             ->with([
-                'posts' => fn($q) => $q->published()
+                'posts' => fn ($q) => $q->published()
                     ->orderBy($sortBy, $sortDir)
-                    ->when($postLimit > 0, fn($q) => $q->take($postLimit)),
-                'descendants.posts' => fn($q) => $q->published()
+                    ->when($postLimit > 0, fn ($q) => $q->take($postLimit)),
+                'descendants.posts' => fn ($q) => $q->published()
                     ->orderBy($sortBy, $sortDir)
-                    ->when($leafPostLimit > 0, fn($q) => $q->take($leafPostLimit)),
+                    ->when($leafPostLimit > 0, fn ($q) => $q->take($leafPostLimit)),
             ])
-            ->when($categoryLimit > 0, fn($q) => $q->limit($categoryLimit))
+            ->when($categoryLimit > 0, fn ($q) => $q->limit($categoryLimit))
             ->get();
 
         return $regions->map(function (Region $region) {
             $allPosts = $region->posts->concat(
-                $region->descendants->flatMap(fn($desc) => $desc->posts)
+                $region->descendants->flatMap(fn ($desc) => $desc->posts)
             );
             $region->setRelation('posts', $allPosts);
 

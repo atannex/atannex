@@ -4,14 +4,14 @@ namespace App\Filament\Resources\Galleries\Schemas;
 
 use App\Enums\Flag;
 use App\Enums\Image;
-use Filament\Schemas\Schema;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
-use Illuminate\Support\Facades\Storage;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class GalleryForm
 {
@@ -23,7 +23,7 @@ class GalleryForm
      * - Status Management (publication status),
      * - Image Upload (file upload with editor and validations).
      *
-     * @param Schema $schema The Schema instance to configure.
+     * @param  Schema  $schema  The Schema instance to configure.
      * @return Schema The configured Schema containing gallery form components.
      */
     public static function configure(Schema $schema): Schema

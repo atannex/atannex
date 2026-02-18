@@ -4,11 +4,11 @@ namespace Atannex\Concerns;
 
 use App\Enums\Flag;
 use App\Enums\Status;
-use App\Models\Tags\Tag;
-use App\Models\Posts\Post;
 use App\Models\Docs\Document;
+use App\Models\Posts\Post;
 use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
+use App\Models\Tags\Tag;
 use Illuminate\Database\Eloquent\Builder;
 
 trait HasResolver
@@ -26,8 +26,7 @@ trait HasResolver
     {
         return Employee::query()
             ->where('status', Status::ACTIVE)
-            ->whereHas('user', fn (Builder $query) =>
-                $query->where('slug', $slug)
+            ->whereHas('user', fn (Builder $query) => $query->where('slug', $slug)
             )
             ->exists();
     }

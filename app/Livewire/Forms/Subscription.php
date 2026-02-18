@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Forms;
 
-use Livewire\Component;
 use Illuminate\View\View;
+use Livewire\Component;
 
 class Subscription extends Component
 {

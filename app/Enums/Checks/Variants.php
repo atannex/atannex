@@ -14,10 +14,15 @@ use BenSampo\Enum\Enum;
 final class Variants extends Enum
 {
     public const A = 'a';
+
     public const E = 'e';
+
     public const I = 'i';
+
     public const O = 'o';
+
     public const S = 's';
+
     public const T = 't';
 
     /**
@@ -52,7 +57,7 @@ final class Variants extends Enum
     {
         if (self::$escaped === null) {
             self::$escaped = array_map(
-                fn(array $variants) => array_map(fn(string $v) => preg_quote($v, '/'), $variants),
+                fn (array $variants) => array_map(fn (string $v) => preg_quote($v, '/'), $variants),
                 self::VARIANT_MAP
             );
         }
@@ -63,7 +68,7 @@ final class Variants extends Enum
     /**
      * Constructs a regex character class that matches any leetspeak variant for the specified letter.
      *
-     * @param string $letter The lowercase letter key whose variants to include (one of 'a', 'e', 'i', 'o', 's', 't').
+     * @param  string  $letter  The lowercase letter key whose variants to include (one of 'a', 'e', 'i', 'o', 's', 't').
      * @return string A regex character class containing the escaped variants for the given letter (for example: `[4@\/\\^...]`).
      */
     public static function getRegexPattern(string $letter): string

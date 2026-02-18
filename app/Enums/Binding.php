@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Enums;
 
 use App\Models\Regions\Employee;
-use BenSampo\Enum\Enum;
 use BenSampo\Enum\Attributes\Description;
+use BenSampo\Enum\Enum;
 
 /**
  * Binding Enum

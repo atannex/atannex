@@ -31,7 +31,7 @@ class RegenerateTagSlugs extends Command
 
             foreach ($tags as $tag) {
 
-                if (!$this->option('force') && !empty($tag->slug)) {
+                if (! $this->option('force') && ! empty($tag->slug)) {
                     continue;
                 }
 

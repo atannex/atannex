@@ -6,8 +6,8 @@ namespace App\Models\Comments;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Rating extends Model
 {
@@ -18,7 +18,7 @@ class Rating extends Model
         'ip_address',
         'rating',
         'comment',
-        'visitor_key'
+        'visitor_key',
     ];
 
     protected $casts = [

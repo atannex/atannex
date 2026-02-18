@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enums\Checks;
 
-use BenSampo\Enum\Enum;
 use BenSampo\Enum\Attributes\Description;
+use BenSampo\Enum\Enum;
 
 /**
  * SimpleNames Enum

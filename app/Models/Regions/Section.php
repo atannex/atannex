@@ -40,7 +40,7 @@ class Section extends Model
      */
     protected function getDomIdAttribute(): string
     {
-        return 'section-' . $this->pivot->id;
+        return 'section-'.$this->pivot->id;
     }
 
     /**

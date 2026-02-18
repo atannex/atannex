@@ -4,8 +4,8 @@ namespace App\Models\Regions;
 
 use Atannex\Enables\Slugging;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ruler extends Model
 {
@@ -44,8 +44,8 @@ class Ruler extends Model
      */
     protected $casts = [
         'reign_start' => 'date',
-        'reign_end'   => 'date',
-        'metadata'    => 'array',
+        'reign_end' => 'date',
+        'metadata' => 'array',
     ];
 
     /**

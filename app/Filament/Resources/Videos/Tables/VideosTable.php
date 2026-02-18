@@ -2,25 +2,23 @@
 
 namespace App\Filament\Resources\Videos\Tables;
 
-use Filament\Tables\Table;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
-use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Tables\Table;
 
 /**
  * Videos Table Configuration
  *
  * Defines the table structure, columns, filters, and actions for the videos resource.
  * Provides a comprehensive interface for viewing, searching, and managing video records.
- *
- * @package App\Filament\Resources\Videos\Tables
  */
 class VideosTable
 {
@@ -30,7 +28,7 @@ class VideosTable
      * Sets up columns for display, search and sort functionality, filters,
      * and available actions for individual records and bulk operations.
      *
-     * @param Table $table The table instance to configure
+     * @param  Table  $table  The table instance to configure
      * @return Table The configured table with columns, filters, and actions
      */
     public static function configure(Table $table): Table
@@ -47,8 +45,6 @@ class VideosTable
 
     /**
      * Get the table columns configuration
-     *
-     * @return array
      */
     private static function getColumns(): array
     {
@@ -65,6 +61,7 @@ class VideosTable
                 ->limit(50)
                 ->tooltip(function (TextColumn $column): ?string {
                     $state = $column->getState();
+
                     return strlen($state) > 50 ? $state : null;
                 })
                 ->wrap(),
@@ -82,7 +79,7 @@ class VideosTable
                 ->searchable()
                 ->sortable()
                 ->badge()
-                ->color(fn(string $state): string => match ($state) {
+                ->color(fn (string $state): string => match ($state) {
                     'published' => 'success',
                     'draft' => 'warning',
                     'archived' => 'danger',
@@ -126,8 +123,6 @@ class VideosTable
 
     /**
      * Get the table filters configuration
-     *
-     * @return array
      */
     private static function getFilters(): array
     {
@@ -161,8 +156,6 @@ class VideosTable
 
     /**
      * Get the record actions configuration
-     *
-     * @return array
      */
     private static function getRecordActions(): array
     {
@@ -179,8 +172,6 @@ class VideosTable
 
     /**
      * Get the toolbar actions configuration
-     *
-     * @return array
      */
     private static function getToolbarActions(): array
     {
@@ -208,7 +199,7 @@ class VideosTable
     /**
      * Format duration in seconds to a human-readable format (HH:MM:SS or MM:SS)
      *
-     * @param int $seconds The duration in seconds
+     * @param  int  $seconds  The duration in seconds
      * @return string The formatted duration string
      */
     private static function formatDuration(int $seconds): string

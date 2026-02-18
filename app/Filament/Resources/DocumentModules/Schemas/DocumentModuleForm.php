@@ -3,16 +3,16 @@
 namespace App\Filament\Resources\DocumentModules\Schemas;
 
 use App\Enums\Flag;
-use Filament\Schemas\Schema;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Textarea;
-use Illuminate\Support\Facades\Storage;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentModuleForm
 {
@@ -270,7 +270,7 @@ class DocumentModuleForm
                                         ->cloneable()
                                         ->reorderable()
                                         ->reorderableWithButtons()
-                                        ->itemLabel(fn(array $state): ?string => '📄 ' . ($state['title'] ?? 'Section'))
+                                        ->itemLabel(fn (array $state): ?string => '📄 '.($state['title'] ?? 'Section'))
                                         ->defaultItems(1)
                                         ->columnSpanFull(),
                                 ]),

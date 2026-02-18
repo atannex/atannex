@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Atannex\Services;
 
-use App\Models\Posts\Post;
 use App\Models\Modules\PostModule;
+use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 
 final class PostService

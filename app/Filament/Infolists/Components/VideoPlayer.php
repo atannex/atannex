@@ -3,9 +3,9 @@
 namespace App\Filament\Infolists\Components;
 
 use Closure;
+use Filament\Infolists\Components\Entry;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
-use Filament\Infolists\Components\Entry;
 
 /**
  * VideoPlayer Infolist Component
@@ -13,7 +13,6 @@ use Filament\Infolists\Components\Entry;
  * A professional video player component for Filament infolists with support
  * for multiple video sources, custom controls, and responsive design.
  *
- * @package App\Filament\Infolists\Components
  * @version 2.0.0
  */
 class VideoPlayer extends Entry
@@ -26,266 +25,285 @@ class VideoPlayer extends Entry
     /**
      * Storage disk for video files
      */
-    protected string | Closure | null $disk = null;
+    protected string|Closure|null $disk = null;
 
     /**
      * Directory path for video files
      */
-    protected string | Closure | null $directory = null;
+    protected string|Closure|null $directory = null;
 
     /**
      * File visibility (public/private)
      */
-    protected string | Closure | null $visibility = 'public';
+    protected string|Closure|null $visibility = 'public';
 
     /**
      * Video width (CSS value)
      */
-    protected string | Closure | null $width = '100%';
+    protected string|Closure|null $width = '100%';
 
     /**
      * Video height (CSS value)
      */
-    protected string | Closure | null $height = 'auto';
+    protected string|Closure|null $height = 'auto';
 
     /**
      * Maximum height for the video player
      */
-    protected string | Closure | null $maxHeight = '600px';
+    protected string|Closure|null $maxHeight = '600px';
 
     /**
      * Whether to show video controls
      */
-    protected bool | Closure $controls = true;
+    protected bool|Closure $controls = true;
 
     /**
      * Whether to autoplay the video
      */
-    protected bool | Closure $autoplay = false;
+    protected bool|Closure $autoplay = false;
 
     /**
      * Whether to loop the video
      */
-    protected bool | Closure $loop = false;
+    protected bool|Closure $loop = false;
 
     /**
      * Whether to mute the video by default
      */
-    protected bool | Closure $muted = false;
+    protected bool|Closure $muted = false;
 
     /**
      * Video poster image URL
      */
-    protected string | Closure | null $poster = null;
+    protected string|Closure|null $poster = null;
 
     /**
      * Preload strategy (none, metadata, auto)
      */
-    protected string | Closure $preload = 'metadata';
+    protected string|Closure $preload = 'metadata';
 
     /**
      * Whether to allow fullscreen
      */
-    protected bool | Closure $allowFullscreen = true;
+    protected bool|Closure $allowFullscreen = true;
 
     /**
      * Whether to allow picture-in-picture
      */
-    protected bool | Closure $allowPictureInPicture = true;
+    protected bool|Closure $allowPictureInPicture = true;
 
     /**
      * Additional HTML attributes for the video element
      */
-    protected array | Closure $videoAttributes = [];
+    protected array|Closure $videoAttributes = [];
 
     /**
      * Custom CSS classes for the container
      */
-    protected string | Closure | null $containerClass = null;
+    protected string|Closure|null $containerClass = null;
 
     /**
      * Whether to show a download button
      */
-    protected bool | Closure $downloadable = false;
+    protected bool|Closure $downloadable = false;
 
     /**
      * Playback speed options
      */
-    protected array | Closure $playbackRates = [0.5, 0.75, 1, 1.25, 1.5, 2];
+    protected array|Closure $playbackRates = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
     /**
      * Default playback rate
      */
-    protected float | Closure $defaultPlaybackRate = 1.0;
+    protected float|Closure $defaultPlaybackRate = 1.0;
 
     /**
      * Set the storage disk for video files
      */
-    public function disk(string | Closure | null $disk): static
+    public function disk(string|Closure|null $disk): static
     {
         $this->disk = $disk;
+
         return $this;
     }
 
     /**
      * Set the directory path for video files
      */
-    public function directory(string | Closure | null $directory): static
+    public function directory(string|Closure|null $directory): static
     {
         $this->directory = $directory;
+
         return $this;
     }
 
     /**
      * Set the file visibility
      */
-    public function visibility(string | Closure | null $visibility): static
+    public function visibility(string|Closure|null $visibility): static
     {
         $this->visibility = $visibility;
+
         return $this;
     }
 
     /**
      * Set the video width
      */
-    public function width(string | Closure | null $width): static
+    public function width(string|Closure|null $width): static
     {
         $this->width = $width;
+
         return $this;
     }
 
     /**
      * Set the video height
      */
-    public function height(string | Closure | null $height): static
+    public function height(string|Closure|null $height): static
     {
         $this->height = $height;
+
         return $this;
     }
 
     /**
      * Set the maximum height
      */
-    public function maxHeight(string | Closure | null $maxHeight): static
+    public function maxHeight(string|Closure|null $maxHeight): static
     {
         $this->maxHeight = $maxHeight;
+
         return $this;
     }
 
     /**
      * Enable or disable video controls
      */
-    public function controls(bool | Closure $controls = true): static
+    public function controls(bool|Closure $controls = true): static
     {
         $this->controls = $controls;
+
         return $this;
     }
 
     /**
      * Enable or disable autoplay
      */
-    public function autoplay(bool | Closure $autoplay = true): static
+    public function autoplay(bool|Closure $autoplay = true): static
     {
         $this->autoplay = $autoplay;
+
         return $this;
     }
 
     /**
      * Enable or disable video looping
      */
-    public function loop(bool | Closure $loop = true): static
+    public function loop(bool|Closure $loop = true): static
     {
         $this->loop = $loop;
+
         return $this;
     }
 
     /**
      * Mute the video by default
      */
-    public function muted(bool | Closure $muted = true): static
+    public function muted(bool|Closure $muted = true): static
     {
         $this->muted = $muted;
+
         return $this;
     }
 
     /**
      * Set the poster image URL
      */
-    public function poster(string | Closure | null $poster): static
+    public function poster(string|Closure|null $poster): static
     {
         $this->poster = $poster;
+
         return $this;
     }
 
     /**
      * Set the preload strategy
      */
-    public function preload(string | Closure $preload): static
+    public function preload(string|Closure $preload): static
     {
         $this->preload = $preload;
+
         return $this;
     }
 
     /**
      * Enable or disable fullscreen
      */
-    public function allowFullscreen(bool | Closure $allowFullscreen = true): static
+    public function allowFullscreen(bool|Closure $allowFullscreen = true): static
     {
         $this->allowFullscreen = $allowFullscreen;
+
         return $this;
     }
 
     /**
      * Enable or disable picture-in-picture
      */
-    public function allowPictureInPicture(bool | Closure $allowPictureInPicture = true): static
+    public function allowPictureInPicture(bool|Closure $allowPictureInPicture = true): static
     {
         $this->allowPictureInPicture = $allowPictureInPicture;
+
         return $this;
     }
 
     /**
      * Set additional HTML attributes for the video element
      */
-    public function videoAttributes(array | Closure $attributes): static
+    public function videoAttributes(array|Closure $attributes): static
     {
         $this->videoAttributes = $attributes;
+
         return $this;
     }
 
     /**
      * Set custom CSS classes for the container
      */
-    public function containerClass(string | Closure | null $class): static
+    public function containerClass(string|Closure|null $class): static
     {
         $this->containerClass = $class;
+
         return $this;
     }
 
     /**
      * Enable or disable download button
      */
-    public function downloadable(bool | Closure $downloadable = true): static
+    public function downloadable(bool|Closure $downloadable = true): static
     {
         $this->downloadable = $downloadable;
+
         return $this;
     }
 
     /**
      * Set available playback rates
      */
-    public function playbackRates(array | Closure $rates): static
+    public function playbackRates(array|Closure $rates): static
     {
         $this->playbackRates = $rates;
+
         return $this;
     }
 
     /**
      * Set default playback rate
      */
-    public function defaultPlaybackRate(float | Closure $rate): static
+    public function defaultPlaybackRate(float|Closure $rate): static
     {
         $this->defaultPlaybackRate = $rate;
+
         return $this;
     }
 
@@ -480,7 +498,7 @@ class VideoPlayer extends Entry
     {
         $url = $this->getVideoUrl();
 
-        if (!$url) {
+        if (! $url) {
             return 'video/mp4';
         }
 

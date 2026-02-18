@@ -16,7 +16,9 @@ abstract class Searchable extends Component
      *  --------------------
      */
     public string $query = '';
+
     public int $perPage = 6;
+
     public string $sortBy = self::DEFAULT_SORT;
 
     /** --------------------
@@ -24,7 +26,9 @@ abstract class Searchable extends Component
      *  --------------------
      */
     protected const VALID_SORT_OPTIONS = ['latest', 'oldest'];
+
     protected const DEFAULT_SORT = 'latest';
+
     protected const DEFAULT_PER_PAGE = 6;
 
     /** --------------------
@@ -88,7 +92,7 @@ abstract class Searchable extends Component
      * empty or the string "0". Otherwise, applies a grouped condition that checks for the search
      * term across each searchable field (including related fields expressed via dot notation).
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query The Eloquent query builder to modify.
+     * @param  \Illuminate\Database\Eloquent\Builder  $query  The Eloquent query builder to modify.
      */
     protected function applySearch(Builder $query): void
     {
@@ -98,7 +102,7 @@ abstract class Searchable extends Component
             return;
         }
 
-        $like = '%' . $search . '%';
+        $like = '%'.$search.'%';
         $fields = $this->searchableFields();
 
         $query->where(function (Builder $q) use ($fields, $like) {
@@ -117,10 +121,10 @@ abstract class Searchable extends Component
      * relation existence condition (`whereHas` / `orWhereHas`) and filters the related records by
      * the column using a `LIKE` comparison with `$search`.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query The query builder to modify.
-     * @param string $field Field name to search or relation path in dot notation (e.g. `author.name`).
-     * @param string $search The `LIKE` pattern to match (should include `%` wildcards as needed).
-     * @param string $method The base method to use for top-level conditions (`where` or `orWhere`).
+     * @param  \Illuminate\Database\Eloquent\Builder  $query  The query builder to modify.
+     * @param  string  $field  Field name to search or relation path in dot notation (e.g. `author.name`).
+     * @param  string  $search  The `LIKE` pattern to match (should include `%` wildcards as needed).
+     * @param  string  $method  The base method to use for top-level conditions (`where` or `orWhere`).
      */
     protected function addSearchCondition(
         Builder $query,
@@ -132,13 +136,14 @@ abstract class Searchable extends Component
 
         if (count($parts) === 1) {
             $query->{$method}($parts[0], 'like', $search);
+
             return;
         }
 
         $column = array_pop($parts);
         $relation = implode('.', $parts);
 
-        $query->{$method . 'Has'}($relation, function (Builder $q) use ($column, $search): void {
+        $query->{$method.'Has'}($relation, function (Builder $q) use ($column, $search): void {
             $q->where($column, 'like', $search);
         });
     }
@@ -149,7 +154,7 @@ abstract class Searchable extends Component
      * Orders by `created_at` ascending when `sortBy` is 'oldest', descending when `sortBy` is 'latest'.
      * If `sortBy` is not a valid option, falls back to the class default.
      *
-     * @param Builder $query The Eloquent query builder to modify.
+     * @param  Builder  $query  The Eloquent query builder to modify.
      */
     protected function applySorting(Builder $query): void
     {
@@ -159,7 +164,7 @@ abstract class Searchable extends Component
 
         match ($sort) {
             'oldest' => $query->oldest('created_at'),
-            default  => $query->latest('created_at'),
+            default => $query->latest('created_at'),
         };
     }
 
@@ -169,7 +174,7 @@ abstract class Searchable extends Component
      * Casts the provided value to an integer and returns it when greater than zero;
      * otherwise returns self::DEFAULT_PER_PAGE.
      *
-     * @param mixed $perPage The requested items-per-page value.
+     * @param  mixed  $perPage  The requested items-per-page value.
      * @return int The validated per-page count; `self::DEFAULT_PER_PAGE` if the input is less than or equal to zero.
      */
     protected function sanitizePerPage(mixed $perPage): int

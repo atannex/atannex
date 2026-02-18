@@ -28,7 +28,7 @@ trait HasComments
     public function topLevelComments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable')
-                    ->whereNull('parent_id');
+            ->whereNull('parent_id');
     }
 
     public function commentsCount(): int

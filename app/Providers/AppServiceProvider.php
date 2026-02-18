@@ -3,14 +3,14 @@
 namespace App\Providers;
 
 use App\Models\Modules\PostModule;
-use Illuminate\Support\ServiceProvider;
-use App\Models\Regions\Widget;
 use App\Models\Regions\Section;
+use App\Models\Regions\Widget;
 use App\Observers\PostModuleObserver;
-use App\Observers\WidgetObserver;
 use App\Observers\SectionObserver;
-use Atannex\Adapters\WidgetAdapter;
+use App\Observers\WidgetObserver;
 use Atannex\Adapters\SectionAdapter;
+use Atannex\Adapters\WidgetAdapter;
+use Illuminate\Support\ServiceProvider;
 
 /**
  * Application Service Provider
@@ -42,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
     protected function registerObservers(): void
     {
         PostModule::observe(PostModuleObserver::class);
-        Section::observe(new SectionObserver(new SectionAdapter()));
-        Widget::observe(new WidgetObserver(new WidgetAdapter()));
+        Section::observe(new SectionObserver(new SectionAdapter));
+        Widget::observe(new WidgetObserver(new WidgetAdapter));
     }
 }

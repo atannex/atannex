@@ -2,21 +2,20 @@
 
 namespace App\Filament\Resources\Comments\Tables;
 
-use Filament\Tables\Table;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
-use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Tables\Table;
 
 class CommentsTable
 {
-
     public static function configure(Table $table): Table
     {
         return $table
@@ -67,7 +66,7 @@ class CommentsTable
                 */
                 TextColumn::make('commentable_type')
                     ->label('Type')
-                    ->formatStateUsing(fn($state) => class_basename($state))
+                    ->formatStateUsing(fn ($state) => class_basename($state))
                     ->sortable()
                     ->toggleable(),
 
@@ -141,8 +140,8 @@ class CommentsTable
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'approved',
-                        'danger'  => 'spam',
-                        'gray'    => 'hidden',
+                        'danger' => 'spam',
+                        'gray' => 'hidden',
                     ])
                     ->sortable(),
             ])

@@ -7,8 +7,8 @@ use App\Http\Traits\HasAbout;
 use App\Http\Traits\HasContact;
 use App\Models\Posts\Video;
 use Atannex\Binders\HasPost;
-use Illuminate\View\View;
 use Illuminate\Support\Collection;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
@@ -43,13 +43,13 @@ class HomeController extends Controller
     private function getPostsData(): array
     {
         return [
-            'byRecent'       => $this->postService->hasRecentPosts(6),
-            'byRegion'       => $this->postService->hasRegionWithPost(6),
-            'byEnvironment'  => $this->postService->categoriesWithPostsByName('Environment', 5),
-            'byHistory'      => $this->postService->categoriesWithPostsByName('History', 20),
-            'byNews'         => $this->postService->categoriesWithPostsByName('News', 3),
-            'byCommunity'    => $this->postService->categoriesWithPostsByName('Community', 10),
-            'byRuler'        => $this->postService->categoriesWithPostsByName('Rulers', 10),
+            'byRecent' => $this->postService->hasRecentPosts(6),
+            'byRegion' => $this->postService->hasRegionWithPost(6),
+            'byEnvironment' => $this->postService->categoriesWithPostsByName('Environment', 5),
+            'byHistory' => $this->postService->categoriesWithPostsByName('History', 20),
+            'byNews' => $this->postService->categoriesWithPostsByName('News', 3),
+            'byCommunity' => $this->postService->categoriesWithPostsByName('Community', 10),
+            'byRuler' => $this->postService->categoriesWithPostsByName('Rulers', 10),
         ];
     }
 
@@ -57,8 +57,7 @@ class HomeController extends Controller
      * Retrieve the most recent published videos
      * that are associated with published posts.
      *
-     * @param int $limit Maximum number of videos to return.
-     * @return \Illuminate\Support\Collection
+     * @param  int  $limit  Maximum number of videos to return.
      */
     private function videos(int $limit = 6): Collection
     {

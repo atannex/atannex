@@ -13,8 +13,8 @@ use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * Core User entity.
@@ -24,11 +24,11 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
+    use HandleUser;
     use HasRoles;
+    use Notifiable;
     use Slugging;
     use SoftDeletes;
-    use Notifiable;
-    use HandleUser;
 
     /**
      * Attribute used as the source for slug generation.
@@ -73,13 +73,12 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
-            'date_of_birth'     => 'date',
-            'gender'            => Gender::class,
-            'status'            => Status::class,
+            'password' => 'hashed',
+            'date_of_birth' => 'date',
+            'gender' => Gender::class,
+            'status' => Status::class,
         ];
     }
-
 
     public function canAccessPanel(Panel $panel): bool
     {

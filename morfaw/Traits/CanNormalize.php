@@ -8,7 +8,7 @@ if (! function_exists('normalizeIds')) {
      * Scalar inputs are wrapped in a single-element array.
      * Empty or null inputs result in an empty array.
      *
-     * @param int|string|iterable<int|string>|null $ids
+     * @param  int|string|iterable<int|string>|null  $ids
      * @return array<int, int|string>
      */
     function normalizeIds(int|string|iterable|null $ids): array

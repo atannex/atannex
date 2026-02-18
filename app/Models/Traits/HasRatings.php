@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models\Traits;
 
+use App\Models\Comments\Rating;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Comments\Rating;
 
 trait HasRatings
 {
@@ -51,7 +51,7 @@ trait HasRatings
 
     public function rate(int $value, ?string $comment = null): void
     {
-        if (!$this->isValidRating($value)) {
+        if (! $this->isValidRating($value)) {
             return;
         }
 
@@ -60,11 +60,11 @@ trait HasRatings
                 'visitor_key' => $this->resolveVisitorKey(),
             ],
             [
-                'user_id'    => Auth::id(),
+                'user_id' => Auth::id(),
                 'session_id' => request()->session()->getId(),
                 'ip_address' => request()->ip(),
-                'rating'     => $value,
-                'comment'    => $comment,
+                'rating' => $value,
+                'comment' => $comment,
             ]
         );
     }
@@ -75,6 +75,7 @@ trait HasRatings
 
         if ($current === null) {
             $this->rate($value);
+
             return;
         }
 

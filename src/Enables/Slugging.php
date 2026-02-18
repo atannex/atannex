@@ -20,8 +20,6 @@ trait Slugging
      * Defines the field name used as the slug source.
      *
      * Example: "title"
-     *
-     * @return string
      */
     protected function getSlugSource(): string
     {
@@ -31,8 +29,6 @@ trait Slugging
     /**
      * Defines the field name where the generated slug
      * will be stored in the database.
-     *
-     * @return string
      */
     protected function getSlugDestination(): string
     {
@@ -41,8 +37,6 @@ trait Slugging
 
     /**
      * Configure the SlugOptions used to generate the slug.
-     *
-     * @return SlugOptions
      */
     public function getSlugOptions(): SlugOptions
     {
@@ -56,8 +50,6 @@ trait Slugging
      * Determines whether the slug should be regenerated
      * on model update. Returning true ensures that if the
      * title (or source field) changes, the slug updates too.
-     *
-     * @return bool
      */
     public function slugsShouldBeGeneratedOnUpdate(): bool
     {

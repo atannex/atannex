@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Atannex\Components\Sections;
 
-use App\Enums\Flag;
 use App\Models\Posts\Post;
 use Illuminate\Support\Collection;
 
@@ -21,8 +20,8 @@ trait HasRelated
      *
      * Returns up to the specified limit of published posts (excluding the reference post) that share the same category or at least one tag.
      *
-     * @param Post $post The reference post to find related posts for.
-     * @param int $limit Maximum number of related posts to return.
+     * @param  Post  $post  The reference post to find related posts for.
+     * @param  int  $limit  Maximum number of related posts to return.
      * @return Collection<Post> A collection of related Post models.
      */
     public function hasRelatedPosts(Post $post, int $limit = 3): Collection

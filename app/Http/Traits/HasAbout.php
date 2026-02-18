@@ -51,7 +51,7 @@ trait HasAbout
 
                 case 'manual':
                 default:
-                    $counter['number'] = $counter['number'] ?? 0;
+                    $counter['number'] ??= 0;
                     break;
             }
 

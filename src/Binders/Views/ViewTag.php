@@ -18,15 +18,15 @@ trait ViewTag
         $posts = $this->categoryService->postsByTag($tag);
 
         $firstPost = $posts->firstOrFail();
-        $category  = $firstPost->category;
+        $category = $firstPost->category;
 
         return view('tag', [
-            'tag'               => $tag,
-            'posts'             => $posts,
-            'recentPosts'       => $this->tagService->getRecentPostsForTag($tag, 6),
-            'popularTags'       => $this->categoryService->popularTagsByCategory($category, 8),
+            'tag' => $tag,
+            'posts' => $posts,
+            'recentPosts' => $this->tagService->getRecentPostsForTag($tag, 6),
+            'popularTags' => $this->categoryService->popularTagsByCategory($category, 8),
             'relatedCategories' => $this->categoryService->relatedCategoriesByTag($tag),
-            'seoTitle'          => seo_title($tag->name),
+            'seoTitle' => seo_title($tag->name),
         ]);
     }
 }

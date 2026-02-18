@@ -27,15 +27,15 @@ trait HandlesPostDateResolution
 
         if ($this->isValidMonth($month) && $this->postsExist($year, $month)) {
             return [
-                'type'  => 'month',
-                'year'  => (int) $year,
+                'type' => 'month',
+                'year' => (int) $year,
                 'month' => (int) $month,
             ];
         }
 
         return [
-            'type'  => 'year',
-            'year'  => (int) $year,
+            'type' => 'year',
+            'year' => (int) $year,
             'month' => null,
         ];
     }

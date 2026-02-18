@@ -38,43 +38,43 @@ class ContentFiltering
 
                     Select::make('region_id')
                         ->label('Filter by Region')
-                        ->options(fn() => self::regions())
+                        ->options(fn () => self::regions())
                         ->searchable()
                         ->multiple()
                         ->placeholder('Select Region')
                         ->helperText('Show only posts with this Region')
                         ->preload()
-                        ->visible(fn(Get $get) => $get('type') === Entity::POSTS_BY_REGION),
+                        ->visible(fn (Get $get) => $get('type') === Entity::POSTS_BY_REGION),
 
                     Select::make('category_id')
                         ->label('Filter by Category')
-                        ->options(fn() => self::categories())
+                        ->options(fn () => self::categories())
                         ->searchable()
                         ->multiple()
                         ->placeholder('Select Categories')
                         ->helperText('Show only posts from this Category')
                         ->preload()
-                        ->visible(fn(Get $get) => $get('type') === Entity::POSTS_BY_CATEGORY),
+                        ->visible(fn (Get $get) => $get('type') === Entity::POSTS_BY_CATEGORY),
 
                     Select::make('author_id')
                         ->label('Filter by Author')
-                        ->options(fn() => self::authors())
+                        ->options(fn () => self::authors())
                         ->searchable()
                         ->multiple()
                         ->placeholder('Select Users')
                         ->helperText('Show only posts by this author')
                         ->preload()
-                        ->visible(fn(Get $get) => $get('type') === Entity::POSTS_BY_AUTHOR),
+                        ->visible(fn (Get $get) => $get('type') === Entity::POSTS_BY_AUTHOR),
 
                     Select::make('posts_with_id')
                         ->label('Select Entity')
-                        ->options(fn(Get $get) => self::entityOptions($get('type')))
+                        ->options(fn (Get $get) => self::entityOptions($get('type')))
                         ->searchable()
                         ->multiple()
                         ->placeholder('Select entities')
                         ->helperText('Show posts under selected entities')
                         ->preload()
-                        ->visible(fn(Get $get) => in_array($get('type'), [
+                        ->visible(fn (Get $get) => in_array($get('type'), [
                             Entity::CATEGORIES_WITH_POSTS,
                             Entity::REGIONS_WITH_POSTS,
                             Entity::POSTS_BY_AUTHOR,
@@ -83,13 +83,13 @@ class ContentFiltering
                     Select::make('timeframe')
                         ->label('Timeframe')
                         ->options([
-                            'week'  => 'This Week',
+                            'week' => 'This Week',
                             'month' => 'This Month',
                         ])
                         ->searchable()
                         ->placeholder('Select timeframe')
                         ->helperText('Apply timeframe for trending or popular posts')
-                        ->visible(fn(Get $get) => in_array($get('type'), [
+                        ->visible(fn (Get $get) => in_array($get('type'), [
                             Entity::POPULAR_THIS_WEEK,
                             Entity::POPULAR_THIS_MONTH,
                             Entity::TRENDING_THIS_WEEK,
@@ -137,16 +137,16 @@ class ContentFiltering
      * tags for POSTS_BY_TAG, categories for CATEGORIES_WITH_POSTS, regions for REGIONS_WITH_POSTS,
      * authors for POSTS_BY_AUTHOR, or an empty array for other types.
      *
-     * @param string $type The entity type identifier.
+     * @param  string  $type  The entity type identifier.
      * @return array<int|string,string> Associative array mapping option id to display name.
      */
     private static function entityOptions(string $type): array
     {
         return match ($type) {
-            Entity::CATEGORIES_WITH_POSTS  => self::categories(),
-            Entity::REGIONS_WITH_POSTS     => self::regions(),
-            Entity::POSTS_BY_AUTHOR        => self::authors(),
-            default                         => [],
+            Entity::CATEGORIES_WITH_POSTS => self::categories(),
+            Entity::REGIONS_WITH_POSTS => self::regions(),
+            Entity::POSTS_BY_AUTHOR => self::authors(),
+            default => [],
         };
     }
 }

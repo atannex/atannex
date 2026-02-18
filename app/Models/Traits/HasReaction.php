@@ -84,10 +84,10 @@ trait HasReaction
                 'visitor_key' => $this->resolveVisitorKey(),
             ],
             [
-                'user_id'     => Auth::id(),
-                'session_id'  => request()->session()->getId(),
-                'ip_address'  => request()->ip(),
-                'type'        => $type,
+                'user_id' => Auth::id(),
+                'session_id' => request()->session()->getId(),
+                'ip_address' => request()->ip(),
+                'type' => $type,
             ]
         );
     }
@@ -98,11 +98,13 @@ trait HasReaction
 
         if (! $current) {
             $this->react($type);
+
             return;
         }
 
         if ($current->type === $type) {
             $this->removeReaction();
+
             return;
         }
 

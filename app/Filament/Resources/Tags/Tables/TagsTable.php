@@ -2,22 +2,22 @@
 
 namespace App\Filament\Resources\Tags\Tables;
 
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Actions\ActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\RestoreAction;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TrashedFilter;
-use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 /**
  * Tags Table Configuration
@@ -29,9 +29,6 @@ class TagsTable
 {
     /**
      * Configure the tags table
-     *
-     * @param Table $table
-     * @return Table
      */
     public static function configure(Table $table): Table
     {
@@ -46,7 +43,8 @@ class TagsTable
                     ->copyable()
                     ->copyMessage('Tag name copied')
                     ->tooltip('Click to copy')
-                    ->description(fn ($record) => $record->description
+                    ->description(
+                        fn ($record) => $record->description
                         ? Str::limit($record->description, 50)
                         : null
                     ),
@@ -139,8 +137,8 @@ class TagsTable
                     ForceDeleteAction::make()
                         ->icon('heroicon-o-x-circle'),
                 ])
-                ->icon('heroicon-m-ellipsis-vertical')
-                ->tooltip('Actions'),
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->tooltip('Actions'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -156,7 +154,7 @@ class TagsTable
                         ->modalHeading('Force Delete Tags')
                         ->modalDescription('Are you sure you want to permanently delete these tags? This action cannot be undone.'),
                 ])
-                ->label('Actions'),
+                    ->label('Actions'),
             ])
             ->defaultSort('created_at', 'desc')
             ->emptyStateHeading('No tags found')

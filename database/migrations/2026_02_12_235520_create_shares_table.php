@@ -61,7 +61,7 @@ return new class extends Migration
                 'shareable_type',
                 'shareable_id',
                 'visitor_key',
-                'platform'
+                'platform',
             ], 'unique_share_per_visitor_platform');
 
             /*
