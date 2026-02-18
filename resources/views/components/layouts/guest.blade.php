@@ -4,8 +4,6 @@
 
 @section('base')
 
-<x-sections.preloader />
-
 <x-sections.guest.header />
 
 @yield('guest')

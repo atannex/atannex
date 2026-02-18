@@ -1,6 +1,5 @@
 !(function (e) {
     "use strict";
-    let t;
     if (
         (e(window).on("load", function () {
             e(".preloader").fadeOut();
@@ -9,11 +8,13 @@
             e(".slick-slider").slick("refresh");
         }),
         e(".preloader").length > 0 &&
-            e(document).on("click", ".preloaderCls", function (t) {
-                (t.preventDefault(), e(".preloader").css("display", "none"));
+            e(".preloaderCls").each(function () {
+                e(this).on("click", function (t) {
+                    t.preventDefault(), e(".preloader").css("display", "none");
+                });
             }),
         (e.fn.thmobilemenu = function (t) {
-            var n = e.extend(
+            var s = e.extend(
                 {
                     menuToggleBtn: ".th-menu-toggle",
                     bodyToggleClass: "th-body-visible",
@@ -25,305 +26,398 @@
                     subMenuToggleClass: "th-open",
                     toggleSpeed: 400,
                 },
-                t,
+                t
             );
             return this.each(function () {
                 var t = e(this);
-                function s() {
-                    (t.toggleClass(n.bodyToggleClass),
-                        t.find("." + n.subMenuClass).each(function () {
-                            e(this).hasClass(n.subMenuToggleClass) &&
+                function a() {
+                    t.toggleClass(s.bodyToggleClass),
+                        t.find("." + s.subMenuClass).each(function () {
+                            e(this).hasClass(s.subMenuToggleClass) &&
+                                (e(this).removeClass(s.subMenuToggleClass),
+                                e(this).css("display", "none"),
                                 e(this)
-                                    .removeClass(n.subMenuToggleClass)
-                                    .slideUp(n.toggleSpeed)
                                     .parent()
-                                    .removeClass(n.subMenuParentToggle);
-                        }));
+                                    .removeClass(s.subMenuParentToggle));
+                        });
                 }
-                (t.find("li").each(function () {
+                t.find("li").each(function () {
                     var t = e(this).find("ul, div.mega-menu");
-                    t.length &&
-                        (t.addClass(n.subMenuClass).hide(),
-                        e(this).addClass(n.subMenuParent),
-                        t.prev("a").append(n.appendElement),
-                        t.next("a").append(n.appendElement));
+                    t.addClass(s.subMenuClass),
+                        t.css("display", "none"),
+                        t.parent().addClass(s.subMenuParent),
+                        t.prev("a").append(s.appendElement),
+                        t.next("a").append(s.appendElement);
+                });
+                var i = "." + s.meanExpandClass;
+                e(i).each(function () {
+                    e(this).on("click", function (t) {
+                        var a, i;
+                        t.preventDefault(),
+                            (a = e(this).parent()),
+                            (i = a.next("ul, div.mega-menu")).length > 0 &&
+                                (a.parent().toggleClass(s.subMenuParentToggle),
+                                i.slideToggle(s.toggleSpeed),
+                                i.toggleClass(s.subMenuToggleClass));
+                    });
                 }),
-                    e(n.menuToggleBtn).on("click", function (e) {
-                        (e.stopPropagation(), s());
-                    }),
-                    t.on("click", "." + n.meanExpandClass, function (t) {
-                        var s, a;
-                        (t.preventDefault(),
-                            t.stopPropagation(),
-                            (s = e(this).parent()),
-                            (a = s.next("ul, div.mega-menu")).length &&
-                                (s.parent().toggleClass(n.subMenuParentToggle),
-                                a.slideToggle(n.toggleSpeed),
-                                a.toggleClass(n.subMenuToggleClass)));
-                    }),
-                    e(document).on("click", function () {
-                        t.hasClass(n.bodyToggleClass) && s();
+                    e(s.menuToggleBtn).each(function () {
+                        e(this).on("click", function () {
+                            a();
+                        });
                     }),
                     t.on("click", function (e) {
+                        e.stopPropagation(), a();
+                    }),
+                    t.find("div").on("click", function (e) {
                         e.stopPropagation();
-                    }));
+                    });
             });
         }),
         e(".th-menu-wrapper").thmobilemenu(),
-        e(window).on("scroll", function () {
-            t ||
-                (t = setTimeout(function () {
-                    t = null;
-                    var n = e(window).scrollTop();
-                    e(".sticky-wrapper").toggleClass("sticky", n > 500);
-                }, 100));
+        e(window).scroll(function () {
+            e(this).scrollTop() > 500
+                ? e(".sticky-wrapper").addClass("sticky")
+                : e(".sticky-wrapper").removeClass("sticky");
         }),
         e(".scroll-top").length > 0)
     ) {
-        const t = e(".scroll-top"),
-            n = document.querySelector(".scroll-top path");
-        if (n) {
-            const s = n.getTotalLength();
-            ((n.style.transition = "none"),
-                (n.style.strokeDasharray = s + " " + s),
-                (n.style.strokeDashoffset = s),
-                n.getBoundingClientRect(),
-                (n.style.transition = "stroke-dashoffset 10ms linear"));
-            const a = () => {
-                const t = e(window).scrollTop(),
-                    a = e(document).height() - e(window).height(),
-                    o = s - (t * s) / a;
-                n.style.strokeDashoffset = o;
-            };
-            let o;
-            (a(),
-                e(window).on("scroll", function () {
-                    o ||
-                        (o = setTimeout(() => {
-                            ((o = null),
-                                a(),
-                                e(this).scrollTop() > 50
-                                    ? t.addClass("show")
-                                    : t.removeClass("show"));
-                        }, 50));
-                }),
-                e(document).on("click", ".scroll-top", function (t) {
-                    (t.preventDefault(),
-                        e("html, body").animate({ scrollTop: 0 }, 750));
-                }));
-        }
+        var t = document.querySelector(".scroll-top"),
+            s = document.querySelector(".scroll-top path"),
+            a = s.getTotalLength();
+        (s.style.transition = s.style.WebkitTransition = "none"),
+            (s.style.strokeDasharray = a + " " + a),
+            (s.style.strokeDashoffset = a),
+            s.getBoundingClientRect(),
+            (s.style.transition = s.style.WebkitTransition =
+                "stroke-dashoffset 10ms linear");
+        var i = function () {
+            var t = e(window).scrollTop(),
+                i = e(document).height() - e(window).height(),
+                n = a - (t * a) / i;
+            s.style.strokeDashoffset = n;
+        };
+        i(), e(window).scroll(i);
+        jQuery(window).on("scroll", function () {
+            jQuery(this).scrollTop() > 50
+                ? jQuery(t).addClass("show")
+                : jQuery(t).removeClass("show");
+        }),
+            jQuery(t).on("click", function (e) {
+                return (
+                    e.preventDefault(),
+                    jQuery("html, body").animate({ scrollTop: 0 }, 750),
+                    !1
+                );
+            });
     }
-    (e("[data-bg-src]").each(function () {
-        const t = e(this).attr("data-bg-src");
-        e(this)
-            .css("background-image", "url(" + t + ")")
-            .removeAttr("data-bg-src")
-            .addClass("background-image");
-    }),
-        e("[data-bg-color]").each(function () {
-            const t = e(this).attr("data-bg-color");
-            e(this).css("background-color", t).removeAttr("data-bg-color");
+    e("[data-bg-src]").length > 0 &&
+        e("[data-bg-src]").each(function () {
+            var t = e(this).attr("data-bg-src");
+            e(this).css("background-image", "url(" + t + ")"),
+                e(this).removeAttr("data-bg-src").addClass("background-image");
         }),
-        e("[data-theme-color]").each(function () {
-            const t = e(this).attr("data-theme-color");
-            (this.style.setProperty("--theme-color", t),
-                e(this).removeAttr("data-theme-color"));
-        }),
-        e("[data-mask-src]").each(function () {
-            const t = e(this).attr("data-mask-src");
-            e(this)
-                .css({
+        e("[data-bg-color]").length > 0 &&
+            e("[data-bg-color]").each(function () {
+                var t = e(this).attr("data-bg-color");
+                e(this).css("background-color", t),
+                    e(this).removeAttr("data-bg-color");
+            }),
+        e("[data-theme-color]").length > 0 &&
+            e("[data-theme-color]").each(function () {
+                var t = e(this).attr("data-theme-color");
+                e(this).get(0).style.setProperty("--theme-color", t),
+                    e(this).removeAttr("data-theme-color");
+            }),
+        e("[data-mask-src]").length > 0 &&
+            e("[data-mask-src]").each(function () {
+                var t = e(this).attr("data-mask-src");
+                e(this).css({
                     "mask-image": "url(" + t + ")",
                     "-webkit-mask-image": "url(" + t + ")",
-                })
-                .addClass("bg-mask")
-                .removeAttr("data-mask-src");
-        }));
-    function n(e, t) {
-        return {
-            arrows: !!e(`${t}-arrows`),
-            dots: !!e(`${t}-dots`),
-            slidesToShow: e(`${t}-slide-show`) || e("slide-show") || 1,
-            centerMode: !!e(`${t}-center-mode`),
-            centerPadding: 0,
-            variableWidth: !!e(`${t}-variable-width`),
-        };
-    }
-    (e(".center-first").on("init reInit afterChange", function (e, t, n) {}),
+                }),
+                    e(this).addClass("bg-mask"),
+                    e(this).removeAttr("data-mask-src");
+            }),
+        e(".center-first").on(
+            "init reInit afterChange",
+            function (e, t, s, a) {}
+        ),
         e(".th-carousel").each(function () {
-            const t = e(this),
-                s = (e) => t.data(e),
-                a = s("prev-arrow")
-                    ? `<button type="button" class="slick-prev"><i class="${s("prev-arrow")}"></i></button>`
-                    : '<button type="button" class="slick-prev"><i class="fas fa-arrow-left"></i></button>',
-                o = s("next-arrow")
-                    ? `<button type="button" class="slick-next"><i class="${s("next-arrow")}"></i></button>`
-                    : '<button type="button" class="slick-next"><i class="fas fa-arrow-right"></i></button>';
-            (!0 !== s("arrows") ||
-                t.closest(".arrow-wrap").length ||
-                t.closest(".container").parent().addClass("arrow-wrap"),
+            var t = e(this);
+            function s(e) {
+                return t.data(e);
+            }
+            var a =
+                    '<button type="button" class="slick-prev"><i class="' +
+                    s("prev-arrow") +
+                    '"></i></button>',
+                i =
+                    '<button type="button" class="slick-next"><i class="' +
+                    s("next-arrow") +
+                    '"></i></button>';
+            e("[data-slick-next]").each(function () {
+                e(this).on("click", function (t) {
+                    t.preventDefault(),
+                        e(e(this).data("slick-next")).slick("slickNext");
+                });
+            }),
+                e("[data-slick-prev]").each(function () {
+                    e(this).on("click", function (t) {
+                        t.preventDefault(),
+                            e(e(this).data("slick-prev")).slick("slickPrev");
+                    });
+                }),
+                1 == s("arrows") &&
+                    (t.closest(".arrow-wrap").length ||
+                        t
+                            .closest(".container")
+                            .parent()
+                            .addClass("arrow-wrap")),
                 t.slick({
                     dots: !!s("dots"),
                     fade: !!s("fade"),
                     arrows: !!s("arrows"),
-                    speed: s("speed") || 1e3,
-                    asNavFor: s("asnavfor") || !1,
-                    autoplay: !1 !== s("autoplay"),
-                    infinite: !1 !== s("infinite"),
-                    slidesToShow: s("slide-show") || 1,
+                    speed: s("speed") ? s("speed") : 1e3,
+                    asNavFor: !!s("asnavfor") && s("asnavfor"),
+                    autoplay: 0 != s("autoplay"),
+                    infinite: 0 != s("infinite"),
+                    slidesToShow: s("slide-show") ? s("slide-show") : 1,
                     adaptiveHeight: !!s("adaptive-height"),
                     centerMode: !!s("center-mode"),
-                    centerPadding: s("center-padding") || "0",
-                    autoplaySpeed: s("autoplay-speed") || 8e3,
-                    focusOnSelect: !1 !== s("focuson-select"),
+                    autoplaySpeed: s("autoplay-speed")
+                        ? s("autoplay-speed")
+                        : 8e3,
+                    centerPadding: s("center-padding")
+                        ? s("center-padding")
+                        : "0",
+                    focusOnSelect: 0 != s("focuson-select"),
                     pauseOnFocus: !!s("pauseon-focus"),
                     pauseOnHover: !!s("pauseon-hover"),
                     variableWidth: !!s("variable-width"),
                     vertical: !!s("vertical"),
                     verticalSwiping: !!s("vertical"),
                     swipeToSlide: !!s("swipetoslide"),
-                    rtl: "rtl" === e("html").attr("dir"),
-                    prevArrow: a,
-                    nextArrow: o,
+                    prevArrow: s("prev-arrow")
+                        ? a
+                        : '<button type="button" class="slick-prev"><i class="fas fa-arrow-left"></i></button>',
+                    nextArrow: s("next-arrow")
+                        ? i
+                        : '<button type="button" class="slick-next"><i class="fas fa-arrow-right"></i></button>',
+                    rtl: "rtl" == e("html").attr("dir"),
                     responsive: [
-                        { breakpoint: 1600, settings: n(s, "xl") },
-                        { breakpoint: 1400, settings: n(s, "ml") },
-                        { breakpoint: 1200, settings: n(s, "lg") },
-                        { breakpoint: 992, settings: n(s, "md") },
-                        { breakpoint: 768, settings: n(s, "sm") },
-                        { breakpoint: 576, settings: n(s, "xs") },
+                        {
+                            breakpoint: 1600,
+                            settings: {
+                                arrows: !!s("xl-arrows"),
+                                dots: !!s("xl-dots"),
+                                slidesToShow: s("xl-slide-show")
+                                    ? s("xl-slide-show")
+                                    : s("slide-show"),
+                                centerMode: !!s("xl-center-mode"),
+                                centerPadding: "0",
+                            },
+                        },
+                        {
+                            breakpoint: 1400,
+                            settings: {
+                                arrows: !!s("ml-arrows"),
+                                dots: !!s("ml-dots"),
+                                slidesToShow: s("ml-slide-show")
+                                    ? s("ml-slide-show")
+                                    : s("slide-show"),
+                                centerMode: !!s("ml-center-mode"),
+                                centerPadding: 0,
+                            },
+                        },
+                        {
+                            breakpoint: 1200,
+                            settings: {
+                                arrows: !!s("lg-arrows"),
+                                dots: !!s("lg-dots"),
+                                slidesToShow: s("lg-slide-show")
+                                    ? s("lg-slide-show")
+                                    : s("slide-show"),
+                                centerMode:
+                                    !!s("lg-center-mode") &&
+                                    s("lg-center-mode"),
+                                centerPadding: 0,
+                            },
+                        },
+                        {
+                            breakpoint: 992,
+                            settings: {
+                                arrows: !!s("md-arrows"),
+                                dots: !!s("md-dots"),
+                                slidesToShow: s("md-slide-show")
+                                    ? s("md-slide-show")
+                                    : 1,
+                                centerMode:
+                                    !!s("md-center-mode") &&
+                                    s("md-center-mode"),
+                                centerPadding: 0,
+                            },
+                        },
+                        {
+                            breakpoint: 768,
+                            settings: {
+                                arrows: !!s("sm-arrows"),
+                                dots: !!s("sm-dots"),
+                                slidesToShow: s("sm-slide-show")
+                                    ? s("sm-slide-show")
+                                    : 1,
+                                centerMode:
+                                    !!s("sm-center-mode") &&
+                                    s("sm-center-mode"),
+                                centerPadding: 0,
+                                variableWidth: !!s("sm-variable-width"),
+                            },
+                        },
+                        {
+                            breakpoint: 576,
+                            settings: {
+                                arrows: !!s("xs-arrows"),
+                                dots: !!s("xs-dots"),
+                                slidesToShow: s("xs-slide-show")
+                                    ? s("xs-slide-show")
+                                    : 1,
+                                centerMode:
+                                    !!s("xs-center-mode") &&
+                                    s("xs-center-mode"),
+                                centerPadding: 0,
+                                variableWidth: !!s("xs-variable-width"),
+                            },
+                        },
                     ],
-                }));
-        }),
-        e(document).on("click", "[data-slick-next]", function (t) {
-            t.preventDefault();
-            const n = e(this).data("slick-next");
-            e(n).slick("slickNext");
-        }),
-        e(document).on("click", "[data-slick-prev]", function (t) {
-            t.preventDefault();
-            const n = e(this).data("slick-prev");
-            e(n).slick("slickPrev");
-        }),
-        e(".slick-marquee").slick({
-            speed: 5e3,
-            autoplay: !0,
-            autoplaySpeed: 0,
-            cssEase: "linear",
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            variableWidth: !0,
-            infinite: !0,
-            arrows: !1,
-            buttons: !1,
-            pauseOnHover: !0,
-            pauseOnFocus: !0,
-            swipeToSlide: !0,
-        }),
-        e("[data-ani-duration]").each(function () {
-            e(this).css("animation-duration", e(this).data("ani-duration"));
-        }),
-        e("[data-ani-delay]").each(function () {
-            e(this).css("animation-delay", e(this).data("ani-delay"));
-        }),
-        e(".slick-current [data-ani]").each(function () {
-            e(this).addClass("th-animated " + e(this).data("ani"));
-        }),
-        e(document).on("afterChange", ".th-carousel", function (t, n, s) {
-            (e(n.$slides).find("[data-ani]").removeClass("th-animated"),
-                e(n.$slides[s])
-                    .find("[data-ani]")
-                    .each(function () {
-                        e(this).addClass("th-animated " + e(this).data("ani"));
-                    }));
-        }));
-    const s = "is-invalid",
-        a = e(".ajax-contact"),
-        o = e(".form-messages"),
-        i = () => {
-            let t = !0;
-            a.find(
-                '[name="name"],[name="email"],[name="subject"],[name="number"],[name="message"]',
-            ).each(function () {
-                const n = e(this);
-                n.val() ? n.removeClass(s) : (n.addClass(s), (t = !1));
-            });
-            const n = a.find('[name="email"]'),
-                o = n.val();
-            return (
-                o && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(o)
-                    ? n.removeClass(s)
-                    : (n.addClass(s), (t = !1)),
-                t
-            );
-        };
-    var l, c, r, d, u, p;
-    function h(t, n, s, a) {
-        (e(document).on("click", n, function (n) {
-            (n.preventDefault(), e(t).addClass(a));
-        }),
-            e(document).on("click", t, function () {
-                e(t).removeClass(a);
-            }),
-            e(document).on("click", `${t} > div`, function (e) {
-                e.stopPropagation();
-            }),
-            e(document).on("click", s, function (n) {
-                (n.preventDefault(), n.stopPropagation(), e(t).removeClass(a));
-            }));
-    }
-    (a.on("submit", function (t) {
-        (t.preventDefault(),
-            (() => {
-                const t = a.serialize();
-                i() &&
-                    e
-                        .ajax({ url: a.attr("action"), type: "POST", data: t })
-                        .done((e) => {
-                            (o.removeClass("error").addClass("success").text(e),
-                                a
-                                    .find(
-                                        "input:not([type='submit']), textarea",
-                                    )
-                                    .val(""));
-                        })
-                        .fail((e) => {
-                            o.removeClass("success")
-                                .addClass("error")
-                                .html(
-                                    e.responseText ||
-                                        "Oops! An error occurred and your message could not be sent.",
-                                );
-                        });
-            })());
+                });
+        });
+    e(".slick-marquee").slick({
+        speed: 5e3,
+        autoplay: !0,
+        autoplaySpeed: 0,
+        cssEase: "linear",
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        variableWidth: !0,
+        infinite: !0,
+        arrows: !1,
+        buttons: !1,
+        pauseOnHover: !0,
+        pauseOnFocus: !0,
+        swipeToSlide: !0,
+    });
+    e("[data-ani-duration]").each(function () {
+        var t = e(this).data("ani-duration");
+        e(this).css("animation-duration", t);
     }),
-        (l = ".popup-search-box"),
-        (c = ".searchBoxToggler"),
-        (r = ".searchClose"),
-        (d = "show"),
-        e(document).on("click", c, function (t) {
-            (t.preventDefault(), e(l).addClass(d));
+        e("[data-ani-delay]").each(function () {
+            var t = e(this).data("ani-delay");
+            e(this).css("animation-delay", t);
         }),
-        e(document).on("click", r, function (t) {
-            (t.preventDefault(), e(l).removeClass(d));
+        e("[data-ani]").each(function () {
+            var t = e(this).data("ani");
+            e(this).addClass(t),
+                e(".slick-current [data-ani]").addClass("th-animated");
         }),
-        e(document).on("click", l, function () {
-            e(this).removeClass(d);
+        e(".th-carousel").on("afterChange", function (t, s, a, i) {
+            e(s.$slides).find("[data-ani]").removeClass("th-animated"),
+                e(s.$slides[a]).find("[data-ani]").addClass("th-animated");
+        });
+    var n,
+        o,
+        r,
+        l,
+        c = ".ajax-contact",
+        d = '[name="email"]',
+        u = e(".form-messages");
+    function p() {
+        var t = e(c).serialize();
+        (function () {
+            var t,
+                s = !0;
+            function a(a) {
+                a = a.split(",");
+                for (var i = 0; i < a.length; i++)
+                    (t = c + " " + a[i]),
+                        e(t).val()
+                            ? (e(t).removeClass("is-invalid"), (s = !0))
+                            : (e(t).addClass("is-invalid"), (s = !1));
+            }
+            a(
+                '[name="name"],[name="email"],[name="subject"],[name="number"],[name="message"]'
+            ),
+                e(d).val() &&
+                e(d)
+                    .val()
+                    .match(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/)
+                    ? (e(d).removeClass("is-invalid"), (s = !0))
+                    : (e(d).addClass("is-invalid"), (s = !1));
+            return s;
+        })() &&
+            jQuery
+                .ajax({ url: e(c).attr("action"), data: t, type: "POST" })
+                .done(function (t) {
+                    u.removeClass("error"),
+                        u.addClass("success"),
+                        u.text(t),
+                        e(
+                            c + ' input:not([type="submit"]),' + c + " textarea"
+                        ).val("");
+                })
+                .fail(function (e) {
+                    u.removeClass("success"),
+                        u.addClass("error"),
+                        "" !== e.responseText
+                            ? u.html(e.responseText)
+                            : u.html(
+                                  "Oops! An error occured and your message could not be sent."
+                              );
+                });
+    }
+    e(c).on("submit", function (e) {
+        e.preventDefault(), p();
+    }),
+        (n = ".popup-search-box"),
+        (o = ".searchClose"),
+        (r = "show"),
+        e(".searchBoxToggler").on("click", function (t) {
+            t.preventDefault(), e(n).addClass(r);
         }),
-        e(document).on("click", `${l} form`, function (e) {
-            e.stopPropagation();
+        e(n).on("click", function (t) {
+            t.stopPropagation(), e(n).removeClass(r);
         }),
-        (u = ".popup-subscribe-area"),
-        (p = ".popupClose"),
-        e(document).on("click", p, function () {
-            e(u).addClass("hide");
+        e(n)
+            .find("form")
+            .on("click", function (t) {
+                t.stopPropagation(), e(n).addClass(r);
+            }),
+        e(o).on("click", function (t) {
+            t.preventDefault(), t.stopPropagation(), e(n).removeClass(r);
+        }),
+        (l = ".popup-subscribe-area"),
+        e(".popupClose").on("click", function (t) {
+            e(l).addClass("hide");
         }),
         e("#destroyPopup").on("click", function () {
-            (e(".popup-subscribe-area").addClass("hide"),
-                localStorage.setItem("popupDestroyed", "true"));
+            e(".popup-subscribe-area").addClass("hide"),
+                localStorage.setItem("popupDestroyed", "true");
+        });
+    function h(t, s, a, i) {
+        e(s).on("click", function (s) {
+            s.preventDefault(), e(t).addClass(i);
         }),
-        "true" === localStorage.getItem("popupDestroyed") &&
-            e(".popup-subscribe-area").hide(),
+            e(t).on("click", function (s) {
+                s.stopPropagation(), e(t).removeClass(i);
+            }),
+            e(t + " > div").on("click", function (s) {
+                s.stopPropagation(), e(t).addClass(i);
+            }),
+            e(a).on("click", function (s) {
+                s.preventDefault(), s.stopPropagation(), e(t).removeClass(i);
+            });
+    }
+    "true" === localStorage.getItem("popupDestroyed") &&
+        e(".popup-subscribe-area").hide(),
         h(".sidemenu-1", ".sideMenuToggler", ".sideMenuCls", "show"),
         h(".cart-side-menu", ".cartToggler", ".sideMenuCls", "show"),
         e(".popup-image").magnificPopup({
@@ -333,224 +427,246 @@
             gallery: { enabled: !0 },
         }),
         e(".popup-video").magnificPopup({ type: "iframe" }),
-        e(".popup-content").magnificPopup({
-            type: "inline",
-            midClick: !0,
-            callbacks: {
-                open: function () {
-                    e(".slick-slider").slick("refresh");
-                },
-            },
-        }));
-    const f = e("html"),
-        m = e(".theme-switcher");
-    const g = localStorage.getItem("themePreference");
-    function v(t, n, s = "*") {
-        e(t).imagesLoaded(function () {
-            const a = e(t).isotope({
-                itemSelector: ".filter-item",
-                filter: s,
-                masonry: { columnWidth: 1 },
-            });
-            e(n).on("click", "button", function (t) {
-                t.preventDefault();
-                const n = e(this).attr("data-filter");
-                (a.isotope({ filter: n }),
-                    e(this)
-                        .addClass("active")
-                        .siblings()
-                        .removeClass("active"));
-            });
+        e(".popup-content").magnificPopup({ type: "inline", midClick: !0 }),
+        e(".popup-content").on("click", function () {
+            e(".slick-slider").slick("refresh");
         });
-    }
-    ("dark" === g
-        ? (f.addClass("dark-theme").attr("data-theme", "dark"),
-          m.addClass("active"))
-        : "light" === g &&
-          (f.addClass("light-theme").attr("data-theme", "light"),
-          m.removeClass("active")),
-        e(document).on(
-            "click",
-            ".theme-toggler, .theme-switcher",
-            function (e) {
-                (e.preventDefault(),
-                    f.hasClass("dark-theme")
-                        ? (f
-                              .removeClass("dark-theme")
-                              .addClass("light-theme")
-                              .attr("data-theme", "light"),
-                          m.removeClass("active"),
-                          localStorage.setItem("themePreference", "light"))
-                        : (f
-                              .removeClass("light-theme")
-                              .addClass("dark-theme")
-                              .attr("data-theme", "dark"),
-                          m.addClass("active"),
-                          localStorage.setItem("themePreference", "dark")));
-            },
-        ),
-        e(document).on("click", ".print_btn", function () {
-            window.print();
-        }),
+    e("html").addClass("dark-theme").attr("data-theme", "dark");
+    localStorage.setItem("themePreference", "dark");
+    e(".theme-toggler, .theme-switcher").off("click").addClass("active");
+
+    e(".print_btn").on("click", function (e) {
+        window.print();
+    }),
         (e.fn.indicator = function () {
-            return this.each(function () {
-                const t = e(this);
-                if (0 === t.find("a, button").length) return;
+            e(this).each(function () {
+                var t = e(this),
+                    s = t.find("a"),
+                    a = t.find("button");
                 t.append('<span class="indicator"></span>');
-                const n = t.find(".indicator");
-                function s() {
-                    const e = t.find(".active");
-                    if (!e.length) return;
-                    const s = e.outerHeight() + "px",
-                        a = e.outerWidth() + "px",
-                        o = e.position().top + "px",
-                        i = e.position().left + "px";
-                    n.css({
-                        "--height-set": s,
-                        "--width-set": a,
-                        "--pos-y": o,
-                        "--pos-x": i,
-                    });
+                var i,
+                    n = t.find(".indicator");
+                function o() {
+                    var s = t.find(".active"),
+                        a = s.css("height"),
+                        i = s.css("width"),
+                        o = s.position().top + "px",
+                        r = s.position().left + "px";
+                    e(window).on("resize", function () {
+                        (o = s.position().top + "px"),
+                            (r = s.position().left + "px");
+                    }),
+                        n.get(0).style.setProperty("--height-set", a),
+                        n.get(0).style.setProperty("--width-set", i),
+                        n.get(0).style.setProperty("--pos-y", o),
+                        n.get(0).style.setProperty("--pos-x", r);
                 }
-                (t.on("click", "a, button", function (t) {
-                    (t.preventDefault(),
-                        e(this)
-                            .addClass("active")
-                            .siblings()
-                            .removeClass("active"),
-                        s());
-                }),
-                    s(),
-                    e(window).on("resize", s));
+                s.length ? (i = s) : a.length && (i = a),
+                    i.on("click", function (t) {
+                        t.preventDefault(),
+                            e(this).addClass("active"),
+                            e(this).siblings(".active").removeClass("active"),
+                            o();
+                    }),
+                    o(),
+                    e(window).on("resize", function () {
+                        o();
+                    });
             });
         }),
         e(".indicator-active").length && e(".indicator-active").indicator(),
         (e.fn.thTab = function (t) {
-            const n = e.extend({ sliderTab: !1, tabButton: "button" }, t);
-            return this.each(function () {
-                const t = e(this),
-                    s = t.find(n.tabButton),
-                    a = t.data("asnavfor"),
-                    o = a ? e(a) : null;
+            var s = e.extend({ sliderTab: !1, tabButton: "button" }, t);
+            e(this).each(function () {
+                var t = e(this),
+                    a = t.find(s.tabButton);
                 t.append('<span class="indicator"></span>');
-                const i = t.find(".indicator");
-                function l() {
-                    const e = t.find(n.tabButton + ".active");
-                    if (!e.length) return;
-                    const a = e.outerHeight() + "px",
-                        o = e.outerWidth() + "px",
-                        l = e.position().top + "px",
-                        c = e.position().left + "px";
-                    i.css({
-                        "--height-set": a,
-                        "--width-set": o,
-                        "--pos-y": l,
-                        "--pos-x": c,
-                    });
-                    const r = s.first().position().left,
-                        d = s.last().position().left,
-                        u = e.position().left;
-                    i.toggleClass("start", u === r)
-                        .toggleClass("end", u === d)
-                        .toggleClass("center", u !== r && u !== d);
-                }
+                var i = t.find(".indicator");
                 if (
-                    (t.on("click", n.tabButton, function (t) {
+                    (a.on("click", function (t) {
                         t.preventDefault();
-                        const s = e(this);
-                        (s.addClass("active").siblings().removeClass("active"),
-                            n.sliderTab &&
-                                o &&
-                                o.length &&
-                                o.slick("slickGoTo", s.data("slide-go-to")),
-                            l());
+                        var a = e(this);
+                        a.addClass("active").siblings().removeClass("active"),
+                            s.sliderTab
+                                ? e(n).slick("slickGoTo", a.data("slide-go-to"))
+                                : r();
                     }),
-                    n.sliderTab && o && o.length)
+                    s.sliderTab)
                 ) {
-                    (s.each(function (t) {
-                        e(this).attr("data-slide-go-to", t);
-                    }),
-                        o.on("beforeChange", function (e, t, n, a) {
-                            (s
-                                .removeClass("active")
-                                .filter(`[data-slide-go-to="${a}"]`)
-                                .addClass("active"),
-                                l());
-                        }));
-                    const t = s.filter(".active");
-                    t.length && o.slick("slickGoTo", t.data("slide-go-to"));
+                    var n = t.data("asnavfor"),
+                        o = 0;
+                    a.each(function () {
+                        var a = e(this);
+                        a.attr("data-slide-go-to", o),
+                            o++,
+                            a.hasClass("active") &&
+                                e(n).slick("slickGoTo", a.data("slide-go-to")),
+                            e(n).on("beforeChange", function (e, a, i, n) {
+                                t
+                                    .find(
+                                        s.tabButton +
+                                            '[data-slide-go-to="' +
+                                            n +
+                                            '"]'
+                                    )
+                                    .addClass("active")
+                                    .siblings()
+                                    .removeClass("active"),
+                                    r();
+                            });
+                    });
                 }
-                (l(), e(window).on("resize", l));
+                function r() {
+                    var n = t.find(s.tabButton + ".active"),
+                        o = n.css("height"),
+                        r = n.css("width"),
+                        l = n.position().top + "px",
+                        c = n.position().left + "px";
+                    i.get(0).style.setProperty("--height-set", o),
+                        i.get(0).style.setProperty("--width-set", r),
+                        i.get(0).style.setProperty("--pos-y", l),
+                        i.get(0).style.setProperty("--pos-x", c),
+                        e(a).first().position().left == n.position().left
+                            ? i
+                                  .addClass("start")
+                                  .removeClass("center")
+                                  .removeClass("end")
+                            : e(a).last().position().left == n.position().left
+                            ? i
+                                  .addClass("end")
+                                  .removeClass("center")
+                                  .removeClass("start")
+                            : i
+                                  .addClass("center")
+                                  .removeClass("start")
+                                  .removeClass("end");
+                }
+                r();
             });
         }),
         e(".hero-tab").length &&
             e(".hero-tab").thTab({ sliderTab: !0, tabButton: ".tab-btn" }),
         e(".blog-tab").length &&
             e(".blog-tab").thTab({ sliderTab: !0, tabButton: ".tab-btn" }),
-        v(".filter-active", ".filter-menu-active"),
-        v(".filter-active-cat1", ".filter-menu-active1", ".active-filter"),
-        e.fn.counterUp &&
-            e(".counter-number").counterUp({ delay: 5, time: 600 }),
-        e.fn.slider &&
-            e(".price_slider").length &&
-            (e(".price_slider").slider({
-                range: !0,
-                min: 10,
-                max: 100,
-                values: [10, 75],
-                slide: function (t, n) {
-                    (e(".from").text("$" + n.values[0]),
-                        e(".to").text("$" + n.values[1]));
-                },
-            }),
-            e(".from").text("$" + e(".price_slider").slider("values", 0)),
-            e(".to").text("$" + e(".price_slider").slider("values", 1))),
+        e(".filter-active").imagesLoaded(function () {
+            if (e(".filter-active").length > 0) {
+                var t = e(".filter-active").isotope({
+                    itemSelector: ".filter-item",
+                    filter: "*",
+                    masonry: {},
+                });
+                e(".filter-menu-active").on("click", "button", function () {
+                    var s = e(this).attr("data-filter");
+                    t.isotope({ filter: s });
+                }),
+                    e(".filter-menu-active").on(
+                        "click",
+                        "button",
+                        function (t) {
+                            t.preventDefault(),
+                                e(this).addClass("active"),
+                                e(this)
+                                    .siblings(".active")
+                                    .removeClass("active");
+                        }
+                    );
+            }
+        }),
+        e(".filter-active-cat1").imagesLoaded(function () {
+            if (e(".filter-active-cat1").length > 0) {
+                var t = e(".filter-active-cat1").isotope({
+                    itemSelector: ".filter-item",
+                    filter: ".active-filter",
+                    masonry: { columnWidth: 1 },
+                });
+                e(".filter-menu-active1").on("click", "button", function () {
+                    var s = e(this).attr("data-filter");
+                    t.isotope({ filter: s });
+                }),
+                    e(".filter-menu-active1").on(
+                        "click",
+                        "button",
+                        function (t) {
+                            t.preventDefault(),
+                                e(this).addClass("active"),
+                                e(this)
+                                    .siblings(".active")
+                                    .removeClass("active");
+                        }
+                    );
+            }
+        }),
+        e(".counter-number").counterUp({ delay: 5, time: 600 }),
+        e(".price_slider").slider({
+            range: !0,
+            min: 10,
+            max: 100,
+            values: [10, 75],
+            slide: function (t, s) {
+                e(".from").text("$" + s.values[0]),
+                    e(".to").text("$" + s.values[1]);
+            },
+        }),
+        e(".from").text("$" + e(".price_slider").slider("values", 0)),
+        e(".to").text("$" + e(".price_slider").slider("values", 1)),
         e("#ship-to-different-address-checkbox").on("change", function () {
-            const t = e("#ship-to-different-address").next(".shipping_address");
-            e(this).is(":checked") ? t.slideDown() : t.slideUp();
+            e(this).is(":checked")
+                ? e("#ship-to-different-address")
+                      .next(".shipping_address")
+                      .slideDown()
+                : e("#ship-to-different-address")
+                      .next(".shipping_address")
+                      .slideUp();
         }),
-        e(".woocommerce-form-login-toggle").on("click", "a", function (t) {
-            (t.preventDefault(), e(".woocommerce-form-login").slideToggle());
+        e(".woocommerce-form-login-toggle a").on("click", function (t) {
+            t.preventDefault(), e(".woocommerce-form-login").slideToggle();
         }),
-        e(".woocommerce-form-coupon-toggle").on("click", "a", function (t) {
-            (t.preventDefault(), e(".woocommerce-form-coupon").slideToggle());
+        e(".woocommerce-form-coupon-toggle a").on("click", function (t) {
+            t.preventDefault(), e(".woocommerce-form-coupon").slideToggle();
         }),
         e(".shipping-calculator-button").on("click", function (t) {
-            (t.preventDefault(),
-                e(this).next(".shipping-calculator-form").slideToggle());
-        }));
-    const b = e(".wc_payment_methods");
-    (b.find('input[type="radio"]').each(function () {
-        this.checked && e(this).siblings(".payment_box").show();
-    }),
-        b.on("change", 'input[type="radio"]', function () {
-            (e(".payment_box").slideUp(),
-                e(this).siblings(".payment_box").slideDown());
+            t.preventDefault(),
+                e(this).next(".shipping-calculator-form").slideToggle();
         }),
-        e(".rating-select .stars").on("click", "a", function (t) {
-            t.preventDefault();
-            const n = e(this);
-            (n.addClass("active").siblings().removeClass("active"),
-                n.closest(".stars").parent().addClass("selected"));
+        e('.wc_payment_methods input[type="radio"]:checked')
+            .siblings(".payment_box")
+            .show(),
+        e('.wc_payment_methods input[type="radio"]').each(function () {
+            e(this).on("change", function () {
+                e(".payment_box").slideUp(),
+                    e(this).siblings(".payment_box").slideDown();
+            });
         }),
-        e(".quantity-plus").on("click", function (t) {
-            t.preventDefault();
-            const n = e(this).siblings(".qty-input"),
-                s = parseInt(n.val(), 10) || 0;
-            n.val(s + 1);
+        e(".rating-select .stars a").each(function () {
+            e(this).on("click", function (t) {
+                t.preventDefault(),
+                    e(this).siblings().removeClass("active"),
+                    e(this).parent().parent().addClass("selected"),
+                    e(this).addClass("active");
+            });
         }),
-        e(".quantity-minus").on("click", function (t) {
-            t.preventDefault();
-            const n = e(this).siblings(".qty-input"),
-                s = parseInt(n.val(), 10) || 0;
-            s > 1 && n.val(s - 1);
+        e(".quantity-plus").each(function () {
+            e(this).on("click", function (t) {
+                t.preventDefault();
+                var s = e(this).siblings(".qty-input"),
+                    a = parseInt(s.val(), 10);
+                isNaN(a) || s.val(a + 1);
+            });
+        }),
+        e(".quantity-minus").each(function () {
+            e(this).on("click", function (t) {
+                t.preventDefault();
+                var s = e(this).siblings(".qty-input"),
+                    a = parseInt(s.val(), 10);
+                !isNaN(a) && a > 1 && s.val(a - 1);
+            });
         }),
         window.addEventListener(
             "contextmenu",
             function (e) {
                 e.preventDefault();
             },
-            !1,
+            !1
         ),
         (document.onkeydown = function (e) {
             return (
@@ -561,5 +677,6 @@
                 (!e.ctrlKey || e.keyCode != "U".charCodeAt(0)) &&
                 void 0
             );
-        }));
+        });
 })(jQuery);
+
