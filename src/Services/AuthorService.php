@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atannex\Services;
 
+use App\Enums\Status;
 use App\Models\Posts\Post;
 use App\Models\Regions\Employee;
 use Illuminate\Database\Eloquent\Builder;
@@ -42,6 +43,7 @@ final class AuthorService
     public function resolveAuthorBySlug(string $slug): Employee
     {
         return Employee::query()
+            ->where('status', Status::ACTIVE)
             ->with(['user:id,slug'])
             ->whereHas(
                 'user',
