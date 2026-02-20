@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\RegionController;
-use App\Http\Controllers\ShareController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ShareController;
+use App\Http\Controllers\RegionController;
 
 // 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
 
@@ -38,6 +39,9 @@ Route::prefix('/share')->group(function () {
 */
 Route::controller(RegionController::class)->group(function () {
     Route::get('/{slug}', 'resolve')
-        ->where('slug', '.*')
+        ->where('slug', '^(?!login|register|password|email|logout).*$')
         ->name('page.index');
 });
+
+Auth::routes(['verify' => true]);
+// ->middleware(['auth', 'verified', 'password.confirm'])

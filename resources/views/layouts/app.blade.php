@@ -4,13 +4,10 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    @php
-    $assetVersion = '1.0.3';
-    @endphp
-
     <!-- =========================
          ANALYTICS / TAG MANAGER
     ========================== -->
+
     <x-layouts.googletagmanager />
 
     <!-- =========================
@@ -98,68 +95,6 @@
     <meta name="msnbot" content="index, follow">
     <link rel="canonical" href="{{ rtrim(url()->current(), '/') }}">
 
-    <!-- =========================
-         OPEN GRAPH (Facebook, LinkedIn, WhatsApp, etc.)
-    ========================== -->
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:type" content="@yield('og:type', 'website')">
-    <meta property="og:title" content="@yield('og:title', config('app.title'))">
-    <meta property="og:description" content="@yield('og:description', config('app.description'))">
-    <meta property="og:site_name" content="{{ config('app.name') }}">
-    <meta property="og:locale" content="en_US">
-    <meta property="og:locale:alternate" content="en_GB">
-    <meta property="og:image" content="@yield('og:image', asset(config('app.image')))">
-    <meta property="og:image:secure_url" content="@yield('og:image', asset(config('app.image')))">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="@yield('og:image:alt', config('app.name') . ' preview')">
-
-    @hasSection('og:publishedAt')
-    <meta property="article:published_time" content="@yield('og:publishedAt')">
-    @endif
-
-    @hasSection('og:updatedAt')
-    <meta property="article:modified_time" content="@yield('og:updatedAt')">
-    @endif
-
-    @hasSection('og:section')
-    <meta property="article:section" content="@yield('og:section')">
-    @endif
-
-    @hasSection('og:author')
-    <meta property="article:author" content="@yield('og:author')">
-    @endif
-
-
-    <!-- =========================
-         TWITTER / X CARDS (still widely used)
-    ========================== -->
-    <meta name="twitter:card" content="@yield('twitter:card', 'summary_large_image')">
-    <meta name="twitter:title" content="@yield('twitter:title', config('app.title'))">
-    <meta name="twitter:description" content="@yield('twitter:description', config('app.description'))">
-    <meta name="twitter:image" content="@yield('twitter:image', asset(config('app.image')))">
-    <meta name="twitter:image:alt" content="@yield('twitter:image:alt', config('app.name') . ' preview')">
-    <meta name="twitter:site" content="@atannex">
-    <meta name="twitter:creator" content="@atannex">
-    <meta name="twitter:domain" content="{{ parse_url(config('app.url'), PHP_URL_HOST) }}">
-
-    @hasSection('twitter:player')
-    <meta name="twitter:player" content="@yield('twitter:player')">
-    <meta name="twitter:player:width" content="1280">
-    <meta name="twitter:player:height" content="720">
-    <meta name="twitter:player:stream" content="@yield('twitter:player:stream')">
-    @endif
-
-    <!-- =========================
-         VIDEO / MEDIA OPEN GRAPH (if needed)
-    ========================== -->
-    @hasSection('og:video')
-    <meta property="og:video" content="@yield('og:video')">
-    <meta property="og:video:secure_url" content="@yield('og:video')">
-    <meta property="og:video:type" content="video/mp4">
-    <meta property="og:video:width" content="1280">
-    <meta property="og:video:height" content="720">
-    @endif
 
     <!-- =========================
          ICONS, PWA & APPLE TOUCH (modern / enterprise)
@@ -185,6 +120,23 @@
     <meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        playfair: ['Playfair Display', 'serif']
+                        , dm: ['DM Sans', 'sans-serif']
+                    , }
+                , }
+            , }
+        , }
+
+    </script>
+
     <!-- =========================
          PERFORMANCE & RESOURCE HINTS
     ========================== -->
@@ -194,8 +146,6 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
     <link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <!-- =========================
          STRUCTURED DATA (enhanced Organization + WebSite)
@@ -253,39 +203,38 @@
     </script>
     @endverbatim
 
-    <!-- =========================
-         STYLES & SCRIPTS
-    ========================== -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}?v={{ $assetVersion }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}?v={{ $assetVersion }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v={{ $assetVersion }}">
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
 
     @livewireStyles
 
 </head>
-
 <body>
-
-    <x-sections.preloader />
-
-    @yield('base')
-
-    @livewireScripts
-
-    <div class="scroll-top">
-        <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
-            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" style="transition: stroke-dashoffset 10ms linear; stroke-dasharray: 307.919, 307.919; stroke-dashoffset: 307.919;">
-            </path>
-        </svg>
+    <div class="form-topbar mobile-topbar">
+        <div style="display:flex;align-items:center;gap:10px;">
+            <div class="mobile-logo-mark"><span>A</span></div>
+            <span class="mobile-logo-name">ATANNEX</span>
+        </div>
+        <div class="live-pill">
+            <span class="live-dot"></span>
+            Live News
+        </div>
     </div>
 
-    <script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}?v={{ $assetVersion }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js.map"></script>
-    <script src="{{ asset('assets/js/app.min.js') }}?v={{ $assetVersion }}"></script>
-    <script src="{{ asset('assets/js/main.js') }}?v={{ $assetVersion }}"></script>
+    <div class="mobile-ticker mobile-only">
+        <div class="ticker-track" style="animation-duration:28s;">
+            <span class="ticker-item">🔴 BREAKING: Climate Summit Opens in Geneva <span class="ticker-dot">•</span>
+                Markets Rally on Earnings <span class="ticker-dot">•</span> Scientists Announce Cancer Breakthrough
+                <span class="ticker-dot">•</span> ATANNEX EXCLUSIVE: The Housing Crisis <span class="ticker-dot">•</span></span>
+            <span class="ticker-item">🔴 BREAKING: Climate Summit Opens in Geneva <span class="ticker-dot">•</span>
+                Markets Rally on Earnings <span class="ticker-dot">•</span> Scientists Announce Cancer Breakthrough
+                <span class="ticker-dot">•</span> ATANNEX EXCLUSIVE: The Housing Crisis <span class="ticker-dot">•</span></span>
+        </div>
+    </div>
 
+    @yield('content')
+
+    <div id="toast"></div>
+    @livewireScripts
+    <script src="{{ asset('js/auth.js') }}"></script>
 </body>
 </html>
