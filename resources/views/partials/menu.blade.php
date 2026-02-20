@@ -16,16 +16,24 @@ $menu = displayGuestData($global['mainRegions']);
         </a>
     </li>
 
-    <li>
+    <li class="menu-item-has-children">
         <a href="{{ route('page.index', ['slug' => 'faq']) }}">
             {{ __('navigation.faqs') }}
         </a>
-    </li>
+        <ul class="sub-menu">
 
-    <li>
-        <a href="{{ route('page.index', ['slug' => 'testimonials']) }}">
-            {{ __('navigation.testimonials') }}
-        </a>
+            <li>
+                <a href="{{ route('page.index', ['slug' => 'faq']) }}">
+                    {{ __('navigation.faqs') }}
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('page.index', ['slug' => 'testimonials']) }}">
+                    {{ __('navigation.testimonials') }}
+                </a>
+            </li>
+        </ul>
     </li>
 
     <li class="menu-item-has-children">
@@ -64,5 +72,50 @@ $menu = displayGuestData($global['mainRegions']);
             {{ __('navigation.contact') }}
         </a>
     </li>
+
+    @guest
+    @if (Route::has('login'))
+    <li class="menu-item-has-children">
+        <a href="{{ route('login') }}">
+            {{ __('navigation.login') }}
+        </a>
+
+        <ul class="sub-menu">
+            <li>
+                <a href="{{ route('login') }}">
+                    {{ __('navigation.login') }}
+                </a>
+            </li>
+
+            @if (Route::has('register'))
+            <li>
+                <a href="{{ route('register') }}">
+                    {{ __('navigation.register') }}
+                </a>
+            </li>
+            @endif
+        </ul>
+    </li>
+    @endif
+    @else
+    <li class="menu-item-has-children">
+        <a href="javascript:void(0)">
+            {{ Auth::user()->name }}
+        </a>
+
+        <ul class="sub-menu">
+            <li>
+                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    {{ __('navigation.logout') }}
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+        @csrf
+    </form>
+    @endguest
+
 
 </ul>
