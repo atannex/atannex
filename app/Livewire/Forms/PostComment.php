@@ -12,15 +12,7 @@ use Livewire\Component;
 
 class PostComment extends Component
 {
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    //  Props
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
     public Model $commentable;
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    //  State
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     public string $newComment = '';
 
@@ -39,10 +31,6 @@ class PostComment extends Component
     #[Locked]
     public bool $hasMore = false;
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    //  Rate-limit constants
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
     private const COMMENT_MAX = 2;    // 5 comments
 
     private const COMMENT_TTL = 60;   // per 60 seconds
@@ -54,10 +42,6 @@ class PostComment extends Component
     private const LIKE_MAX = 30;   // 30 likes
 
     private const LIKE_TTL = 60;   // per 60 seconds
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    //  Lifecycle
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     public function mount(Model $commentable): void
     {
@@ -71,10 +55,6 @@ class PostComment extends Component
             'totalCount' => $this->totalCount,
         ]);
     }
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    //  Computed properties
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     public function getCommentsProperty(): Collection
     {
@@ -91,7 +71,7 @@ class PostComment extends Component
 
         return $results
             ->take($this->perPage)
-            ->map(fn (Comment $c) => $this->formatComment($c, Auth::user()));
+            ->map(fn(Comment $c) => $this->formatComment($c, Auth::user()));
     }
 
     public function getTotalCountProperty(): int
@@ -99,17 +79,10 @@ class PostComment extends Component
         return Comment::whereMorphedTo('commentable', $this->commentable)->count();
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    //  Actions — comments
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-    /**
-     * Post a new top-level comment.
-     */
     public function postComment(): void
     {
         $this->requireAuth();
-        $this->throttle('comment:'.Auth::id(), self::COMMENT_MAX, self::COMMENT_TTL, 'newComment');
+        $this->throttle('comment:' . Auth::id(), self::COMMENT_MAX, self::COMMENT_TTL, 'newComment');
         $this->validate(['newComment' => 'required|string|min:2|max:2000']);
 
         Comment::create([
@@ -124,13 +97,10 @@ class PostComment extends Component
         $this->reset('newComment');
     }
 
-    /**
-     * Post a reply to a comment or to an existing reply.
-     */
     public function postReply(): void
     {
         $this->requireAuth();
-        $this->throttle('reply:'.Auth::id(), self::REPLY_MAX, self::REPLY_TTL, 'replyText');
+        $this->throttle('reply:' . Auth::id(), self::REPLY_MAX, self::REPLY_TTL, 'replyText');
         $this->validate(['replyText' => 'required|string|min:2|max:1000']);
 
         $parent = Comment::findOrFail($this->replyingTo);
@@ -145,15 +115,11 @@ class PostComment extends Component
             'body' => $this->replyText,
         ]);
 
-        // Auto-expand the thread the new reply landed in
         $this->openReplies[$parent->id] = true;
 
         $this->resetReplyState();
     }
 
-    /**
-     * Delete a comment or reply (owner or admin only).
-     */
     public function deleteComment(int $commentId): void
     {
         $this->requireAuth();
@@ -169,17 +135,10 @@ class PostComment extends Component
         $comment->delete();
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    //  Actions — likes
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-    /**
-     * Toggle a like on any comment or reply.
-     */
     public function toggleLike(int $commentId): void
     {
         $this->requireAuth();
-        $this->throttle('like:'.Auth::id(), self::LIKE_MAX, self::LIKE_TTL, 'newComment');
+        $this->throttle('like:' . Auth::id(), self::LIKE_MAX, self::LIKE_TTL, 'newComment');
 
         $comment = Comment::findOrFail($commentId);
 
@@ -188,14 +147,6 @@ class PostComment extends Component
             : $comment->likes()->attach(Auth::id());
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    //  Actions — reply composer UI
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-    /**
-     * Open the reply composer targeting a specific comment or reply.
-     * Calling with the same targetId toggles it closed.
-     */
     public function startReply(int $targetId, int $rootId, ?string $mention = null): void
     {
         if ($this->replyingTo === $targetId) {
@@ -210,9 +161,6 @@ class PostComment extends Component
         $this->replyText = $mention ? "@{$mention} " : '';
     }
 
-    /**
-     * Expand or collapse a reply thread by comment ID.
-     */
     public function toggleReplies(int $commentId): void
     {
         if (isset($this->openReplies[$commentId])) {
@@ -222,23 +170,11 @@ class PostComment extends Component
         }
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    //  Actions — pagination
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
     public function loadMore(): void
     {
         $this->perPage += 10;
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    //  View helpers  (public — called from blade)
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-    /**
-     * Wrap @mentions in a highlight span.
-     * The body is HTML-escaped before matching, so this is XSS-safe.
-     */
     public function renderBody(string $body): string
     {
         return preg_replace_callback(
@@ -246,21 +182,17 @@ class PostComment extends Component
             static function (array $m): string {
                 $name = $m[1];
                 if (! empty($m[2])) {
-                    $name .= ' '.$m[2];
+                    $name .= ' ' . $m[2];
                 }
                 if (! empty($m[3])) {
-                    $name .= ' '.$m[3];
+                    $name .= ' ' . $m[3];
                 }
 
-                return '<span class="fb-at">@'.e($name).'</span>';
+                return '<span class="fb-at">@' . e($name) . '</span>';
             },
             e($body)
         );
     }
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    //  Private — data formatting
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     private function formatComment(Comment $comment, ?object $user): array
     {
@@ -274,7 +206,7 @@ class PostComment extends Component
             'isLiked' => $user ? $comment->likes->contains('id', $user->id) : false,
             'isOwner' => $user?->id === $comment->user_id,
             'replies' => $comment->directReplies
-                ->map(fn (Comment $r) => $this->formatReply($r, $comment->id, $user))
+                ->map(fn(Comment $r) => $this->formatReply($r, $comment->id, $user))
                 ->all(),
         ];
     }
@@ -292,15 +224,20 @@ class PostComment extends Component
             'isLiked' => $user ? $reply->likes->contains('id', $user->id) : false,
             'isOwner' => $user?->id === $reply->user_id,
             'subReplies' => $reply->directReplies
-                ->map(fn (Comment $s) => $this->formatReply($s, $rootId, $user))
+                ->map(fn(Comment $s) => $this->formatReply($s, $rootId, $user))
                 ->all(),
         ];
     }
 
     private function avatarUrl(object $user): string
     {
-        return $user->image
-            ?? 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=2d88ff&color=fff&bold=true';
+        if (!empty($user->image) && file_exists(public_path('storage/' . $user->image))) {
+            return asset('storage/' . $user->image);
+        }
+
+        return 'https://ui-avatars.com/api/?name='
+            . urlencode($user->name)
+            . '&background=2d88ff&color=fff&bold=true';
     }
 
     private function eagerLoadRelations(): array
@@ -315,24 +252,11 @@ class PostComment extends Component
         ];
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    //  Private — guards & utilities
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
     private function requireAuth(): void
     {
         abort_unless(Auth::check(), 401, 'You must be logged in.');
     }
 
-    /**
-     * Sliding-window rate limiter.
-     * Adds a Livewire field error and halts execution if the limit is exceeded.
-     *
-     * @param  string  $key  Unique key e.g. "comment:42"
-     * @param  int  $maxAttempts  Allowed attempts in the window
-     * @param  int  $decaySeconds  Window length in seconds
-     * @param  string  $field  Livewire field to attach the error to
-     */
     private function throttle(string $key, int $maxAttempts, int $decaySeconds, string $field): void
     {
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
@@ -340,7 +264,7 @@ class PostComment extends Component
 
             $this->addError(
                 $field,
-                "Slow down! You can try again in {$seconds} ".($seconds === 1 ? 'second' : 'seconds').'.'
+                "Slow down! You can try again in {$seconds} " . ($seconds === 1 ? 'second' : 'seconds') . '.'
             );
 
             return;
