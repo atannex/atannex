@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 :root {
-    --theme-color: #ff1d50;
+    --theme-color: #0c6baa;
     --theme-color2: #3d72fc;
     --title-color: #080809;
     --title-dark: #080809;
@@ -13,7 +13,7 @@
     --gray-color: #b5b5b5;
     --white-color: #ffffff;
     --light-color: #bdbdbd;
-    --body-bg: #fff;
+    --body-bg: #222425;
     --yellow-color: #ffb539;
     --success-color: #28a745;
     --error-color: #dc3545;
@@ -1202,7 +1202,7 @@ textarea.is-invalid {
     -webkit-transform: rotateX(-60deg) perspective(1000px);
     transform: rotateX(-60deg) perspective(1000px);
 }
-    .loader-img-wrapper {
+.loader-img-wrapper {
     display: inline-block;
     width: 200px;
     height: 200px;
@@ -1218,8 +1218,12 @@ textarea.is-invalid {
 }
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 .loader:before,
 .loader:after {
@@ -1247,28 +1251,46 @@ textarea.is-invalid {
         opacity: 1;
         -webkit-transform: rotate(0deg);
         transform: rotate(0deg);
-        -webkit-box-shadow: 0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor,
-            0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor,
-            0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor,
-            0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor;
-        box-shadow: 0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor,
-            0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor,
-            0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor,
-            0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor;
+        -webkit-box-shadow:
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor;
+        box-shadow:
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor;
     }
     100% {
         opacity: 0;
         -webkit-transform: rotate(180deg);
         transform: rotate(180deg);
-        -webkit-box-shadow: -1em -1em 0 -0.35em currentcolor,
-            0 -1.5em 0 -0.35em currentcolor, 1em -1em 0 -0.35em currentcolor,
-            -1.5em 0 0 -0.35em currentcolor, 1.5em 0 0 -0.35em currentcolor,
-            -1em 1em 0 -0.35em currentcolor, 0 1.5em 0 -0.35em currentcolor,
+        -webkit-box-shadow:
+            -1em -1em 0 -0.35em currentcolor,
+            0 -1.5em 0 -0.35em currentcolor,
+            1em -1em 0 -0.35em currentcolor,
+            -1.5em 0 0 -0.35em currentcolor,
+            1.5em 0 0 -0.35em currentcolor,
+            -1em 1em 0 -0.35em currentcolor,
+            0 1.5em 0 -0.35em currentcolor,
             1em 1em 0 -0.35em currentcolor;
-        box-shadow: -1em -1em 0 -0.35em currentcolor,
-            0 -1.5em 0 -0.35em currentcolor, 1em -1em 0 -0.35em currentcolor,
-            -1.5em 0 0 -0.35em currentcolor, 1.5em 0 0 -0.35em currentcolor,
-            -1em 1em 0 -0.35em currentcolor, 0 1.5em 0 -0.35em currentcolor,
+        box-shadow:
+            -1em -1em 0 -0.35em currentcolor,
+            0 -1.5em 0 -0.35em currentcolor,
+            1em -1em 0 -0.35em currentcolor,
+            -1.5em 0 0 -0.35em currentcolor,
+            1.5em 0 0 -0.35em currentcolor,
+            -1em 1em 0 -0.35em currentcolor,
+            0 1.5em 0 -0.35em currentcolor,
             1em 1em 0 -0.35em currentcolor;
     }
 }
@@ -1278,28 +1300,46 @@ textarea.is-invalid {
         opacity: 1;
         -webkit-transform: rotate(0deg);
         transform: rotate(0deg);
-        -webkit-box-shadow: 0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor,
-            0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor,
-            0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor,
-            0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor;
-        box-shadow: 0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor,
-            0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor,
-            0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor,
-            0 0 0 -0.5em currentcolor, 0 0 0 -0.5em currentcolor;
+        -webkit-box-shadow:
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor;
+        box-shadow:
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor,
+            0 0 0 -0.5em currentcolor;
     }
     100% {
         opacity: 0;
         -webkit-transform: rotate(180deg);
         transform: rotate(180deg);
-        -webkit-box-shadow: -1em -1em 0 -0.35em currentcolor,
-            0 -1.5em 0 -0.35em currentcolor, 1em -1em 0 -0.35em currentcolor,
-            -1.5em 0 0 -0.35em currentcolor, 1.5em 0 0 -0.35em currentcolor,
-            -1em 1em 0 -0.35em currentcolor, 0 1.5em 0 -0.35em currentcolor,
+        -webkit-box-shadow:
+            -1em -1em 0 -0.35em currentcolor,
+            0 -1.5em 0 -0.35em currentcolor,
+            1em -1em 0 -0.35em currentcolor,
+            -1.5em 0 0 -0.35em currentcolor,
+            1.5em 0 0 -0.35em currentcolor,
+            -1em 1em 0 -0.35em currentcolor,
+            0 1.5em 0 -0.35em currentcolor,
             1em 1em 0 -0.35em currentcolor;
-        box-shadow: -1em -1em 0 -0.35em currentcolor,
-            0 -1.5em 0 -0.35em currentcolor, 1em -1em 0 -0.35em currentcolor,
-            -1.5em 0 0 -0.35em currentcolor, 1.5em 0 0 -0.35em currentcolor,
-            -1em 1em 0 -0.35em currentcolor, 0 1.5em 0 -0.35em currentcolor,
+        box-shadow:
+            -1em -1em 0 -0.35em currentcolor,
+            0 -1.5em 0 -0.35em currentcolor,
+            1em -1em 0 -0.35em currentcolor,
+            -1.5em 0 0 -0.35em currentcolor,
+            1.5em 0 0 -0.35em currentcolor,
+            -1em 1em 0 -0.35em currentcolor,
+            0 1.5em 0 -0.35em currentcolor,
             1em 1em 0 -0.35em currentcolor;
     }
 }
@@ -1354,7 +1394,9 @@ textarea.is-invalid {
     -webkit-transition: 0.4s -webkit-transform ease-in-out;
     transition: 0.4s -webkit-transform ease-in-out;
     transition: 0.4s transform ease-in-out;
-    transition: 0.4s transform ease-in-out, 0.4s -webkit-transform ease-in-out;
+    transition:
+        0.4s transform ease-in-out,
+        0.4s -webkit-transform ease-in-out;
 }
 .th-btn:hover,
 .th-btn.active {
@@ -4124,7 +4166,9 @@ ol.wp-block-rss {
     -webkit-transition: 0.3s -webkit-transform ease-in-out;
     transition: 0.3s -webkit-transform ease-in-out;
     transition: 0.3s transform ease-in-out;
-    transition: 0.3s transform ease-in-out, 0.3s -webkit-transform ease-in-out;
+    transition:
+        0.3s transform ease-in-out,
+        0.3s -webkit-transform ease-in-out;
 }
 .footer-widget.widget_meta a:hover,
 .footer-widget.widget_pages a:hover,
@@ -4362,7 +4406,9 @@ ol.wp-block-rss {
     -webkit-transition: 0.4s -webkit-transform ease-in-out;
     transition: 0.4s -webkit-transform ease-in-out;
     transition: 0.4s transform ease-in-out;
-    transition: 0.4s transform ease-in-out, 0.4s -webkit-transform ease-in-out;
+    transition:
+        0.4s transform ease-in-out,
+        0.4s -webkit-transform ease-in-out;
 }
 .main-menu ul li.menu-item-has-children > a:hover:after {
     content: "\f078";
@@ -6559,7 +6605,9 @@ ul.comment-list:has(> .th-comment-item ~ .th-comment-item):first-child
     -webkit-transition: -webkit-transform ease 0.4s;
     transition: -webkit-transform ease 0.4s;
     transition: transform ease 0.4s;
-    transition: transform ease 0.4s, -webkit-transform ease 0.4s;
+    transition:
+        transform ease 0.4s,
+        -webkit-transform ease 0.4s;
     margin: 0 12px 0 0;
     /* Large devices */
 }

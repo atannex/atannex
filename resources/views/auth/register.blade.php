@@ -4,12 +4,9 @@
 <div class="wrapper">
     <div class="editorial-panel editorial-panel--register">
         <div class="glow-blob-register"></div>
-
         <div class="ep-logo">
-            <div class="ep-logo-mark"><span>A</span></div>
             <div>
-                <div class="ep-name">ATANNEX</div>
-                <div class="ep-name-underline"></div>
+                <img class="dark-img img-fluid" src="{{ asset('auth.png') }}" alt="{{ config('app.name', 'Website') }}" style="max-width: 98px; height: 98px; object-fit: cover;">
             </div>
         </div>
 
