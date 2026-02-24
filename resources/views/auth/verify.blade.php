@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', seo_title('Almost There - Verify Your Email!'))
+
 @section('content')
 <div class="wrapper">
     <div class="editorial-panel editorial-panel--verify">

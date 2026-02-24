@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('og:title', seo_title('Welcome Back to Atannex!'))
+@section('title', seo_title('Welcome Back to Atannex!'))
 
 @section('content')
 <div class="wrapper">

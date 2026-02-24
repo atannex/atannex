@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', seo_title('Verify It\'s Really You'))
+
 @section('content')
 <div class="wrapper">
     <div class="editorial-panel editorial-panel--confirm">

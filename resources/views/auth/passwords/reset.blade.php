@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
+@section('title', seo_title('Create Your New Password'))
+
 @section('content')
 
 <div class="wrapper">
     <div class="editorial-panel editorial-panel--reset">
         <div class="glow-blob-reset"></div>
-
-        {{-- Logo --}}
         <div class="ep-logo">
             <div class="ep-logo-mark"><span>A</span></div>
             <div>
@@ -14,8 +14,6 @@
                 <div class="ep-name-underline"></div>
             </div>
         </div>
-
-        {{-- Ticker --}}
         <div class="ticker-wrap">
             <div class="ticker-track">
                 <span class="ticker-item">
@@ -40,8 +38,6 @@
                 </span>
             </div>
         </div>
-
-        {{-- Hero --}}
         <div class="ep-hero">
             <div class="ep-eyebrow">{{ __('Account Security') }}</div>
             <h1 class="ep-headline">
@@ -52,8 +48,6 @@
             <p class="ep-desc">
                 {{ __("Almost there. Create a strong new password and you'll be back to the news in seconds.") }}
             </p>
-
-            {{-- Left panel step tracker — Steps 1 & 2 are done, Step 3 is active --}}
             <div class="security-steps">
                 <div class="security-step done">
                     <div class="sec-step-num">
@@ -92,8 +86,6 @@
                     </div>
                 </div>
             </div>
-
-            {{-- Security badge --}}
             <div class="security-badge">
                 <div class="security-badge-icon">
                     <svg width="20" height="20" fill="none" stroke="#00b8a0" stroke-width="1.8" viewBox="0 0 24 24">
@@ -106,8 +98,6 @@
                 </div>
             </div>
         </div>
-
-        {{-- Stats --}}
         <div class="stats-bar">
             <div class="stat-item">
                 <div class="stat-num">14M+</div>
@@ -250,14 +240,13 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                         </svg>
                     </button>
-
                 </form>
             </div>
-
         </div>
 
         @include('auth.partials.form-footer')
 
     </div>
 </div>
+
 @endsection

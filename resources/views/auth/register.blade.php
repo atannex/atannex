@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', seo_title('Join Our Community!'))
+
 @section('content')
 <div class="wrapper">
     <div class="editorial-panel editorial-panel--register">

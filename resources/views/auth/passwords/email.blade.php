@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', seo_title('Reset Your Password'))
+
 @section('content')
 
 @php
@@ -14,38 +16,6 @@ $isThrottled = $status === $throttleMessage;
 
 $sentEmail = old('email', request('email'));
 @endphp
-
-<div class="form-topbar mobile-topbar">
-    <div style="display:flex;align-items:center;gap:10px;">
-        <div class="mobile-logo-mark"><span>A</span></div>
-        <span class="mobile-logo-name">ATANNEX</span>
-    </div>
-    <div class="live-pill">
-        <span class="live-dot"></span>
-        {{ __('Live News') }}
-    </div>
-</div>
-
-<div class="mobile-ticker mobile-only">
-    <div class="ticker-track" style="animation-duration:32s;">
-        <span class="ticker-item">
-            🔴 {{ __('BREAKING: Climate Emergency Summit Opens in Geneva') }}
-            <span class="ticker-dot">•</span>
-            {{ __('Markets Rally on Strong Tech Earnings') }}
-            <span class="ticker-dot">•</span>
-            {{ __('Scientists Announce Major Breakthrough') }}
-            <span class="ticker-dot">•</span>
-        </span>
-        <span class="ticker-item">
-            🔴 {{ __('BREAKING: Climate Emergency Summit Opens in Geneva') }}
-            <span class="ticker-dot">•</span>
-            {{ __('Markets Rally on Strong Tech Earnings') }}
-            <span class="ticker-dot">•</span>
-            {{ __('Scientists Announce Major Breakthrough') }}
-            <span class="ticker-dot">•</span>
-        </span>
-    </div>
-</div>
 
 <div class="wrapper">
     <div class="editorial-panel editorial-panel--reset">
