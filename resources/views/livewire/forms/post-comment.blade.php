@@ -279,8 +279,15 @@
     </div>
     @error('newComment') <div class="fb-error" style="padding:4px 20px 8px;background:var(--fb-surface2);">{{ $message }}</div> @enderror
     @else
-    <div class="fb-guest-prompt">
-        <span>{{ __("to join the conversation.") }}</span>
+    <div class="fb-guest-prompt ">
+        <i class="fas fa-lock me-1"></i>
+        <span>
+            {{ __('Login to comment.') }}
+
+        <a href="{{ route('login') }}" class="fw-semibold text-decoration-none ms-1">
+            {{ __('Login') }}
+        </a>
+        </span>
     </div>
     @endauth
 </div>
