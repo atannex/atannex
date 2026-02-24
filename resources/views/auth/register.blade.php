@@ -4,9 +4,7 @@
 <div class="wrapper">
     <div class="editorial-panel editorial-panel--register">
         <div class="glow-blob-register"></div>
-
         <div class="ep-logo">
-            <div class="ep-logo-mark"><span>A</span></div>
             <div>
                 <div class="ep-name">ATANNEX</div>
                 <div class="ep-name-underline"></div>

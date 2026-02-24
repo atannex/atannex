@@ -31,14 +31,19 @@
                         <ul class="mb-0 list-unstyled d-flex align-items-center">
                             <li class="d-none d-sm-inline-block me-3">
                                 <i class="fas fa-user"></i>
+                                @auth
                                 <a href="{{ url('/admin') }}" class="text-decoration-none">
-                                    {{ __("Login") }}
+                                    {{ auth()->user()->name }}
                                 </a>
+                                @else
+                                <a href="{{ route('login') }}" class="text-decoration-none">
+                                    {{ __('Login') }}
+                                </a>
+                                @endauth
                             </li>
                             <li>
                                 @include('partials.social-links')
                             </li>
-
                         </ul>
                     </div>
                 </div>
