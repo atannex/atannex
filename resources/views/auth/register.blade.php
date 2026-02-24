@@ -6,7 +6,8 @@
         <div class="glow-blob-register"></div>
         <div class="ep-logo">
             <div>
-                <img class="dark-img img-fluid" src="{{ asset('auth.png') }}" alt="{{ config('app.name', 'Website') }}" style="max-width: 98px; height: 98px; object-fit: cover;">
+                <div class="ep-name">ATANNEX</div>
+                <div class="ep-name-underline"></div>
             </div>
         </div>
 
