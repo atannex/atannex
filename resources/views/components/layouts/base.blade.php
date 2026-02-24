@@ -8,60 +8,11 @@
     $assetVersion = '1.0.3';
     @endphp
 
-    <!-- =========================
-         ANALYTICS / TAG MANAGER
-    ========================== -->
     <x-layouts.googletagmanager />
 
-    <!-- =========================
-         CORE DOCUMENT META
-    ========================== -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src
-      'self'
-      'unsafe-inline'
-      'unsafe-eval'
-      https://cdnjs.cloudflare.com
-      https://cdn.plyr.io
-      https://www.googletagmanager.com
-      https://www.google-analytics.com
-      https://*.google.com;
-    style-src
-      'self'
-      'unsafe-inline'
-      https://fonts.googleapis.com
-      https://cdn.plyr.io
-      https://cdnjs.cloudflare.com;
-    font-src
-      'self'
-      https://fonts.gstatic.com
-      https://cdnjs.cloudflare.com;
-    img-src
-      'self'
-      data:
-      blob:
-      https:;
-    media-src
-      'self'
-      blob:
-      https:
-      data:;
-    connect-src
-      'self'
-      blob:
-      https://www.google-analytics.com
-      https://www.googletagmanager.com;
-    frame-src
-      'self'
-      https://www.googletagmanager.com;
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self';
-  ">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
@@ -69,9 +20,6 @@
     <meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
     <meta name="color-scheme" content="light dark">
 
-    <!-- =========================
-         APPLICATION IDENTITY & BASIC SEO
-    ========================== -->
     <title>
         @hasSection('title')
         @yield('title')
@@ -87,9 +35,6 @@
     <meta name="application-name" content="{{ config('app.name') }}">
     <meta name="generator" content="Laravel {{ app()->version() }} + Custom Enterprise Stack">
 
-    <!-- =========================
-         SEARCH ENGINE & CRAWLER DIRECTIVES
-    ========================== -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-video-preview:-1, max-snippet:-1">
     <meta name="googlebot" content="index, follow, max-image-preview:large, max-video-preview:-1, max-snippet:-1">
     <meta name="googlebot-news" content="index, follow">
@@ -98,9 +43,6 @@
     <meta name="msnbot" content="index, follow">
     <link rel="canonical" href="{{ rtrim(url()->current(), '/') }}">
 
-    <!-- =========================
-         OPEN GRAPH (Facebook, LinkedIn, WhatsApp, etc.)
-    ========================== -->
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="@yield('og:type', 'website')">
     <meta property="og:title" content="@yield('og:title', config('app.title'))">
@@ -130,10 +72,6 @@
     <meta property="article:author" content="@yield('og:author')">
     @endif
 
-
-    <!-- =========================
-         TWITTER / X CARDS (still widely used)
-    ========================== -->
     <meta name="twitter:card" content="@yield('twitter:card', 'summary_large_image')">
     <meta name="twitter:title" content="@yield('twitter:title', config('app.title'))">
     <meta name="twitter:description" content="@yield('twitter:description', config('app.description'))">
@@ -150,9 +88,6 @@
     <meta name="twitter:player:stream" content="@yield('twitter:player:stream')">
     @endif
 
-    <!-- =========================
-         VIDEO / MEDIA OPEN GRAPH (if needed)
-    ========================== -->
     @hasSection('og:video')
     <meta property="og:video" content="@yield('og:video')">
     <meta property="og:video:secure_url" content="@yield('og:video')">
@@ -161,9 +96,6 @@
     <meta property="og:video:height" content="720">
     @endif
 
-    <!-- =========================
-         ICONS, PWA & APPLE TOUCH (modern / enterprise)
-    ========================== -->
     @php
     $favicon = optional($global['favicon'])->image
     ? asset('storage/' . $global['favicon']->image)
@@ -185,9 +117,6 @@
     <meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-    <!-- =========================
-         PERFORMANCE & RESOURCE HINTS
-    ========================== -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
@@ -197,9 +126,6 @@
 
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    <!-- =========================
-         STRUCTURED DATA (enhanced Organization + WebSite)
-    ========================== -->
     @verbatim
     <script type="application/ld+json">
         {
@@ -253,9 +179,6 @@
     </script>
     @endverbatim
 
-    <!-- =========================
-         STYLES & SCRIPTS
-    ========================== -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}?v={{ $assetVersion }}">

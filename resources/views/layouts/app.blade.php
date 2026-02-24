@@ -4,61 +4,11 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- =========================
-         ANALYTICS / TAG MANAGER
-    ========================== -->
-
     <x-layouts.googletagmanager />
 
-    <!-- =========================
-         CORE DOCUMENT META
-    ========================== -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src
-      'self'
-      'unsafe-inline'
-      'unsafe-eval'
-      https://cdnjs.cloudflare.com
-      https://cdn.plyr.io
-      https://www.googletagmanager.com
-      https://www.google-analytics.com
-      https://*.google.com;
-    style-src
-      'self'
-      'unsafe-inline'
-      https://fonts.googleapis.com
-      https://cdn.plyr.io
-      https://cdnjs.cloudflare.com;
-    font-src
-      'self'
-      https://fonts.gstatic.com
-      https://cdnjs.cloudflare.com;
-    img-src
-      'self'
-      data:
-      blob:
-      https:;
-    media-src
-      'self'
-      blob:
-      https:
-      data:;
-    connect-src
-      'self'
-      blob:
-      https://www.google-analytics.com
-      https://www.googletagmanager.com;
-    frame-src
-      'self'
-      https://www.googletagmanager.com;
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self';
-  ">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
@@ -66,9 +16,6 @@
     <meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
     <meta name="color-scheme" content="light dark">
 
-    <!-- =========================
-         APPLICATION IDENTITY & BASIC SEO
-    ========================== -->
     <title>
         @hasSection('title')
         @yield('title')
@@ -84,9 +31,6 @@
     <meta name="application-name" content="{{ config('app.name') }}">
     <meta name="generator" content="Laravel {{ app()->version() }} + Custom Enterprise Stack">
 
-    <!-- =========================
-         SEARCH ENGINE & CRAWLER DIRECTIVES
-    ========================== -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-video-preview:-1, max-snippet:-1">
     <meta name="googlebot" content="index, follow, max-image-preview:large, max-video-preview:-1, max-snippet:-1">
     <meta name="googlebot-news" content="index, follow">
@@ -95,10 +39,6 @@
     <meta name="msnbot" content="index, follow">
     <link rel="canonical" href="{{ rtrim(url()->current(), '/') }}">
 
-
-    <!-- =========================
-         ICONS, PWA & APPLE TOUCH (modern / enterprise)
-    ========================== -->
     @php
     $favicon = optional($global['favicon'])->image
     ? asset('storage/' . $global['favicon']->image)
@@ -137,9 +77,6 @@
 
     </script>
 
-    <!-- =========================
-         PERFORMANCE & RESOURCE HINTS
-    ========================== -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
@@ -147,9 +84,6 @@
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
     <link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
 
-    <!-- =========================
-         STRUCTURED DATA (enhanced Organization + WebSite)
-    ========================== -->
     @verbatim
     <script type="application/ld+json">
         {
