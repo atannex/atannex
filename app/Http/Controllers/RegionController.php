@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Atannex\Binders\HasView;
 use Atannex\Concerns\HasDocument;
-use Atannex\Concerns\HasResolver;
 use Atannex\Services\RegionService;
 use Atannex\Traits\HandlesPostDateResolution;
 use Illuminate\View\View;
@@ -13,7 +12,6 @@ class RegionController extends Controller
 {
     use HandlesPostDateResolution;
     use HasDocument;
-    use HasResolver;
 
     protected const SUPPORTED_DOCUMENT_TYPES = [
         'privacy',
@@ -86,7 +84,7 @@ class RegionController extends Controller
 
     protected function resolveSingleDocument(string $slug): ?View
     {
-        if (! $this->documentExists($slug)) {
+        if (! document_exists($slug)) {
             return null;
         }
 
@@ -115,24 +113,21 @@ class RegionController extends Controller
             ->renderDateView($archive['year'], $archive['month'], $archive['type']);
     }
 
-    /**
-     * Uses HasResolver trait methods cleanly here.
-     */
     protected function resolveContentEntities(string $slug): ?View
     {
-        if ($this->postExists($slug)) {
+        if (post_exists($slug)) {
             return $this->viewBinder->renderPostShow($slug);
         }
 
-        if ($this->authorExists($slug)) {
+        if (author_exists($slug)) {
             return $this->viewBinder->renderAuthorView($slug);
         }
 
-        if ($this->tagExists($slug)) {
+        if (tag_exists($slug)) {
             return $this->viewBinder->renderTagView($slug);
         }
 
-        if ($this->categoryExists($slug)) {
+        if (category_exists($slug)) {
             return $this->viewBinder->renderCategoryView($slug);
         }
 

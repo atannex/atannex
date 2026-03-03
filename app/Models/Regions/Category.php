@@ -9,7 +9,6 @@ use App\Enums\Flag;
 use App\Models\Pivots\CategorySection;
 use App\Models\Posts\Post;
 use App\Models\Posts\Video;
-use Atannex\Concerns\HasResolver;
 use Atannex\Enables\Scoping;
 use Atannex\Enables\Slugging;
 use Atannex\Filters\Hierarchy;
@@ -21,7 +20,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model implements Sluggable
 {
-    use HasResolver;
     use HasSlugPath;
     use Hierarchy;
     use Scoping;

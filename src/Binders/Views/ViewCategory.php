@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Atannex\Binders\Views;
 
-use Atannex\Concerns\HasResolver;
 use Illuminate\View\View;
 
 trait ViewCategory
 {
-    use HasResolver;
-
     /**
      * Render category page.
      */
