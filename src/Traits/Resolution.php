@@ -16,15 +16,12 @@ trait Resolution
     /**
      * Resolve sections and widgets for a region.
      */
-    protected function resolveSection(
-        Region $region,
-        int $sectionLimit = 6,
-        int $widgetLimit = 3
-    ): void {
+    protected function resolveSection(Region $region, int $sectionLimit = 6, int $widgetLimit = 3): void
+    {
         $sections = $region->sections()
             ->limit($sectionLimit)
             ->with([
-                'widgets' => fn ($query) => $query->wherePivot('region_id', $region->id)
+                'widgets' => fn($query) => $query->wherePivot('region_id', $region->id)
                     ->limit($widgetLimit),
             ])
             ->get();
@@ -54,11 +51,8 @@ trait Resolution
     /**
      * Attach resolved tabs to entity.
      */
-    private function resolveEntityContent(
-        object $entity,
-        array $config,
-        string $tabKey
-    ): void {
+    private function resolveEntityContent(object $entity, array $config, string $tabKey): void
+    {
         if (empty($config[$tabKey]) || ! is_array($config[$tabKey])) {
             $entity->setRelation('tabs', collect());
 
@@ -66,7 +60,7 @@ trait Resolution
         }
 
         $tabs = collect($config[$tabKey])
-            ->map(fn (array $tab) => $this->resolveSingleTab($tab))
+            ->map(fn(array $tab) => $this->resolveSingleTab($tab))
             ->values();
 
         $entity->setRelation('tabs', $tabs);
@@ -95,11 +89,8 @@ trait Resolution
     /**
      * Execute tab query with memoization (performance optimized).
      */
-    private function resolveTab(
-        array $tab,
-        array $mapping,
-        ?string $key = null
-    ): mixed {
+    private function resolveTab(array $tab, array $mapping, ?string $key = null): mixed
+    {
         $params = [
             'limit' => $tab['limit'],
             'relation_limit' => $tab['relation_limit'],
