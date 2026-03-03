@@ -2,16 +2,17 @@
 
 namespace Atannex\Facades;
 
+use App\Enums\Flag;
 use App\Enums\Image;
+use App\Models\Others\Gallery;
+use App\Models\Others\SocialMedia;
 use Atannex\Binders\HasPost;
-use Atannex\Helpers\HasMedia;
 use Atannex\Services\RegionService;
 use Atannex\Services\TagService;
+use Illuminate\Support\Collection;
 
 final class Lebialem
 {
-    use HasMedia;
-
     public function __construct(
         protected readonly RegionService $regionService,
         protected readonly TagService $tagService,
@@ -43,4 +44,29 @@ final class Lebialem
             'breaking' => $breakingPosts->isNotEmpty() ? $breakingPosts : $recentPosts,
         ];
     }
+
+    /**
+     * Retrieve a single published gallery image of the given type.
+     */
+    protected function getGalleryImage(Image $type): ?Gallery
+    {
+        return Gallery::flagged(Flag::PUBLISHED())
+            ->whereType($type)
+            ->first();
+    }
+
+    /**
+     * Retrieve all published global social media entries mapped with icons and metadata.
+     */
+    protected function getSocialMediaIcons(): Collection
+    {
+        return SocialMedia::query()
+            ->where('flag', Flag::PUBLISHED)
+            ->where('is_global', true)
+            ->orderBy('order')
+            ->get()
+            ->map(fn(SocialMedia $media) => map_social_media($media))
+            ->values();
+    }
+
 }

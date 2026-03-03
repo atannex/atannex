@@ -57,12 +57,8 @@
     },
     "autoload": {
         "files": [
-            "morfaw/Helpers/CategoryHelper.php",
-            "morfaw/Helpers/SeoHelper.php",
-            "morfaw/Helpers/PostHelper.php",
-            "morfaw/Helpers/NumberHelper.php",
-            "morfaw/Helpers/GuestUiHelper.php",
-            "morfaw/Traits/CanNormalize.php"
+            "helper.php",
+            "global_helper.php"
         ],
         "psr-4": {
             "App\\": "app/",

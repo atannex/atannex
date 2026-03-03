@@ -11,8 +11,6 @@ use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
 use App\Models\Regions\Region;
 use App\Models\Tags\Tag;
-use Atannex\Concerns\HasResolver;
-use Atannex\Helpers\HasMedia;
 use Atannex\Traits\HandlesPostDateResolution;
 use Atannex\Traits\HasTree;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -21,8 +19,6 @@ use Illuminate\Support\Collection;
 final class CategoryService
 {
     use HandlesPostDateResolution;
-    use HasMedia;
-    use HasResolver;
     use HasTree;
 
     protected const CATEGORY_LIMIT = 12;
@@ -51,7 +47,7 @@ final class CategoryService
             ->nonGlobal()
             ->ordered()
             ->get()
-            ->map(fn (SocialMedia $media) => $this->mapSocialMedia($media))
+            ->map(fn (SocialMedia $media) => map_social_media($media))
             ->filter()
             ->values();
     }
