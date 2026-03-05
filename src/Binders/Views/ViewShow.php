@@ -35,10 +35,10 @@ trait ViewShow
             'popularTags' => $this->tagService->popularTagsByPost($post),
             'relatedTags' => $this->tagService->relatedTagsByPost($post),
             'relatedCategories' => $this->categoryService->relatedCategoriesByPost($post),
-            'recentPosts' => $this->postService->recentPostsByPost($post),
-            'relatedPosts' => $this->postService->relatedPosts($post),
+            'recentPosts' => $this->postService->getRecentPostsByPost($post),
+            'relatedPosts' => $this->postService->getRelatedPosts($post),
 
-            'navigation' => $this->getPost->hasPostNavigation($post),
+            'navigation' => $this->postService->getPostNavigation($post),
             'medias' => $this->categoryService->employeeSocial($post->author),
             'icons' => $icons,
             'seoTitle' => seo_title($post->title ?? $post->slug),
