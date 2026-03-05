@@ -25,7 +25,6 @@ final class HasView
         protected readonly Atannex $atannex,
         protected readonly TagService $tagService,
         protected readonly CategoryService $categoryService,
-        protected readonly HasPost $getPost,
         protected readonly ShareService $shareService,
         protected readonly PostService $postService,
         protected readonly AuthorService $authorService,
