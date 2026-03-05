@@ -28,7 +28,7 @@ trait HasTree
             ->push($node->getKey());
 
         if ($excludeId !== null) {
-            $ids = $ids->reject(fn ($id) => $id === $excludeId);
+            $ids = $ids->reject(fn($id) => $id === $excludeId);
         }
 
         return $ids->unique()->values();
@@ -40,15 +40,12 @@ trait HasTree
     protected function getLeafNodes(Model $node, ?string $contentRelation = null, ?string $filterScope = null, ?int $excludeId = null, int $limit = 12, string $direction = 'desc'): Collection
     {
         $query = $node->newQuery()
-            ->whereIn(
-                $node->getKeyName(),
-                $this->getTreeIds($node, $excludeId)
-            )
+            ->whereIn($node->getKeyName(), $this->getTreeIds($node, $excludeId))
             ->whereDoesntHave('children');
 
         if ($contentRelation && $filterScope) {
             $query->withCount([
-                "{$contentRelation} as total_count" => fn (Builder $q) => $q->{$filterScope}(),
+                "{$contentRelation} as total_count" => fn(Builder $q) => $q->{$filterScope}(),
             ])->orderBy('total_count', $direction);
         }
 
@@ -88,20 +85,9 @@ trait HasTree
     protected function attachContentToNode(Model $node, string $childrenRelation, string $contentRelation, int $leafLimit, int $totalLimit, string $sortField = 'published_at', string $order = 'desc'): Model
     {
         $content = $node->$contentRelation
-            ->merge(
-                $this->collectLeafContent(
-                    $node,
-                    $childrenRelation,
-                    $contentRelation,
-                    $leafLimit
-                )
-            )
+            ->merge($this->collectLeafContent($node, $childrenRelation, $contentRelation, $leafLimit))
             ->unique('id')
-            ->sortBy(
-                $sortField,
-                SORT_REGULAR,
-                $order === 'desc'
-            )
+            ->sortBy($sortField, SORT_REGULAR, $order === 'desc')
             ->take($totalLimit)
             ->values();
 

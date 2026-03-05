@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Flag;
 use App\Http\Traits\HasAbout;
 use App\Http\Traits\HasContact;
-use App\Models\Posts\Video;
-use Atannex\Binders\HasPost;
-use Illuminate\Support\Collection;
+use Atannex\Services\PostService;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -19,7 +16,7 @@ class HomeController extends Controller
      * Create a new controller instance.
      */
     public function __construct(
-        protected readonly HasPost $postService
+        protected readonly PostService $postService,
     ) {}
 
     /**
@@ -29,9 +26,7 @@ class HomeController extends Controller
     {
         return view('home', array_merge(
             $this->getPostsData(),
-            [
-                'videos' => $this->videos(6),
-            ]
+            ['videos' => $this->postService->getLatestPublishedVideos(6)]
         ));
     }
 
@@ -43,38 +38,13 @@ class HomeController extends Controller
     private function getPostsData(): array
     {
         return [
-            'byRecent' => $this->postService->hasRecentPosts(6),
-            'byRegion' => $this->postService->hasRegionWithPost(6),
-            'byEnvironment' => $this->postService->categoriesWithPostsByName('Environment', 5),
-            'byHistory' => $this->postService->categoriesWithPostsByName('History', 20),
-            'byNews' => $this->postService->categoriesWithPostsByName('News', 3),
-            'byCommunity' => $this->postService->categoriesWithPostsByName('Community', 10),
-            'byRuler' => $this->postService->categoriesWithPostsByName('Rulers', 10),
+            'byRecent' => $this->postService->getRecentPosts(6),
+            'byRegion' => $this->postService->getRegionsWithPosts(6),
+            'byEnvironment' => $this->postService->getCategoriesWithPostsByName('Environment', 5),
+            'byHistory' => $this->postService->getCategoriesWithPostsByName('History', 20),
+            'byNews' => $this->postService->getCategoriesWithPostsByName('News', 3),
+            'byCommunity' => $this->postService->getCategoriesWithPostsByName('Community', 10),
+            'byRuler' => $this->postService->getCategoriesWithPostsByName('Rulers', 10),
         ];
-    }
-
-    /**
-     * Retrieve the most recent published videos
-     * that are associated with published posts.
-     *
-     * @param  int  $limit  Maximum number of videos to return.
-     */
-    private function videos(int $limit = 6): Collection
-    {
-        return Video::query()
-            ->with([
-                'post:id,title,slug,slug_path,published_at,category_id,author_id',
-                'post.category:id,name,slug_path',
-                'post.author:id,user_id',
-                'post.author.user:id,name,slug',
-            ])
-            ->where('flag', Flag::PUBLISHED)
-            ->published()
-            ->whereHas('post', static function ($query) {
-                $query->published();
-            })
-            ->latest('published_at')
-            ->limit($limit)
-            ->get();
     }
 }
