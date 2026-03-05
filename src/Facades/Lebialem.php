@@ -6,7 +6,7 @@ use App\Enums\Flag;
 use App\Enums\Image;
 use App\Models\Others\Gallery;
 use App\Models\Others\SocialMedia;
-use Atannex\Binders\HasPost;
+use Atannex\Services\PostService;
 use Atannex\Services\RegionService;
 use Atannex\Services\TagService;
 use Illuminate\Support\Collection;
@@ -16,15 +16,15 @@ final class Lebialem
     public function __construct(
         protected readonly RegionService $regionService,
         protected readonly TagService $tagService,
-        protected readonly HasPost $getPosts,
+        protected readonly PostService $post_service,
     ) {}
 
     public function getGlobalData(): array
     {
         $regions = $this->regionService->getRootRegions();
 
-        $recentPosts = $this->getPosts->hasRecentPosts(2);
-        $breakingPosts = $this->getPosts->hasBreakingPosts();
+        $recentPosts = $this->post_service->getRecentPosts(2);
+        $breakingPosts = $this->post_service->getLatestBreakingPosts();
 
         return [
             'cover' => $this->getGalleryImage(Image::COVER()),

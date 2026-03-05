@@ -24,9 +24,7 @@ trait ViewShow
         $post = $module->post;
 
         $icons = collect(self::SUPPORTED_PLATFORMS)
-            ->mapWithKeys(
-                fn (string $platform) => [$platform => Icon::getData($platform)]
-            )
+            ->mapWithKeys(fn (string $platform) => [$platform => Icon::getData($platform)])
             ->toArray();
 
         return view('shows.index', [
