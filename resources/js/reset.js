@@ -4,10 +4,8 @@
  */
 
 /**
- * Set the element with id "timezone" to the user's IANA timezone.
- *
- * If the element is missing, no change is made and a warning is logged.
- * If determining the timezone fails, an error is logged.
+ * Initializes timezone input with the user's current timezone.
+ * @function initializeTimezone
  * @private
  */
 function initializeTimezone() {
@@ -24,9 +22,10 @@ function initializeTimezone() {
 }
 
 /**
- * Calculates a password strength score based on length and character variety.
- * @param {string} password - The password to evaluate.
- * @returns {number} A number between 0 and 5 inclusive where higher values indicate stronger passwords.
+ * Evaluates password strength based on defined criteria.
+ * @function calculatePasswordStrength
+ * @param {string} password - The password to evaluate
+ * @returns {number} Strength score (0-5)
  * @private
  */
 function calculatePasswordStrength(password) {
@@ -40,11 +39,11 @@ function calculatePasswordStrength(password) {
 }
 
 /**
- * Update UI elements to reflect a password strength score.
- *
- * @param {number} strength - Strength score from 0 to 5 where higher is stronger.
- * @param {HTMLElement} strengthBar - Progress indicator element whose width and styling will reflect strength.
- * @param {HTMLElement} strengthText - Text element that will display the strength label and receive styling.
+ * Updates the password strength UI based on the strength score.
+ * @function updateStrengthUI
+ * @param {number} strength - The password strength score (0-5)
+ * @param {HTMLElement} strengthBar - The progress bar element
+ * @param {HTMLElement} strengthText - The strength text element
  * @private
  */
 function updateStrengthUI(strength, strengthBar, strengthText) {
@@ -69,11 +68,12 @@ function updateStrengthUI(strength, strengthBar, strengthText) {
 }
 
 /**
- * Update the provided status element to indicate whether the password and confirmation values match.
- * If the confirmation is empty, the status element is cleared.
- * @param {HTMLInputElement} passwordInput - The password input element whose value is compared.
- * @param {HTMLInputElement} passwordConfirm - The confirmation input element to compare against the password.
- * @param {HTMLElement} matchText - The element used to display the match status; text and color classes will be set.
+ * Checks if the password and confirmation inputs match.
+ * @function checkPasswordMatch
+ * @param {HTMLInputElement} passwordInput - The password input element
+ * @param {HTMLInputElement} passwordConfirm - The confirmation input element
+ * @param {HTMLElement} matchText - The match status text element
+ * @private
  */
 function checkPasswordMatch(passwordInput, passwordConfirm, matchText) {
     if (!passwordConfirm.value.length) {
@@ -114,15 +114,8 @@ function togglePasswordVisibility(inputId, iconId) {
 }
 
 /**
- * Set up password-strength UI and password confirmation checking by attaching input event handlers.
- *
- * Ensures the required DOM elements are present; if any are missing, logs an error and aborts.
- * When active, shows or hides the strength container, updates the strength bar and text based on
- * the current password, and updates the match message and styling for the password confirmation.
- *
- * Required element IDs: "password", "password-strength-container", "password-strength-text",
- * "password-strength-bar", "password-confirm", "password-match-text".
- *
+ * Initializes password validation functionality.
+ * @function initializePasswordValidation
  * @private
  */
 function initializePasswordValidation() {
@@ -186,12 +179,6 @@ function initialize() {
 // Initialize when DOM is fully loaded
 document.addEventListener("DOMContentLoaded", initialize);
 
-/**
- * Create a manager for controlling a subscription popup's visibility and persistence.
- *
- * @param {boolean} alreadySubscribed - If true, prevents the popup from being shown.
- * @returns {{open: boolean, alreadySubscribed: boolean, HIDE_DURATION: number, SHOW_DELAY: number, SCROLL_THRESHOLD: number, init: function(): void, closePopup: function(): void, permanentlyHide: function(): void}} An object that tracks popup state and provides methods to initialize display triggers, close the popup (with short-term hide), and permanently hide it; the object persists hide choices in localStorage. 
- */
 function popupSubscribe(alreadySubscribed) {
     return {
         open: false,
