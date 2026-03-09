@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('number')->nullable();
             $table->text('subject');
             $table->text('message');
+            $table->json('attachments')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
