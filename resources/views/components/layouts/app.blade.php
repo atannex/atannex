@@ -1,6 +1,6 @@
 @extends('components.layouts.base')
 
-@section('title')
+@section('title', config('app.name'))
 
 @section('base')
 

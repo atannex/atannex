@@ -3,18 +3,27 @@
 @section('title', $seoTitle)
 
 @section('og:title', $module->post->title)
-@section('og:description', $module->post->description)
-@section('og:image', asset('storage/' . $module->post->image))
-@section('og:publishedAt', $module->post->published_at)
-@section('og:updatedAt', $module->post->updated_at)
+@section('meta:description', $module->post->description)
+@section('og:image', asset('storage/'.$module->post->image))
 
-@php
-$ogVideo = $module->post->videos->first();
-@endphp
+@section('article:title', $module->post->title)
 
-@if($ogVideo && $ogVideo->video_url)
-@section('og:video', $ogVideo->video_url)
-@endif
+@section('article:description', $module->post->description)
+
+@section('article:image', asset('storage/'.$module->post->image))
+
+@section('article:published', $module->post->published_at?->toIso8601String())
+
+@section('article:updated', $module->post->updated_at?->toIso8601String())
+
+@section('article:author', $module->post->author->user->name)
+
+@section('article:section', $module->post->category->name)
+
+@section('article:tags', $module->post->tags->pluck('name')->implode(', '))
+
+@section('article:twitterAuthor', '@atannex')
+
 
 @section('base')
 
