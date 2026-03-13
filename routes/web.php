@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\RegionController;
+use App\Http\Controllers\VideoController;
 
 // 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
 
@@ -19,6 +20,12 @@ Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'index')->name('home');
     Route::get('/about-us', 'about')->name('about');
     Route::get('/contact-us', 'contact')->name('contact');
+});
+
+Route::controller(VideoController::class)->group(function () {
+    Route::get('/video', 'index')->name('video.index');
+    Route::get('/video/{slug}/show', 'show')->name('video.show');
+    Route::get('/video/{slug}/reporter', 'reporter')->name('video.reporter');
 });
 
 /*
