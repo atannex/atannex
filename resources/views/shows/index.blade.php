@@ -1,6 +1,6 @@
 @extends('components.layouts.base')
 
-@section('title', $seoTitle)
+@section('title', $seoTitle ?? $module->post->title)
 
 @section('og:title', $module->post->title)
 @section('meta:description', $module->post->description)
@@ -12,9 +12,9 @@
 
 @section('article:image', asset('storage/'.$module->post->image))
 
-@section('article:published', $module->post->published_at?->toIso8601String())
+@section('article:published', $module->post->published_at->toIso8601String())
 
-@section('article:updated', $module->post->updated_at?->toIso8601String())
+@section('article:updated', $module->post->updated_at->toIso8601String())
 
 @section('article:author', $module->post->author->user->name)
 

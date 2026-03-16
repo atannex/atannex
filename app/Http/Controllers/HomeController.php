@@ -36,7 +36,7 @@ class HomeController extends Controller
     {
         return [
             'byRecent' => $this->postService->getRecentPosts(6),
-            'byRegion' => $this->postService->getRegionsWithPosts(6),
+            'byRegion' => $this->postService->getRegionsWithPosts(5),
             'byEnvironment' => $this->postService->getCategoriesWithPostsByName('Environment', 5),
             'byHistory' => $this->postService->getCategoriesWithPostsByName('History', 20),
             'byNews' => $this->postService->getCategoriesWithPostsByName('News', 3),
