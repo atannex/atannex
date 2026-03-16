@@ -30,7 +30,7 @@
 
         @if (!empty($block['data']['caption']))
         <figcaption class="mt-2 text-muted small">
-            {{ e($block['data']['caption']) }}
+            {!! $block['data']['caption'] !!}
         </figcaption>
         @endif
     </figure>
@@ -40,9 +40,9 @@
     @case('blockquote')
     @if (!empty($block['data']['content']))
     <blockquote>
-        <p>{{ $block['data']['content'] }}</p>
+        <p>{!! $block['data']['content'] !!}</p>
         @if (!empty($block['data']['attribution']))
-        <cite>{{ $block['data']['attribution'] }}</cite>
+        <cite>{!! $block['data']['attribution'] !!}</cite>
         @endif
     </blockquote>
     @endif

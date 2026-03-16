@@ -3,7 +3,7 @@
 </a>
 
 <h2 class="blog-title">
-    {{ $module->post->title }}
+    {!! $module->post->title !!}
 </h2>
 
 <div class="blog-meta">

@@ -24,7 +24,7 @@ trait ViewShow
         $post = $module->post;
 
         $icons = collect(self::SUPPORTED_PLATFORMS)
-            ->mapWithKeys(fn (string $platform) => [$platform => Icon::getData($platform)])
+            ->mapWithKeys(fn(string $platform) => [$platform => Icon::getData($platform)])
             ->toArray();
 
         return view('shows.index', [
@@ -35,7 +35,7 @@ trait ViewShow
             'popularTags' => $this->tagService->popularTagsByPost($post),
             'relatedTags' => $this->tagService->relatedTagsByPost($post),
             'relatedCategories' => $this->categoryService->relatedCategoriesByPost($post),
-            'recentPosts' => $this->postService->getRecentPostsByPost($post),
+            'recentPosts' => $this->postService->getRecentPostsFromSameCategory($post),
             'relatedPosts' => $this->postService->getRelatedPosts($post),
 
             'navigation' => $this->postService->getPostNavigation($post),

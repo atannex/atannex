@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\Posts;
 
+use App\Enums\Flag;
 use App\Models\Comments\Comment;
 use App\Models\Modules\PostModule;
 use App\Models\Pivots\PostTag;
@@ -92,9 +93,13 @@ class Post extends Model
     /**
      * A post can have many videos.
      */
-    public function videos(): HasMany
+    public function video(): HasMany
     {
-        return $this->hasMany(Video::class);
+        return $this->hasMany(Video::class)
+            ->whereIn('flag', [
+                Flag::APPROVED,
+                Flag::PUBLISHED,
+            ]);
     }
 
     /**
@@ -179,7 +184,7 @@ class Post extends Model
     protected function resolveVisitorKey(): string
     {
         if (Auth::check()) {
-            return 'user_'.Auth::id();
+            return 'user_' . Auth::id();
         }
 
         $visitorId = request()->cookie('visitor_id');
@@ -192,6 +197,6 @@ class Post extends Model
             );
         }
 
-        return 'guest_'.$visitorId;
+        return 'guest_' . $visitorId;
     }
 }
