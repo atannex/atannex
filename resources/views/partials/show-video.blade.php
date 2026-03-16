@@ -1,9 +1,5 @@
 <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css" />
-
-{{-- Google Fonts --}}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script>
 
 <style>
     #vp-root {
@@ -363,259 +359,131 @@
 
 </style>
 
+
+@if($video)
+
 <div id="vp-root" role="region" aria-label="Video player">
+
     <div class="vp-header">
-        <div class="vp-header__dots" aria-hidden="true">
+        <div class="vp-header__dots">
             <span></span><span></span><span></span>
         </div>
+
         <div class="vp-header__label">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
-                <line x1="7" y1="2" x2="7" y2="22" />
-                <line x1="17" y1="2" x2="17" y2="22" />
-                <line x1="2" y1="12" x2="22" y2="12" />
-                <line x1="2" y1="7" x2="7" y2="7" />
-                <line x1="17" y1="7" x2="22" y2="7" />
-                <line x1="17" y1="17" x2="22" y2="17" />
-                <line x1="2" y1="17" x2="7" y2="17" />
-            </svg>
-            <span class="vp-header__filename">{{ $module->post->title ?? 'media-stream' }}</span>
+            <span class="vp-header__filename">
+                {{ $module->post->title }}
+            </span>
         </div>
-        <span class="vp-header__badge">HD</span>
-        <span class="vp-header__quality" id="vp-qual-label">1080p</span>
+
+        <span class="vp-header__badge">{{ __("HD") }}</span>
+
+        <span class="vp-header__quality" id="vp-qual-label">
+            {{ __("Video") }}
+        </span>
     </div>
+
 
     <div class="vp-player-wrap">
-        <div class="hidden vp-loading" id="vp-loading" role="status" aria-live="polite" aria-label="Loading video">
-            <div class="vp-loading__spinner" aria-hidden="true"></div>
-            <span class="vp-loading__text" id="vp-loading-text">Initializing stream…</span>
+
+        <div class="hidden vp-loading" id="vp-loading">
+            <div class="vp-loading__spinner"></div>
+            <span class="vp-loading__text">
+                {{ __("Loading video…") }}
+            </span>
         </div>
 
-        <video id="vp-video" controls playsinline preload="metadata" poster="{{ asset('storage/'.$module->post->image) }}" aria-label="{{ $module->post->title ?? 'Video' }}">
-            <!-- Replace these with your actual video sources -->
-            <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" type="video/mp4" size="576">
-            <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4" type="video/mp4" size="720">
-            <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4" type="video/mp4" size="1080">
-            <track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt" default>
-            <track kind="captions" label="Français" srclang="fr" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt">
-            Your browser does not support the video tag.
+        <video id="vp-video" controls playsinline preload="metadata" poster="{{ asset('storage/'.$module->post->image) }}" aria-label="{{ $module->post->title }}">
+
+            <source src="{{ asset('storage/' . $video->video_url) }}" type="video/mp4" size="1080">
+
+            {{ __(' Your browser does not support the video tag.') }}
+
         </video>
+
     </div>
 
-    <div class="vp-footer" aria-label="Video metadata">
-        <span class="vp-footer__stat" aria-label="Duration">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-            </svg>
+    <div class="vp-footer">
+
+        <span class="vp-footer__stat">
             <span id="vp-duration">—:——</span>
         </span>
-        <div class="vp-footer__divider" aria-hidden="true"></div>
-        <span class="vp-footer__stat" aria-label="Format">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-            </svg>
-            MP4 / H.264
+
+        <div class="vp-footer__divider"></div>
+
+        <span class="vp-footer__stat">
+            {{ __("MP4 / H.264") }}
         </span>
-        <div class="vp-footer__divider" aria-hidden="true"></div>
-        <span class="vp-footer__stat" aria-label="Closed captions available">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" />
-            </svg>
-            CC · EN / FR
-        </span>
-        <div class="vp-footer__spacer" aria-hidden="true"></div>
-        <div class="vp-footer__resolutions" role="group" aria-label="Select quality">
-            <button class="vp-res-btn" type="button" data-size="576">576p</button>
-            <button class="vp-res-btn" type="button" data-size="720">720p</button>
-            <button class="vp-res-btn active" type="button" data-size="1080">1080p</button>
-        </div>
+
     </div>
+
 </div>
 
-{{-- Plyr JS --}}
-<script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script>
 
 <script>
     (function() {
+
         'use strict';
 
-        const ROOT = document.getElementById('vp-root');
         const video = document.getElementById('vp-video');
         const loading = document.getElementById('vp-loading');
-        const loadingText = document.getElementById('vp-loading-text');
         const durationEl = document.getElementById('vp-duration');
-        const qualLabel = document.getElementById('vp-qual-label');
-        const resButtons = ROOT.querySelectorAll('.vp-res-btn');
-
-        // ── Replace with your real video URLs ───────────────────────────────
-        const SOURCES = {
-            576: 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4'
-            , 720: 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4'
-            , 1080: 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4'
-        };
-
-        let isSwitching = false;
-        let currentQuality = 1080;
 
         function fmtTime(seconds) {
-            if (!Number.isFinite(seconds) || seconds < 0) return '—:——';
+
+            if (!Number.isFinite(seconds)) return '—:——';
+
             const m = Math.floor(seconds / 60);
             const s = Math.floor(seconds % 60);
-            return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-        }
 
-        function showLoading(message = 'Loading…') {
-            if (loadingText) loadingText.textContent = message;
-            loading.classList.remove('hidden');
+            return m.toString().padStart(2, '0') + ':' +
+                s.toString().padStart(2, '0');
+
         }
 
         function hideLoading() {
+
             loading.classList.add('hidden');
+
         }
 
-        function syncQualityUI(quality) {
-            currentQuality = quality;
-            if (qualLabel) qualLabel.textContent = `${quality}p`;
+        video.addEventListener('loadedmetadata', function() {
 
-            resButtons.forEach(btn => {
-                const q = Number(btn.dataset.size);
-                const isActive = q === quality;
-                btn.classList.toggle('active', isActive);
-                btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-            });
-        }
+            durationEl.textContent = fmtTime(video.duration);
 
-        function switchQuality(newQuality, fromPlyr = false) {
-            if (isSwitching || newQuality === currentQuality) return;
-            isSwitching = true;
+        });
 
-            const previousTime = video.currentTime;
-            const wasPlaying = !video.paused && !video.ended;
+        video.addEventListener('canplay', hideLoading);
 
-            showLoading(`Switching to ${newQuality}p…`);
-
-            video.src = SOURCES[newQuality];
-            video.load();
-
-            syncQualityUI(newQuality);
-
-            const onCanPlay = () => {
-                video.removeEventListener('canplay', onCanPlay);
-
-                if (previousTime > 0 && previousTime < video.duration) {
-                    video.currentTime = previousTime;
-                }
-
-                if (wasPlaying) {
-                    video.play().catch(() => {});
-                }
-
-                durationEl.textContent = fmtTime(video.duration);
-                hideLoading();
-                isSwitching = false;
-            };
-
-            video.addEventListener('canplay', onCanPlay);
-
-            // Safety fallback
-            setTimeout(() => {
-                if (isSwitching) {
-                    isSwitching = false;
-                    hideLoading();
-                }
-            }, 12000);
-
-            if (!fromPlyr) {
-                player.quality = newQuality;
-            }
-        }
-
-        // ── Initialize Plyr ─────────────────────────────────────────────────
         const player = new Plyr(video, {
+
             controls: [
-                'play-large', 'rewind', 'play', 'fast-forward', 'progress'
-                , 'current-time', 'duration', 'mute', 'volume', 'captions'
-                , 'settings', 'pip', 'airplay', 'fullscreen'
-            ]
-            , settings: ['captions', 'quality', 'speed', 'loop']
-            , speed: {
-                selected: 1
-                , options: [0.5, 0.75, 1, 1.25, 1.5, 2]
-            }
-            , captions: {
-                active: true
-                , update: true
-            }
-            , quality: {
-                default: 1080
-                , options: [576, 720, 1080]
-                , forced: true
-                , onChange: quality => {
-                    if (isSwitching) return;
-                    switchQuality(quality, true);
-                }
-            }
-            , keyboard: {
+                'play-large'
+                , 'rewind'
+                , 'play'
+                , 'fast-forward'
+                , 'progress'
+                , 'current-time'
+                , 'duration'
+                , 'mute'
+                , 'volume'
+                , 'captions'
+                , 'settings'
+                , 'pip'
+                , 'fullscreen'
+            ],
+
+            ratio: '16:9',
+
+            keyboard: {
                 focused: true
                 , global: false
             }
-            , tooltips: {
-                controls: true
-                , seek: true
-            }
-            , invertTime: false
-            , ratio: '16:9'
-            , blankVideo: 'https://cdn.plyr.io/static/blank.mp4'
+
         });
-
-        // ── Initial load handling ───────────────────────────────────────────
-        function attemptEarlyHide() {
-            if (video.readyState >= 2) {
-                hideLoading();
-                durationEl.textContent = fmtTime(video.duration);
-            }
-        }
-
-        video.addEventListener('loadedmetadata', () => {
-            durationEl.textContent = fmtTime(video.duration);
-            attemptEarlyHide();
-        }, {
-            once: true
-        });
-
-        video.addEventListener('canplay', attemptEarlyHide, {
-            once: true
-        });
-
-        player.on('ready', attemptEarlyHide);
-        player.on('canplay', hideLoading);
-        player.on('playing', hideLoading);
-        player.on('waiting', () => showLoading('Buffering…'));
-        player.on('error', () => {
-            showLoading('Error loading video – try another quality');
-            isSwitching = false;
-        });
-
-        player.on('loadedmetadata', () => {
-            durationEl.textContent = fmtTime(video.duration);
-        });
-
-        // ── Footer quality buttons ──────────────────────────────────────────
-        resButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const requested = Number(button.dataset.size);
-                switchQuality(requested, false);
-            });
-        });
-
-        // Initial UI sync
-        syncQualityUI(1080);
-
-        // Ultimate fallback (very rare)
-        setTimeout(hideLoading, 5000);
 
     })();
 
 </script>
+
+@endif
+

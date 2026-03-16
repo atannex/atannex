@@ -48,7 +48,7 @@
 
                 @if ($module->post->video()->exists())
 
-                @include('partials.show-video', ['videos' => $module->post->video])
+                @include('partials.show-video', ['video' => $module->post->video->first()])
 
                 @else
 
