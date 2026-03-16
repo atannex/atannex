@@ -24,10 +24,7 @@ class HomeController extends Controller
      */
     public function index(): View
     {
-        return view('home', array_merge(
-            $this->getPostsData(),
-            ['videos' => $this->postService->getLatestPublishedVideos(6)]
-        ));
+        return view('home', array_merge($this->getPostsData(), ['videos' => $this->postService->getLatestPublishedVideos(6)]));
     }
 
     /**
