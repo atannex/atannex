@@ -158,17 +158,12 @@ final class PostService
     {
         $regionIds = $region->getSelfAndDescendantIds();
 
-        $region->allPosts = Region::query()
-            ->whereIn('id', $regionIds)
-            ->with([
-                'posts' => fn($query) =>
-                $query->published()
-                    ->latest('published_at')
-                    ->limit($limit)
-            ])
-            ->get()
-            ->pluck('posts')
-            ->flatten();
+        $region->allPosts = Post::query()
+            ->whereIn('region_id', $regionIds)
+            ->published()
+            ->latest('published_at')
+            ->limit($limit)
+            ->get();
 
         return $region;
     }
