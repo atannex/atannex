@@ -2,28 +2,29 @@
 
 @section('title', $seoTitle ?? $module->post->title)
 
-@section('og:title', $module->post->title)
 @section('meta:description', $module->post->description)
-@section('og:image', asset('storage/'.$module->post->image))
+
+@section('og:title', $module->post->title)
+
+@section('og:image', $module->post->image ? asset('storage/'.$module->post->image) : asset('images/default.jpg'))
 
 @section('article:title', $module->post->title)
 
 @section('article:description', $module->post->description)
 
-@section('article:image', asset('storage/'.$module->post->image))
+@section('article:image', $module->post->image ? asset('storage/'.$module->post->image) : asset('images/default.jpg'))
 
-@section('article:published', $module->post->published_at->toIso8601String())
+@section('article:published', $module->post->published_at?->toIso8601String())
 
-@section('article:updated', $module->post->updated_at->toIso8601String())
+@section('article:updated', $module->post->updated_at?->toIso8601String())
 
-@section('article:author', $module->post->author->user->name)
+@section('article:author', $module->post->author?->user?->name)
 
-@section('article:section', $module->post->category->name)
+@section('article:section', $module->post->category?->name)
 
-@section('article:tags', $module->post->tags->pluck('name')->implode(', '))
+@section('article:tags', $module->post->tags?->pluck('name')->implode(', '))
 
 @section('article:twitterAuthor', '@atannex')
-
 
 @section('base')
 
@@ -45,30 +46,39 @@
 
                 <x-shows.header-content :module="$module" />
 
+                @if ($module->post->video()->exists())
+
+                @include('partials.show-video', ['videos' => $module->post->video])
+
+                @else
+
                 <div class="mb-40 blog-img">
-                    <img class="img-fluid image-show" src="{{ asset('storage/' . $module->post->image) }}" alt="{{ config('app.name') }}">
+                    <img class="img-fluid image-show" src="{{ $module->post->image ? asset('storage/'.$module->post->image) : asset('images/default.jpg') }}" alt="{{ config('app.name') }}">
                 </div>
+
+                @endif
 
             </div>
 
             <div class="col-xxl-9 col-lg-8">
+
                 <div class="th-blog blog-single">
                     <div class="blog-content-wrap">
+
                         <div class="share-links-wrap">
-
                             <x-shows.social-share :module="$module" :icons="$icons" />
-
                         </div>
 
                         <div class="blog-content">
 
-                            <livewire:show.info :post="$module->post" wire:key="posts-{{ $module->post->id }}" :module="$module" />
+                            <livewire:show.info :post="$module->post" :module="$module" wire:key="posts-{{ $module->post->id }}" />
 
                             <x-shows.content :module="$module" :headingLevels="$headingLevels" />
 
                             <x-shows.related-tag :relatedTags="$relatedTags" />
 
                         </div>
+
                     </div>
                 </div>
 
@@ -76,18 +86,18 @@
 
                 <x-shows.author :module="$module" :medias="$medias" />
 
-                <livewire:forms.post-comment wire:key="comments-{{ $module->post->id }}" :commentable="$module->post" />
+                <livewire:forms.post-comment :commentable="$module->post" wire:key="comments-{{ $module->post->id }}" />
 
                 <x-shows.related-posts :relatedPosts="$relatedPosts" />
 
             </div>
 
             <div class="col-xxl-3 col-lg-4 sidebar-wrap">
+
                 <aside class="sidebar-area">
+
                     <div class="widget widget_tag_cloud">
-
                         @livewire('search.post')
-
                     </div>
 
                     @include('partials.aside.category')
@@ -97,9 +107,10 @@
                     @include('partials.aside.tag')
 
                 </aside>
+
             </div>
+
         </div>
-    </div>
     </div>
 </section>
 

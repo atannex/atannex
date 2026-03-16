@@ -29,7 +29,7 @@ final class PostService
             ->get();
     }
 
-    public function getRecentPostsByPost(Post $post, int $limit = 6): Collection
+    public function getRecentPostsFromSameCategory(Post $post, int $limit = 6): Collection
     {
         return $this->basePostQuery()
             ->where('category_id', $post->category_id)
@@ -41,7 +41,7 @@ final class PostService
 
     /*
     |--------------------------------------------------------------------------
-    | Breaking / Popular / Weekly
+    | Breaking / Popular / Trending
     |--------------------------------------------------------------------------
     */
 
@@ -68,7 +68,7 @@ final class PostService
             ->get();
     }
 
-    public function getPastWeekPosts(int $limit = 5): Collection
+    public function getPastWeekTrendingPosts(int $limit = 5): Collection
     {
         $start = Date::now()->subDays(6)->startOfDay();
         $end = Date::now()->endOfDay();
@@ -91,7 +91,7 @@ final class PostService
     {
         return $this->basePostQuery()
             ->activeEditorPick()
-            ->orderByDesc('editor_pick_at')
+            ->latest('editor_pick_at')
             ->limit($limit)
             ->get();
     }
@@ -109,11 +109,16 @@ final class PostService
         return $this->basePostQuery()
             ->whereKeyNot($post->getKey())
             ->where('category_id', $post->category_id)
-            ->when($tagIds->isNotEmpty(), function ($query) use ($tagIds) {
-                $query->whereHas('tags', fn($q) => $q->whereIn('tags.id', $tagIds));
-            })
+            ->when(
+                $tagIds->isNotEmpty(),
+                fn($query) => $query->whereHas(
+                    'tags',
+                    fn($q) => $q->whereIn('tags.id', $tagIds)
+                )
+            )
             ->withCount([
-                'tags as shared_tags_count' => fn($q) => $q->whereIn('tags.id', $tagIds)
+                'tags as shared_tags_count' =>
+                fn($q) => $q->whereIn('tags.id', $tagIds)
             ])
             ->orderByDesc('shared_tags_count')
             ->latest('published_at')
@@ -126,15 +131,19 @@ final class PostService
         $tagIds = $post->tags()->pluck('tags.id')->toArray();
 
         return $this->basePostQuery()
-            ->where('id', '!=', $post->id)
+            ->whereKeyNot($post->getKey())
             ->where(function ($query) use ($post, $tagIds) {
+
                 $query->where('category_id', $post->category_id);
 
                 if (!empty($tagIds)) {
-                    $query->orWhereHas('tags', fn($q) => $q->whereIn('tags.id', $tagIds));
+                    $query->orWhereHas(
+                        'tags',
+                        fn($q) => $q->whereIn('tags.id', $tagIds)
+                    );
                 }
             })
-            ->latest()
+            ->latest('published_at')
             ->limit($limit)
             ->get();
     }
@@ -151,16 +160,17 @@ final class PostService
             ->with('children')
             ->whereNull('parent_id')
             ->get()
-            ->map(fn(Region $region) => $this->attachPostsToRegion($region, $limit));
+            ->map(
+                fn(Region $region) => $this->attachPostsToRegion($region, $limit)
+            );
     }
 
     private function attachPostsToRegion(Region $region, int $limit): Region
     {
         $regionIds = $region->getSelfAndDescendantIds();
 
-        $region->allPosts = Post::query()
+        $region->allPosts = $this->basePostQuery()
             ->whereIn('region_id', $regionIds)
-            ->published()
             ->latest('published_at')
             ->limit($limit)
             ->get();
@@ -179,12 +189,15 @@ final class PostService
         return Category::query()
             ->where('name', $name)
             ->get()
-            ->map(fn(Category $category) => $this->attachPostsToCategory($category, $limit));
+            ->map(
+                fn(Category $category) => $this->attachPostsToCategory($category, $limit)
+            );
     }
 
     private function attachPostsToCategory(Category $category, int $limit): Category
     {
-        $categoryIds = $category->getDescendants()
+        $categoryIds = $category
+            ->getDescendants()
             ->pluck('id')
             ->push($category->id);
 
@@ -199,7 +212,7 @@ final class PostService
 
     /*
     |--------------------------------------------------------------------------
-    | Videos
+    | Video Content
     |--------------------------------------------------------------------------
     */
 
@@ -208,8 +221,17 @@ final class PostService
         return Video::query()
             ->with([
                 'post' => fn($q) => $q
-                    ->select('id', 'title', 'slug', 'slug_path', 'published_at', 'category_id', 'author_id')
+                    ->select(
+                        'id',
+                        'title',
+                        'slug',
+                        'slug_path',
+                        'published_at',
+                        'category_id',
+                        'author_id'
+                    )
                     ->published(),
+
                 'post.category:id,name,slug_path',
                 'post.author:id,user_id',
                 'post.author.user:id,name,slug',
@@ -224,7 +246,7 @@ final class PostService
 
     /*
     |--------------------------------------------------------------------------
-    | Navigation
+    | Post Navigation
     |--------------------------------------------------------------------------
     */
 
@@ -236,7 +258,7 @@ final class PostService
         ];
     }
 
-    public function getAdjacentPost(Post $post, string $direction): ?Post
+    private function getAdjacentPost(Post $post, string $direction): ?Post
     {
         $operator = $direction === 'previous' ? '<' : '>';
         $order = $direction === 'previous' ? 'desc' : 'asc';
@@ -254,27 +276,29 @@ final class PostService
     |--------------------------------------------------------------------------
     */
 
-    public function getPostBySlugPath(string $slug): PostModule
+    public function getPostBySlugPath(string $slugPath): PostModule
     {
         return PostModule::query()
-            ->whereHas('post', fn($q) => $q->where('slug_path', $slug))
+            ->whereHas('post', fn($q) => $q->where('slug_path', $slugPath))
             ->with([
                 'post' => fn($query) => $query
                     ->withCount('comments')
-                    ->with(['author.user', 'tags', 'category'])
+                    ->with(['author.user', 'tags', 'category']),
             ])
             ->firstOrFail();
     }
 
     public function getModulePostBySlug(string $slug): PostModule
     {
-        return PostModule::with([
-            'post.category',
-            'post.author',
-            'post.tags',
-        ])
+        return PostModule::query()
+            ->with([
+                'post.category',
+                'post.author',
+                'post.tags',
+            ])
             ->whereHas('post', function ($query) use ($slug) {
-                $query->where('slug', $slug)
+                $query
+                    ->where('slug', $slug)
                     ->published()
                     ->flagged(Flag::PUBLISHED);
             })
