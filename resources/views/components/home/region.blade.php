@@ -6,7 +6,7 @@
 
         <div class="row align-items-center">
             <div class="col">
-                <h2 class="sec-title has-line">Tech News</h2>
+                <h2 class="sec-title has-line">{{ __('Latest News') }}</h2>
             </div>
 
             <div class="col-auto">
