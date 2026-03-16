@@ -122,9 +122,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css" />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css','resources/js/app.js'])
@@ -152,7 +149,6 @@
     <script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}?v={{ $assetVersion }}"></script>
     <script src="{{ asset('assets/js/app.min.js') }}?v={{ $assetVersion }}"></script>
     <script src="{{ asset('assets/js/main.js') }}?v={{ $assetVersion }}"></script>
-    <script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script>
 
 </body>
 </html>
