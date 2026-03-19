@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atannex/foundation.git",
-                "reference": "f61edabc195aeb3315ccb644d23abf9ce5626179"
+                "reference": "f87e1c7f946942adda3d3f44c849dd35cd91d36c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atannex/foundation/zipball/f61edabc195aeb3315ccb644d23abf9ce5626179",
-                "reference": "f61edabc195aeb3315ccb644d23abf9ce5626179",
+                "url": "https://api.github.com/repos/atannex/foundation/zipball/f87e1c7f946942adda3d3f44c849dd35cd91d36c",
+                "reference": "f87e1c7f946942adda3d3f44c849dd35cd91d36c",
                 "shasum": ""
             },
             "require": {
@@ -53,7 +53,10 @@
             "autoload": {
                 "psr-4": {
                     "Atannex\\Foundation\\": "src/"
-                }
+                },
+                "files": [
+                    "helpers.php"
+                ]
             },
             "autoload-dev": {
                 "psr-4": {
@@ -108,7 +111,7 @@
                     "url": "https://github.com/atannex"
                 }
             ],
-            "time": "2026-03-18T22:26:21+00:00"
+            "time": "2026-03-19T00:14:53+00:00"
         },
         {
             "name": "bensampo/laravel-enum",
