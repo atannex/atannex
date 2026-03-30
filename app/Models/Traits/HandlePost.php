@@ -25,30 +25,30 @@ trait HandlePost
     /**
      * Recalculates the slug_path based on category and slug.
      */
-    public function refreshSlugPath(): void
-    {
-        $category = $this->category()
-            ->withoutGlobalScopes()
-            ->select(['id', 'slug_path'])
-            ->first();
+    // public function refreshSlugPath(): void
+    // {
+    //     $category = $this->category()
+    //         ->withoutGlobalScopes()
+    //         ->select(['id', 'slug_path'])
+    //         ->first();
 
-        $this->slug_path = trim(
-            ($category->slug_path ?? '').'/'.$this->slug,
-            '/'
-        );
-    }
+    //     $this->slug_path = trim(
+    //         ($category->slug_path ?? '').'/'.$this->slug,
+    //         '/'
+    //     );
+    // }
 
     /**
      * Automatically refresh slug_path when slug or category changes.
      */
-    public function setSlugAttribute($value): void
-    {
-        $this->attributes['slug'] = $value;
+    // public function setSlugAttribute($value): void
+    // {
+    //     $this->attributes['slug'] = $value;
 
-        if (isset($this->attributes['category_id'])) {
-            $this->refreshSlugPath();
-        }
-    }
+    //     if (isset($this->attributes['category_id'])) {
+    //         $this->refreshSlugPath();
+    //     }
+    // }
 
     /**
      * Boot the model and attach saving events for category changes and updated_by.

@@ -4,7 +4,7 @@ namespace App\Models\Tags;
 
 use App\Models\Pivots\PostTag;
 use App\Models\Posts\Post;
-use Atannex\Traits\GeneratesSlug;
+use Atannex\Foundation\Concerns\GeneratesSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;

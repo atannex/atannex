@@ -32,7 +32,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "atannex/foundation": "dev-main",
         "bensampo/laravel-enum": "^6.12",
         "doctrine/dbal": "^4.4",
         "filament/filament": "^4.0",
@@ -63,7 +62,8 @@
         ],
         "psr-4": {
             "App\\": "app/",
-            "Atannex\\": "src/"
+            "Atannex\\": "src/",
+            "Atannex\\Foundation\\": "foundation/src/"
         }
     },
     "autoload-dev": {
@@ -111,14 +111,5 @@
         }
     },
     "minimum-stability": "beta",
-    "prefer-stable": true,
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/atannex/foundation",
-            "options": {
-                "symlink": true
-            }
-        }
-    ]
+    "prefer-stable": true
 }

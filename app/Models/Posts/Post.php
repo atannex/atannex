@@ -19,7 +19,7 @@ use App\Models\Traits\HasReaction;
 use App\Models\Traits\HasShares;
 use App\Models\Traits\HasViews;
 use Atannex\Enables\Scoping;
-use Atannex\Enables\Slugging;
+use Atannex\Foundation\Concerns\GeneratesSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -39,8 +39,14 @@ class Post extends Model
     use HasShares;
     use HasViews;
     use Scoping;
-    use Slugging;
     use SoftDeletes;
+    use GeneratesSlug;
+
+
+    /**
+     * Source field for slug generation.
+     */
+    protected string $slugMode = 'word';
 
     /**
      * Slug source field.
