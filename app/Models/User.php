@@ -7,7 +7,7 @@ namespace App\Models;
 use App\Enums\Gender;
 use App\Enums\Status;
 use App\Models\Traits\HandleUser;
-use Atannex\Enables\Slugging;
+use Atannex\Foundation\Concerns\GeneratesSlug;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -16,30 +16,24 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-/**
- * Core User entity.
- *
- * Handles authentication, authorization, and Filament access.
- * Domain-specific behavior is delegated to traits.
- */
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     use HandleUser;
     use HasRoles;
     use Notifiable;
-    use Slugging;
+    use GeneratesSlug;
     use SoftDeletes;
 
-    /**
-     * Attribute used as the source for slug generation.
-     */
-    protected string $slugSource = 'name';
+    protected string $slugMode      = self::MODE_WORD;
 
-    /**
-     * Mass assignable attributes.
-     *
-     * Validation and data integrity are enforced upstream.
-     */
+    protected string $slugColumn    = 'slug';
+
+    protected string|array $slugSource = 'name';
+
+    protected string $slugSeparator = '-';
+
+    protected ?int $slugMaxLength   = 100;
+
     protected $fillable = [
         'name',
         'email',
@@ -61,9 +55,6 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'metadata',
     ];
 
-    /**
-     * Attributes excluded from serialization.
-     */
     protected $hidden = [
         'password',
         'remember_token',

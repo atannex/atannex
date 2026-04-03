@@ -5,8 +5,8 @@ namespace App\Models\Regions;
 use App\Enums\Status;
 use App\Models\Pivots\EmployeeDepartment;
 use Atannex\Enables\Scoping;
-use Atannex\Enables\Slugging;
 use Atannex\Foundation\Concerns\CanGenerateCode;
+use Atannex\Foundation\Concerns\GeneratesSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -17,14 +17,22 @@ class Department extends Model
 {
     use CanGenerateCode;
     use Scoping;
-    use Slugging;
     use SoftDeletes;
+    use GeneratesSlug;
+
+    protected string $slugMode      = self::MODE_RANDOM;
+
+    protected string $slugColumn    = 'slug';
+
+    protected string $slugSeparator = '-';
+
+    protected ?int $slugMaxLength   = 100;
 
     protected string $slugSource = 'name';
 
     protected $codeSourceColumn = 'name';
 
-    protected $codePrefix = 'ADEP';
+    protected $codePrefix = 'ATADEP';
 
     protected $codeColumn = 'code';
 

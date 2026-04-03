@@ -6,561 +6,250 @@ namespace Atannex\Foundation\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use RuntimeException;
 
-/**
- * GeneratesSlug
- *
- * Enterprise-grade slug generation with support for:
- * - Multiple generation strategies (word, random, mixed)
- * - Multi-column source aggregation
- * - Scoped uniqueness (tenant, parent, hierarchy)
- * - Collision-safe generation with retry logic
- * - Immutable and regenerating slug modes
- * - Custom transformation pipelines
- * - Database-level validation
- * - Comprehensive error handling and logging
- *
- * Usage:
- *   class Post extends Model {
- *       use GeneratesSlug;
- *
- *       protected array $slugConfig = [
- *           'column' => 'slug',
- *           'source' => ['title', 'description'],
- *           'mode' => 'word',
- *           'separator' => '-',
- *           'max_length' => 120,
- *           'immutable' => false,
- *       ];
- *   }
- *
- * @see https://docs.example.com/slug-generation
- */
 trait GeneratesSlug
 {
-    /* -----------------------------------------------------------------
-     |  LIFECYCLE HOOKS
-     |-----------------------------------------------------------------*/
+    public const MODE_WORD   = 'word';
+
+    public const MODE_RANDOM = 'random';
+
+    public const MODE_MIXED  = 'mixed';
+
+    public const MAX_COLLISION_ATTEMPTS = 100;
+
 
     public static function bootGeneratesSlug(): void
     {
-        static::creating(fn(Model $model) => $model->generateSlugIfNeeded());
-        static::updating(fn(Model $model) => $model->handleSlugOnUpdate());
-    }
+        static::saving(fn(Model $model) => $model->generateSlugIfNeeded());
 
-    /* -----------------------------------------------------------------
-     |  PUBLIC INTERFACE
-     |-----------------------------------------------------------------*/
-
-    /**
-     * Generate slug if needed
-     *
-     * @return void
-     * @throws RuntimeException
-     */
-    public function generateSlugIfNeeded(): void
-    {
-        if ($this->isSlugLocked()) {
-            return;
-        }
-
-        $slug = $this->generate();
-        $this->setSlugAttribute($slug);
-    }
-
-    /**
-     * Persist model with slug collision handling
-     *
-     * @return bool
-     * @throws RuntimeException
-     */
-    public function persistWithSlug(): bool
-    {
-        return DB::transaction(function (): bool {
-            try {
-                return $this->save();
-            } catch (QueryException $e) {
-                if ($this->isUniqueConstraintViolation($e)) {
-                    $this->handleUniqueConstraintViolation();
-                    return $this->save();
-                }
-
-                Log::error('Slug persistence failed', [
-                    'model' => static::class,
-                    'error' => $e->getMessage(),
-                ]);
-
-                throw $e;
+        static::restored(function (Model $model) {
+            if (method_exists($model, 'refreshSlugAfterRestore')) {
+                $model->refreshSlugAfterRestore();
             }
         });
     }
 
-    /**
-     * Regenerate slug unconditionally
-     *
-     * @return void
-     * @throws RuntimeException
-     */
+    public function generateSlugIfNeeded(): void
+    {
+        if ($this->shouldSkipSlugGeneration()) {
+            return;
+        }
+
+        $this->setSlug($this->generateSlugPipeline());
+    }
+
     public function regenerateSlug(): void
     {
-        $slug = $this->generate();
-        $this->setSlugAttribute($slug);
+        $this->setSlug($this->generateSlugPipeline());
     }
 
-    /**
-     * Get configuration value
-     *
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
-     */
-    public function getSlugConfig(string $key, mixed $default = null): mixed
+    protected function setSlug(string $slug): void
     {
-        return $this->resolveSlugConfig()[$key] ?? $default;
+        $this->{$this->getSlugColumn()} = $slug;
     }
 
-    /**
-     * Resolve all slug configuration
-     *
-     * @return array
-     */
-    public function resolveSlugConfig(): array
+    protected function generateSlugPipeline(): string
     {
-        return [
-            'column' => $this->getSlugColumn(),
-            'source' => $this->getSlugSource(),
-            'mode' => $this->getSlugMode(),
-            'separator' => $this->getSlugSeparator(),
-            'max_length' => $this->getSlugMaxLength(),
-            'immutable' => $this->isSlugImmutable(),
-        ];
+        $this->validateSlugConfiguration();
+
+        $base = $this->normalize($this->buildSlug());
+
+        return $this->ensureUniqueSlug($base);
     }
 
-    /* -----------------------------------------------------------------
-     |  GENERATION PIPELINE
-     |-----------------------------------------------------------------*/
-
-    /**
-     * Main generation pipeline
-     *
-     * @return string
-     * @throws RuntimeException
-     */
-    protected function generate(): string
+    protected function validateSlugConfiguration(): void
     {
-        // Step 1: Build initial slug
-        $slug = $this->buildSlug();
-
-        // Step 2: Normalize (length, trim, etc.)
-        $slug = $this->normalize($slug);
-
-        // Step 3: Ensure uniqueness
-        $slug = $this->ensureUniqueness($slug);
-
-        return $slug;
+        if (!in_array($this->getSlugMode(), [self::MODE_WORD, self::MODE_RANDOM, self::MODE_MIXED], true)) {
+            throw new RuntimeException('Invalid slug mode configured.');
+        }
     }
 
-    /**
-     * Build slug based on configured mode
-     *
-     * @return string
-     * @throws RuntimeException
-     */
     protected function buildSlug(): string
     {
-        $mode = $this->getSlugMode();
-
-        return match ($mode) {
-            'random' => $this->generateRandomSegment(),
-            'mixed' => $this->buildMixedSlug(),
-            'word' => $this->buildWordSlug(),
-            default => throw new RuntimeException("Invalid slug mode: {$mode}"),
+        return match ($this->getSlugMode()) {
+            self::MODE_RANDOM => $this->randomSlug(),
+            self::MODE_MIXED  => $this->mixedSlug(),
+            self::MODE_WORD   => $this->wordSlug(),
+            default           => $this->wordSlug(),
         };
     }
 
-    /**
-     * Build word-based slug from source
-     *
-     * @return string
-     */
-    protected function buildWordSlug(): string
+    protected function wordSlug(): string
     {
-        $source = $this->resolveSourceValue();
-        $source = $this->applyTransformations($source);
-
-        return Str::slug($source, $this->getSlugSeparator());
+        return Str::slug($this->resolveSource(), $this->getSlugSeparator());
     }
 
-    /**
-     * Build mixed slug (words + random)
-     *
-     * @return string
-     */
-    protected function buildMixedSlug(): string
+    protected function mixedSlug(): string
     {
-        $wordPart = $this->buildWordSlug();
-        $randomPart = $this->generateRandomSegment();
-
-        return $wordPart . $this->getSlugSeparator() . $randomPart;
+        return sprintf(
+            '%s%s%s',
+            $this->wordSlug(),
+            $this->getSlugSeparator(),
+            $this->randomSlug(6)
+        );
     }
 
-    /**
-     * Resolve source value from model
-     *
-     * @return string
-     */
-    protected function resolveSourceValue(): string
+    protected function randomSlug(int $length = 10): string
+    {
+        return Str::lower(Str::random($length));
+    }
+
+    protected function resolveSource(): string
     {
         $source = $this->getSlugSource();
 
         if (is_array($source)) {
-            return $this->aggregateSourceFields($source);
+            return collect($source)
+                ->map(fn($field) => (string) data_get($this, $field))
+                ->filter()
+                ->implode(' ');
         }
 
-        return (string) data_get($this, $source, '');
+        return (string) data_get($this, $source);
     }
 
-    /**
-     * Aggregate multiple source fields
-     *
-     * @param array $fields
-     * @return string
-     */
-    protected function aggregateSourceFields(array $fields): string
-    {
-        return collect($fields)
-            ->map(fn(string $field) => (string) data_get($this, $field, ''))
-            ->filter()
-            ->implode(' ');
-    }
-
-    /**
-     * Apply custom transformations to source
-     *
-     * @param string $value
-     * @return string
-     */
-    protected function applyTransformations(string $value): string
-    {
-        $value = trim($value);
-        $value = $this->beforeNormalization($value);
-
-        return $value;
-    }
-
-    /**
-     * Hook for custom source transformation
-     *
-     * @param string $value
-     * @return string
-     */
-    protected function beforeNormalization(string $value): string
-    {
-        return $value;
-    }
-
-    /* -----------------------------------------------------------------
-     |  NORMALIZATION
-     |-----------------------------------------------------------------*/
-
-    /**
-     * Normalize slug (length, trim, cleanup)
-     *
-     * @param string $slug
-     * @return string
-     */
     protected function normalize(string $slug): string
     {
-        // Remove leading/trailing separators
         $slug = trim($slug, $this->getSlugSeparator());
 
-        // Apply length limit
-        if ($maxLength = $this->getSlugMaxLength()) {
-            $slug = $this->truncateToLength($slug, $maxLength);
+        if ($max = $this->getSlugMaxLength()) {
+            $slug = Str::limit($slug, $max, '');
         }
 
-        // Return fallback if empty after normalization
-        return $slug ?: $this->generateFallbackSlug();
+        return $slug !== '' ? $slug : $this->randomSlug(8);
     }
 
-    /**
-     * Truncate slug to max length safely
-     *
-     * @param string $slug
-     * @param int $maxLength
-     * @return string
-     */
-    protected function truncateToLength(string $slug, int $maxLength): string
+    protected function ensureUniqueSlug(string $base): string
     {
-        if (strlen($slug) <= $maxLength) {
-            return $slug;
+        if (!$this->slugExists($base)) {
+            return $base;
         }
 
-        // Truncate and clean up trailing separator
-        $truncated = substr($slug, 0, $maxLength);
-        return rtrim($truncated, $this->getSlugSeparator());
+        return $this->resolveCollision($base);
     }
 
-    /**
-     * Generate fallback slug when source is empty
-     *
-     * @return string
-     */
-    protected function generateFallbackSlug(): string
-    {
-        return $this->generateRandomSegment(8);
-    }
-
-    /* -----------------------------------------------------------------
-     |  UNIQUENESS & COLLISION HANDLING
-     |-----------------------------------------------------------------*/
-
-    /**
-     * Ensure slug is unique
-     *
-     * @param string $slug
-     * @return string
-     */
-    protected function ensureUniqueness(string $slug): string
-    {
-        if (!$this->slugExists($slug)) {
-            return $slug;
-        }
-
-        return $this->generateUniqueVariant($slug);
-    }
-
-    /**
-     * Generate unique variant with suffix
-     *
-     * @param string $baseSlug
-     * @return string
-     * @throws RuntimeException
-     */
-    protected function generateUniqueVariant(string $baseSlug): string
+    protected function resolveCollision(string $base): string
     {
         $separator = $this->getSlugSeparator();
-        $maxAttempts = 100;
 
-        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
-            $candidate = "{$baseSlug}{$separator}{$attempt}";
+        for ($i = 1; $i <= self::MAX_COLLISION_ATTEMPTS; $i++) {
+            $candidate = "{$base}{$separator}{$i}";
 
             if (!$this->slugExists($candidate)) {
                 return $candidate;
             }
         }
 
-        throw new RuntimeException(
-            "Unable to generate unique slug after {$maxAttempts} attempts for " . static::class
-        );
+        return "{$base}{$separator}{$this->randomSlug(6)}";
     }
 
-    /**
-     * Check if slug exists in database
-     *
-     * @param string $slug
-     * @return bool
-     */
     protected function slugExists(string $slug): bool
     {
         $query = static::query()->where($this->getSlugColumn(), $slug);
 
-        // Exclude current record if updating
-        if ($this->exists) {
-            $query->where($this->getKeyName(), '!=', $this->getKey());
+        if (method_exists($this, 'withTrashed')) {
+            $query->withTrashed();
         }
 
-        // Apply scoping if defined
-        if (method_exists($this, 'scopeSlugUniqueness')) {
-            $query = $this->scopeSlugUniqueness($query);
+        if ($this->exists) {
+            $query->whereKeyNot($this->getKey());
+        }
+
+        if (method_exists($this, 'applySlugScope')) {
+            $query = $this->applySlugScope($query);
         }
 
         return $query->exists();
     }
 
-    /**
-     * Handle unique constraint violation
-     *
-     * @return void
-     */
-    protected function handleUniqueConstraintViolation(): void
+    protected function shouldSkipSlugGeneration(): bool
     {
-        $currentSlug = $this->{$this->getSlugColumn()};
-        $newSlug = $this->generateUniqueVariant($currentSlug);
-
-        $this->setSlugAttribute($newSlug);
-
-        Log::warning('Slug collision detected and resolved', [
-            'model' => static::class,
-            'id' => $this->getKey(),
-            'original' => $currentSlug,
-            'resolved' => $newSlug,
-        ]);
-    }
-
-    /* -----------------------------------------------------------------
-     |  UPDATE LIFECYCLE
-     |-----------------------------------------------------------------*/
-
-    /**
-     * Handle slug on model update
-     *
-     * @return void
-     */
-    protected function handleSlugOnUpdate(): void
-    {
-        if ($this->isSlugImmutable()) {
-            return;
+        if ($this->isSlugImmutable() && $this->exists) {
+            return true;
         }
 
-        if (!$this->shouldRegenerateSlug()) {
-            return;
+        return !$this->hasDirtySlugSource();
+    }
+
+    protected function hasDirtySlugSource(): bool
+    {
+        foreach ($this->getSlugSourceArray() as $field) {
+            if ($this->isDirty($field)) {
+                return true;
+            }
         }
 
-        $this->generateSlugIfNeeded();
+        return false;
     }
 
-    /**
-     * Determine if slug should be regenerated on update
-     *
-     * @return bool
-     */
-    protected function shouldRegenerateSlug(): bool
+    protected function getSlugSourceArray(): array
     {
-        return collect((array) $this->getSlugSource())
-            ->contains(fn(string $field) => $this->isDirty($field));
+        return (array) $this->getSlugSource();
     }
 
-    /* -----------------------------------------------------------------
-     |  HELPERS & UTILITIES
-     |-----------------------------------------------------------------*/
-
-    /**
-     * Generate random string segment
-     *
-     * @param int $length
-     * @return string
-     */
-    protected function generateRandomSegment(int $length = 12): string
+    public function saveWithSlugRetry(int $attempts = 3): bool
     {
-        return Str::lower(Str::random($length));
+        return DB::transaction(function () use ($attempts) {
+            for ($i = 0; $i < $attempts; $i++) {
+                try {
+                    return $this->save();
+                } catch (QueryException $e) {
+                    if (!$this->isUniqueViolation($e)) {
+                        throw $e;
+                    }
+
+                    $this->regenerateSlug();
+                }
+            }
+
+            throw new RuntimeException('Exceeded slug retry attempts.');
+        });
     }
 
-    /**
-     * Check if unique constraint violation
-     *
-     * @param QueryException $e
-     * @return bool
-     */
-    protected function isUniqueConstraintViolation(QueryException $e): bool
+    protected function refreshSlugAfterRestore(): void
     {
-        $message = strtoupper($e->getMessage());
-
-        return str_contains($message, 'UNIQUE')
-            || str_contains($message, 'DUPLICATE')
-            || str_contains($message, 'CONSTRAINT');
+        $this->regenerateSlug();
+        $this->saveQuietly();
     }
 
-    /**
-     * Set slug attribute on model
-     *
-     * @param string $slug
-     * @return void
-     */
-    protected function setSlugAttribute(string $slug): void
+    protected function isUniqueViolation(QueryException $e): bool
     {
-        $this->{$this->getSlugColumn()} = $slug;
+        $sqlState = $e->errorInfo[0] ?? null;
+
+        return in_array($sqlState, ['23000', '23505'], true)
+            || str_contains(strtoupper($e->getMessage()), 'UNIQUE');
     }
 
-    /**
-     * Check if slug is locked (immutable)
-     *
-     * @return bool
-     */
-    protected function isSlugLocked(): bool
+    public function getSlugColumn(): string
     {
-        return $this->isSlugImmutable() && !empty($this->{$this->getSlugColumn()});
+        return $this->slugColumn ?? 'slug';
     }
 
-    /* -----------------------------------------------------------------
-     |  CONFIGURATION
-     |-----------------------------------------------------------------*/
-
-    /**
-     * Get slug column name
-     *
-     * @return string
-     */
-    protected function getSlugColumn(): string
+    public function getSlugSource(): string|array
     {
-        return property_exists($this, 'slugColumn')
-            ? $this->slugColumn
-            : 'slug';
+        return $this->slugSource ?? 'name';
     }
 
-    /**
-     * Get slug source field(s)
-     *
-     * @return string|array
-     */
-    protected function getSlugSource(): string|array
+    public function getSlugMode(): string
     {
-        return property_exists($this, 'slugSource')
-            ? $this->slugSource
-            : 'title';
+        return $this->slugMode ?? self::MODE_WORD;
     }
 
-    /**
-     * Get slug generation mode
-     *
-     * @return string
-     */
-    protected function getSlugMode(): string
+    public function getSlugSeparator(): string
     {
-        return property_exists($this, 'slugMode')
-            ? $this->slugMode
-            : 'word';
+        return $this->slugSeparator ?? '-';
     }
 
-    /**
-     * Get slug separator
-     *
-     * @return string
-     */
-    protected function getSlugSeparator(): string
+    public function getSlugMaxLength(): ?int
     {
-        return property_exists($this, 'slugSeparator')
-            ? $this->slugSeparator
-            : '-';
+        return $this->slugMaxLength ?? 120;
     }
 
-    /**
-     * Get slug maximum length
-     *
-     * @return int|null
-     */
-    protected function getSlugMaxLength(): ?int
+    public function isSlugImmutable(): bool
     {
-        if (!property_exists($this, 'slugMaxLength')) {
-            return 120;
-        }
-
-        return $this->slugMaxLength;
-    }
-
-    /**
-     * Check if slug is immutable
-     *
-     * @return bool
-     */
-    protected function isSlugImmutable(): bool
-    {
-        return property_exists($this, 'slugImmutable')
-            ? $this->slugImmutable
-            : false;
+        return $this->slugImmutable ?? false;
     }
 }

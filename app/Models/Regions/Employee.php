@@ -23,7 +23,7 @@ class Employee extends Model
 
     protected $codeSourceColumn = 'user.name';
 
-    protected $codePrefix = 'AEMP';
+    protected $codePrefix = 'ATAEMP';
 
     protected $codeColumn = 'code';
 

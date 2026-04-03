@@ -12,7 +12,6 @@ use App\Models\Regions\Category;
 use App\Models\Regions\Employee;
 use App\Models\Regions\Region;
 use App\Models\Tags\Tag;
-use App\Models\Traits\HandlePost;
 use App\Models\Traits\HasComments;
 use App\Models\Traits\HasRatings;
 use App\Models\Traits\HasReaction;
@@ -20,6 +19,7 @@ use App\Models\Traits\HasShares;
 use App\Models\Traits\HasViews;
 use Atannex\Enables\Scoping;
 use Atannex\Foundation\Concerns\GeneratesSlug;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -32,7 +32,6 @@ use Illuminate\Support\Str;
 
 class Post extends Model
 {
-    use HandlePost;
     use HasComments;
     use HasRatings;
     use HasReaction;
@@ -42,23 +41,20 @@ class Post extends Model
     use SoftDeletes;
     use GeneratesSlug;
 
+    protected string $slugMode      = self::MODE_RANDOM;
 
-    /**
-     * Source field for slug generation.
-     */
-    protected string $slugMode = 'word';
+    protected string $slugColumn    = 'slug';
 
-    /**
-     * Slug source field.
-     */
-    protected string $slugSource = 'title';
+    protected string|array $slugSource = 'title';
 
-    /**
-     * Mass assignable attributes.
-     */
+    protected string $slugSeparator = '-';
+
+    protected ?int $slugMaxLength   = 100;
+
     protected $fillable = [
         'title',
         'slug',
+        'slug_path',
         'category_id',
         'region_id',
         'author_id',
@@ -66,7 +62,6 @@ class Post extends Model
         'description',
         'image',
         'published_at',
-        'slug_path',
 
         'is_breaking',
         'breaking_at',
@@ -77,17 +72,13 @@ class Post extends Model
         'editor_pick_expires',
     ];
 
-    /**
-     * Attribute casting.
-     */
     protected $casts = [
-        'published_at' => 'datetime',
-        'is_breaking' => 'boolean',
-        'breaking_at' => 'datetime',
-        'breaking_expires' => 'datetime',
-
-        'is_editor_pick' => 'boolean',
-        'editor_pick_at' => 'datetime',
+        'published_at'       => 'datetime',
+        'is_breaking'        => 'boolean',
+        'breaking_at'        => 'datetime',
+        'breaking_expires'   => 'datetime',
+        'is_editor_pick'     => 'boolean',
+        'editor_pick_at'     => 'datetime',
         'editor_pick_expires' => 'datetime',
     ];
 
@@ -96,21 +87,60 @@ class Post extends Model
         return 'slug';
     }
 
-    /**
-     * A post can have many videos.
-     */
+    public function applySlugScope(Builder $query): Builder
+    {
+        return $query->where('region_id', $this->region_id);
+    }
+
+    public function refreshSlugPath(): void
+    {
+        $category = $this->category()
+            ->withoutGlobalScopes()
+            ->select(['id', 'slug_path'])
+            ->first();
+
+        $categoryPath = $category?->slug_path ?? '';
+
+        $this->slug_path = trim("{$categoryPath}/{$this->slug}", '/');
+    }
+
+    public function setSlugAttribute($value): void
+    {
+        $this->attributes['slug'] = $value;
+
+        if (!empty($this->attributes['category_id'])) {
+            $this->refreshSlugPath();
+        }
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::saving(function (Post $post) {
+            if (Auth::check() && Auth::user()->employee) {
+                $post->updated_by = Auth::user()->employee->id;
+            }
+
+            if ($post->isDirty('category_id') && $post->category_id) {
+                $post->refreshSlugPath();
+            }
+        });
+
+        static::created(function (Post $post) {
+            if ($post->category_id && empty($post->slug_path)) {
+                $post->refreshSlugPath();
+                $post->saveQuietly();
+            }
+        });
+    }
+
     public function video(): HasMany
     {
         return $this->hasMany(Video::class)
-            ->whereIn('flag', [
-                Flag::APPROVED,
-                Flag::PUBLISHED,
-            ]);
+            ->whereIn('flag', [Flag::APPROVED, Flag::PUBLISHED]);
     }
 
-    /**
-     * Get all reviews for this post.
-     */
     public function reviews(): MorphMany
     {
         return $this->morphMany(Review::class, 'reviewable');
@@ -121,9 +151,26 @@ class Post extends Model
         return $this->belongsTo(Region::class, 'region_id');
     }
 
-    /**
-     * Many-to-Many relationship with Tags.
-     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'author_id');
+    }
+
+    public function editor(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'updated_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'updated_by')->withTrashed();
+    }
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'post_tag')
@@ -131,41 +178,6 @@ class Post extends Model
             ->withTimestamps();
     }
 
-    /**
-     * Belongs to a Category.
-     */
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class, 'category_id');
-    }
-
-    /**
-     * Belongs to an Author (Employee).
-     */
-    public function author(): BelongsTo
-    {
-        return $this->belongsTo(Employee::class, 'author_id');
-    }
-
-    /**
-     * Belongs to an Editor (Employee) — updated_by.
-     */
-    public function editor(): BelongsTo
-    {
-        return $this->belongsTo(Employee::class, 'updated_by');
-    }
-
-    /**
-     * One-to-One relationship with PostModule.
-     */
-    public function module(): HasOne
-    {
-        return $this->hasOne(PostModule::class);
-    }
-
-    /**
-     * Polymorphic relationship with Comments (only top-level).
-     */
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable')
@@ -173,19 +185,10 @@ class Post extends Model
             ->latest();
     }
 
-    /**
-     * Belongs to the employee who last updated the post.
-     */
-    public function updatedBy(): BelongsTo
+    public function module(): HasOne
     {
-        return $this->belongsTo(Employee::class, 'updated_by')->withTrashed();
+        return $this->hasOne(PostModule::class);
     }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Visitor Identity
-    |--------------------------------------------------------------------------
-    */
 
     protected function resolveVisitorKey(): string
     {
@@ -195,14 +198,16 @@ class Post extends Model
 
         $visitorId = request()->cookie('visitor_id');
 
-        if (! $visitorId) {
+        if (!$visitorId) {
             $visitorId = (string) Str::uuid();
-
-            cookie()->queue(
-                cookie('visitor_id', $visitorId, 60 * 24 * 365)
-            );
+            cookie()->queue(cookie('visitor_id', $visitorId, 60 * 24 * 365));
         }
 
         return 'guest_' . $visitorId;
+    }
+
+    protected function isUserAuthenticated(): bool
+    {
+        return Auth::check();
     }
 }

@@ -4,76 +4,156 @@ declare(strict_types=1);
 
 namespace App\Models\Regions;
 
-use App\Contracts\Sluggable;
 use App\Enums\Flag;
 use App\Enums\Territories;
 use App\Models\Pivots\RegionSectionWidget;
 use App\Models\Posts\Post;
 use Atannex\Enables\Scoping;
-use Atannex\Enables\Slugging;
 use Atannex\Filters\Hierarchy;
-use Atannex\Traits\HasSlugPath;
+use Atannex\Foundation\Concerns\GeneratesSlug;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use LogicException;
 
-class Region extends Model implements Sluggable
+class Region extends Model
 {
-    use HasSlugPath;
     use Hierarchy;
     use Scoping;
-    use Slugging;
+    use GeneratesSlug;
     use SoftDeletes;
 
-    protected $table = 'regions';
+    protected string $slugMode      = self::MODE_WORD;
 
-    protected string $slugSource = 'name';
+    protected string $slugColumn    = 'slug';
+
+    protected string|array $slugSource = 'name';
+
+    protected string $slugSeparator = '-';
+
+    protected ?int $slugMaxLength   = 100;
 
     protected $fillable = [
         'name',
         'flag',
         'slug',
         'territory',
-        'logo',
         'description',
         'slug_path',
-        'metadata',
         'parent_id',
+        'position',
     ];
 
     protected $casts = [
-        'flag' => Flag::class,
-        'metadata' => 'array',
+        'flag'      => Flag::class,
         'territory' => Territories::class,
     ];
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
     protected static function booted(): void
     {
-        static::bootHasSlugPath();
+        static::saving(function (self $region) {
+            $region->guardAgainstCycles();
+            if ($region->shouldRebuildSlugPath()) {
+                $region->slug_path = $region->buildSlugPath();
+            }
+        });
+
+        static::saved(function (self $region) {
+            if ($region->wasChanged(['slug', 'parent_id'])) {
+                $region->refreshDescendantSlugPaths();
+            }
+        });
+
+        static::restored(function (self $region) {
+            $region->refreshSlugAfterRestore();
+            $region->slug_path = $region->buildSlugPath();
+            $region->saveQuietly();
+            $region->refreshDescendantSlugPaths();
+        });
     }
 
-    /**
-     * Gets the relationship for this region's child regions and their descendants.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany The has-many relationship for this region's direct children; descendants are eager-loaded recursively.
-     */
+    protected function shouldRebuildSlugPath(): bool
+    {
+        return $this->isDirty('slug')
+            || $this->isDirty('parent_id')
+            || empty($this->slug_path);
+    }
+
+    public function buildSlugPath(): string
+    {
+        $segments = [];
+        $current = $this;
+
+        while ($current) {
+            $segments[] = $current->slug;
+            $current = $current->relationLoaded('parent')
+                ? $current->parent
+                : $current->parent()->first();
+        }
+
+        return implode('/', array_reverse($segments));
+    }
+
+    public function refreshDescendantSlugPaths(): void
+    {
+        $this->loadMissing('children');
+
+        foreach ($this->children as $child) {
+            $newPath = $child->buildSlugPath();
+
+            if ($child->slug_path !== $newPath) {
+                $child->slug_path = $newPath;
+                $child->saveQuietly();
+            }
+
+            $child->refreshDescendantSlugPaths();
+        }
+    }
+
+    protected function guardAgainstCycles(): void
+    {
+        if (!$this->parent_id || !$this->exists) {
+            return;
+        }
+
+        if ($this->parent_id === $this->id) {
+            throw new LogicException('A region cannot be its own parent.');
+        }
+
+        $ancestor = $this->parent;
+
+        while ($ancestor) {
+            if ($ancestor->id === $this->id) {
+                throw new LogicException('Cyclic hierarchy detected.');
+            }
+
+            $ancestor = $ancestor->parent;
+        }
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug_path';
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id');
+    }
+
     public function descendants(): HasMany
     {
         return $this->children()->with('descendants');
     }
 
-    /**
-     * Get the region's ruler.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne The one-to-one relationship to the Ruler model.
-     */
     public function ruler(): HasOne
     {
         return $this->hasOne(Ruler::class);
@@ -84,14 +164,6 @@ class Region extends Model implements Sluggable
         return $this->hasMany(Post::class, 'region_id');
     }
 
-    /**
-     * Get this region's published sections ordered by the pivot `position`.
-     *
-     * The relationship uses the `region_section_widgets` pivot (RegionSectionWidget) and exposes pivot
-     * fields `widget_id`, `position`, `config`, `flag`, and `metadata` on the `pivot` property.
-     *
-     * @return BelongsToMany Published Section models for this region, ordered by the pivot `position`.
-     */
     public function sections(): BelongsToMany
     {
         return $this->belongsToMany(Section::class, 'region_section_widgets')
@@ -103,11 +175,6 @@ class Region extends Model implements Sluggable
             ->orderByPivot('position');
     }
 
-    /**
-     * Published widgets in this region, ordered by position.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany A relation for the region's published widgets, ordered by the pivot `position`.
-     */
     public function widgets(): BelongsToMany
     {
         return $this->belongsToMany(Widget::class, 'region_section_widgets')
