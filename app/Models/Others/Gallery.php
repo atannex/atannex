@@ -7,20 +7,14 @@ namespace App\Models\Others;
 use App\Enums\Flag;
 use App\Enums\Image;
 use Atannex\Enables\Scoping;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Gallery extends Model
 {
-    use HasFactory;
     use Scoping;
     use SoftDeletes;
 
-    /**
-     * Mass-assignable attributes.
-     * Ensures safe bulk assignment via create() or update().
-     */
     protected $fillable = [
         'original_name',
         'type',
@@ -29,10 +23,12 @@ class Gallery extends Model
         'flag',
     ];
 
-    /**
-     * Attribute type casting.
-     * Automatically converts enum fields to/from database.
-     */
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
     protected $casts = [
         'flag' => Flag::class,
         'type' => Image::class,

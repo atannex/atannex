@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Tags;
 
 use App\Models\Pivots\PostTag;
 use App\Models\Posts\Post;
-use Atannex\Traits\GeneratesSlug;
+use Atannex\Foundation\Concerns\GeneratesSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,36 +16,31 @@ class Tag extends Model
     use GeneratesSlug;
     use SoftDeletes;
 
-    /**
-     * Source field for slug generation.
-     */
-    protected string $slugMode = 'mixed';
+    protected string $slugMode      = self::MODE_MIXED;
 
-    protected string $slugSource = 'name';
+    protected string $slugColumn    = 'slug';
 
-    /**
-     * Attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected string|array $slugSource = 'name';
+
+    protected string $slugSeparator = '-';
+
+    protected ?int $slugMaxLength   = 100;
+
     protected $fillable = [
         'name',
         'description',
         'slug',
     ];
 
-    /**
-     * The posts that belong to the tag.
-     */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     public function posts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class)
             ->using(PostTag::class)
             ->withTimestamps();
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
     }
 }

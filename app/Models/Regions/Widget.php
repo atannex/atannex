@@ -3,17 +3,25 @@
 namespace App\Models\Regions;
 
 use App\Models\Pivots\RegionSectionWidget;
-use Atannex\Enables\Slugging;
+use Atannex\Foundation\Concerns\GeneratesSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Widget extends Model
 {
-    use Slugging;
+    use GeneratesSlug;
     use SoftDeletes;
 
-    protected string $slugSource = 'name';
+    protected string $slugMode      = self::MODE_RANDOM;
+
+    protected string $slugColumn    = 'name';
+
+    protected string|array $slugSource = 'title';
+
+    protected string $slugSeparator = '-';
+
+    protected ?int $slugMaxLength   = 100;
 
     protected $fillable = [
         'slug',

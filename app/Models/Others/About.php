@@ -9,8 +9,6 @@ class About extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'abouts';
-
     protected $fillable = [
         'title',
         'subtitle',
@@ -34,6 +32,12 @@ class About extends Model
         'counters' => 'array',
         'cta' => 'array',
         'info' => 'array',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     protected $dates = [

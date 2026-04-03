@@ -6,7 +6,7 @@ namespace App\Models\Posts;
 
 use App\Enums\Flag;
 use Atannex\Enables\Scoping;
-use Atannex\Enables\Slugging;
+use Atannex\Foundation\Concerns\GeneratesSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,17 +14,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Video extends Model
 {
     use Scoping;
-    use Slugging;
     use SoftDeletes;
+    use GeneratesSlug;
 
-    /**
-     * The attribute used to generate the slug.
-     */
-    protected string $slugSource = 'title';
+    protected string $slugMode      = self::MODE_RANDOM;
 
-    /**
-     * Mass assignable attributes.
-     */
+    protected string $slugColumn    = 'slug';
+
+    protected string|array $slugSource = 'title';
+
+    protected string $slugSeparator = '-';
+
+    protected ?int $slugMaxLength   = 100;
+
     protected $fillable = [
         'title',
         'slug',
@@ -36,23 +38,16 @@ class Video extends Model
         'post_id',
     ];
 
-    /**
-     * Attribute casting.
-     */
     protected $casts = [
         'flag' => Flag::class,
         'published_at' => 'datetime',
     ];
 
-    /**
-     * --------------------------------
-     * Relationships
-     * --------------------------------
-     */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 
-    /**
-     * A video belongs to a post.
-     */
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);

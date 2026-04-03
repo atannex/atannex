@@ -4,29 +4,35 @@ declare(strict_types=1);
 
 namespace App\Models\Regions;
 
-use App\Contracts\Sluggable;
 use App\Enums\Flag;
 use App\Models\Pivots\CategorySection;
 use App\Models\Posts\Post;
 use App\Models\Posts\Video;
 use Atannex\Enables\Scoping;
-use Atannex\Enables\Slugging;
 use Atannex\Filters\Hierarchy;
-use Atannex\Traits\HasSlugPath;
+use Atannex\Foundation\Concerns\GeneratesSlug;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Category extends Model implements Sluggable
+class Category extends Model
 {
-    use HasSlugPath;
     use Hierarchy;
     use Scoping;
-    use Slugging;
     use SoftDeletes;
+    use GeneratesSlug;
 
-    protected $table = 'categories';
+    protected string $slugMode      = self::MODE_WORD;
+
+    protected string $slugColumn    = 'slug';
+
+    protected string|array $slugSource = 'name';
+
+    protected string $slugSeparator = '-';
+
+    protected ?int $slugMaxLength   = 100;
 
     protected $fillable = [
         'name',
@@ -42,16 +48,97 @@ class Category extends Model implements Sluggable
         'flag' => Flag::class,
     ];
 
-    protected string $slugSource = 'name';
+    protected function shouldRebuildSlugPath(): bool
+    {
+        return $this->isDirty('slug')
+            || $this->isDirty('parent_id')
+            || empty($this->slug_path);
+    }
+
+    public function buildSlugPath(): string
+    {
+        if (!$this->slug) {
+            $this->regenerateSlug();
+        }
+
+        $segments = [$this->slug];
+        $parent = $this->parent;
+
+        $maxDepth = 20;
+        $depth = 0;
+
+        while ($parent && $depth < $maxDepth) {
+            $segments[] = $parent->slug;
+            $parent = $parent->relationLoaded('parent')
+                ? $parent->parent
+                : $parent->parent()->first();
+
+            $depth++;
+        }
+
+        return implode('/', array_reverse($segments));
+    }
+
+    public function refreshDescendantSlugPaths(): void
+    {
+        $this->loadMissing('children');
+
+        foreach ($this->children as $child) {
+            $newPath = $child->buildSlugPath();
+
+            if ($child->slug_path !== $newPath) {
+                $child->slug_path = $newPath;
+                $child->saveQuietly();
+            }
+
+            $child->refreshDescendantSlugPaths();
+        }
+    }
 
     public function getRouteKeyName(): string
     {
-        return 'slug';
+        return 'slug_path';
     }
 
     protected static function booted(): void
     {
-        static::bootHasSlugPath();
+        static::saving(function (self $category) {
+            if ($category->shouldRebuildSlugPath()) {
+                $category->slug_path = $category->buildSlugPath();
+            }
+        });
+
+        static::saved(function (self $category) {
+            if ($category->wasChanged(['slug', 'parent_id'])) {
+                $category->refreshDescendantSlugPaths();
+            }
+        });
+
+        static::restored(function (self $category) {
+            $category->refreshSlugAfterRestore();
+
+            if ($category->shouldRebuildSlugPath()) {
+                $category->slug_path = $category->buildSlugPath();
+                $category->saveQuietly();
+            }
+
+            $category->refreshDescendantSlugPaths();
+        });
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id');
+    }
+
+    public function descendants(): HasMany
+    {
+        return $this->children()->with('descendants');
     }
 
     public function posts(): HasMany
@@ -65,11 +152,6 @@ class Category extends Model implements Sluggable
             ->using(CategorySection::class)
             ->withPivot('flag')
             ->withTimestamps();
-    }
-
-    public function descendants(): HasMany
-    {
-        return $this->children()->with('descendants');
     }
 
     public function videos(): HasMany

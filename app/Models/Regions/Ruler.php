@@ -2,21 +2,26 @@
 
 namespace App\Models\Regions;
 
-use Atannex\Enables\Slugging;
+use Atannex\Foundation\Concerns\GeneratesSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ruler extends Model
 {
-    use Slugging;
+    use GeneratesSlug;
     use SoftDeletes;
 
-    protected string $slugSource = 'name';
+    protected string $slugMode      = self::MODE_RANDOM;
 
-    /**
-     * The attributes that are mass assignable.
-     */
+    protected string $slugColumn    = 'slug';
+
+    protected string|array $slugSource = 'name';
+
+    protected string $slugSeparator = '-';
+
+    protected ?int $slugMaxLength   = 100;
+
     protected $fillable = [
         'name',
         'slug',
@@ -39,18 +44,12 @@ class Ruler extends Model
         return 'slug';
     }
 
-    /**
-     * The attributes that should be cast.
-     */
     protected $casts = [
         'reign_start' => 'date',
         'reign_end' => 'date',
         'metadata' => 'array',
     ];
 
-    /**
-     * The attributes that should be mutated to dates.
-     */
     protected $dates = [
         'created_at',
         'updated_at',
