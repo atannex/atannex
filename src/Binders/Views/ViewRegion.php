@@ -5,16 +5,19 @@ declare(strict_types=1);
 namespace Atannex\Binders\Views;
 
 use App\Models\Regions\Region;
+use Atannex\Traits\ResolvesDynamicContent;
 use Illuminate\View\View;
 
 trait ViewRegion
 {
+    use ResolvesDynamicContent;
+
     /**
      * Render the region view.
      */
     public function renderRegionView(Region $region): View
     {
-        $this->resolveSection($region, 6, 3);
+        $this->resolveSection($region);
 
         $posts = $this->regionService->postsByRegion($region);
 
