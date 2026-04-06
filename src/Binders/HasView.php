@@ -15,7 +15,6 @@ use Atannex\Services\PostService;
 use Atannex\Services\RegionService;
 use Atannex\Services\ShareService;
 use Atannex\Services\TagService;
-use Atannex\Traits\Resolution;
 use Illuminate\View\View;
 
 final class HasView
@@ -37,7 +36,6 @@ final class HasView
     |--------------------------------------------------------------------------
     */
     use HasEntityMapping;
-    use Resolution;
 
     /*
     |--------------------------------------------------------------------------
