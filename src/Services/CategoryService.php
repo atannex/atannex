@@ -29,9 +29,6 @@ final class CategoryService
 
     protected const RECENT_LIMIT = 5;
 
-    /**
-     * Resolve published category by slug.
-     */
     public function resolveCategoryBySlug(string $slug): Category
     {
         return Category::query()
@@ -47,7 +44,7 @@ final class CategoryService
             ->nonGlobal()
             ->ordered()
             ->get()
-            ->map(fn (SocialMedia $media) => map_social_media($media))
+            ->map(fn(SocialMedia $media) => map_social_media($media))
             ->filter()
             ->values();
     }
@@ -89,37 +86,6 @@ final class CategoryService
             ->get();
     }
 
-    public function postsByDate(string $yearMonth, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
-    {
-        $resolution = $this->resolvePostArchiveBySlug($yearMonth);
-
-        if ($resolution === null) {
-            return Post::query()
-                ->whereRaw('1 = 0')
-                ->paginate($limit);
-        }
-
-        return Post::published()
-            ->when(
-                $resolution['type'] === 'year',
-                fn ($query) => $query->whereYear('published_at', $resolution['year'])
-            )
-            ->when(
-                $resolution['type'] === 'month',
-                fn ($query) => $query
-                    ->whereYear('published_at', $resolution['year'])
-                    ->whereMonth('published_at', $resolution['month'])
-            )
-            ->with([
-                'category.parent',
-                'region',
-                'tags',
-                'author.user',
-            ])
-            ->latest('published_at')
-            ->paginate($limit);
-    }
-
     public function postsByTag(Tag $tag, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
     {
         return $tag->posts()
@@ -134,7 +100,7 @@ final class CategoryService
 
         return Tag::query()
             ->withCount([
-                'posts as usage_count' => fn ($q) => $q->published()->whereIn('category_id', $treeIds),
+                'posts as usage_count' => fn($q) => $q->published()->whereIn('category_id', $treeIds),
             ])
             ->having('usage_count', '>', 0)
             ->orderByDesc('usage_count')
@@ -202,5 +168,48 @@ final class CategoryService
             ->orderByDesc('posts_count')
             ->limit($limit)
             ->get();
+    }
+
+    public function postsByYear(string $year, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
+    {
+        $resolution = $this->resolvePostArchiveYear($year);
+
+        return $this->buildPostsQuery($resolution, $limit);
+    }
+
+    public function postsByMonth(string $year, string $month, int $limit = self::PAGINATION_LIMIT): LengthAwarePaginator
+    {
+        $resolution = $this->resolvePostArchiveMonth($year, $month);
+
+        return $this->buildPostsQuery($resolution, $limit);
+    }
+
+    protected function buildPostsQuery(?array $resolution, int $limit): LengthAwarePaginator
+    {
+        if ($resolution === null) {
+            return Post::query()
+                ->whereRaw('1 = 0')
+                ->paginate($limit);
+        }
+
+        $query = Post::published();
+
+        if ($resolution['type'] === 'year') {
+            $query->whereYear('published_at', $resolution['year']);
+        } else {
+            $query
+                ->whereYear('published_at', $resolution['year'])
+                ->whereMonth('published_at', $resolution['month']);
+        }
+
+        return $query
+            ->with([
+                'category.parent',
+                'region',
+                'tags',
+                'author.user',
+            ])
+            ->latest('published_at')
+            ->paginate($limit);
     }
 }

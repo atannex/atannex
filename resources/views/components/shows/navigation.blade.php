@@ -13,11 +13,11 @@ $nextPost = $navigation['next'];
         </div>
         <div class="media-body">
             <h5 class="title">
-                <a href="{{ route('page.index', ['slug' => $previousPost->slug_path]) }}" class="hover-line">
+                <a href="{{ route('posts.show', ['slug' => $previousPost->slug_path]) }}" class="hover-line">
                     {{ Str::limit($previousPost->title, 60) }}
                 </a>
             </h5>
-            <a href="{{ route('page.index', ['slug' => $previousPost->slug_path]) }}" class="nav-text">
+            <a href="{{ route('posts.show', ['slug' => $previousPost->slug_path]) }}" class="nav-text">
                 <i class="fas fa-arrow-left me-2"></i> {{ __('Previous') }}
             </a>
         </div>
@@ -32,11 +32,11 @@ $nextPost = $navigation['next'];
         @if($nextPost)
         <div class="media-body">
             <h5 class="title">
-                <a href="{{ route('page.index', ['slug' => $nextPost->slug_path]) }}" class="hover-line">
+                <a href="{{ route('posts.show', ['slug' => $nextPost->slug_path]) }}" class="hover-line">
                     {{ Str::limit($nextPost->title, 60) }}
                 </a>
             </h5>
-            <a href="{{ route('page.index', ['slug' => $nextPost->slug_path]) }}" class="nav-text">
+            <a href="{{ route('posts.show', ['slug' => $nextPost->slug_path]) }}" class="nav-text">
                 {{ __('Next') }} <i class="fas fa-arrow-right ms-2"></i>
             </a>
         </div>

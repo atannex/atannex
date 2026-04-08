@@ -1,5 +1,5 @@
 <li class="menu-item {{ $category->descendants->isNotEmpty() ? 'menu-item-has-children' : '' }}">
-    <a href="{{ route('page.index', ['slug' => $category->slug_path]) }}">
+    <a href="{{ route('categories.show', ['path' => $category->slug_path]) }}">
         {{ $category->name }}
     </a>
 

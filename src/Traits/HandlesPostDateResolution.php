@@ -9,28 +9,14 @@ use App\Models\Posts\Post;
 trait HandlesPostDateResolution
 {
     /**
-     * Resolve a post archive context from a date-based slug.
-     *
-     * Supported formats:
-     *  - YYYY
-     *  - YYYY/MM
+     * Resolve a post archive context for a given year.
      *
      * Returns resolution metadata only (no models).
      */
-    protected function resolvePostArchiveBySlug(string $slug): ?array
+    protected function resolvePostArchiveYear(string $year): ?array
     {
-        [$year, $month] = $this->extractDateParts($slug);
-
-        if (! $this->isValidYear($year) || ! $this->postsExist($year)) {
+        if (! $this->isValidYear($year) || ! $this->postsExistForYear($year)) {
             return null;
-        }
-
-        if ($this->isValidMonth($month) && $this->postsExist($year, $month)) {
-            return [
-                'type' => 'month',
-                'year' => (int) $year,
-                'month' => (int) $month,
-            ];
         }
 
         return [
@@ -41,30 +27,46 @@ trait HandlesPostDateResolution
     }
 
     /**
-     * Extract year and optional month from a slug.
+     * Resolve a post archive context for a given year and month.
+     *
+     * Returns resolution metadata only (no models).
      */
-    protected function extractDateParts(string $slug): array
+    protected function resolvePostArchiveMonth(string $year, string $month): ?array
     {
-        return array_pad(
-            explode('/', trim($slug, '/'), 2),
-            2,
-            null
-        );
+        if (! $this->isValidYear($year) || ! $this->isValidMonth($month)) {
+            return null;
+        }
+
+        if (! $this->postsExistForMonth($year, $month)) {
+            return null;
+        }
+
+        return [
+            'type' => 'month',
+            'year' => (int) $year,
+            'month' => (int) $month,
+        ];
     }
 
     /**
-     * Check if published posts exist for a given year (and optional month).
+     * Check if published posts exist for a given year.
      */
-    protected function postsExist(string $year, ?string $month = null): bool
+    protected function postsExistForYear(string $year): bool
     {
-        $query = Post::published()
-            ->whereYear('published_at', $year);
+        return Post::published()
+            ->whereYear('published_at', $year)
+            ->exists();
+    }
 
-        if ($month !== null) {
-            $query->whereMonth('published_at', $month);
-        }
-
-        return $query->exists();
+    /**
+     * Check if published posts exist for a given year and month.
+     */
+    protected function postsExistForMonth(string $year, string $month): bool
+    {
+        return Post::published()
+            ->whereYear('published_at', $year)
+            ->whereMonth('published_at', $month)
+            ->exists();
     }
 
     /**

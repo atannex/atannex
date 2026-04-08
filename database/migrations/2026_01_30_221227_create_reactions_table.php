@@ -15,14 +15,8 @@ return new class extends Migration
             $table->morphs('reactable');
 
             $table->foreignId('user_id')
-                ->nullable()
                 ->constrained()
                 ->cascadeOnDelete();
-
-            $table->string('visitor_key');
-
-            $table->string('session_id')->nullable();
-            $table->ipAddress('ip_address')->nullable();
 
             $table->string('type')->default(ReactionType::LIKE);
 
@@ -31,9 +25,9 @@ return new class extends Migration
             $table->unique([
                 'reactable_type',
                 'reactable_id',
-                'visitor_key',
+                'user_id',
                 'type',
-            ], 'unique_reaction_per_visitor');
+            ], 'unique_reaction_per_user');
 
             $table->index(['reactable_type', 'reactable_id', 'type']);
         });

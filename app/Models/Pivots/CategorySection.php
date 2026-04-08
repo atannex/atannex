@@ -12,7 +12,6 @@ class CategorySection extends Pivot
 {
     use SoftDeletes;
 
-
     protected $table = 'category_section';
 
     protected $fillable = [

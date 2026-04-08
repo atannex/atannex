@@ -1,21 +1,20 @@
 <div class="flex-wrap gap-2 blog-info-wrap d-flex align-items-center gap-md-3">
     <div class="gap-2 d-flex engagement-group">
-        <button type="button" wire:click="like" wire:target="like" wire:loading.attr="disabled" wire:loading.class="opacity-50" class="blog-info d-flex align-items-center gap-1
-            {{ $liked ? 'fw-bold text-primary' : 'text-muted' }}" aria-pressed="{{ $liked ? 'true' : 'false' }}" aria-label="Like this story">
+
+        {{-- Like Button --}}
+        <button type="button" wire:click="like" wire:target="like" wire:loading.attr="disabled" wire:loading.class="opacity-50" class="blog-info d-flex align-items-center gap-1 {{ $liked ? 'fw-bold text-primary' : 'text-muted' }}" aria-pressed="{{ $liked ? 'true' : 'false' }}" aria-label="{{ $liked ? 'Unlike this story' : 'Like this story' }}">
+
             <i class="fas fa-thumbs-up"></i>
-
-            <span class="text-nowrap">
-                {{ format_count(number_format($likeCount)) }}
-            </span>
+            <span class="text-nowrap">{{ format_count($likeCount) }}</span>
         </button>
-        <button type="button" wire:click="dislike" wire:target="dislike" wire:loading.attr="disabled" wire:loading.class="opacity-50" class="blog-info d-flex align-items-center gap-1
-            {{ $disliked ? 'fw-bold text-danger' : 'text-muted' }}" aria-pressed="{{ $disliked ? 'true' : 'false' }}" aria-label="Dislike this story">
+
+
+        <button type="button" wire:click="dislike" wire:target="dislike" wire:loading.attr="disabled" wire:loading.class="opacity-50" class="blog-info d-flex align-items-center gap-1 {{ $disliked ? 'fw-bold text-danger' : 'text-muted' }}" aria-pressed="{{ $disliked ? 'true' : 'false' }}" aria-label="{{ $disliked ? 'Remove dislike' : 'Dislike this story' }}">
+
             <i class="fas fa-thumbs-down"></i>
-
-            <span class="text-nowrap">
-                {{ format_count(number_format($dislikeCount)) }}
-            </span>
+            <span class="text-nowrap">{{ format_count($dislikeCount) }}</span>
         </button>
+
     </div>
     <div class="stats-group">
         <div class="gap-2 d-flex engagement-group">

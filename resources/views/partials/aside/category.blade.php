@@ -6,7 +6,7 @@
         @foreach ($relatedCategories as $category)
         @php($data = category_display_data($category))
         <li>
-            <a href="{{ route('page.index', $category->slug_path) }}" @if($data['bgSrc']) data-bg-src="{{ $data['bgSrc'] }}" @endif>
+            <a href="{{ route('categories.show', $category->slug_path) }}" @if($data['bgSrc']) data-bg-src="{{ $data['bgSrc'] }}" @endif>
                 {{ $data['label'] }}
             </a>
         </li>

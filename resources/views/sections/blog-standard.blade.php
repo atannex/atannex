@@ -33,7 +33,7 @@
                             {!! Str::limit($post->description, 150) !!}
                         </p>
 
-                        <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="th-btn style2">
+                        <a href="{{ route('posts.show', ['slug' => $post->slug_path ]) }}" class="th-btn style2">
                             {{ __("Read More") }}
                             <i class="fas fa-arrow-up-right ms-2"></i>
                         </a>

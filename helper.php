@@ -33,7 +33,7 @@ if (! function_exists('displayGuestData')) {
 
         if ($mainRegions->isNotEmpty()) {
             $mainRegion = $mainRegions->first();
-            $homeRoute = route('page.index', ['slug' => $mainRegion->slug]);
+            $homeRoute = route('regions.show', ['path' => $mainRegion->slug]);
         }
 
         return [

@@ -4,165 +4,115 @@ declare(strict_types=1);
 
 namespace Atannex\Traits;
 
+use App\Enums\Traits\HasEntityMapping;
 use App\Models\Regions\Region;
-use Illuminate\Support\Collection;
 
 trait ResolvesDynamicContent
 {
-    /**
-     * In-memory cache for tab queries (prevents duplicate DB calls per request).
-     */
-    protected array $tabCache = [];
+    use HasEntityMapping;
 
-    /**
-     * Resolve sections and widgets for a region.
-     */
     protected function resolveSection(Region $region, int $sectionLimit = 6, int $widgetLimit = 3): void
     {
-        $sections = $region->sections()
-            ->limit($sectionLimit)
-            ->with([
-                'widgets' => fn($query) => $query->wherePivot('region_id', $region->id)
-                    ->limit($widgetLimit),
-            ])
-            ->get();
+        $sections = $this->loadSections($region, $sectionLimit, $widgetLimit);
 
-        // NEW: Pre-resolve ALL tabs in one batch to avoid N+1
-        $this->preResolveAllTabs($sections);
+        $this->warmUpTabs($sections);
 
         foreach ($sections as $section) {
-            $this->resolveEntityWithWidgets($section);
+            $this->hydrateSection($section);
         }
 
         $region->setRelation('sections', $sections);
     }
 
-    /**
-     * NEW: Collect and batch-resolve all unique tab configurations across sections + widgets.
-     * This prevents the N+1 pattern where each tab config triggers its own DB query.
-     */
-    private function preResolveAllTabs(Collection $sections): void
+    private function loadSections(Region $region, int $sectionLimit, int $widgetLimit): array
     {
-        $allTabConfigs = [];
+        return $region->sections()
+            ->limit($sectionLimit)
+            ->with([
+                'widgets' => fn($query) =>
+                $query->wherePivot('region_id', $region->id)
+                    ->limit($widgetLimit),
+            ])
+            ->get()
+            ->all();
+    }
 
+    /**
+     * Stream all tabs (no arrays, no merges)
+     */
+    private function warmUpTabs(array $sections): void
+    {
+        foreach ($this->collectTabs($sections) as $tab) {
+            $this->resolveTab($tab);
+        }
+    }
+
+    /**
+     * Generator-based flattening (replaces collect + array_merge)
+     */
+    private function collectTabs(array $sections): iterable
+    {
         foreach ($sections as $section) {
-            $config = $section->pivot->config ?? [];
-            if (!empty($config['section_tab']) && is_array($config['section_tab'])) {
-                $allTabConfigs = array_merge($allTabConfigs, $config['section_tab']);
+            foreach ($section->pivot->config['section_tab'] as $tab) {
+                yield $tab;
             }
 
             foreach ($section->widgets as $widget) {
-                $widgetConfig = $widget->pivot->config ?? [];
-                if (!empty($widgetConfig['widget_tab']) && is_array($widgetConfig['widget_tab'])) {
-                    $allTabConfigs = array_merge($allTabConfigs, $widgetConfig['widget_tab']);
+                foreach ($widget->pivot->config['widget_tab'] as $tab) {
+                    yield $tab;
                 }
             }
         }
-
-        if (empty($allTabConfigs)) {
-            return;
-        }
-
-        // Resolve all unique tabs in batch
-        collect($allTabConfigs)
-            ->map(fn(array $tab) => $this->resolveSingleTab($tab)) // This now hits cache heavily
-            ->values();
     }
 
-    /**
-     * Resolve tabs for section and its widgets (now benefits from pre-resolution).
-     */
-    protected function resolveEntityWithWidgets(object $entity): void
+    private function hydrateSection(object $section): void
     {
-        $config = $entity->pivot->config ?? [];
+        $this->hydrateEntityTabs($section, 'section_tab');
 
-        $this->resolveEntityContent($entity, $config, 'section_tab');
-
-        foreach ($entity->widgets as $widget) {
-            $widgetConfig = $widget->pivot->config ?? [];
-            $this->resolveEntityContent($widget, $widgetConfig, 'widget_tab');
+        foreach ($section->widgets as $widget) {
+            $this->hydrateEntityTabs($widget, 'widget_tab');
         }
     }
 
-    /**
-     * Attach resolved tabs to entity.
-     */
-    private function resolveEntityContent(object $entity, array $config, string $tabKey): void
+    private function hydrateEntityTabs(object $entity, string $key): void
     {
-        if (empty($config[$tabKey]) || !is_array($config[$tabKey])) {
-            $entity->setRelation('tabs', collect());
+        $resolved = [];
 
-            return;
+        foreach ($entity->pivot->config[$key] as $tab) {
+            $resolved[] = $this->resolveTab($tab);
         }
 
-        $tabs = collect($config[$tabKey])
-            ->map(fn(array $tab) => $this->resolveSingleTab($tab))
-            ->values();
-
-        $entity->setRelation('tabs', $tabs);
+        $entity->setRelation('tabs', $resolved);
     }
 
-    /**
-     * Resolve a single tab configuration safely.
-     */
-    private function resolveSingleTab(array $tab): array
+    private function resolveTab(array $tab): array
     {
-        $mapping = $this->getMapping($tab['type'] ?? null);
+        $mapping = $this->getMapping($tab['type']);
 
-        if (!$mapping || empty($mapping['method'])) {
-            $tab['content'] = collect();
-
+        if (!$mapping['method']) {
+            $tab['content'] = [];
             return $tab;
         }
 
-        $idKey = $mapping['idKey'] ?? null;
-
-        $tab['content'] = $this->resolveTab($tab, $mapping, $idKey);
+        $tab['content'] = $this->resolveMappedContent($tab, $mapping);
 
         return $tab;
     }
 
-    /**
-     * Execute tab query with improved memoization.
-     */
-    private function resolveTab(array $tab, array $mapping, ?string $key = null): mixed
+    private function resolveMappedContent(array $tab, array $mapping): mixed
     {
         $params = [
-            'limit'               => $tab['limit'] ?? null,
-            'relation_limit'      => $tab['relation_limit'] ?? null,
-            'leaf_relation_limit' => $tab['leaf_relation_limit'] ?? null,
-            'sort'                => $tab['sort'] ?? null,
-            'order'               => $tab['order'] ?? null,
+            'limit'               => $tab['limit'],
+            'relation_limit'      => $tab['relation_limit'],
+            'leaf_relation_limit' => $tab['leaf_relation_limit'],
+            'sort'                => $tab['sort'],
+            'order'               => $tab['order'],
         ];
 
-        if ($key && isset($tab[$key])) {
-            $params[$key] = normalizeIds($tab[$key]);
+        if (!empty($mapping['idKey'])) {
+            $params[$mapping['idKey']] = normalizeIds($tab[$mapping['idKey']]);
         }
 
-        $method = $mapping['method'];
-
-        if (!method_exists($this->getPost, $method)) {
-            return collect();
-        }
-
-        // Improved cache key: more reliable than json_encode on potentially complex arrays
-        $cacheKey = $this->generateTabCacheKey($method, $params);
-
-        if (isset($this->tabCache[$cacheKey])) {
-            return $this->tabCache[$cacheKey];
-        }
-
-        return $this->tabCache[$cacheKey] = $this->getPost->{$method}($params);
-    }
-
-    /**
-     * Generate a stable cache key for tab queries.
-     */
-    private function generateTabCacheKey(string $method, array $params): string
-    {
-        // Sort keys for consistent hashing
-        ksort($params);
-
-        return md5($method . '|' . json_encode($params, JSON_THROW_ON_ERROR));
+        return $this->getPost->{$mapping['method']}($params);
     }
 }

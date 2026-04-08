@@ -24,7 +24,7 @@
 
                             <h3 class="box-title-22">
 
-                                <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="hover-line">
+                                <a href="{{ route('posts.show', ['slug' => $post->slug_path ]) }}" class="hover-line">
                                     {{ Str::limit($post->title, 40) }}
                                 </a>
 
@@ -62,7 +62,7 @@
 
                             <h3 class="box-title-40">
 
-                                <a href="{{ route('page.index', ['slug' => $featuredBlog->slug_path ]) }}" class="hover-line">
+                                <a href="{{ route('posts.show', ['slug' => $featuredBlog->slug_path ]) }}" class="hover-line">
                                     {{ Str::limit($featuredBlog->title, 50) }}
                                 </a>
 

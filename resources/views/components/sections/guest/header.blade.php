@@ -39,7 +39,7 @@
                                         <div class="row slick-marquee">
                                             @foreach ($global['breaking'] as $post)
                                             <div class="col-auto">
-                                                <a href="{{ route('page.index', $post->slug_path) }}" class="breaking-news">
+                                                <a href="{{ route('posts.show', $post->slug_path) }}" class="breaking-news">
                                                     {{ $post->title }}
                                                 </a>
                                             </div>

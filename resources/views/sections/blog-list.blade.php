@@ -8,7 +8,9 @@
                         <div class="blog-style4">
                             <div class="blog-img w-386">
 
-                                @include('partials.image',['class'=> 'blog-list'])
+                                <a href="javascript:void(0)">
+                                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}" class="img-fluid blog-list">
+                                </a>
 
                             </div>
                             <div class="blog-content">
@@ -30,7 +32,7 @@
                                     @include('partials.date')
 
                                 </div>
-                                <a href="{{ route('page.index', $post->slug_path)}}" class="th-btn style2">
+                                <a href="{{ route('posts.show', $post->slug_path)}}" class="th-btn style2">
                                     {{ __("Read More") }}
                                     <i class="fas fa-arrow-up-right ms-2"></i>
                                 </a>

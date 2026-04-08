@@ -25,7 +25,7 @@
                 <div class="blog-bg-style1" style="max-width:720px; overflow:visible;">
 
                     @if($post->category)
-                    <a href="{{ route('page.index', $post->category->slug_path) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" data-ani="slideinup" data-ani-delay="0.1s">
+                    <a href="{{ route('categories.show', $post->category->slug_path) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" data-ani="slideinup" data-ani-delay="0.1s">
                         {{ $post->category->name }}
                     </a>
                     @endif
@@ -51,7 +51,7 @@
 
                     </div>
 
-                    <a href="{{ route('page.index', ['slug' => $post->slug_path]) }}" style="text-decoration:none;">
+                    <a href="{{ route('posts.show', ['slug' => $post->slug_path]) }}" style="text-decoration:none;">
 
                         <p class="blog-text" style="
                                 display:-webkit-box;
