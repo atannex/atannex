@@ -34,7 +34,7 @@
                     <article class="blog-style1 style-big">
                         <div class="blog-img">
 
-                            <a href="{{ route('page.index', ['slug' => $featuredPost->slug_path ]) }}">
+                            <a href="{{ route('posts.show', ['slug' => $featuredPost->slug_path ]) }}">
                                 <img src="{{ asset('storage/' . $featuredPost->image) }}" alt="{{ config('app.name') }}" class="img-fluid content-filter-section">
                             </a>
 
@@ -68,7 +68,7 @@
                             <article class="blog-style1">
                                 <div class="blog-img">
 
-                                    <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}">
+                                    <a href="{{ route('posts.show', ['slug' => $post->slug_path ]) }}">
                                         <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}" class="img-fluid small-image-carousel">
                                     </a>
 

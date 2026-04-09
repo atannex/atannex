@@ -16,34 +16,37 @@ $menu = displayGuestData($global['mainRegions']);
         </a>
     </li>
 
+    {{-- FAQ / Documents --}}
     <li class="menu-item-has-children">
-        <a href="{{ route('page.index', ['slug' => 'faq']) }}">
+        <a href="{{ route('documents.list', ['type' => 'faq']) }}">
             {{ __('navigation.faqs') }}
         </a>
-        <ul class="sub-menu">
 
+        <ul class="sub-menu">
             <li>
-                <a href="{{ route('page.index', ['slug' => 'faq']) }}">
+                <a href="{{ route('documents.list', ['type' => 'faq']) }}">
                     {{ __('navigation.faqs') }}
                 </a>
             </li>
 
             <li>
-                <a href="{{ route('page.index', ['slug' => 'testimonials']) }}">
+                <a href="{{ route('documents.list', ['type' => 'testimonials']) }}">
                     {{ __('navigation.testimonials') }}
                 </a>
             </li>
         </ul>
     </li>
 
+    {{-- Help Center --}}
     <li class="menu-item-has-children">
-        <a href="{{ route('page.index', ['slug' => 'help-center']) }}">
+        <a href="{{ route('documents.list', ['type' => 'help-center']) }}">
             {{ __('navigation.help') }}
         </a>
+
         <ul class="sub-menu">
-            @foreach ($menu['helpItems'] as $slug => $label)
+            @foreach ($menu['helpItems'] as $type => $label)
             <li>
-                <a href="{{ route('page.index', ['slug' => $slug]) }}">
+                <a href="{{ route('documents.list', ['type' => $type]) }}">
                     {{ $label }}
                 </a>
             </li>
@@ -51,15 +54,16 @@ $menu = displayGuestData($global['mainRegions']);
         </ul>
     </li>
 
+    {{-- Policy / Legal --}}
     <li class="menu-item-has-children">
-        <a href="{{ route('page.index', ['slug' => 'privacy']) }}">
+        <a href="{{ route('documents.list', ['type' => 'privacy']) }}">
             {{ __('navigation.policy') }}
         </a>
 
         <ul class="sub-menu">
-            @foreach ($menu['policyItems'] as $slug => $label)
+            @foreach ($menu['policyItems'] as $type => $label)
             <li>
-                <a href="{{ route('page.index', ['slug' => $slug]) }}">
+                <a href="{{ route('documents.list', ['type' => $type]) }}">
                     {{ $label }}
                 </a>
             </li>
@@ -73,6 +77,7 @@ $menu = displayGuestData($global['mainRegions']);
         </a>
     </li>
 
+    {{-- AUTH --}}
     @guest
     @if (Route::has('login'))
     <li class="menu-item-has-children">
@@ -116,6 +121,5 @@ $menu = displayGuestData($global['mainRegions']);
         @csrf
     </form>
     @endguest
-
 
 </ul>

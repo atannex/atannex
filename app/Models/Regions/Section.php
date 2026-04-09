@@ -4,37 +4,33 @@ namespace App\Models\Regions;
 
 use App\Models\Pivots\RegionSectionWidget;
 use Atannex\Enables\Scoping;
-use Atannex\Foundation\Concerns\GeneratesSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Section extends Model
 {
     use Scoping;
-    use GeneratesSlug;
+    use HasSlug;
     use SoftDeletes;
-
-    protected string $slugMode      = self::MODE_RANDOM;
-
-    protected string $slugColumn    = 'slug';
-
-    protected string|array $slugSource = 'name';
-
-    protected string $slugSeparator = '-';
-
-    protected ?int $slugMaxLength   = 100;
 
     protected $fillable = [
         'name',
         'slug',
         'flag',
-        'metadata',
     ];
 
-    protected $casts = [
-        'metadata' => 'array',
-    ];
+    /**
+     * Get the options for generating the slug.
+     */
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
+    }
 
     public function getRouteKeyName(): string
     {

@@ -36,7 +36,7 @@
                                 @include('partials.image', ['post' => $post, 'class'=> 'primary-news-section'])
 
                                 @if ($post->region)
-                                <a href="{{ route('page.index', ['slug' => $post->region->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
+                                <a href="{{ route('regions.show', ['path' => $post->region->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
                                     {{ $post->region->name }}
                                 </a>
                                 @endif
@@ -47,7 +47,7 @@
                                 @include('partials.category', ['post' => $post])
 
                                 <h3 class="box-title-24">
-                                    <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="hover-line">
+                                    <a href="{{ route('posts.show', ['slug' => $post->slug_path ]) }}" class="hover-line">
                                         {{ Str::limit($post->title, 110) }}
                                     </a>
                                 </h3>

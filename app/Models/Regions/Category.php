@@ -24,16 +24,6 @@ class Category extends Model
     use SoftDeletes;
     use GeneratesSlug;
 
-    protected string $slugMode      = self::MODE_WORD;
-
-    protected string $slugColumn    = 'slug';
-
-    protected string|array $slugSource = 'name';
-
-    protected string $slugSeparator = '-';
-
-    protected ?int $slugMaxLength   = 100;
-
     protected $fillable = [
         'name',
         'slug',
@@ -48,83 +38,115 @@ class Category extends Model
         'flag' => Flag::class,
     ];
 
+    protected string $slugMode = self::MODE_WORD;
+
+    protected string $slugColumn = 'slug';
+
+    protected string|array $slugSource = 'name';
+
+    protected string $slugSeparator = '-';
+
+    protected ?int $slugMaxLength = 100;
+
+    /*
+    |--------------------------------------------------------------------------
+    | BOOT
+    |--------------------------------------------------------------------------
+    */
+    protected static function booted(): void
+    {
+        static::saving(fn(self $model) => $model->syncSlugPathIfNeeded());
+
+        static::saved(function (self $model) {
+            if ($model->wasChanged(['slug', 'parent_id'])) {
+                $model->dispatchSlugPropagation();
+            }
+        });
+
+        static::restored(function (self $model) {
+            $model->syncSlugPathIfNeeded();
+            $model->dispatchSlugPropagation();
+        });
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CORE LOGIC (SINGLE RESPONSIBILITY)
+    |--------------------------------------------------------------------------
+    */
+
+    protected function syncSlugPathIfNeeded(): void
+    {
+        if (!$this->shouldRebuildSlugPath()) {
+            return;
+        }
+
+        $this->slug_path = $this->generateSlugPath();
+    }
+
     protected function shouldRebuildSlugPath(): bool
     {
-        return $this->isDirty('slug')
-            || $this->isDirty('parent_id')
-            || empty($this->slug_path);
+        return $this->isDirty(['slug', 'parent_id']) || blank($this->slug_path);
     }
 
-    public function buildSlugPath(): string
+    /**
+     * Pure function: builds hierarchy path without side effects
+     */
+    public function generateSlugPath(): string
     {
-        if (!$this->slug) {
-            $this->regenerateSlug();
-        }
+        $segments = $this->collectSlugSegments();
 
-        $segments = [$this->slug];
-        $parent = $this->parent;
-
-        $maxDepth = 20;
-        $depth = 0;
-
-        while ($parent && $depth < $maxDepth) {
-            $segments[] = $parent->slug;
-            $parent = $parent->relationLoaded('parent')
-                ? $parent->parent
-                : $parent->parent()->first();
-
-            $depth++;
-        }
-
-        return implode('/', array_reverse($segments));
+        return implode('/', $segments);
     }
 
-    public function refreshDescendantSlugPaths(): void
+    /**
+     * Centralized hierarchy traversal (no duplication anywhere else)
+     */
+    protected function collectSlugSegments(): array
+    {
+        $segments = [];
+        $node = $this;
+        $guard = 0;
+
+        while ($node && $guard < 50) {
+            $segments[] = $node->slug;
+            $node = $node->parent;
+            $guard++;
+        }
+
+        return array_reverse($segments);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DESCENDANT PROPAGATION (SAFE + CONTROLLED)
+    |--------------------------------------------------------------------------
+    */
+
+    public function dispatchSlugPropagation(): void
     {
         $this->loadMissing('children');
 
         foreach ($this->children as $child) {
-            $newPath = $child->buildSlugPath();
-
-            if ($child->slug_path !== $newPath) {
-                $child->slug_path = $newPath;
-                $child->saveQuietly();
-            }
-
-            $child->refreshDescendantSlugPaths();
+            $child->updateSlugPathQuietly();
+            $child->dispatchSlugPropagation();
         }
     }
 
-    public function getRouteKeyName(): string
+    protected function updateSlugPathQuietly(): void
     {
-        return 'slug_path';
+        $newPath = $this->generateSlugPath();
+
+        if ($this->slug_path !== $newPath) {
+            $this->forceFill(['slug_path' => $newPath])->saveQuietly();
+        }
     }
 
-    protected static function booted(): void
-    {
-        static::saving(function (self $category) {
-            if ($category->shouldRebuildSlugPath()) {
-                $category->slug_path = $category->buildSlugPath();
-            }
-        });
-
-        static::saved(function (self $category) {
-            if ($category->wasChanged(['slug', 'parent_id'])) {
-                $category->refreshDescendantSlugPaths();
-            }
-        });
-
-        static::restored(function (self $category) {
-            $category->refreshSlugAfterRestore();
-
-            if ($category->shouldRebuildSlugPath()) {
-                $category->slug_path = $category->buildSlugPath();
-                $category->saveQuietly();
-            }
-
-            $category->refreshDescendantSlugPaths();
-        });
-    }
+    /*
+    |--------------------------------------------------------------------------
+    | RELATIONSHIPS
+    |--------------------------------------------------------------------------
+    */
 
     public function parent(): BelongsTo
     {
@@ -146,6 +168,11 @@ class Category extends Model
         return $this->hasMany(Post::class, 'category_id');
     }
 
+    public function videos(): HasMany
+    {
+        return $this->hasMany(Video::class);
+    }
+
     public function sections(): BelongsToMany
     {
         return $this->belongsToMany(Section::class, 'category_section')
@@ -154,8 +181,19 @@ class Category extends Model
             ->withTimestamps();
     }
 
-    public function videos(): HasMany
+    /*
+    |--------------------------------------------------------------------------
+    | ROUTING
+    |--------------------------------------------------------------------------
+    */
+
+    public function getRouteKeyName(): string
     {
-        return $this->hasMany(Video::class);
+        return 'slug_path';
+    }
+
+    public function getUrlAttribute(): string
+    {
+        return url('categories/' . $this->slug_path);
     }
 }

@@ -3,7 +3,7 @@
     <div class="tagcloud">
         @forelse ($relatedTags as $tag)
         @if ($tag->posts->first() && $tag->posts->first()->category)
-        <a href="{{ route('page.index', ['slug' => $tag->slug]) }}">
+        <a href="{{ route('tags.show', ['slug' => $tag->slug]) }}">
             {{ $tag->name }}
         </a>
         @endif

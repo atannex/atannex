@@ -18,13 +18,14 @@
     </div>
 
     <div class="row slider-shadow th-carousel" id="related-post-slide" data-slide-show="3" data-lg-slide-show="2" data-md-slide-show="2" data-sm-slide-show="2">
-
         @forelse ($relatedPosts as $post)
         <div class="col-sm-6 col-xl-4">
             <div class="blog-style1">
                 <div class="blog-img">
 
-                    @include('partials.image',['class'=> 'category-3-column'])
+                    <a href="javascript:void(0)">
+                        <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}" class="img-fluid category-3-column">
+                    </a>
 
                     @include('partials.category')
 

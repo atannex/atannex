@@ -26,16 +26,6 @@ class Region extends Model
     use GeneratesSlug;
     use SoftDeletes;
 
-    protected string $slugMode      = self::MODE_WORD;
-
-    protected string $slugColumn    = 'slug';
-
-    protected string|array $slugSource = 'name';
-
-    protected string $slugSeparator = '-';
-
-    protected ?int $slugMaxLength   = 100;
-
     protected $fillable = [
         'name',
         'flag',
@@ -48,70 +38,105 @@ class Region extends Model
     ];
 
     protected $casts = [
-        'flag'      => Flag::class,
+        'flag' => Flag::class,
         'territory' => Territories::class,
     ];
 
+    /*
+    |--------------------------------------------------------------------------
+    | BOOT (CLEAN + CONTROLLED)
+    |--------------------------------------------------------------------------
+    */
     protected static function booted(): void
     {
-        static::saving(function (self $region) {
-            $region->guardAgainstCycles();
-            if ($region->shouldRebuildSlugPath()) {
-                $region->slug_path = $region->buildSlugPath();
+        static::saving(fn(self $model) => $model->prepareSlugPath());
+
+        static::saved(function (self $model) {
+            if ($model->wasChanged(['slug', 'parent_id'])) {
+                $model->propagateSlugPathToChildren();
             }
         });
 
-        static::saved(function (self $region) {
-            if ($region->wasChanged(['slug', 'parent_id'])) {
-                $region->refreshDescendantSlugPaths();
-            }
+        static::restored(function (self $model) {
+            $model->prepareSlugPath();
+            $model->saveQuietly();
+            $model->propagateSlugPathToChildren();
         });
+    }
 
-        static::restored(function (self $region) {
-            $region->refreshSlugAfterRestore();
-            $region->slug_path = $region->buildSlugPath();
-            $region->saveQuietly();
-            $region->refreshDescendantSlugPaths();
-        });
+    /*
+    |--------------------------------------------------------------------------
+    | SLUG PATH CORE (SINGLE SOURCE OF TRUTH)
+    |--------------------------------------------------------------------------
+    */
+
+    protected function prepareSlugPath(): void
+    {
+        if (!$this->shouldRebuildSlugPath()) {
+            return;
+        }
+
+        $this->slug_path = $this->generateSlugPath();
     }
 
     protected function shouldRebuildSlugPath(): bool
     {
-        return $this->isDirty('slug')
-            || $this->isDirty('parent_id')
-            || empty($this->slug_path);
+        return $this->isDirty(['slug', 'parent_id']) || blank($this->slug_path);
     }
 
-    public function buildSlugPath(): string
+    public function generateSlugPath(): string
+    {
+        return implode('/', $this->collectSlugSegments());
+    }
+
+    /**
+     * Centralized traversal (NO duplication anywhere else)
+     */
+    protected function collectSlugSegments(): array
     {
         $segments = [];
-        $current = $this;
+        $node = $this;
+        $guard = 0;
 
-        while ($current) {
-            $segments[] = $current->slug;
-            $current = $current->relationLoaded('parent')
-                ? $current->parent
-                : $current->parent()->first();
+        while ($node && $guard < 50) {
+            $segments[] = $node->slug;
+            $node = $node->parent;
+            $guard++;
         }
 
-        return implode('/', array_reverse($segments));
+        return array_reverse($segments);
     }
 
-    public function refreshDescendantSlugPaths(): void
+    /*
+    |--------------------------------------------------------------------------
+    | PROPAGATION (SAFE + CONTROLLED)
+    |--------------------------------------------------------------------------
+    */
+
+    public function propagateSlugPathToChildren(): void
     {
         $this->loadMissing('children');
 
         foreach ($this->children as $child) {
-            $newPath = $child->buildSlugPath();
-
-            if ($child->slug_path !== $newPath) {
-                $child->slug_path = $newPath;
-                $child->saveQuietly();
-            }
-
-            $child->refreshDescendantSlugPaths();
+            $child->syncSlugPathQuietly();
+            $child->propagateSlugPathToChildren();
         }
     }
+
+    protected function syncSlugPathQuietly(): void
+    {
+        $newPath = $this->generateSlugPath();
+
+        if ($this->slug_path !== $newPath) {
+            $this->forceFill(['slug_path' => $newPath])->saveQuietly();
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATION (UNCHANGED BUT SAFE)
+    |--------------------------------------------------------------------------
+    */
 
     protected function guardAgainstCycles(): void
     {
@@ -134,10 +159,11 @@ class Region extends Model
         }
     }
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug_path';
-    }
+    /*
+    |--------------------------------------------------------------------------
+    | RELATIONSHIPS
+    |--------------------------------------------------------------------------
+    */
 
     public function parent(): BelongsTo
     {
@@ -184,5 +210,16 @@ class Region extends Model
             ->wherePivot('flag', Flag::PUBLISHED)
             ->wherePivotNull('deleted_at')
             ->orderByPivot('position');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ROUTING
+    |--------------------------------------------------------------------------
+    */
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 }

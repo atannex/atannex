@@ -1,5 +1,5 @@
 <li class="{{ $item->descendants->isNotEmpty() ? '' : '' }}">
-    <a href="{{ route('page.index', ['slug' => $item->slug_path]) }}">
+    <a href="{{ route('regions.show', ['path' => $item->slug_path]) }}">
         {{ $item->title ?? $item->name }}
     </a>
 

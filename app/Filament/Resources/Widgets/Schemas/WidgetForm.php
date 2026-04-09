@@ -18,11 +18,11 @@ class WidgetForm
                 TextInput::make('name')
                     ->required(),
                 Select::make('flag')
-                    ->options(Flag::labels())
+                    ->options(Flag::asSelectArray())
                     ->preload()
                     ->searchable()
                     ->required()
-                    ->default(Flag::PENDING),
+                    ->default(Flag::DRAFT),
             ]);
     }
 }

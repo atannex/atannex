@@ -16,16 +16,19 @@
                 <div class="col-xl-12 col-md-6 border-blog">
                     <div class="blog-style2">
                         <div class="blog-img">
-                            <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}">
+
+                            <a href="{{ route('posts.show', ['slug' => $post->slug_path ]) }}">
                                 <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}" class="img-fluid top-stories-right-sidebar">
                             </a>
+
                         </div>
                         <div class="blog-content">
+
                             @include('partials.category', ['post' => $post])
 
                             <h3 class="box-title-18">
                                 @if($post->category)
-                                <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="hover-line">
+                                <a href="{{ route('posts.show', ['slug' => $post->slug_path ]) }}" class="hover-line">
                                     {{ Str::limit($post->title, 30) }}
                                 </a>
                                 @else

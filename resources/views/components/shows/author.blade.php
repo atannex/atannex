@@ -6,12 +6,12 @@
         <div class="author-top">
             <div>
                 <h3 class="author-name">
-                    <a class="text-inherit" href="{{ route('page.index', ['slug' => $module->post->author->user->slug]) }}">
+                    <a class="text-inherit" href="{{ route('authors.show', ['slug' => $module->post->author->user->slug]) }}">
                         {{ Str::title($module->post->author->user->name) }}
                     </a>
                 </h3>
                 <span class="author-desig">
-                    {{ $module->post->author->user->getRoleNames()->first() }}
+                    {{ $module->post->author->user->getRoleNames()->firstOrFail() }}
                 </span>
             </div>
             @if(!empty($medias))

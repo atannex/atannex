@@ -1,4 +1,4 @@
-<a href="{{ route('page.index', $post->author->user->slug) }}" title="{{ Str::lower($post->author->user->name) }}">
+<a href="{{ route('authors.show', $post->author->user->slug) }}" title="{{ Str::lower($post->author->user->name) }}">
 
     <img src="{{ $post->author->user->image
         ? asset('storage/' . $post->author->user->image)

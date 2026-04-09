@@ -1,4 +1,4 @@
-<a data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" href="{{ route('page.index', ['slug' => $module->post->category->slug_path]) }}" class="category">
+<a data-theme-color="{{ \App\Models\Others\Color::randomHex() }}" href="{{ route('categories.show', ['path' => $module->post->category->slug_path]) }}" class="category">
     {{ $module->post->category->name }}
 </a>
 
@@ -7,15 +7,12 @@
 </h2>
 
 <div class="blog-meta">
-    <a class="author" href="{{ route('page.index', $module->post->author->user->slug) }}">
+    <a class="author" href="{{ route('authors.show', $module->post->author->user->slug) }}">
         <i class="fas fa-user"></i>
         {{ __('By - ') . Str::title($module->post->author->user->name) }}
     </a>
 
-    <a href="{{ route('page.index', $module->post->author->user->slug) }}">
-        <i class="fas fa-calendar-days"></i>
-        {{ $module->created_at->diffForHumans() }}
-    </a>
+    @include('partials.date', ['post' =>$module->post])
 
     <span>
         <i class="fas fa-book-open"></i>

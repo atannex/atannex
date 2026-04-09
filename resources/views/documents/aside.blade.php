@@ -1,23 +1,41 @@
+{{-- Document Aside --}}
 <div class="col-xxl-3 col-lg-4 sidebar-wrap">
     <aside class="sidebar-area">
+
         <div class="widget">
-            <h3 class="widget_title">{{ __('Other :type', ['type' => e($type ?? '')]) }}</h3>
+
+            <h3 class="widget_title">
+                {{ __('Other :type', ['type' => e($type ?? '')]) }}
+            </h3>
+
             <div class="recent-post-wrap">
+
                 @forelse($documents as $index => $item)
+
                 <div class="recent-post">
                     <div class="media-body">
+
                         <h3 class="post-title">
-                            <a class="hover-line" href="{{ route('page.index', ['slug' => $type, 'slug' => $item->slug]) }}">
+                            <a class="hover-line" href="{{ route('documents.show', $item->slug) }}">
+
                                 {{ $index + 1 }}. {{ e($item->title) }}
+
                             </a>
                         </h3>
+
                     </div>
                 </div>
+
                 @empty
-                <p>{{ __('No related') }} {{ $type }} {{ __('found.') }}</p>
+
+                <p>
+                    {{ __('No related') }} {{ $type }} {{ __('found.') }}
+                </p>
 
                 @endforelse
+
             </div>
         </div>
+
     </aside>
 </div>

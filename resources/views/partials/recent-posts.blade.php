@@ -7,7 +7,7 @@
         @foreach ($global['recentPosts'] as $post)
         <div class="recent-post">
             <div class="media-img">
-                <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" aria-label="{{ $post->title }}">
+                <a href="{{ route('posts.show', ['slug' => $post->slug_path ]) }}" aria-label="{{ $post->title }}">
                     <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}">
                 </a>
             </div>

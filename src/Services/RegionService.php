@@ -53,29 +53,30 @@ final class RegionService
 
     public function getRegionBySlug(string $slug): Region
     {
-        $normalizedSlug = $this->normalizeSlug($slug);
-
         return Region::query()
             ->flagged(Flag::PUBLISHED)
-            ->where('slug_path', $normalizedSlug)
+            ->where('slug_path', $this->normalizeSlug($slug))
             ->with([
-                'sections' => static fn ($query) => $query->orderByPivot('position'),
+                'sections' => fn($query) => $query
+                    ->orderByPivot('position')
+                    ->wherePivot('flag', Flag::PUBLISHED),
 
-                'sections.widgets' => static fn ($query) => $query->orderByPivot('position'),
+                'sections.widgets' => fn($query) => $query
+                    ->orderByPivot('position')
+                    ->wherePivot('flag', Flag::PUBLISHED),
             ])
             ->firstOrFail();
     }
 
     public function getRegionBySlugWithFlatWidgets(string $slug): Region
     {
-        $normalizedSlug = $this->normalizeSlug($slug);
-
         return Region::query()
             ->flagged(Flag::PUBLISHED)
-            ->where('slug_path', $normalizedSlug)
+            ->where('slug_path', $this->normalizeSlug($slug))
             ->with([
-                'widgets' => static fn ($query) => $query
+                'widgets' => fn($query) => $query
                     ->orderByPivot('position')
+                    ->wherePivot('flag', Flag::PUBLISHED)
                     ->select('widgets.*'),
             ])
             ->firstOrFail();

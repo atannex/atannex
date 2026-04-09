@@ -27,7 +27,7 @@ $breadcrumbs[] = [
             {{-- Optional Header Region --}}
             @if(!empty($global['headerRegion']))
             <li>
-                <a href="{{ route('page.index', ['slug' => $global['headerRegion']->slug]) }}">
+                <a href="{{ route('regions.show', ['path' => $global['headerRegion']->slug]) }}">
                     {{ $global['headerRegion']->name }}
                 </a>
             </li>

@@ -14,7 +14,7 @@
                     <div class="col-xl-12 col-sm-6 border-blog dark-theme img-overlay2">
                         <div class="blog-style3">
                             <div class="blog-img">
-                                <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}">
+                                <a href="{{ route('posts.show', ['slug' => $post->slug_path ]) }}">
                                     <img src="{{ asset('storage/' . $post->image) }}" alt="{{ config('app.name') }}" class="img-fluid top-stories-left-sidebar">
                                 </a>
                             </div>
@@ -46,7 +46,7 @@
                 <div class="dark-theme img-overlay2">
                     <div class="blog-style3">
                         <div class="blog-img">
-                            <a href="{{ route('page.index', ['slug' => $latestPost->slug_path ]) }}">
+                            <a href="{{ route('posts.show', ['slug' => $latestPost->slug_path ]) }}">
                                 <img src="{{ asset('storage/' . $latestPost->image) }}" alt="{{ config('app.name') }}" class="img-fluid top-stories-main-center">
                             </a>
                         </div>
@@ -57,7 +57,7 @@
 
                             <h3 class="box-title-30">
                                 @if($latestPost->category)
-                                <a href="{{ route('page.index', ['slug' => $latestPost->slug_path ]) }}" class="hover-line">
+                                <a href="{{ route('posts.show', ['slug' => $latestPost->slug_path ]) }}" class="hover-line">
                                     {{ Str::limit($latestPost->title, 50) }}
                                 </a>
                                 @else
@@ -66,7 +66,7 @@
                             </h3>
 
                             <div class="blog-meta">
-                                <a href="{{ route('page.index', $latestPost->author->user->slug) }}" title="{{ Str::lower($latestPost->author->user->name) }}">
+                                <a href="{{ route('authors.show', $latestPost->author->user->slug) }}" title="{{ Str::lower($latestPost->author->user->name) }}">
                                     <img src="{{ $latestPost->author->user->image
                                             ? asset('storage/' . $latestPost->author->user->image)
                                             : asset('logo.jpg') }}" alt="{{ Str::lower($latestPost->author->user->name) }}" class="author-avatar">

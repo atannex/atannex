@@ -33,7 +33,7 @@
                                 </p>
                                 <div class="blog-meta">
 
-                                    <a href="{{ route('page.index', $post->author->user->slug) }}" title="{{ Str::lower($post->author->user->name) }}">
+                                    <a href="{{ route('authors.show', $post->author->user->slug) }}" title="{{ Str::lower($post->author->user->name) }}">
 
                                         <img src="{{ asset('storage/' . $post->author->user->image) }}" alt="{{ config('app.name') }}" class="author-avatar">
 
@@ -42,7 +42,7 @@
                                     @include('partials.date')
 
                                 </div>
-                                <a href="{{ route('page.index', $post->slug_path)}}" class="th-btn style2">
+                                <a href="{{ route('posts.show', $post->slug_path)}}" class="th-btn style2">
                                     {{ __(" Read More ") }}
                                     <i class="fas fa-arrow-up-right ms-2"></i>
                                 </a>

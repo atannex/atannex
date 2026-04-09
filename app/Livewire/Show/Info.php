@@ -3,9 +3,10 @@
 namespace App\Livewire\Show;
 
 use App\Enums\ReactionType;
-use App\Livewire\Concerns\CanRate;
+use App\Livewire\Concerns\CanRate;   // assuming this exists similarly
 use App\Livewire\Concerns\CanReact;
 use App\Models\Posts\Post;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -15,25 +16,17 @@ class Info extends Component
     use CanReact;
 
     public Post $post;
-
     public mixed $module;
 
     public int $totalShares = 0;
-
     public int $totalViews = 0;
-
-    /*
-    |--------------------------------------------------------------------------
-    | Lifecycle
-    |--------------------------------------------------------------------------
-    */
 
     public function mount(Post $post, $module): void
     {
         $this->post = $post;
         $this->module = $module;
 
-        $this->post->addView();
+        $this->post->addView(); // assuming this is safe / rate-limited elsewhere
 
         $this->syncRatingState();
         $this->syncReactionState();
@@ -52,7 +45,7 @@ class Info extends Component
 
     /*
     |--------------------------------------------------------------------------
-    | Reaction Events
+    | Reaction Event Listeners
     |--------------------------------------------------------------------------
     */
 
@@ -70,14 +63,19 @@ class Info extends Component
 
     /*
     |--------------------------------------------------------------------------
-    | Rating Events
+    | Rating (similar pattern — keep your existing logic)
     |--------------------------------------------------------------------------
     */
 
     #[On('post-rated')]
     public function rate(int $value): void
     {
-        $this->handleRate($value);
+        if (! Auth::check()) {
+            $this->redirectRoute('login', navigate: true);
+            return;
+        }
+
+        $this->handleRate($value); // from CanRate trait
     }
 
     /*

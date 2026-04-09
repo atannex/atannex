@@ -64,7 +64,7 @@
 
                     <div class="blog-content">
                         @if($post->region)
-                        <a href="{{ route('page.index', ['slug' => $post->region->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
+                        <a href="{{ route('regions.show', ['path' => $post->region->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
                             {{ $post->region->name }}
                         </a>
                         @endif
@@ -89,7 +89,7 @@
 
                     <div class="blog-content">
                         @if($post->region)
-                        <a href="{{ route('page.index', ['slug' => $post->region->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
+                        <a href="{{ route('regions.show', ['path' => $post->region->slug_path]) }}" class="category" data-theme-color="{{ \App\Models\Others\Color::randomHex() }}">
                             {{ $post->region->name }}
                         </a>
                         @endif
