@@ -29,12 +29,12 @@
                         <div>
                             @foreach($items as $post)
                             <div class="mb-4 d-flex align-items-start">
-                                <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="me-3" style="flex-shrink: 0;">
+                                <a href="{{ route('posts.show', ['slug' => $post->slug_path ]) }}" class="me-3" style="flex-shrink: 0;">
                                     <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="rounded-circle" style="width: 45px; height: 45px; object-fit: cover;">
                                 </a>
                                 <div>
                                     <h6 class="mb-1" style="font-size: 0.95rem;">
-                                        <a href="{{ route('page.index', ['slug' => $post->slug_path ]) }}" class="text-white text-decoration-none fw-semibold">
+                                        <a href="{{ route('posts.show', ['slug' => $post->slug_path ]) }}" class="text-white text-decoration-none fw-semibold">
                                             {{ Str::limit($post->title, 90) }}
                                         </a>
                                     </h6>
