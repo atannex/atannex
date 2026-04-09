@@ -3,82 +3,46 @@
 @section('title', seo_title('Welcome Back to Atannex!'))
 
 @section('content')
-<div class="wrapper">
-    <div class="editorial-panel editorial-panel--login">
-        <div class="glow-blob"></div>
-
-        <div class="ep-logo">
-            <div class="ep-logo-mark"><span>A</span></div>
-            <div>
-                <div class="ep-name">ATANNEX</div>
-                <div class="ep-name-underline"></div>
-            </div>
-        </div>
-
-        <div class="ticker-wrap">
-            <div class="ticker-track">
-                <span class="ticker-item">🔴 BREAKING: Climate Emergency Summit Begins in Geneva <span class="ticker-dot">•</span> Inflation Hits 3-Year Low <span class="ticker-dot">•</span> Tech Giants Report Record Profits <span class="ticker-dot">•</span> War Crimes Tribunal Opens in The Hague <span class="ticker-dot">•</span></span>
-                <span class="ticker-item">🔴 BREAKING: Climate Emergency Summit Begins in Geneva <span class="ticker-dot">•</span> Inflation Hits 3-Year Low <span class="ticker-dot">•</span> Tech Giants Report Record Profits <span class="ticker-dot">•</span> War Crimes Tribunal Opens in The Hague <span class="ticker-dot">•</span></span>
-            </div>
-        </div>
-
-        <div class="ep-hero">
-            <div class="ep-eyebrow">Trusted Journalism Since 2010</div>
-            <h1 class="ep-headline">The World's<br />Stories,<br /><em>Told First.</em></h1>
-            <p class="ep-desc">Independent reporting. Uncompromising standards. Sign in to access your personalised news experience from over 190 countries.</p>
-
-            <div class="story-stack">
-                <div class="story-card">
-                    <span class="story-num">01</span>
-                    <div>
-                        <div class="story-cat">World</div>
-                        <div class="story-title">Global Leaders Convene at Emergency Climate Summit in Geneva</div>
-                    </div>
-                </div>
-                <div class="story-card">
-                    <span class="story-num">02</span>
-                    <div>
-                        <div class="story-cat">Business</div>
-                        <div class="story-title">Tech Giants Surge as Q4 Earnings Shatter Analysts' Forecasts</div>
-                    </div>
-                </div>
-                <div class="story-card">
-                    <span class="story-num">03</span>
-                    <div>
-                        <div class="story-cat">Science</div>
-                        <div class="story-title">Breakthrough Treatment Promises New Hope in Cancer Fight</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="stats-bar">
-            <div class="stat-item">
-                <div class="stat-num">14M+</div>
-                <div class="stat-label">Readers</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-num">190+</div>
-                <div class="stat-label">Countries</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-num">24/7</div>
-                <div class="stat-label">Coverage</div>
-            </div>
-        </div>
-    </div>
-    <div class="form-panel">
+<div class="flex items-center justify-center min-h-screen wrapper">
+    <div class="w-full max-w-2xl form-panel">
 
         @include('auth.partials.form-topbar')
 
         <div class="form-body">
             <div class="animate-in delay-1">
-                <p class="ep-eyebrow">{{ __("Sign in to Atannex") }}</p>
-                <h2 class="form-title">{{ __('Welcome') }}<br />{{ __("back.") }}</h2>
+                <p class="form-eyebrow">{{ __("Sign in to Atannex") }}</p>
+                <h2 class="form-title">{{ __('Welcome back.') }}</h2>
                 <p class="form-sub">{{ __("Your news is waiting. Sign in to continue.") }}</p>
             </div>
 
-            @include('auth.partials.social-grid')
+            <div class="social-login-grid animate-in delay-2" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; margin-bottom: 16px;">
+                <button type="button" class="social-login-btn" onclick="loginWithGoogle()" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; border: 1px solid var(--border); border-radius: 4px; background: transparent; cursor: pointer; transition: all 0.2s;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" style="margin-bottom: 6px;">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                    </svg>
+                    <span style="font-size: 12px; color: var(--light);">{{ __('Google') }}</span>
+                </button>
+
+                <button type="button" class="social-login-btn" onclick="loginWithApple()" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; border: 1px solid var(--border); border-radius: 4px; background: transparent; cursor: pointer; transition: all 0.2s;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color: #ccc; margin-bottom: 6px;">
+                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                    </svg>
+                    <span style="font-size: 12px; color: var(--light);">{{ __('Apple') }}</span>
+                </button>
+
+                <button type="button" class="social-login-btn" onclick="loginWithMicrosoft()" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; border: 1px solid var(--border); border-radius: 4px; background: transparent; cursor: pointer; transition: all 0.2s;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" style="margin-bottom: 6px;">
+                        <rect x="3" y="3" width="8" height="8" fill="#F25022" />
+                        <rect x="13" y="3" width="8" height="8" fill="#7FBA00" />
+                        <rect x="3" y="13" width="8" height="8" fill="#00A4EF" />
+                        <rect x="13" y="13" width="8" height="8" fill="#FFB900" />
+                    </svg>
+                    <span style="font-size: 12px; color: var(--light);">{{ __('Microsoft') }}</span>
+                </button>
+            </div>
 
             <div class="or-divider animate-in delay-2">
                 <span>{{ __("or sign in with email") }}</span>
@@ -88,7 +52,7 @@
             <form method="POST" action="{{ route('login') }}">
                 @csrf
 
-                <div class="field-group animate-in delay-3">
+                <div class="field-group animate-in delay-3" style="margin-top: 12px;">
                     <div class="field-label">
                         <span>{{ __("Email Address") }}</span>
                     </div>
@@ -98,7 +62,7 @@
                     @enderror
                 </div>
 
-                <div class="field-group animate-in delay-4">
+                <div class="field-group animate-in delay-4" style="margin-top: 12px;">
                     <div class="field-label">
                         <span>{{ __("Password") }}</span>
                         @if (Route::has('password.request'))
@@ -124,13 +88,15 @@
                     <span class="block mt-1 text-sm text-red-500">{{ $message }}</span>
                     @enderror
                 </div>
-                <div class="remember-row animate-in delay-5">
+
+                <div class="remember-row animate-in delay-5" style="margin-top: 12px;">
                     <input type="checkbox" class="check-box" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
                     <label for="remember" class="check-label">
                         {{ __("Keep me signed in for 30 days") }}
                     </label>
                 </div>
-                <button class="btn-submit animate-in delay-4" onclick="handleLogin()">
+
+                <button class="btn-submit animate-in delay-4" style="margin-top: 16px;" onclick="handleLogin()">
                     {{ __("Sign In to Atannex") }}
                     <svg style="display:inline;margin-left:8px;vertical-align:-2px;" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
