@@ -22,7 +22,7 @@ class ShareController extends Controller
         $post->recordShare($platform);
 
         return redirect()->away(
-            $this->shareService->generateFor($platform, url("/{$post->slug_path}/"), $post->title)
+            $this->shareService->generateFor($platform, url("/posts/{$post->slug_path}/"), $post->title)
         );
     }
 }
