@@ -17,136 +17,10 @@ $isThrottled = $status === $throttleMessage;
 $sentEmail = old('email', request('email'));
 @endphp
 
-<div class="wrapper">
-    <div class="editorial-panel editorial-panel--reset">
-        <div class="glow-blob-reset"></div>
+<div class="flex items-center justify-center min-h-screen wrapper">
+    <div class="w-full max-w-2xl form-panel">
 
-        <div class="ep-logo">
-            <div class="ep-logo-mark"><span>A</span></div>
-            <div>
-                <div class="ep-name">ATANNEX</div>
-                <div class="ep-name-underline"></div>
-            </div>
-        </div>
-
-        <div class="ticker-wrap">
-            <div class="ticker-track">
-                <span class="ticker-item">
-                    🔴 {{ __('Climate Emergency Summit Begins in Geneva') }}
-                    <span class="ticker-dot">•</span>
-                    {{ __('Inflation Hits 3-Year Low') }}
-                    <span class="ticker-dot">•</span>
-                    {{ __('Tech Giants Report Record Profits') }}
-                    <span class="ticker-dot">•</span>
-                    {{ __('ATANNEX: War Crimes Tribunal Opens') }}
-                    <span class="ticker-dot">•</span>
-                </span>
-                <span class="ticker-item">
-                    🔴 {{ __('Climate Emergency Summit Begins in Geneva') }}
-                    <span class="ticker-dot">•</span>
-                    {{ __('Inflation Hits 3-Year Low') }}
-                    <span class="ticker-dot">•</span>
-                    {{ __('Tech Giants Report Record Profits') }}
-                    <span class="ticker-dot">•</span>
-                    {{ __('ATANNEX: War Crimes Tribunal Opens') }}
-                    <span class="ticker-dot">•</span>
-                </span>
-            </div>
-        </div>
-
-        <div class="ep-hero">
-            <div class="ep-eyebrow">{{ __('Account Security') }}</div>
-            <h1 class="ep-headline">
-                {{ __('Secure.') }}<br />
-                {{ __('Simple.') }}<br />
-                <em>{{ __('Back in.') }}</em>
-            </h1>
-            <p class="ep-desc">
-                {{ __("Regaining access takes less than two minutes. We'll send a secure link directly to your inbox — no questions asked.") }}
-            </p>
-            <div class="security-steps" id="left-steps">
-
-                <div class="security-step {{ $step > 1 ? 'done' : 'active' }}" id="left-step-1">
-                    <div class="sec-step-num" id="lsn-1">
-                        @if($step > 1)
-                        <svg width="14" height="14" fill="none" stroke="#00b8a0" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                        </svg>
-                        @else
-                        1
-                        @endif
-                    </div>
-                    <div>
-                        <div class="sec-step-title">{{ __('Enter your email') }}</div>
-                        <div class="sec-step-desc">{{ __("We'll look up the account linked to that address") }}</div>
-                    </div>
-                </div>
-
-                <div class="security-step {{ $step >= 2 ? 'active' : 'inactive' }}" id="left-step-2">
-                    <div class="sec-step-num" id="lsn-2">2</div>
-                    <div>
-                        <div class="sec-step-title">{{ __('Check your inbox') }}</div>
-                        <div class="sec-step-desc">{{ __('A secure one-time link will arrive within a minute') }}</div>
-                    </div>
-                </div>
-
-                <div class="security-step inactive" id="left-step-3">
-                    <div class="sec-step-num" id="lsn-3">3</div>
-                    <div>
-                        <div class="sec-step-title">{{ __('Set a new password') }}</div>
-                        <div class="sec-step-desc">{{ __("Choose something strong — we'll check it for you") }}</div>
-                    </div>
-                </div>
-
-                <div class="security-step inactive" id="left-step-4">
-                    <div class="sec-step-num" id="lsn-4">4</div>
-                    <div>
-                        <div class="sec-step-title">{{ __('Back to the news') }}</div>
-                        <div class="sec-step-desc">{{ __('Sign in and pick up exactly where you left off') }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="security-badge">
-                <div class="security-badge-icon">
-                    <svg width="20" height="20" fill="none" stroke="#00b8a0" stroke-width="1.8" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                    </svg>
-                </div>
-                <div class="security-badge-text">
-                    <strong>{{ __('256-bit Encrypted') }}</strong>
-                    {{ __('Reset links expire in 15 minutes and can only be used once. Your account stays locked until you complete the reset.') }}
-                </div>
-            </div>
-        </div>
-
-        <div class="stats-bar">
-            <div class="stat-item">
-                <div class="stat-num">14M+</div>
-                <div class="stat-label">{{ __('Readers') }}</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-num">190+</div>
-                <div class="stat-label">{{ __('Countries') }}</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-num">24/7</div>
-                <div class="stat-label">{{ __('Coverage') }}</div>
-            </div>
-        </div>
-    </div>
-    <div class="form-panel">
-        <div class="form-topbar desktop-topbar">
-            <a href="{{ route('login') }}" class="back-link" style="margin-bottom:0;">
-                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                </svg>
-                {{ __('Back to Sign In') }}
-            </a>
-            <div class="live-pill">
-                <span class="live-dot"></span>
-                <span>{{ __('Secure Connection') }}</span>
-            </div>
-        </div>
+        @include('auth.partials.form-topbar')
 
         <div class="form-body">
             @if($step === 1)
@@ -161,13 +35,13 @@ $sentEmail = old('email', request('email'));
                 <div class="animate-in delay-1">
                     <p class="reset-step-label">{{ __('Step 1 of 3') }} &nbsp;·&nbsp; {{ __('Enter Email') }}</p>
                     <p class="form-eyebrow">{{ __('Password Recovery') }}</p>
-                    <h2 class="form-title">{{ __('Forgot your') }}<br />{{ __('password?') }}</h2>
+                    <h2 class="form-title">{{ __('Forgot your password?') }}</h2>
                     <p class="form-sub">
                         {{ __("No problem. Enter the email address on your Atannex account and we'll send you a secure reset link.") }}
                     </p>
                 </div>
                 @if($isThrottled)
-                <div class="fp-info-banner animate-in delay-1">
+                <div class="fp-info-banner animate-in delay-1" style="margin-top: 12px;">
                     <svg width="16" height="16" fill="none" stroke="#ccaa00" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -175,7 +49,7 @@ $sentEmail = old('email', request('email'));
                 </div>
                 @endif
                 @if($errors->any())
-                <div class="auth-error-banner animate-in delay-1">
+                <div class="auth-error-banner animate-in delay-1" style="margin-top: 12px;">
                     <svg width="16" height="16" fill="none" stroke="#CC4400" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                     </svg>
@@ -184,7 +58,7 @@ $sentEmail = old('email', request('email'));
                 @endif
                 <form method="POST" action="{{ route('password.email') }}" id="forgot-form" novalidate>
                     @csrf
-                    <div class="field-group animate-in delay-2">
+                    <div class="field-group animate-in delay-2" style="margin-top: 12px;">
                         <div class="field-label">
                             <span>{{ __('Email Address') }}</span>
                         </div>
@@ -194,7 +68,7 @@ $sentEmail = old('email', request('email'));
                         <p class="field-error">{{ $message }}</p>
                         @enderror
                     </div>
-                    <div class="field-group animate-in delay-3">
+                    <div class="field-group animate-in delay-3" style="margin-top: 12px;">
                         <div class="field-label">
                             <span>{{ __('Signed in with') }}</span>
                         </div>
@@ -227,14 +101,14 @@ $sentEmail = old('email', request('email'));
                         </div>
                         <div id="social-notice" class="fp-social-notice"></div>
                     </div>
-                    <button type="submit" class="btn-submit animate-in delay-3" id="send-btn">
+                    <button type="submit" class="btn-submit animate-in delay-3" id="send-btn" style="margin-top: 16px;">
                         {{ __('Send Reset Link') }}
                         <svg style="display:inline;margin-left:8px;vertical-align:-2px;" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                         </svg>
                     </button>
                 </form>
-                <p class="switch-link animate-in delay-4" style="margin-top:4px;">
+                <p class="switch-link animate-in delay-4" style="margin-top:12px;">
                     {{ __('Remembered it?') }}
                     <a href="{{ route('login') }}">{{ __('Back to Sign In →') }}</a>
                 </p>
@@ -286,7 +160,7 @@ $sentEmail = old('email', request('email'));
                 @if($provider)
                 <div class="animate-in delay-2">
                     <p class="fp-provider-label">{{ __('Open your inbox directly') }}</p>
-                    <div class="fp-provider-links">
+                    <div class="fp-provider-links" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;">
                         @if($provider === 'gmail')
                         <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer" class="fp-provider-btn">
                             <svg width="13" height="13" viewBox="0 0 24 24">
@@ -346,7 +220,7 @@ $sentEmail = old('email', request('email'));
                 </div>
                 @endif
                 @endif
-                <div class="resend-row animate-in delay-3">
+                <div class="resend-row animate-in delay-3" style="margin-top: 16px;">
                     <span class="resend-label">{{ __("Didn't receive it?") }}</span>
                     <div class="resend-actions">
                         <span class="resend-timer" id="resend-timer"></span>
@@ -359,7 +233,7 @@ $sentEmail = old('email', request('email'));
                         </form>
                     </div>
                 </div>
-                <div class="fp-tips-box animate-in delay-3">
+                <div class="fp-tips-box animate-in delay-3" style="margin-top: 16px;">
                     <p class="fp-tips-heading">{{ __("Can't find the email?") }}</p>
                     <ul class="fp-tips-list">
                         <li>

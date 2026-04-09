@@ -63,6 +63,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -74,7 +75,6 @@
                 , }
             , }
         , }
-
     </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -143,27 +143,6 @@
 
 </head>
 <body>
-    <div class="form-topbar mobile-topbar">
-        <div style="display:flex;align-items:center;gap:10px;">
-            <div class="mobile-logo-mark"><span>A</span></div>
-            <span class="mobile-logo-name">ATANNEX</span>
-        </div>
-        <div class="live-pill">
-            <span class="live-dot"></span>
-            Live News
-        </div>
-    </div>
-
-    <div class="mobile-ticker mobile-only">
-        <div class="ticker-track" style="animation-duration:28s;">
-            <span class="ticker-item">🔴 BREAKING: Climate Summit Opens in Geneva <span class="ticker-dot">•</span>
-                Markets Rally on Earnings <span class="ticker-dot">•</span> Scientists Announce Cancer Breakthrough
-                <span class="ticker-dot">•</span> ATANNEX EXCLUSIVE: The Housing Crisis <span class="ticker-dot">•</span></span>
-            <span class="ticker-item">🔴 BREAKING: Climate Summit Opens in Geneva <span class="ticker-dot">•</span>
-                Markets Rally on Earnings <span class="ticker-dot">•</span> Scientists Announce Cancer Breakthrough
-                <span class="ticker-dot">•</span> ATANNEX EXCLUSIVE: The Housing Crisis <span class="ticker-dot">•</span></span>
-        </div>
-    </div>
 
     @yield('content')
 
