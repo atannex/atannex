@@ -97,7 +97,9 @@
                 <aside class="sidebar-area">
 
                     <div class="widget widget_tag_cloud">
+
                         @livewire('search.post')
+
                     </div>
 
                     @include('partials.aside.category')

@@ -13,7 +13,7 @@ trait ResolvesDynamicContent
 
     protected function resolveSection(Region $region, int $sectionLimit = 6, int $widgetLimit = 3): void
     {
-        $sections = $this->loadSections($region, $sectionLimit, $widgetLimit);
+        $sections = $this->fetchSections($region, $sectionLimit, $widgetLimit);
 
         $this->warmUpTabs($sections);
 
@@ -24,7 +24,7 @@ trait ResolvesDynamicContent
         $region->setRelation('sections', $sections);
     }
 
-    private function loadSections(Region $region, int $sectionLimit, int $widgetLimit): array
+    private function fetchSections(Region $region, int $sectionLimit, int $widgetLimit): array
     {
         return $region->sections()
             ->limit($sectionLimit)
@@ -94,12 +94,12 @@ trait ResolvesDynamicContent
             return $tab;
         }
 
-        $tab['content'] = $this->resolveMappedContent($tab, $mapping);
+        $tab['content'] = $this->fetchMappedContent($mapping, $tab);
 
         return $tab;
     }
 
-    private function resolveMappedContent(array $tab, array $mapping): mixed
+    private function fetchMappedContent(array $mapping, array $tab): mixed
     {
         $params = [
             'limit'               => $tab['limit'],

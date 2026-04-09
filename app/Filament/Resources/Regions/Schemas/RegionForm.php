@@ -1,183 +1,153 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\Regions\Schemas;
 
 use App\Enums\Flag;
 use App\Enums\Territories;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class RegionForm
 {
-    /**
-     * Configure and return a Filament Schema for the Region form.
-     *
-     * Adds grouped sections, fields, and layout optimized for creating and editing regions,
-     * including basic information, classification and hierarchy, media, and metadata.
-     *
-     * @param  Schema  $schema  The base schema to augment with Region form components.
-     * @return Schema The configured Schema containing the form components and a 3-column layout.
-     */
     public static function configure(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                Group::make()
-                    ->schema([
-                        Section::make('Basic Information')
-                            ->description('Enter the core details for this region')
-                            ->icon('heroicon-o-information-circle')
-                            ->schema([
-                                Grid::make(2)
-                                    ->schema([
-                                        TextInput::make('name')
-                                            ->label('Region Name')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(
-                                                fn ($state, callable $set) => $set('slug', Str::slug($state))
-                                            )
-                                            ->placeholder('e.g., North America')
-                                            ->helperText('This will be the primary display name')
-                                            ->columnSpan(1),
+        return $schema->components([
 
-                                        TextInput::make('slug')
-                                            ->label('URL Slug')
-                                            ->disabled()
-                                            ->dehydrated()
-                                            ->maxLength(255)
-                                            ->placeholder('auto-generated')
-                                            ->helperText('Automatically generated from name')
-                                            ->prefixIcon('heroicon-o-link')
-                                            ->columnSpan(1),
-                                    ]),
+            /**
+             * =========================
+             * IDENTITY GROUP
+             * =========================
+             */
+            Group::make()
+                ->schema([
 
-                                Textarea::make('description')
-                                    ->label('Description')
-                                    ->rows(3)
-                                    ->maxLength(1000)
-                                    ->placeholder('Provide a brief description of this region...')
-                                    ->helperText('Optional: Add context about this region')
-                                    ->columnSpanFull(),
-                            ])
-                            ->collapsible()
-                            ->columnSpan(['lg' => 2]),
-                        Section::make('Classification & Hierarchy')
-                            ->description("Define the region's status and relationships")
-                            ->icon('heroicon-o-tag')
-                            ->schema([
-                                Grid::make(2)
-                                    ->schema([
-                                        Select::make('flag')
-                                            ->label('Status Flag')
-                                            ->required()
-                                            ->options(Flag::asSelectArray())
-                                            ->searchable()
-                                            ->preload()
-                                            ->default(Flag::DRAFT)
-                                            ->native(false)
-                                            ->placeholder('Select a status')
-                                            ->helperText('Current operational status')
-                                            ->prefixIcon('heroicon-o-flag')
-                                            ->columnSpan(1),
+                    Section::make('Identity')
+                        ->description('Core identification details for the region')
+                        ->icon('heroicon-o-globe-alt')
+                        ->schema([
 
-                                        Select::make('territory')
-                                            ->label('Territory Type')
-                                            ->options(Territories::asSelectArray())
-                                            ->default(Territories::QUARTER)
-                                            ->searchable()
-                                            ->preload()
-                                            ->native(false)
-                                            ->placeholder('Select territory type')
-                                            ->helperText('Geographical classification')
-                                            ->prefixIcon('heroicon-o-globe-americas')
-                                            ->columnSpan(1),
-                                    ]),
+                            TextInput::make('name')
+                                ->label('Region Name')
+                                ->placeholder('e.g. Central Region')
+                                ->required()
+                                ->maxLength(255)
+                                ->autofocus()
+                                ->columnSpan(1),
 
-                                Select::make('parent_id')
-                                    ->label('Parent Region')
-                                    ->relationship('parent', 'name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->native(false)
-                                    ->placeholder('Select parent (optional)')
-                                    ->helperText('Leave empty for top-level regions')
-                                    ->prefixIcon('heroicon-o-folder-open')
-                                    ->columnSpanFull(),
-                            ])
-                            ->collapsible()
-                            ->columnSpan(['lg' => 2]),
-                    ])
-                    ->columnSpan(['lg' => 2]),
+                            TextInput::make('slug')
+                                ->label('Slug')
+                                ->placeholder('e.g. central-region')
+                                ->required()
+                                ->regex('/^[a-z0-9-]+$/')
+                                ->disabled()
+                                // ->helperText('Only lowercase letters, numbers, and hyphens are allowed')
+                                ->maxLength(255)
+                                ->columnSpan(1),
+                        ]),
+                ]),
 
-                Group::make()
-                    ->schema([
-                        Section::make('Media & Assets')
-                            ->description('Upload visual elements')
-                            ->icon('heroicon-o-photo')
-                            ->schema([
-                                FileUpload::make('logo')
-                                    ->label('Region Logo')
-                                    ->image()
-                                    ->imageEditor()
-                                    ->directory('region')
-                                    ->imageEditorAspectRatios([
-                                        '1:1',
-                                        '16:9',
-                                    ])
-                                    ->maxSize(2048)
-                                    ->disk('public')
-                                    ->directory(fn ($record) => $record?->dir() ?? 'regions/logos')
-                                    ->visibility('public')
-                                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/svg+xml'])
-                                    ->helperText('PNG, JPG, or SVG. Max 2MB.')
-                                    ->afterStateUpdated(function ($state, $record) {
-                                        if ($record && $record->logo && $record->logo !== $state) {
-                                            Storage::disk('public')->delete($record->logo);
-                                        }
-                                    })
-                                    ->columnSpanFull(),
-                            ])
-                            ->collapsible(),
-                        Section::make('Metadata')
-                            ->description('System information')
-                            ->icon('heroicon-o-clock')
-                            ->schema([
-                                TextEntry::make('created_at')
-                                    ->label('Created At')
-                                    ->state(fn ($record): string => $record?->created_at
-                                        ? $record->created_at->diffForHumans()
-                                        : '-')
-                                    ->visible(fn ($record) => $record !== null),
+            /**
+             * =========================
+             * CLASSIFICATION GROUP
+             * =========================
+             */
+            Group::make()
+                ->schema([
 
-                                TextEntry::make('updated_at')
-                                    ->label('Last Updated')
-                                    ->state(fn ($record): string => $record?->updated_at
-                                        ? $record->updated_at->diffForHumans()
-                                        : '-')
-                                    ->visible(fn ($record) => $record !== null),
+                    Section::make('Classification')
+                        ->description('Territory level and publication status')
+                        ->icon('heroicon-o-tag')
+                        ->schema([
 
-                                TextEntry::make('slug_path')
-                                    ->label('Full Path')
-                                    ->state(fn ($record): string => $record?->slug_path ?? '-')
-                                    ->visible(fn ($record) => $record !== null && $record->slug_path),
-                            ])
-                            ->collapsible()
-                            ->collapsed()
-                            ->visible(fn ($record) => $record !== null),
-                    ])
-                    ->columnSpan(['lg' => 1]),
-            ])
-            ->columns(3);
+                            Select::make('territory')
+                                ->label('Territory Level')
+                                ->options(Territories::asSelectArray())
+                                ->required()
+                                ->native(false)
+                                ->searchable()
+                                ->preload()
+                                ->columnSpan(1),
+
+                            Select::make('flag')
+                                ->label('Status')
+                                ->options(Flag::asSelectArray())
+                                ->default(Flag::DRAFT)
+                                ->required()
+                                ->native(false)
+                                ->searchable()
+                                ->preload()
+                                ->columnSpan(1),
+                        ]),
+                ]),
+
+            /**
+             * =========================
+             * ORGANIZATION GROUP
+             * =========================
+             */
+            Group::make()
+                ->schema([
+
+                    Section::make('Organization')
+                        ->description('Hierarchy, ordering, and parent relationships')
+                        ->icon('heroicon-o-bars-3')
+                        ->columns(3)
+                        ->schema([
+
+                            TextInput::make('position')
+                                ->label('Display Order')
+                                ->numeric()
+                                ->default(0)
+                                ->minValue(0)
+                                // ->helperText('Lower values appear first')
+                                ->columnSpan(1),
+
+                            TextInput::make('slug_path')
+                                ->label('Hierarchy Path')
+                                ->disabled()
+                                ->dehydrated(false)
+                                ->placeholder('Auto-generated')
+                                ->columnSpan(2),
+
+                            Select::make('parent_id')
+                                ->label('Parent Region')
+                                ->relationship('parent', 'name')
+                                ->searchable()
+                                ->preload()
+                                ->native(false)
+                                ->placeholder('None (Top-level)')
+                                ->columnSpanFull(),
+                        ]),
+                ]),
+
+            /**
+             * =========================
+             * DETAILS GROUP
+             * =========================
+             */
+            Group::make()
+                ->schema([
+
+                    Section::make('Details')
+                        ->description('Optional extended information')
+                        ->icon('heroicon-o-document-text')
+                        ->columns(1)
+                        ->schema([
+
+                            Textarea::make('description')
+                                ->label('Description')
+                                ->placeholder('Enter detailed information about this region...')
+                                ->rows(6)
+                                ->maxLength(2000)
+                                ->columnSpanFull(),
+                        ]),
+                ]),
+        ]);
     }
 }

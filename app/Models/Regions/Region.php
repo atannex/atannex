@@ -220,6 +220,6 @@ class Region extends Model
 
     public function getRouteKeyName(): string
     {
-        return 'slug_path';
+        return 'slug';
     }
 }
