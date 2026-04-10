@@ -4,9 +4,9 @@
 
 @section('guest')
 
-<x-home.news :byNews="$byNews" />
-
 <x-home.recent :byRecent="$byRecent" />
+
+<x-home.news :byNews="$byNews" />
 
 <x-home.region :byRegion="$byRegion" />
 
