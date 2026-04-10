@@ -27,6 +27,11 @@ class HomeController extends Controller
         return view('home', array_merge($this->getPostsData(), ['videos' => $this->postService->getLatestPublishedVideos(6)]));
     }
 
+    public function landing(): View
+    {
+        return view('landing.index');
+    }
+
     /**
      * Prepare categorized post collections for the home view.
      *
