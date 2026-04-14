@@ -1,0 +1,63 @@
+/* Tailwind Core */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================
+   Base Styles
+========================= */
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply font-sans bg-slate-950 text-slate-100 antialiased;
+    }
+}
+
+/* =========================
+   Components (Reusable UI)
+========================= */
+@layer components {
+    .container-custom {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    .btn {
+        @apply inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-medium transition-all duration-200;
+    }
+
+    .btn-primary {
+        @apply bg-primary text-white hover:bg-primary/90;
+    }
+
+    .btn-outline {
+        @apply border border-slate-700 text-slate-300 hover:bg-slate-800;
+    }
+
+    .card {
+        @apply bg-slate-900/70 backdrop-blur border border-slate-800 rounded-2xl shadow-lg;
+    }
+
+    .section {
+        @apply py-16 md:py-24;
+    }
+
+    .section-title {
+        @apply text-3xl md:text-4xl font-bold tracking-tight;
+    }
+
+    .section-subtitle {
+        @apply text-slate-400 mt-3 max-w-2xl;
+    }
+}
+
+/* =========================
+   Utilities (Custom Helpers)
+========================= */
+@layer utilities {
+    .text-gradient {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-500;
+    }
+}

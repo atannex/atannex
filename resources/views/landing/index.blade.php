@@ -1,891 +1,1288 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_','-',app()->getLocale()) }}" prefix="og: https://ogp.me/ns#">
-
-<head>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    @php
-
-    $favicon = optional($global['favicon'])->image
-    ? asset('storage/'.$global['favicon']->image)
-    : asset('favicon/favicon-32x32.png');
-
-    @endphp
-
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-
-    <link rel="icon" href="{{ $favicon }}" type="image/png">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png') }}">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 100%);
-            color: #e2e8f0;
-            font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
-            overflow-x: hidden;
-            font-size: 15px;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(20px) rotate(0.5deg);
-            }
-        }
-
-        @keyframes pulse-glow {
-
-            0%,
-            100% {
-                box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
-            }
-
-            50% {
-                box-shadow: 0 0 40px rgba(14, 165, 233, 0.5);
-            }
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes breathe {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-25px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.92);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(25px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes staggerFadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(35px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: -1000px 0;
-            }
-
-            100% {
-                background-position: 1000px 0;
-            }
-        }
-
-        @keyframes glow-pulse {
-
-            0%,
-            100% {
-                opacity: 0.6;
-                box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
-            }
-
-            50% {
-                opacity: 1;
-                box-shadow: 0 0 40px rgba(14, 165, 233, 0.6);
-            }
-        }
-
-        @keyframes floatUp {
-            0% {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInDownElastic {
-            from {
-                opacity: 0;
-                transform: translateY(-40px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes rotateInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.5) rotate(-5deg);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) rotate(0deg);
-            }
-        }
-
-        @keyframes expandWidth {
-            from {
-                opacity: 0;
-                width: 0;
-            }
-
-            to {
-                opacity: 1;
-                width: 100%;
-            }
-        }
-
-        @keyframes fadeInBlur {
-            from {
-                opacity: 0;
-                filter: blur(10px);
-            }
-
-            to {
-                opacity: 1;
-                filter: blur(0);
-            }
-        }
-
-        .float-animation {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .pulse-glow {
-            animation: pulse-glow 2s ease-in-out infinite;
-        }
-
-        .slide-in-up {
-            animation: slideInUp 0.8s ease-out forwards;
-        }
-
-        .slide-in-left {
-            animation: slideInLeft 0.8s ease-out forwards;
-        }
-
-        .slide-in-right {
-            animation: slideInRight 0.8s ease-out forwards;
-        }
-
-        .breathe {
-            animation: breathe 3s ease-in-out infinite;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.7s ease-out forwards;
-        }
-
-        .fade-in-scale {
-            animation: fadeInScale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        .fade-in-up {
-            animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        .fade-in-down {
-            animation: fadeInDown 0.7s ease-out forwards;
-        }
-
-        .fade-in-blur {
-            animation: fadeInBlur 0.9s ease-out forwards;
-        }
-
-        .stagger-fade-in {
+@extends('landing.partials.base')
+
+@section('title', 'Breaking News from Lebialem Division, South-West Region of Cameroon')
+
+@section('meta:description', 'Atannex - Local Digital News & Media Platform for Lebialem Division, Cameroon. Covering Fontem, Alou, and Wabane with in-depth community stories.')
+
+@section('content')
+<style>
+    * {
+        font-family: 'Outfit', sans-serif;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: 'Space Mono', monospace;
+    }
+
+    @keyframes fadeUp {
+        from {
             opacity: 0;
-            animation: staggerFadeInUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transform: translateY(20px);
         }
 
-        .float-up {
-            animation: floatUp 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        .shimmer-bg {
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100%);
-            background-size: 1000px 100%;
-            animation: shimmer 3s infinite;
-        }
-
-        .glow-pulse-anim {
-            animation: glow-pulse 3s ease-in-out infinite;
-        }
-
-        .smooth-transition {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Stagger delay utilities */
-        .delay-1 {
-            animation-delay: 0.1s;
-        }
-
-        .delay-2 {
-            animation-delay: 0.2s;
-        }
-
-        .delay-3 {
-            animation-delay: 0.3s;
-        }
-
-        .delay-4 {
-            animation-delay: 0.4s;
-        }
-
-        .delay-5 {
-            animation-delay: 0.5s;
-        }
-
-        .delay-6 {
-            animation-delay: 0.6s;
-        }
-
-        .delay-7 {
-            animation-delay: 0.7s;
-        }
-
-        .delay-8 {
-            animation-delay: 0.8s;
-        }
-
-        /* Intersection observer animations for scroll effects */
-        .scroll-fade {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .scroll-fade.visible {
+        to {
             opacity: 1;
             transform: translateY(0);
         }
+    }
 
-        .scroll-fade-left {
+    @keyframes fadeInScale {
+        from {
             opacity: 0;
-            transform: translateX(-50px);
-            transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: scale(0.95);
         }
 
-        .scroll-fade-left.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .scroll-fade-right {
-            opacity: 0;
-            transform: translateX(50px);
-            transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .scroll-fade-right.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .scroll-fade-scale {
-            opacity: 0;
-            transform: scale(0.88);
-            transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .scroll-fade-scale.visible {
+        to {
             opacity: 1;
             transform: scale(1);
         }
+    }
 
-        .scroll-fade-blur {
-            opacity: 0;
-            filter: blur(15px);
-            transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+    .fade-up {
+        animation: fadeUp 0.6s ease-out forwards;
+    }
 
-        .scroll-fade-blur.visible {
-            opacity: 1;
-            filter: blur(0);
-        }
+    .fade-scale {
+        animation: fadeInScale 0.6s ease-out forwards;
+    }
 
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
+    .delay-100 {
+        animation-delay: 0.1s;
+    }
 
-        ::-webkit-scrollbar-track {
-            background: linear-gradient(180deg, #0f172a 0%, #1a1f3a 100%);
-        }
+    .delay-200 {
+        animation-delay: 0.2s;
+    }
 
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #0ea5e9 0%, #06b6d4 100%);
-            border-radius: 5px;
-        }
+    .delay-300 {
+        animation-delay: 0.3s;
+    }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #06b6d4 0%, #14b8a6 100%);
-        }
+    .glass-effect {
+        background: rgba(30, 41, 59, 0.4);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(148, 163, 184, 0.1);
+    }
 
-        .glass-effect {
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(14, 165, 233, 0.2);
-            border-radius: 1rem;
-        }
+    .glass-effect:hover {
+        background: rgba(30, 41, 59, 0.6);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
 
-        .swiper {
-            overflow: visible;
-        }
+    .card-base {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(71, 85, 105, 0.3);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
 
-        .swiper-pagination-bullet {
-            background: rgba(14, 165, 233, 0.4);
-            opacity: 1;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
+    .card-base:hover {
+        background: rgba(30, 41, 59, 0.8);
+        border-color: rgba(59, 130, 246, 0.5);
+        transform: translateY(-6px);
+        box-shadow: 0 20px 40px rgba(59, 130, 246, 0.1);
+    }
 
-        .swiper-pagination-bullet-active {
-            background: #0ea5e9;
-            box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
-        }
+    .badge-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        background: rgba(59, 130, 246, 0.1);
+        color: #60a5fa;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
 
-        .swiper-button-next,
-        .swiper-button-prev {
-            color: #0ea5e9;
-            background: rgba(14, 165, 233, 0.1);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 1.5px solid #0ea5e9;
-            position: absolute;
-            top: 50%;
-            z-index: 10;
-        }
+    .section-title {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        color: white;
+        line-height: 1.1;
+    }
 
-        .swiper-button-next {
-            right: 0;
-        }
+    .gradient-text {
+        background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
 
-        .swiper-button-prev {
-            left: 0;
-        }
+    .btn-gradient {
+        background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+        color: white;
+        font-weight: 600;
+        border: none;
+        padding: 0.875rem 2rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-        .swiper-button-next:hover,
-        .swiper-button-prev:hover {
-            background: rgba(14, 165, 233, 0.25);
-            transform: scale(1.15);
-            cursor: pointer;
-        }
+    .btn-gradient:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(59, 130, 246, 0.3);
+    }
 
-        .swiper-button-next::after,
-        .swiper-button-prev::after {
-            font-size: 16px;
-            font-weight: bold;
-        }
+    .btn-outline {
+        background: transparent;
+        color: #3b82f6;
+        font-weight: 600;
+        border: 2px solid #3b82f6;
+        padding: 0.75rem 1.875rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-        .carousel-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            padding: 0 60px;
-        }
+    .btn-outline:hover {
+        background: rgba(59, 130, 246, 0.1);
+        transform: translateY(-3px);
+    }
 
-        .carousel-container .swiper {
-            width: 100%;
-            max-width: 100%;
-        }
+    .scroll-reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
 
-        @media (max-width: 768px) {
-            .carousel-container {
-                padding: 0 50px;
-            }
+    .scroll-reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
-            .swiper-button-next,
-            .swiper-button-prev {
-                width: 36px;
-                height: 36px;
-            }
+    .scroll-reveal-bottom {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
 
-            .swiper-button-next::after,
-            .swiper-button-prev::after {
-                font-size: 14px;
-            }
-        }
+    .scroll-reveal-bottom.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
-        @media (max-width: 640px) {
-            .carousel-container {
-                padding: 0 40px;
-            }
+    .scroll-reveal-top {
+        opacity: 0;
+        transform: translateY(-50px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
 
-            .swiper-button-next,
-            .swiper-button-prev {
-                width: 32px;
-                height: 32px;
-            }
+    .scroll-reveal-top.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
-            .swiper-button-next::after,
-            .swiper-button-prev::after {
-                font-size: 12px;
-            }
-        }
+    /* ==================== SCROLLBAR DESIGN ==================== */
+    ::-webkit-scrollbar {
+        width: 14px;
+    }
 
-        /* Enhanced Form Input Styles */
-        input[type="text"],
-        input[type="email"],
-        textarea,
-        select {
-            -webkit-appearance: none;
-            appearance: none;
-            background-color: rgba(71, 85, 105, 0.5) !important;
-            caret-color: #0ea5e9;
-            border-radius: 0.625rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-family: inherit;
-        }
+    ::-webkit-scrollbar-track {
+        background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    }
 
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        textarea:focus,
-        select:focus {
-            background-color: rgba(71, 85, 105, 0.8) !important;
-            border-color: #0ea5e9 !important;
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25), inset 0 0 8px rgba(14, 165, 233, 0.1) !important;
-            outline: none;
-        }
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #3b82f6 0%, #06b6d4 50%, #3b82f6 100%);
+        border-radius: 10px;
+        border: 2px solid #0f172a;
+        background-clip: padding-box;
+    }
 
-        select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%230ea5e9' d='M8 11L2 5h12z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.875rem center;
-            background-size: 1.2em 1.2em;
-            padding-right: 2.75rem;
-            text-align: center;
-        }
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #60a5fa 0%, #22d3ee 50%, #60a5fa 100%);
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    }
 
-        select option {
-            background-color: #1e293b;
-            color: #e2e8f0;
-            padding: 0.75rem;
-        }
+    * {
+        scrollbar-color: #3b82f6 #0f172a;
+        scrollbar-width: thin;
+    }
 
-        input[type="checkbox"] {
-            cursor: pointer;
-            accent-color: #0ea5e9;
-            border-radius: 0.375rem;
-            width: 1.25rem;
-            height: 1.25rem;
-        }
+    .faq-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
 
-        input[type="radio"] {
-            cursor: pointer;
-            accent-color: #fbbf24;
-            width: 1.5rem;
-            height: 1.5rem;
-        }
+    .faq-content.visible {
+        max-height: 500px;
+    }
 
-        /* Remove default input styling on mobile */
-        @media (max-width: 768px) {
+</style>
+<!-- ==================== NAVBAR ==================== -->
+<nav class="fixed top-0 z-50 w-full border-b glass-effect border-slate-700/20">
+    <div class="flex items-center justify-between px-6 py-4 mx-auto max-w-7xl">
+        <a href="/" class="flex items-center gap-3 transition hover:opacity-80">
+            <div class="flex items-center justify-center w-10 h-10 text-lg font-bold text-white rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500">
+                A
+            </div>
+            <span class="text-xl font-bold text-white">Atannex</span>
+        </a>
 
-            input[type="text"],
-            input[type="email"],
-            textarea,
-            select {
-                font-size: 16px;
-                padding: 12px 16px;
-                border-radius: 0.625rem;
-            }
-        }
+        <div class="items-center hidden gap-8 lg:flex">
+            <a href="#about" class="text-sm font-medium transition text-slate-300 hover:text-white">About</a>
+            <a href="#stories" class="text-sm font-medium transition text-slate-300 hover:text-white">Stories</a>
+            <a href="#coverage" class="text-sm font-medium transition text-slate-300 hover:text-white">Coverage</a>
+            <a href="#contact" class="text-sm font-medium transition text-slate-300 hover:text-white">Contact</a>
+        </div>
 
-        .card-glow {
-            position: relative;
-            overflow: hidden;
-            border-radius: 1.25rem;
-        }
+        <a href="/subscribe" class="hidden text-sm btn-gradient lg:flex">
+            <i class="fas fa-envelope"></i> Subscribe
+        </a>
+    </div>
+</nav>
 
-        .card-glow::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            border-radius: 50%;
-        }
+<!-- ==================== HERO SECTION ==================== -->
+<section class="px-6 pt-32 pb-24 md:px-8">
+    <div class="mx-auto max-w-7xl">
+        <div class="grid items-center gap-16 lg:grid-cols-2">
+            <div class="space-y-8">
+                <div class="fade-up">
+                    <div class="badge-primary">
+                        <i class="fas fa-newspaper"></i>
+                        {{ __(' Local Stories. Community Voice.') }}
+                    </div>
+                </div>
 
-        .card-glow:hover::before {
-            opacity: 1;
-        }
+                <h1 class="delay-100 section-title fade-up">
+                    <span>{{ __('Your Window to') }}</span><br>
+                    <span class="gradient-text">{{ __('Lebialem Division') }}</span><br>
+                    <span>{{ __('Local Affairs') }}</span>
+                </h1>
 
-        section {
-            position: relative;
-            overflow: hidden;
-        }
+                <p class="max-w-lg text-lg leading-relaxed delay-200 text-slate-300 fade-up">
+                    {{ __('Atannex delivers in-depth coverage of community development, grassroots initiatives, and local narratives from Fontem, Alou, and Wabane. Connecting communities. Preserving stories. Building futures.') }}
+                </p>
 
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.08;
-            filter: blur(40px);
-            animation: float 8s ease-in-out infinite;
-        }
+                <div class="flex flex-col gap-4 delay-300 sm:flex-row fade-up">
+                    {{-- <a href="{{ route('donate') }}" class="btn-gradient"> --}}
+                    <a href="javascript:void(0)" class="btn-gradient">
+                        <i class="fas fa-bell"></i> {{ __("Donate") }}
+                    </a>
+                    <a href="{{ route('home') }}" class="btn-outline">
+                        <i class="fas fa-arrow-right"></i> {{ __("Explore") }}
+                    </a>
+                </div>
 
-        .blob-1 {
-            width: 400px;
-            height: 400px;
-            background: #0ea5e9;
-            top: -100px;
-            right: -50px;
-        }
+                <div class="grid grid-cols-3 gap-6 pt-8 delay-300 fade-up">
+                    <div class="text-center">
+                        <div class="text-3xl font-black md:text-4xl gradient-text">3</div>
+                        <p class="mt-1 text-xs font-medium md:text-sm text-slate-400">{{ __('Municipalities') }}</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-black md:text-4xl gradient-text">100%</div>
+                        <p class="mt-1 text-xs font-medium md:text-sm text-slate-400">{{ __('Local Focus') }}</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-black md:text-4xl gradient-text">20K+</div>
+                        <p class="mt-1 text-xs font-medium md:text-sm text-slate-400">{{ __('Monthly Readers') }}</p>
+                    </div>
+                </div>
+            </div>
 
-        .blob-2 {
-            width: 300px;
-            height: 300px;
-            background: #06b6d4;
-            bottom: -80px;
-            left: -50px;
-            animation-direction: reverse;
-        }
+            <div class="justify-center hidden delay-200 lg:flex fade-up">
+                <img src="{{ asset('storage/' . $global['logo']?->image) }}" alt="{{ config('app.name') }}" class="shadow-2xl rounded-2xl">
+            </div>
+        </div>
+    </div>
+</section>
 
-        .blob-3 {
-            width: 250px;
-            height: 250px;
-            background: #0ea5e9;
-            top: 40%;
-            right: 5%;
-            animation-delay: 2s;
-        }
+<!-- ==================== ABOUT SECTION ==================== -->
+<section id="about" class="px-6 py-24 md:px-8 bg-slate-900/40">
+    <div class="mx-auto max-w-7xl">
+        <div class="max-w-3xl mx-auto mb-16 text-center scroll-reveal">
+            <div class="justify-center mb-4 badge-primary">
+                <i class="fas fa-info-circle"></i> {{ __('About Atannex') }}
+            </div>
+            <h2 class="mb-4 section-title">{{ __('Who We Are') }}</h2>
+            <p class="text-lg text-slate-400">{{ __('A dynamic digital news platform committed to amplifying local voices') }}</p>
+        </div>
+        <div class="grid gap-8 mb-20 md:grid-cols-3">
+            <div class="p-8 rounded-lg card-base scroll-reveal">
+                <div class="flex items-center justify-center mb-4 text-2xl text-blue-400 rounded-lg w-14 h-14 bg-blue-500/20">
+                    <i class="fas fa-microphone"></i>
+                </div>
+                <h3 class="mb-3 text-xl font-bold text-white">{{ __('Community Voice') }}</h3>
+                <p class="text-sm leading-relaxed text-slate-400">{{ __('Amplifying underrepresented voices and stories often overlooked by mainstream media outlets.') }}</p>
+            </div>
+            <div class="p-8 delay-100 rounded-lg card-base scroll-reveal">
+                <div class="flex items-center justify-center mb-4 text-2xl rounded-lg w-14 h-14 bg-cyan-500/20 text-cyan-400">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h3 class="mb-3 text-xl font-bold text-white">{{ __('Preserve Heritage') }}</h3>
+                <p class="text-sm leading-relaxed text-slate-400">{{ __('Thoughtfully documenting and preserving the cultural identity and history of Lebialem communities.') }}</p>
+            </div>
+            <div class="p-8 delay-200 rounded-lg card-base scroll-reveal">
+                <div class="flex items-center justify-center mb-4 text-2xl text-green-400 rounded-lg w-14 h-14 bg-green-500/20">
+                    <i class="fas fa-link"></i>
+                </div>
+                <h3 class="mb-3 text-xl font-bold text-white">{{ __('Bridge Connection') }}</h3>
+                <p class="text-sm leading-relaxed text-slate-400">{{ __('Connecting diaspora communities with home, fostering engagement and collaborative development.') }}</p>
+            </div>
+        </div>
 
-        .gradient-text {
-            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+        <div class="grid items-center gap-12 lg:grid-cols-2">
+            <div class="scroll-reveal">
+                <h3 class="mb-4 text-3xl font-bold text-white">{{ __('Capturing Lebialem\'s Pulse') }}</h3>
+                <p class="mb-4 leading-relaxed text-slate-400">
+                    {{ __('Atannex is a comprehensive community platform dedicated to in-depth coverage of local affairs across Fontem, Alou, and Wabane. We go beyond breaking news to provide balanced, contextual reporting that enhances understanding while maintaining accessibility.') }}
+                </p>
+                <p class="leading-relaxed text-slate-400">
+                    {{ __('Our reporting spans grassroots initiatives, leadership activities, education, healthcare efforts, and infrastructural development. We serve as a trusted source where local narratives are not only reported but thoughtfully preserved for future generations.') }}
+                </p>
+            </div>
 
-        .gradient-animate {
-            background-size: 200% 200%;
-            animation: gradient-shift 3s ease infinite;
-        }
+            <div class="grid grid-cols-2 gap-4 delay-100 scroll-reveal">
+                <div class="p-6 text-center rounded-lg card-base">
+                    <div class="text-3xl font-bold gradient-text">50+</div>
+                    <p class="mt-2 text-xs font-medium text-slate-400">{{ __('Stories Published') }}</p>
+                </div>
+                <div class="p-6 text-center rounded-lg card-base">
+                    <div class="text-3xl font-bold gradient-text">2K+</div>
+                    <p class="mt-2 text-xs font-medium text-slate-400">{{ __('Weekly Visitors') }}</p>
+                </div>
+                <div class="p-6 text-center rounded-lg card-base">
+                    <div class="text-3xl font-bold gradient-text">3</div>
+                    <p class="mt-2 text-xs font-medium text-slate-400">{{ __('Years of Impact') }}</p>
+                </div>
+                <div class="p-6 text-center rounded-lg card-base">
+                    <div class="text-3xl font-bold gradient-text">100%</div>
+                    <p class="mt-2 text-xs font-medium text-slate-400">{{ __('Independent') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-        @keyframes gradient-shift {
-            0% {
-                background-position: 0% 50%;
-            }
+<!-- ==================== COVERAGE AREAS SECTION ==================== -->
+<section id="coverage" class="px-6 py-24 md:px-8">
+    <div class="mx-auto max-w-7xl">
+        <div class="max-w-3xl mx-auto mb-16 text-center scroll-reveal">
+            <div class="justify-center mb-4 badge-primary">
+                <i class="fas fa-map"></i> {{__('Our Focus')}}
+            </div>
+            <h2 class="mb-4 section-title">{{__('Coverage Areas')}}</h2>
+            <p class="text-lg text-slate-400">{{__('In-depth reporting from three vibrant municipalities')}}</p>
+        </div>
+        <div class="grid gap-8 md:grid-cols-3">
+            <div class="p-8 rounded-lg card-base scroll-reveal">
+                <div class="flex items-center justify-center w-12 h-12 mb-4 text-xl text-blue-400 rounded-lg bg-blue-500/20">
+                    <i class="fas fa-city"></i>
+                </div>
+                <h3 class="mb-3 text-xl font-bold text-white">{{ __("Fontem") }}</h3>
+                <p class="mb-4 text-sm text-slate-400">{{ __("The divisional headquarters. Reporting on administrative initiatives, civic projects, and community development efforts shaping the future of Lebialem.") }}</p>
+                <div class="space-y-2 text-xs text-slate-300">
+                    <p><span class="font-semibold text-blue-400">✓</span>{{__(" Local Government News")}}</p>
+                    <p><span class="font-semibold text-blue-400">✓</span> {{ __("Infrastructure Projects") }}</p>
+                    <p><span class="font-semibold text-blue-400">✓</span> {{ __("Community Events") }}</p>
+                </div>
+            </div>
 
-            50% {
-                background-position: 100% 50%;
-            }
+            <div class="p-8 delay-100 rounded-lg card-base scroll-reveal">
+                <div class="flex items-center justify-center w-12 h-12 mb-4 text-xl rounded-lg bg-cyan-500/20 text-cyan-400">
+                    <i class="fas fa-house"></i>
+                </div>
+                <h3 class="mb-3 text-xl font-bold text-white">{{ __("Alou") }}</h3>
+                <p class="mb-4 text-sm text-slate-400">{{ __("Vibrant community stories and grassroots initiatives. Covering education progress, healthcare advances, and local entrepreneurship transforming the municipality.") }}</p>
+                <div class="space-y-2 text-xs text-slate-300">
+                    <p><span class="font-semibold text-cyan-400">✓</span> {{ __("Education Updates") }}</p>
+                    <p><span class="font-semibold text-cyan-400">✓</span> {{ __("Health Initiatives") }}</p>
+                    <p><span class="font-semibold text-cyan-400">✓</span> {{ __("Local Business") }}</p>
+                </div>
+            </div>
 
-            100% {
-                background-position: 0% 50%;
-            }
-        }
+            <div class="p-8 delay-200 rounded-lg card-base scroll-reveal">
+                <div class="flex items-center justify-center w-12 h-12 mb-4 text-xl text-green-400 rounded-lg bg-green-500/20">
+                    <i class="fas fa-tree"></i>
+                </div>
+                <h3 class="mb-3 text-xl font-bold text-white">{{ __("Wabane") }}</h3>
+                <p class="mb-4 text-sm text-slate-400">{{ __("Rural development and cultural stories. Highlighting agricultural advances, community resilience, and the rich traditions defining this unique municipality.") }}</p>
+                <div class="space-y-2 text-xs text-slate-300">
+                    <p><span class="font-semibold text-green-400">✓</span> {{ __("Agricultural News") }}</p>
+                    <p><span class="font-semibold text-green-400">✓</span> {{ __("Cultural Heritage") }}</p>
+                    <p><span class="font-semibold text-green-400">✓</span> {{ __("Rural Development") }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-        .image-overlay::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
-            border-radius: inherit;
-        }
+<!-- ==================== STORIES SECTION ==================== -->
+<section id="stories" class="px-6 py-24 md:px-8 bg-slate-900/40">
+    <div class="mx-auto max-w-7xl">
+        <div class="max-w-3xl mx-auto mb-16 text-center scroll-reveal">
+            <div class="justify-center mb-4 badge-primary">
+                <i class="fas fa-newspaper"></i> {{ __("Latest Stories") }}
+            </div>
+            <h2 class="mb-4 section-title">{{ __("Featured Stories") }}</h2>
+            <p class="text-lg text-slate-400">{{ __("In-depth coverage of what matters to Lebialem communities") }}</p>
+        </div>
 
-        .stat-card {
-            background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(6, 182, 212, 0.03) 100%);
-            border-radius: 0.875rem;
-        }
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            @foreach($posts as $story)
+            <div class="overflow-hidden rounded-lg card-base scroll-reveal group">
 
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-            border-radius: 0.875rem;
-            margin: 0 auto 1rem;
-        }
+                <div class="h-48 overflow-hidden bg-slate-800">
+                    <img src="{{ asset('storage/' . $story->image) }}" alt="{{ $story->title }}" class="object-cover w-full h-full transition duration-500 group-hover:scale-110">
+                </div>
 
-        @media (max-width: 768px) {
-            .blob {
-                opacity: 0.04;
-            }
+                <div class="p-6">
+                    <div class="mb-2 text-xs font-semibold text-blue-400">
+                        {{ $story->category->name }}
+                    </div>
 
-            .swiper-button-next {
-                right: auto;
-                left: 50%;
-                transform: translateX(-30px) translateY(-50%);
-            }
+                    <h3 class="mb-3 text-lg font-bold text-white">
+                        {{ $story->title ? Str::limit($story->title, 60) : __('No title available.') }}
+                    </h3>
 
-            .swiper-button-prev {
-                left: 50%;
-                transform: translateX(-100px) translateY(-50%);
-            }
-        }
+                    <p class="mb-4 text-sm text-slate-400">
+                        {{ $story->description ? Str::limit($story->description, 100) : __('No description available.') }}
+                    </p>
 
-    </style>
+                    <a href="{{ route('posts.show', $story->slug_path) }}" class="text-sm font-semibold text-blue-400 transition hover:text-blue-300">
+                        {{ __(' Read Story →') }}
+                    </a>
+                </div>
 
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
 
-    <title>{{ __('Atannex - Breaking News from Lebialem Division, Cameroon') }}</title>
+<!-- ==================== EDITORIAL APPROACH SECTION ==================== -->
+<section class="px-6 py-24 md:px-8">
+    <div class="mx-auto max-w-7xl">
+        <div class="max-w-3xl mx-auto mb-16 text-center scroll-reveal">
+            <div class="justify-center mb-4 badge-primary">
+                <i class="fas fa-pen-fancy"></i> {{ __("Our Approach") }}
+            </div>
+            <h2 class="mb-4 section-title">{{ __("How We Report") }}</h2>
+            <p class="text-lg text-slate-400">{{ __("Combining factual reporting with compelling storytelling") }}</p>
+        </div>
+        <div class="grid gap-8 md:grid-cols-2">
+            <div class="p-8 rounded-lg card-base scroll-reveal">
+                <div class="flex items-start gap-4 mb-6">
+                    <i class="flex-shrink-0 mt-1 text-3xl text-blue-400 fas fa-lightning"></i>
+                    <div>
+                        <h3 class="mb-3 text-2xl font-bold text-white">{{ __("Breaking News") }}</h3>
+                        <p class="leading-relaxed text-slate-400">{{ __("Timely updates on events affecting our communities, delivered with accuracy and context. We ensure you stay informed about developments as they unfold.") }}</p>
+                    </div>
+                </div>
+            </div>
 
-</head>
-<body>
+            <div class="p-8 delay-100 rounded-lg card-base scroll-reveal">
+                <div class="flex items-start gap-4 mb-6">
+                    <i class="flex-shrink-0 mt-1 text-3xl fas fa-book text-cyan-400"></i>
+                    <div>
+                        <h3 class="mb-3 text-2xl font-bold text-white">{{ __("Feature Articles") }}</h3>
+                        <p class="leading-relaxed text-slate-400">{{ __("In-depth investigations and contextual stories that explore the \"why\" behind the news, offering deeper understanding of community issues and opportunities.") }}</p>
+                    </div>
+                </div>
+            </div>
 
-    @include('landing.sections.navbar')
+            <div class="p-8 delay-200 rounded-lg card-base scroll-reveal">
+                <div class="flex items-start gap-4 mb-6">
+                    <i class="flex-shrink-0 mt-1 text-3xl text-green-400 fas fa-microphone"></i>
+                    <div>
+                        <h3 class="mb-3 text-2xl font-bold text-white">{{ __("Interviews & Voices") }}</h3>
+                        <p class="leading-relaxed text-slate-400">{{ __("Direct conversations with community leaders, innovators, and residents. We amplify diverse perspectives that reflect the richness of our communities.") }}</p>
+                    </div>
+                </div>
+            </div>
 
-    <script>
-        // Mobile menu toggle
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
+            <div class="p-8 delay-300 rounded-lg card-base scroll-reveal">
+                <div class="flex items-start gap-4 mb-6">
+                    <i class="flex-shrink-0 mt-1 text-3xl text-purple-400 fas fa-comments"></i>
+                    <div>
+                        <h3 class="mb-3 text-2xl font-bold text-white">{{ __("Community Submissions") }}</h3>
+                        <p class="leading-relaxed text-slate-400">{{ __("We welcome stories from community members. Your voices matter, and we provide a platform to share experiences, initiatives, and perspectives.") }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+<!-- ==================== DIASPORA BRIDGE SECTION ==================== -->
+<section class="px-6 py-24 md:px-8 bg-gradient-to-r from-blue-600 to-cyan-600">
+    <div class="max-w-4xl mx-auto text-center">
+        <h2 class="mb-6 text-4xl font-bold text-white md:text-5xl fade-up">Connecting Diaspora to Home</h2>
+        <p class="max-w-2xl mx-auto mb-8 text-lg text-blue-100 delay-100 fade-up">
+            Atannex bridges the gap between Lebialem communities and the diaspora living across the globe. Stay connected with your homeland, support local initiatives, and participate in the ongoing narrative of growth and development.
+        </p>
 
-        // Close mobile menu when a link is clicked
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-            });
-        });
+        <div class="grid gap-8 mb-12 delay-200 md:grid-cols-3 fade-up">
+            <div class="p-6 rounded-lg bg-white/10 backdrop-blur">
+                <div class="mb-2 text-3xl font-bold text-white">Global Reach</div>
+                <p class="text-sm text-blue-100">Readers in 50+ countries stay updated on home developments</p>
+            </div>
+            <div class="p-6 rounded-lg bg-white/10 backdrop-blur">
+                <div class="mb-2 text-3xl font-bold text-white">Investment Gateway</div>
+                <p class="text-sm text-blue-100">Discover opportunities to invest in your community's future</p>
+            </div>
+            <div class="p-6 rounded-lg bg-white/10 backdrop-blur">
+                <div class="mb-2 text-3xl font-bold text-white">Collaboration Hub</div>
+                <p class="text-sm text-blue-100">Connect with development initiatives and support causes you believe in</p>
+            </div>
+        </div>
 
-        // ===== PROFESSIONAL SCROLL ANIMATIONS =====
-        const observerOptions = {
-            threshold: 0.1
-            , rootMargin: '0px 0px -50px 0px'
-        };
+        <div class="flex flex-col justify-center gap-4 delay-300 sm:flex-row fade-up">
+            <a href="/diaspora" class="px-10 py-4 font-bold text-blue-600 transition bg-white rounded-lg hover:bg-blue-50">
+                <i class="fas fa-globe"></i> Diaspora Program
+            </a>
+            <a href="/subscribe" class="px-10 py-4 font-bold text-white transition border-2 border-white rounded-lg hover:bg-white/10">
+                <i class="fas fa-envelope"></i> Subscribe
+            </a>
+        </div>
+    </div>
+</section>
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    // Add animation class with staggered delay
-                    entry.target.style.animationDelay = `${index * 0.1}s`;
+<!-- ==================== TESTIMONIALS SECTION ==================== -->
+<section class="px-6 py-24 md:px-8 bg-slate-900/40">
+    <div class="mx-auto max-w-7xl">
+        <!-- Section Header -->
+        <div class="max-w-3xl mx-auto mb-16 text-center scroll-reveal">
+            <div class="justify-center mb-4 badge-primary">
+                <i class="fas fa-quote-left"></i> Community Voice
+            </div>
+            <h2 class="mb-4 section-title">Stories from the Field</h2>
+            <p class="text-lg text-slate-400">Real voices sharing the impact of coverage and community initiatives</p>
+        </div>
+
+        <!-- Testimonials Grid -->
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Testimonial 1 -->
+            <div class="flex flex-col p-8 rounded-lg card-base scroll-reveal">
+                <div class="flex gap-1 mb-4">
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                </div>
+                <p class="flex-grow mb-6 italic leading-relaxed text-slate-300">"Atannex helped us get our school project story heard. The coverage brought attention and support we needed. Finally, our community's voice matters!"</p>
+                <div class="flex items-center gap-3 pt-4 border-t border-slate-700/30">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="Eveline Che" class="object-cover w-12 h-12 rounded-full">
+                    <div>
+                        <p class="text-sm font-semibold text-white">Eveline Che</p>
+                        <p class="text-xs text-slate-400">School Principal, Fontem</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 2 -->
+            <div class="flex flex-col p-8 delay-100 rounded-lg card-base scroll-reveal">
+                <div class="flex gap-1 mb-4">
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                </div>
+                <p class="flex-grow mb-6 italic leading-relaxed text-slate-300">"Living in the diaspora, Atannex keeps me connected to home. Their stories help me understand what's happening and where I can contribute to our community's growth."</p>
+                <div class="flex items-center gap-3 pt-4 border-t border-slate-700/30">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="Julius Tanjoh" class="object-cover w-12 h-12 rounded-full">
+                    <div>
+                        <p class="text-sm font-semibold text-white">Julius Tanjoh</p>
+                        <p class="text-xs text-slate-400">Diaspora, UK</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 3 -->
+            <div class="flex flex-col p-8 delay-200 rounded-lg card-base scroll-reveal">
+                <div class="flex gap-1 mb-4">
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                </div>
+                <p class="flex-grow mb-6 italic leading-relaxed text-slate-300">"Atannex's coverage of our youth entrepreneurship program was game-changing. The exposure led to partnerships and funding opportunities we wouldn't have found otherwise."</p>
+                <div class="flex items-center gap-3 pt-4 border-t border-slate-700/30">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" alt="Samuel Forbi" class="object-cover w-12 h-12 rounded-full">
+                    <div>
+                        <p class="text-sm font-semibold text-white">Samuel Forbi</p>
+                        <p class="text-xs text-slate-400">Entrepreneur, Alou</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 4 -->
+            <div class="flex flex-col p-8 delay-300 rounded-lg card-base scroll-reveal">
+                <div class="flex gap-1 mb-4">
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                </div>
+                <p class="flex-grow mb-6 italic leading-relaxed text-slate-300">"The agricultural coverage showed our farming methods to the world. This respect for our work has transformed how we see ourselves and our potential."</p>
+                <div class="flex items-center gap-3 pt-4 border-t border-slate-700/30">
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop" alt="Mama Beatrice" class="object-cover w-12 h-12 rounded-full">
+                    <div>
+                        <p class="text-sm font-semibold text-white">Mama Beatrice</p>
+                        <p class="text-xs text-slate-400">Farmer, Wabane</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 5 -->
+            <div class="flex flex-col p-8 delay-100 rounded-lg card-base scroll-reveal">
+                <div class="flex gap-1 mb-4">
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                </div>
+                <p class="flex-grow mb-6 italic leading-relaxed text-slate-300">"As a young journalist, Atannex showed me how powerful local storytelling can be. They're setting the standard for quality coverage in our region."</p>
+                <div class="flex items-center gap-3 pt-4 border-t border-slate-700/30">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="Celestine Ncho" class="object-cover w-12 h-12 rounded-full">
+                    <div>
+                        <p class="text-sm font-semibold text-white">Celestine Ncho</p>
+                        <p class="text-xs text-slate-400">Journalist, Fontem</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 6 -->
+            <div class="flex flex-col p-8 delay-200 rounded-lg card-base scroll-reveal">
+                <div class="flex gap-1 mb-4">
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                    <i class="text-sm text-yellow-400 fas fa-star"></i>
+                </div>
+                <p class="flex-grow mb-6 italic leading-relaxed text-slate-300">"Atannex's health campaign coverage saved lives. The awareness they created led to early detection and better health outcomes in our community."</p>
+                <div class="flex items-center gap-3 pt-4 border-t border-slate-700/30">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="Dr. Raphael Tabe" class="object-cover w-12 h-12 rounded-full">
+                    <div>
+                        <p class="text-sm font-semibold text-white">Dr. Raphael Tabe</p>
+                        <p class="text-xs text-slate-400">Health Worker, Alou</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== GLOBAL REACH SECTION ==================== -->
+<section class="px-6 py-24 md:px-8">
+    <div class="mx-auto max-w-7xl">
+        <!-- Section Header -->
+        <div class="max-w-3xl mx-auto mb-16 text-center scroll-reveal">
+            <div class="justify-center mb-4 badge-primary">
+                <i class="fas fa-globe"></i> Reach
+            </div>
+            <h2 class="mb-4 section-title">Our Global Reach</h2>
+            <p class="text-lg text-slate-400">Readers across continents staying connected to Lebialem</p>
+        </div>
+
+        <!-- Reach Stats Grid -->
+        <div class="grid gap-8 mb-12 md:grid-cols-2 lg:grid-cols-4">
+            <div class="p-8 text-center rounded-lg card-base scroll-reveal">
+                <div class="mb-2 text-4xl font-bold gradient-text">50+</div>
+                <p class="font-semibold text-white">Countries</p>
+                <p class="mt-2 text-xs text-slate-400">Diaspora readers worldwide</p>
+            </div>
+
+            <div class="p-8 text-center delay-100 rounded-lg card-base scroll-reveal">
+                <div class="mb-2 text-4xl font-bold gradient-text">50K+</div>
+                <p class="font-semibold text-white">Monthly Readers</p>
+                <p class="mt-2 text-xs text-slate-400">Growing community engagement</p>
+            </div>
+
+            <div class="p-8 text-center delay-200 rounded-lg card-base scroll-reveal">
+                <div class="mb-2 text-4xl font-bold gradient-text">100%</div>
+                <p class="font-semibold text-white">Local Focus</p>
+                <p class="mt-2 text-xs text-slate-400">Dedicated to Lebialem stories</p>
+            </div>
+
+            <div class="p-8 text-center delay-300 rounded-lg card-base scroll-reveal">
+                <div class="mb-2 text-4xl font-bold gradient-text">7</div>
+                <p class="font-semibold text-white">Languages</p>
+                <p class="mt-2 text-xs text-slate-400">Accessible to diverse audiences</p>
+            </div>
+        </div>
+
+        <!-- Regional Breakdown -->
+        <div class="grid gap-8 md:grid-cols-3">
+            <div class="p-8 rounded-lg card-base scroll-reveal">
+                <div class="flex items-center justify-center w-12 h-12 mb-4 text-xl text-blue-400 rounded-lg bg-blue-500/20">
+                    <i class="fas fa-map-location-dot"></i>
+                </div>
+                <h3 class="mb-3 text-xl font-bold text-white">West Africa</h3>
+                <p class="mb-4 text-sm text-slate-400">Strongest readership from Cameroon, Nigeria, and neighboring countries. Active engagement from regional communities.</p>
+                <div class="text-xs font-semibold text-blue-400">35% of traffic</div>
+            </div>
+
+            <div class="p-8 delay-100 rounded-lg card-base scroll-reveal">
+                <div class="flex items-center justify-center w-12 h-12 mb-4 text-xl rounded-lg bg-cyan-500/20 text-cyan-400">
+                    <i class="fas fa-plane"></i>
+                </div>
+                <h3 class="mb-3 text-xl font-bold text-white">European Diaspora</h3>
+                <p class="mb-4 text-sm text-slate-400">Growing readership from UK, France, Germany, and other European countries. High engagement from diaspora investors.</p>
+                <div class="text-xs font-semibold text-cyan-400">30% of traffic</div>
+            </div>
+
+            <div class="p-8 delay-200 rounded-lg card-base scroll-reveal">
+                <div class="flex items-center justify-center w-12 h-12 mb-4 text-xl text-green-400 rounded-lg bg-green-500/20">
+                    <i class="fas fa-earth-americas"></i>
+                </div>
+                <h3 class="mb-3 text-xl font-bold text-white">Americas & Others</h3>
+                <p class="mb-4 text-sm text-slate-400">Readers in USA, Canada, and other continents. Building community connections across the globe.</p>
+                <div class="text-xs font-semibold text-green-400">35% of traffic</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== LEADERSHIP SECTION ==================== -->
+<section class="px-6 py-24 md:px-8 bg-slate-900/40">
+    <div class="mx-auto max-w-7xl">
+        <!-- Section Header -->
+        <div class="max-w-3xl mx-auto mb-16 text-center scroll-reveal">
+            <div class="justify-center mb-4 badge-primary">
+                <i class="fas fa-people-group"></i> Leadership
+            </div>
+            <h2 class="mb-4 section-title">Meet Our Team</h2>
+            <p class="text-lg text-slate-400">Dedicated journalists and professionals committed to quality local reporting</p>
+        </div>
+
+        <!-- Team Grid -->
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Team Member 1 -->
+            <div class="overflow-hidden rounded-lg card-base scroll-reveal-bottom">
+                <div class="flex items-start gap-4 p-6">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop" alt="Anteneh Njikam" class="flex-shrink-0 object-cover w-24 h-24 border-2 rounded-full border-blue-400/30">
+                    <div class="flex-grow">
+                        <h3 class="mb-1 text-lg font-bold text-white">Anteneh Njikam</h3>
+                        <p class="mb-3 text-sm font-semibold text-blue-400">Editor-in-Chief & Founder</p>
+                        <p class="mb-4 text-xs leading-relaxed text-slate-400">15+ years in journalism. Passionate about amplifying local voices and preserving community heritage. Visionary leader driving Atannex's mission.</p>
+                        <div class="flex gap-2">
+                            <a href="https://linkedin.com/in/antenehnj" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-8 h-8 text-xs text-blue-400 transition rounded-full bg-blue-500/20 hover:bg-blue-500/40">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="https://twitter.com/antenehnj" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-8 h-8 text-xs text-blue-400 transition rounded-full bg-blue-500/20 hover:bg-blue-500/40">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 2 -->
+            <div class="overflow-hidden delay-100 rounded-lg card-base scroll-reveal-bottom">
+                <div class="flex items-start gap-4 p-6">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop" alt="Clement Jude" class="flex-shrink-0 object-cover w-24 h-24 border-2 rounded-full border-cyan-400/30">
+                    <div class="flex-grow">
+                        <h3 class="mb-1 text-lg font-bold text-white">Clement Jude</h3>
+                        <p class="mb-3 text-sm font-semibold text-cyan-400">Senior Investigative Journalist</p>
+                        <p class="mb-4 text-xs leading-relaxed text-slate-400">12 years covering community development. Expert in uncovering untold stories and connecting grassroots initiatives to broader narratives.</p>
+                        <div class="flex gap-2">
+                            <a href="https://linkedin.com/in/clementjude" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-8 h-8 text-xs transition rounded-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/40">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="https://twitter.com/clementjude" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-8 h-8 text-xs transition rounded-full bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/40">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 3 -->
+            <div class="overflow-hidden delay-200 rounded-lg card-base scroll-reveal-bottom">
+                <div class="flex items-start gap-4 p-6">
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop" alt="Mirabel Ndambe" class="flex-shrink-0 object-cover w-24 h-24 border-2 rounded-full border-green-400/30">
+                    <div class="flex-grow">
+                        <h3 class="mb-1 text-lg font-bold text-white">Mirabel Ndambe</h3>
+                        <p class="mb-3 text-sm font-semibold text-green-400">Features & Community Correspondent</p>
+                        <p class="mb-4 text-xs leading-relaxed text-slate-400">8 years in feature writing. Specializes in human-interest stories that illuminate the resilience and progress of Lebialem communities.</p>
+                        <div class="flex gap-2">
+                            <a href="https://linkedin.com/in/mirabeln" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-8 h-8 text-xs text-green-400 transition rounded-full bg-green-500/20 hover:bg-green-500/40">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="https://twitter.com/mirabeln" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-8 h-8 text-xs text-green-400 transition rounded-full bg-green-500/20 hover:bg-green-500/40">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 4 -->
+            <div class="overflow-hidden delay-300 rounded-lg card-base scroll-reveal-bottom">
+                <div class="flex items-start gap-4 p-6">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop" alt="Eveline Pare" class="flex-shrink-0 object-cover w-24 h-24 border-2 rounded-full border-yellow-400/30">
+                    <div class="flex-grow">
+                        <h3 class="mb-1 text-lg font-bold text-white">Eveline Pare</h3>
+                        <p class="mb-3 text-sm font-semibold text-yellow-400">Digital & Diaspora Editor</p>
+                        <p class="mb-4 text-xs leading-relaxed text-slate-400">6 years in digital journalism. Bridges diaspora communities with home through compelling multimedia storytelling and engagement strategies.</p>
+                        <div class="flex gap-2">
+                            <a href="https://linkedin.com/in/evelinepare" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-8 h-8 text-xs text-yellow-400 transition rounded-full bg-yellow-500/20 hover:bg-yellow-500/40">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="https://twitter.com/evelinepare" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-8 h-8 text-xs text-yellow-400 transition rounded-full bg-yellow-500/20 hover:bg-yellow-500/40">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 5 -->
+            <div class="overflow-hidden delay-100 rounded-lg card-base scroll-reveal-bottom">
+                <div class="flex items-start gap-4 p-6">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop" alt="Nkeng Meboto" class="flex-shrink-0 object-cover w-24 h-24 border-2 rounded-full border-purple-400/30">
+                    <div class="flex-grow">
+                        <h3 class="mb-1 text-lg font-bold text-white">Nkeng Meboto</h3>
+                        <p class="mb-3 text-sm font-semibold text-purple-400">Graphics & Multimedia Designer</p>
+                        <p class="mb-4 text-xs leading-relaxed text-slate-400">7 years in visual storytelling. Creates compelling graphics and multimedia content that makes complex stories accessible and engaging.</p>
+                        <div class="flex gap-2">
+                            <a href="https://linkedin.com/in/nkengm" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-8 h-8 text-xs text-purple-400 transition rounded-full bg-purple-500/20 hover:bg-purple-500/40">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="https://twitter.com/nkengm" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-8 h-8 text-xs text-purple-400 transition rounded-full bg-purple-500/20 hover:bg-purple-500/40">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 6 -->
+            <div class="overflow-hidden delay-200 rounded-lg card-base scroll-reveal-bottom">
+                <div class="flex items-start gap-4 p-6">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop" alt="Tanoh Kefack" class="flex-shrink-0 object-cover w-24 h-24 border-2 rounded-full border-red-400/30">
+                    <div class="flex-grow">
+                        <h3 class="mb-1 text-lg font-bold text-white">Tanoh Kefack</h3>
+                        <p class="mb-3 text-sm font-semibold text-red-400">Community Relations Manager</p>
+                        <p class="mb-4 text-xs leading-relaxed text-slate-400">5 years in community engagement. Builds relationships with sources, organizations, and readers to ensure Atannex remains community-centered.</p>
+                        <div class="flex gap-2">
+                            <a href="https://linkedin.com/in/tanohk" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-8 h-8 text-xs text-red-400 transition rounded-full bg-red-500/20 hover:bg-red-500/40">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="https://twitter.com/tanohk" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-8 h-8 text-xs text-red-400 transition rounded-full bg-red-500/20 hover:bg-red-500/40">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== PARTNERS SECTION ==================== -->
+<section class="px-6 py-24 md:px-8">
+    <div class="mx-auto max-w-7xl">
+        <!-- Section Header -->
+        <div class="max-w-3xl mx-auto mb-16 text-center scroll-reveal">
+            <div class="justify-center mb-4 badge-primary">
+                <i class="fas fa-handshake"></i> Partners
+            </div>
+            <h2 class="mb-4 section-title">Partners & Supporters</h2>
+            <p class="text-lg text-slate-400">Organizations supporting quality journalism in Lebialem</p>
+        </div>
+
+        <!-- Partners Grid -->
+        <div class="grid gap-8 mb-12 md:grid-cols-2 lg:grid-cols-4">
+            <div class="flex items-center justify-center h-32 p-8 transition rounded-lg card-base scroll-reveal hover:scale-105">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/UN_emblem_blue.svg/1024px-UN_emblem_blue.svg.png" alt="United Nations" class="object-contain w-auto h-20">
+            </div>
+
+            <div class="flex items-center justify-center h-32 p-8 transition delay-100 rounded-lg card-base scroll-reveal hover:scale-105">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/UNICEF_Logo.svg/1024px-UNICEF_Logo.svg.png" alt="UNICEF" class="object-contain w-auto h-20">
+            </div>
+
+            <div class="flex items-center justify-center h-32 p-8 transition delay-200 rounded-lg card-base scroll-reveal hover:scale-105">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/World_Bank_logo.svg/1024px-World_Bank_logo.svg.png" alt="World Bank" class="object-contain w-auto h-20">
+            </div>
+
+            <div class="flex items-center justify-center h-32 p-8 transition delay-300 rounded-lg card-base scroll-reveal hover:scale-105">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Oxfam_International_Logo.svg/1024px-Oxfam_International_Logo.svg.png" alt="Oxfam" class="object-contain w-auto h-20">
+            </div>
+        </div>
+
+        <!-- Secondary Partners -->
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
+            <div class="flex items-center justify-center p-6 transition rounded-lg card-base h-28 scroll-reveal hover:scale-105">
+                <p class="text-sm font-semibold text-center text-slate-400">Cameroonian Media Association</p>
+            </div>
+            <div class="flex items-center justify-center p-6 transition delay-100 rounded-lg card-base h-28 scroll-reveal hover:scale-105">
+                <p class="text-sm font-semibold text-center text-slate-400">SW Regional Government</p>
+            </div>
+            <div class="flex items-center justify-center p-6 transition delay-200 rounded-lg card-base h-28 scroll-reveal hover:scale-105">
+                <p class="text-sm font-semibold text-center text-slate-400">Local NGOs Coalition</p>
+            </div>
+            <div class="flex items-center justify-center p-6 transition delay-300 rounded-lg card-base h-28 scroll-reveal hover:scale-105">
+                <p class="text-sm font-semibold text-center text-slate-400">Community Leaders Forum</p>
+            </div>
+            <div class="flex items-center justify-center p-6 transition delay-100 rounded-lg card-base h-28 scroll-reveal hover:scale-105">
+                <p class="text-sm font-semibold text-center text-slate-400">Educational Institutions</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== ENHANCED GALLERY SECTION ==================== -->
+<section class="px-6 py-24 md:px-8 bg-slate-900/40">
+    <div class="mx-auto max-w-7xl">
+        <!-- Section Header -->
+        <div class="max-w-3xl mx-auto mb-16 text-center scroll-reveal">
+            <div class="justify-center mb-4 badge-primary">
+                <i class="fas fa-images"></i> Gallery
+            </div>
+            <h2 class="mb-4 section-title">Visual Stories Gallery</h2>
+            <p class="text-lg text-slate-400">Moments capturing the spirit and progress of Lebialem communities</p>
+        </div>
+
+        <!-- Enhanced Gallery Grid -->
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div class="relative overflow-hidden rounded-lg cursor-pointer group h-72 scroll-reveal">
+                <img src="https://images.unsplash.com/photo-1427504494785-cdbed0c3675b?w=500&h=500&fit=crop" alt="Education" class="object-cover w-full h-full transition duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 flex items-center justify-center transition bg-black/30 group-hover:bg-black/50">
+                    <div class="text-center transition opacity-0 group-hover:opacity-100">
+                        <p class="font-semibold text-white">School Programs</p>
+                        <p class="text-sm text-blue-300">Education Initiatives</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative overflow-hidden delay-100 rounded-lg cursor-pointer group h-72 scroll-reveal">
+                <img src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=500&h=500&fit=crop" alt="Healthcare" class="object-cover w-full h-full transition duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 flex items-center justify-center transition bg-black/30 group-hover:bg-black/50">
+                    <div class="text-center transition opacity-0 group-hover:opacity-100">
+                        <p class="font-semibold text-white">Health Campaigns</p>
+                        <p class="text-sm text-green-300">Community Wellness</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative overflow-hidden delay-200 rounded-lg cursor-pointer group h-72 scroll-reveal">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=500&fit=crop" alt="Community" class="object-cover w-full h-full transition duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 flex items-center justify-center transition bg-black/30 group-hover:bg-black/50">
+                    <div class="text-center transition opacity-0 group-hover:opacity-100">
+                        <p class="font-semibold text-white">Community Events</p>
+                        <p class="text-sm text-cyan-300">Local Gatherings</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative overflow-hidden delay-300 rounded-lg cursor-pointer group h-72 scroll-reveal">
+                <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=500&h=500&fit=crop" alt="Agriculture" class="object-cover w-full h-full transition duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 flex items-center justify-center transition bg-black/30 group-hover:bg-black/50">
+                    <div class="text-center transition opacity-0 group-hover:opacity-100">
+                        <p class="font-semibold text-white">Agriculture</p>
+                        <p class="text-sm text-yellow-300">Farming Progress</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative overflow-hidden delay-100 rounded-lg cursor-pointer group h-72 scroll-reveal">
+                <img src="https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=500&h=500&fit=crop" alt="Culture" class="object-cover w-full h-full transition duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 flex items-center justify-center transition bg-black/30 group-hover:bg-black/50">
+                    <div class="text-center transition opacity-0 group-hover:opacity-100">
+                        <p class="font-semibold text-white">Cultural Heritage</p>
+                        <p class="text-sm text-purple-300">Traditions & Celebrations</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative overflow-hidden delay-200 rounded-lg cursor-pointer group h-72 scroll-reveal">
+                <img src="https://images.unsplash.com/photo-1590509780387-da94e08b3060?w=500&h=500&fit=crop" alt="Infrastructure" class="object-cover w-full h-full transition duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 flex items-center justify-center transition bg-black/30 group-hover:bg-black/50">
+                    <div class="text-center transition opacity-0 group-hover:opacity-100">
+                        <p class="font-semibold text-white">Infrastructure</p>
+                        <p class="text-sm text-red-300">Development Projects</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative overflow-hidden delay-300 rounded-lg cursor-pointer group h-72 scroll-reveal">
+                <img src="https://images.unsplash.com/photo-1504711331512-be2a21fb4557?w=500&h=500&fit=crop" alt="Youth" class="object-cover w-full h-full transition duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 flex items-center justify-center transition bg-black/30 group-hover:bg-black/50">
+                    <div class="text-center transition opacity-0 group-hover:opacity-100">
+                        <p class="font-semibold text-white">Youth Initiatives</p>
+                        <p class="text-sm text-blue-300">Future Leaders</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== FAQ SECTION ==================== -->
+<section class="px-6 py-24 md:px-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Section Header -->
+        <div class="max-w-3xl mx-auto mb-16 text-center scroll-reveal">
+            <div class="justify-center mb-4 badge-primary">
+                <i class="fas fa-circle-question"></i> Questions
+            </div>
+            <h2 class="mb-4 section-title">Frequently Asked Questions</h2>
+        </div>
+
+        <!-- FAQ Two Columns -->
+        <div class="grid gap-8 md:grid-cols-2">
+            <!-- Left Column -->
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="overflow-hidden rounded-lg faq-item card-base scroll-reveal">
+                    <button class="flex items-center justify-between w-full p-6 text-left transition faq-toggle hover:bg-slate-800/50">
+                        <h3 class="text-lg font-semibold text-white">How often do you publish stories?</h3>
+                        <i class="text-blue-400 transition-transform duration-300 fas fa-chevron-down"></i>
+                    </button>
+                    <div class="px-6 pb-6 text-sm leading-relaxed faq-content text-slate-400">
+                        We publish breaking news daily and feature stories multiple times per week. Our newsroom monitors developments across Fontem, Alou, and Wabane to bring you timely, relevant coverage of community affairs.
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="overflow-hidden delay-100 rounded-lg faq-item card-base scroll-reveal">
+                    <button class="flex items-center justify-between w-full p-6 text-left transition faq-toggle hover:bg-slate-800/50">
+                        <h3 class="text-lg font-semibold text-white">Can I submit a story?</h3>
+                        <i class="text-blue-400 transition-transform duration-300 fas fa-chevron-down"></i>
+                    </button>
+                    <div class="px-6 pb-6 text-sm leading-relaxed faq-content text-slate-400">
+                        Absolutely! We welcome community submissions. Email us at hello@atannex.cm with your story ideas, tips, or community announcements. Our editorial team reviews all submissions for publication consideration.
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="overflow-hidden delay-200 rounded-lg faq-item card-base scroll-reveal">
+                    <button class="flex items-center justify-between w-full p-6 text-left transition faq-toggle hover:bg-slate-800/50">
+                        <h3 class="text-lg font-semibold text-white">How can I subscribe?</h3>
+                        <i class="text-blue-400 transition-transform duration-300 fas fa-chevron-down"></i>
+                    </button>
+                    <div class="px-6 pb-6 text-sm leading-relaxed faq-content text-slate-400">
+                        Visit our subscribe page to sign up for our newsletter. You'll receive curated stories delivered to your inbox, keeping you updated on what's happening in Lebialem wherever you are in the world.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-4">
+                <!-- FAQ 4 -->
+                <div class="overflow-hidden delay-300 rounded-lg faq-item card-base scroll-reveal">
+                    <button class="flex items-center justify-between w-full p-6 text-left transition faq-toggle hover:bg-slate-800/50">
+                        <h3 class="text-lg font-semibold text-white">Are you independent journalism?</h3>
+                        <i class="text-blue-400 transition-transform duration-300 fas fa-chevron-down"></i>
+                    </button>
+                    <div class="px-6 pb-6 text-sm leading-relaxed faq-content text-slate-400">
+                        Yes. Atannex is 100% independent and community-focused. We're committed to fair, balanced reporting that serves the interests of Lebialem communities rather than any single political or commercial entity.
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="overflow-hidden delay-100 rounded-lg faq-item card-base scroll-reveal">
+                    <button class="flex items-center justify-between w-full p-6 text-left transition faq-toggle hover:bg-slate-800/50">
+                        <h3 class="text-lg font-semibold text-white">How do you cover diaspora interests?</h3>
+                        <i class="text-blue-400 transition-transform duration-300 fas fa-chevron-down"></i>
+                    </button>
+                    <div class="px-6 pb-6 text-sm leading-relaxed faq-content text-slate-400">
+                        Our diaspora program features investment opportunities, community development initiatives, and cultural preservation stories that keep our global readers connected to Lebialem and engaged in its progress.
+                    </div>
+                </div>
+
+                <!-- FAQ 6 -->
+                <div class="overflow-hidden delay-200 rounded-lg faq-item card-base scroll-reveal">
+                    <button class="flex items-center justify-between w-full p-6 text-left transition faq-toggle hover:bg-slate-800/50">
+                        <h3 class="text-lg font-semibold text-white">How can I advertise with Atannex?</h3>
+                        <i class="text-blue-400 transition-transform duration-300 fas fa-chevron-down"></i>
+                    </button>
+                    <div class="px-6 pb-6 text-sm leading-relaxed faq-content text-slate-400">
+                        We offer advertising opportunities for local and diaspora businesses. Contact our advertising team at hello@atannex.cm or visit our advertise page to learn about rates and reach our engaged readership.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== GRAND CTA SECTION ==================== -->
+<section class="relative px-6 py-32 overflow-hidden md:px-8 bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600">
+    <!-- Animated background -->
+    <div class="absolute inset-0 opacity-20">
+        <div class="absolute top-0 left-0 bg-white rounded-full w-96 h-96 mix-blend-screen blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-0 right-0 bg-white rounded-full w-96 h-96 mix-blend-screen blur-3xl animate-pulse"></div>
+    </div>
+
+    <div class="relative z-10 max-w-5xl mx-auto text-center">
+        <h2 class="mb-8 text-5xl font-bold text-white md:text-6xl fade-up">Join Atannex Community</h2>
+
+        <p class="max-w-3xl mx-auto mb-4 text-xl leading-relaxed text-blue-100 delay-100 fade-up">
+            Be part of a movement preserving and amplifying Lebialem's stories. Stay informed, connected, and engaged with your community.
+        </p>
+
+        <p class="mb-12 text-lg delay-200 text-blue-50 fade-up">
+            <i class="mr-2 fas fa-newspaper"></i>
+            <span class="font-semibold">Quality local journalism you can trust</span>
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col justify-center gap-6 mb-16 delay-300 sm:flex-row fade-up">
+            <a href="/subscribe" class="flex items-center justify-center gap-2 px-10 py-4 text-lg font-bold text-blue-600 transition transform bg-white rounded-lg hover:bg-blue-50 hover:scale-105">
+                <i class="fas fa-bell"></i> Subscribe Now
+            </a>
+            <a href="mailto:hello@atannex.cm" class="flex items-center justify-center gap-2 px-10 py-4 text-lg font-bold text-white transition transform border-white rounded-lg border-3 hover:bg-white/10 hover:scale-105">
+                <i class="fas fa-envelope"></i> Contact Us
+            </a>
+            <a href="/diaspora" class="flex items-center justify-center gap-2 px-10 py-4 text-lg font-bold text-white transition transform border-white rounded-lg border-3 hover:bg-white/10 hover:scale-105">
+                <i class="fas fa-globe"></i> Diaspora Program
+            </a>
+        </div>
+
+        <!-- Stats Highlight -->
+        <div class="grid max-w-3xl gap-8 mx-auto mb-16 md:grid-cols-3 fade-up delay-400">
+            <div>
+                <div class="mb-2 text-4xl font-bold text-white">500+</div>
+                <p class="text-sm text-blue-100">Stories Published</p>
+            </div>
+            <div>
+                <div class="mb-2 text-4xl font-bold text-white">50+</div>
+                <p class="text-sm text-blue-100">Countries Reached</p>
+            </div>
+            <div>
+                <div class="mb-2 text-4xl font-bold text-white">100%</div>
+                <p class="text-sm text-blue-100">Community-Focused</p>
+            </div>
+        </div>
+
+        <!-- Social Links -->
+        <div class="flex justify-center gap-8 delay-500 fade-up">
+            <a href="https://facebook.com/atannex" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-12 h-12 text-white transition rounded-full bg-white/20 hover:bg-white/30 hover:scale-110">
+                <i class="text-xl fab fa-facebook"></i>
+            </a>
+            <a href="https://twitter.com/atannex" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-12 h-12 text-white transition rounded-full bg-white/20 hover:bg-white/30 hover:scale-110">
+                <i class="text-xl fab fa-twitter"></i>
+            </a>
+            <a href="https://instagram.com/atannex" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-12 h-12 text-white transition rounded-full bg-white/20 hover:bg-white/30 hover:scale-110">
+                <i class="text-xl fab fa-instagram"></i>
+            </a>
+            <a href="https://youtube.com/atannex" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-12 h-12 text-white transition rounded-full bg-white/20 hover:bg-white/30 hover:scale-110">
+                <i class="text-xl fab fa-youtube"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="px-6 py-24 md:px-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="max-w-3xl mx-auto mb-16 text-center scroll-reveal">
+            <div class="justify-center mb-4 badge-primary">
+                <i class="fas fa-envelope"></i> Get In Touch
+            </div>
+            <h2 class="mb-4 section-title">Contact Us</h2>
+            <p class="text-lg text-slate-400">We'd love to hear from you. Share tips, stories, or feedback.</p>
+        </div>
+
+        <div class="grid gap-8 mb-12 md:grid-cols-3">
+            <div class="p-6 text-center rounded-lg card-base scroll-reveal">
+                <i class="mb-4 text-3xl text-blue-400 fas fa-envelope"></i>
+                <h3 class="mb-2 font-bold text-white">Email</h3>
+                <a href="mailto:hello@atannex.cm" class="text-blue-400 hover:text-blue-300">hello@atannex.cm</a>
+            </div>
+
+            <div class="p-6 text-center delay-100 rounded-lg card-base scroll-reveal">
+                <i class="mb-4 text-3xl fas fa-phone text-cyan-400"></i>
+                <h3 class="mb-2 font-bold text-white">Call</h3>
+                <a href="tel:+237690000000" class="text-blue-400 hover:text-blue-300">+237 690 000 000</a>
+            </div>
+
+            <div class="p-6 text-center delay-200 rounded-lg card-base scroll-reveal">
+                <i class="mb-4 text-3xl text-green-400 fas fa-map-marker-alt"></i>
+                <h3 class="mb-2 font-bold text-white">Fontem, Lebialem</h3>
+                <p class="text-sm text-slate-400">Lebialem Division, South-West Region, Cameroon</p>
+            </div>
+        </div>
+
+        <!-- Social Links -->
+        <div class="text-center scroll-reveal">
+            <p class="mb-6 text-slate-400">Follow us on social media for daily updates</p>
+            <div class="flex justify-center gap-6">
+                <a href="https://facebook.com/atannex" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-12 h-12 text-blue-400 transition rounded-full bg-blue-500/20 hover:bg-blue-500/40 hover:scale-110">
+                    <i class="text-xl fab fa-facebook"></i>
+                </a>
+                <a href="https://twitter.com/atannex" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-12 h-12 text-blue-400 transition rounded-full bg-blue-500/20 hover:bg-blue-500/40 hover:scale-110">
+                    <i class="text-xl fab fa-twitter"></i>
+                </a>
+                <a href="https://instagram.com/atannex" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-12 h-12 text-blue-400 transition rounded-full bg-blue-500/20 hover:bg-blue-500/40 hover:scale-110">
+                    <i class="text-xl fab fa-instagram"></i>
+                </a>
+                <a href="https://youtube.com/atannex" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-12 h-12 text-blue-400 transition rounded-full bg-blue-500/20 hover:bg-blue-500/40 hover:scale-110">
+                    <i class="text-xl fab fa-youtube"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Scroll Reveal
+    const observerOptions = {
+        threshold: 0.1
+        , rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                if (entry.target.classList.contains('scroll-reveal')) {
                     entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
                 }
-            });
-        }, observerOptions);
-
-        // Apply scroll animations to sections on page load
-        window.addEventListener('load', () => {
-            // Testimonial cards
-            document.querySelectorAll('#reviews .card-glow').forEach(el => {
-                el.classList.add('scroll-fade');
-                observer.observe(el);
-            });
-
-            // Partner cards
-            document.querySelectorAll('#partners .flex.items-center').forEach(el => {
-                el.classList.add('scroll-fade-scale');
-                observer.observe(el);
-            });
-
-            // Media partner cards
-            document.querySelectorAll('#leaders .flex.items-center').forEach(el => {
-                el.classList.add('scroll-fade-scale');
-                observer.observe(el);
-            });
-
-            // Gallery items
-            document.querySelectorAll('#gallery [class*="aspect-square"]').forEach(el => {
-                el.classList.add('scroll-fade');
-                observer.observe(el);
-            });
-
-            // Feature cards
-            document.querySelectorAll('#features .card-glow').forEach(el => {
-                el.classList.add('scroll-fade');
-                observer.observe(el);
-            });
-
-            // Category cards
-            document.querySelectorAll('#categories .group').forEach(el => {
-                el.classList.add('scroll-fade');
-                observer.observe(el);
-            });
-
-            // Team member cards
-            document.querySelectorAll('#team .group').forEach(el => {
-                el.classList.add('scroll-fade');
-                observer.observe(el);
-            });
-
-            // Mission and Vision cards
-            document.querySelectorAll('#about .card-glow').forEach((el, idx) => {
-                if (idx === 0) {
-                    el.classList.add('scroll-fade-left');
-                } else {
-                    el.classList.add('scroll-fade-right');
+                if (entry.target.classList.contains('scroll-reveal-bottom')) {
+                    entry.target.classList.add('visible');
                 }
-                observer.observe(el);
-            });
-        });
-
-        // Smooth reveal animation for hero section on page load
-        window.addEventListener('load', () => {
-            const heroSection = document.getElementById('hero');
-            if (heroSection) {
-                heroSection.style.animation = 'fadeIn 1s ease-out';
+                if (entry.target.classList.contains('scroll-reveal-top')) {
+                    entry.target.classList.add('visible');
+                }
+                observer.unobserve(entry.target);
             }
         });
+    }, observerOptions);
 
-        // Add staggered animations to list items and grid items
-        document.addEventListener('DOMContentLoaded', () => {
-            // Stagger animations for stat cards
-            document.querySelectorAll('.stat-card').forEach((card, idx) => {
-                card.classList.add('fade-in-scale');
-                card.style.animationDelay = `${0.4 + idx * 0.15}s`;
-            });
-        });
+    document.querySelectorAll('.scroll-reveal, .scroll-reveal-bottom, .scroll-reveal-top').forEach(el => {
+        observer.observe(el);
+    });
 
-    </script>
-
-    @include('landing.sections.hero')
-
-    @include('landing.sections.about')
-
-    @include('landing.sections.testimonial')
-
-    @include('landing.sections.partner')
-
-    @include('landing.sections.industry')
-
-    @include('landing.sections.gallery')
-
-    @include('landing.sections.feature')
-
-    @include('landing.sections.category')
-
-    @include('landing.sections.team')
-
-    @include('landing.partials.footer')
-
-    <script>
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
+    // Smooth Scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href !== '#') {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) target.scrollIntoView({
-                    behavior: 'smooth'
-                    , block: 'start'
-                });
-            });
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                        , block: 'start'
+                    });
+                }
+            }
         });
+    });
 
-    </script>
-</body>
-</html>
+</script>
+
+@endsection

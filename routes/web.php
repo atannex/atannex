@@ -45,9 +45,15 @@ Auth::routes(['verify' => true]);
 */
 Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'landing')->name('landing');
+    Route::get('/category', 'category')->name('category');
+    Route::get('/gallery', 'gallery')->name('gallery');
+    Route::get('/donation', 'donate')->name('donate');
+    Route::get('/confirmation/{token}', 'confirm')->name('confirmation');
+    Route::get('/check-out/{token}', 'checkout')->name('donate.checkout');
     Route::get('/home', 'index')->name('home');
     Route::get('/about-us', 'about')->name('about');
     Route::get('/contact-us', 'contact')->name('contact');
+    Route::get('/testimonials', 'testimonials')->name('testimonials');
 });
 
 /*
