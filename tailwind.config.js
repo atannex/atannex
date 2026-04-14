@@ -1,32 +1,50 @@
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
-        "./resources/**/*.blade.php",
-        "./resources/**/*.js",
-        "./resources/**/*.vue",
+        "./resources/views/landing/**/*.blade.php",
+        "./resources/js/landing/**/*.js",
     ],
+
+    darkMode: "class",
+
     theme: {
         extend: {
             colors: {
-                primary: "rgb(var(--color-primary))",
-                "primary-dark": "rgb(var(--color-primary-dark))",
+                primary: "rgb(var(--color-primary) / <alpha-value>)",
+                "primary-dark":
+                    "rgb(var(--color-primary-dark) / <alpha-value>)",
             },
+
             fontFamily: {
                 sans: [
+                    "Outfit",
                     "Instrument Sans",
                     "ui-sans-serif",
                     "system-ui",
                     "-apple-system",
                     "BlinkMacSystemFont",
                     "Segoe UI",
-                    "Apple Color Emoji",
-                    "Segoe UI Emoji",
-                    "Segoe UI Symbol",
-                    "Noto Color Emoji",
+                    "sans-serif",
                 ],
+                mono: [
+                    "Space Mono",
+                    "ui-monospace",
+                    "SFMono-Regular",
+                    "monospace",
+                ],
+            },
+
+            container: {
+                center: true,
+                padding: {
+                    DEFAULT: "1rem",
+                    sm: "2rem",
+                    lg: "4rem",
+                    xl: "5rem",
+                },
             },
         },
     },
+
     plugins: [],
-    darkMode: "class",
 };

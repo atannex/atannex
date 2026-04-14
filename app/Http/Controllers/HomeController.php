@@ -29,7 +29,39 @@ class HomeController extends Controller
 
     public function landing(): View
     {
-        return view('landing.index');
+        $posts = $this->postService->getRecentPosts(6);
+
+        return view('landing.index', compact('posts'));
+    }
+
+    public function donate(): View
+    {
+        return view('landing.donate');
+    }
+
+    public function category(): View
+    {
+        return view('landing.category');
+    }
+
+    public function checkout(): View
+    {
+        return view('landing.checkout');
+    }
+
+    public function confirm(): View
+    {
+        return view('landing.confirmation');
+    }
+
+    public function gallery(): View
+    {
+        return view('landing.gallery');
+    }
+
+    public function testimonials(): View
+    {
+        return view('landing.testimonials');
     }
 
     /**
