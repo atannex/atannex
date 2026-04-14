@@ -228,11 +228,10 @@
 <!-- ==================== NAVBAR ==================== -->
 <nav class="fixed top-0 z-50 w-full border-b glass-effect border-slate-700/20">
     <div class="flex items-center justify-between px-6 py-4 mx-auto max-w-7xl">
-        <a href="/" class="flex items-center gap-3 transition hover:opacity-80">
-            <div class="flex items-center justify-center w-10 h-10 text-lg font-bold text-white rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500">
-                A
+        <a href="{{ route('landing') }}" class="flex items-center gap-3 transition hover:opacity-80">
+            <div class="flex items-center justify-center w-10 h-10 text-lg font-bold text-white rounded-lg bg-gradient-to-br">
+                <img src="{{ asset('storage/' . $global['logo']?->image) }}" alt="{{ config('app.name') }}">
             </div>
-            <span class="text-xl font-bold text-white">Atannex</span>
         </a>
 
         <div class="items-center hidden gap-8 lg:flex">
