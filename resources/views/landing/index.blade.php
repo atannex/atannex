@@ -184,6 +184,7 @@
 <!-- ==================== STORIES SECTION ==================== -->
 <section id="stories" class="px-6 py-24 md:px-8 bg-slate-900/40">
     <div class="mx-auto max-w-7xl">
+
         <div class="max-w-3xl mx-auto mb-16 text-center scroll-reveal">
             <div class="justify-center mb-4 badge-primary">
                 <i class="fas fa-newspaper"></i> {{ __("Latest Stories") }}
