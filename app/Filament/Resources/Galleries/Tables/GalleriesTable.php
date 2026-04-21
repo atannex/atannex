@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Galleries\Tables;
 
+use App\Enums\Flag;
+use App\Enums\Image;
 use App\Models\Others\Gallery;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -17,19 +19,15 @@ use Filament\Tables\Table;
 
 class GalleriesTable
 {
-    /**
-     * Configure and return a Filament table for displaying Gallery records.
-     *
-     * Configures columns, default sorting, filters, record actions, toolbar bulk actions,
-     * empty state, visuals (striped rows, pagination), and polling behavior for the galleries table.
-     *
-     * @param  \Filament\Tables\Table  $table  The Filament Table instance to configure for the galleries resource.
-     * @return \Filament\Tables\Table The configured Table instance.
-     */
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
+                /*
+                |--------------------------------------------------------------------------
+                | IMAGE
+                |--------------------------------------------------------------------------
+                */
                 ImageColumn::make('image')
                     ->label('Preview')
                     ->disk('public')
@@ -39,143 +37,178 @@ class GalleriesTable
                     ->defaultImageUrl(asset('assets/img/placeholder.png'))
                     ->tooltip('Image preview'),
 
-                TextColumn::make('original_name')
-                    ->label('Filename')
+                /*
+                |--------------------------------------------------------------------------
+                | TITLE (Replaces original_name)
+                |--------------------------------------------------------------------------
+                */
+                TextColumn::make('title')
+                    ->label('Title')
                     ->searchable()
                     ->sortable()
                     ->weight(FontWeight::Medium)
                     ->limit(40)
-                    ->tooltip(fn ($record) => $record->original_name)
-                    ->icon('heroicon-o-document')
-                    ->iconColor('gray')
-                    ->copyable()
-                    ->copyMessage('Filename copied!')
-                    ->copyMessageDuration(1500)
+                    ->tooltip(fn($record) => $record->title)
+                    ->icon('heroicon-o-photo')
                     ->wrap(),
 
+                /*
+                |--------------------------------------------------------------------------
+                | TYPE (ENUM)
+                |--------------------------------------------------------------------------
+                */
                 TextColumn::make('type')
-                    ->label('Image Type')
+                    ->label('Type')
                     ->badge()
                     ->color('primary')
                     ->sortable()
-                    ->searchable()
-                    ->icon('heroicon-o-tag')
-                    ->formatStateUsing(fn (string $state): string => str($state)->headline()),
+                    ->formatStateUsing(fn($state) => optional(
+                        $state instanceof Image ? $state : Image::coerce($state)
+                    )->description),
 
+                /*
+                |--------------------------------------------------------------------------
+                | STATUS (FLAG ENUM)
+                |--------------------------------------------------------------------------
+                */
                 TextColumn::make('flag')
                     ->label('Status')
                     ->badge()
-                    ->color(fn (string $state): string => match (strtolower($state)) {
-                        'published' => 'success',
-                        'draft' => 'warning',
-                        'archived' => 'danger',
-                        'pending' => 'info',
-                        default => 'gray',
+                    ->color(function ($state) {
+                        $flag = $state instanceof Flag ? $state : Flag::coerce($state);
+
+                        return match ($flag?->value) {
+                            Flag::PUBLISHED => 'success',
+                            Flag::PENDING_REVIEW => 'info',
+                            Flag::DRAFT => 'warning',
+                            Flag::ARCHIVED => 'danger',
+                            default => 'gray',
+                        };
                     })
-                    ->icon(fn (string $state): string => match (strtolower($state)) {
-                        'published' => 'heroicon-o-check-circle',
-                        'draft' => 'heroicon-o-pencil',
-                        'archived' => 'heroicon-o-archive-box',
-                        'pending' => 'heroicon-o-clock',
-                        default => 'heroicon-o-flag',
+                    ->icon(function ($state) {
+                        $flag = $state instanceof Flag ? $state : Flag::coerce($state);
+
+                        return match ($flag?->value) {
+                            Flag::PUBLISHED => 'heroicon-o-check-circle',
+                            Flag::PENDING_REVIEW => 'heroicon-o-clock',
+                            Flag::DRAFT => 'heroicon-o-pencil',
+                            Flag::ARCHIVED => 'heroicon-o-archive-box',
+                            default => 'heroicon-o-flag',
+                        };
                     })
                     ->sortable()
-                    ->searchable()
-                    ->formatStateUsing(fn (string $state): string => str($state)->headline()),
+                    ->formatStateUsing(
+                        fn($state) =>
+                        Flag::coerce($state)?->description
+                    ),
+                /*
+                |--------------------------------------------------------------------------
+                | COLOR (NEW FIELD)
+                |--------------------------------------------------------------------------
+                */
+                TextColumn::make('color')
+                    ->label('Color')
+                    ->badge()
+                    ->formatStateUsing(fn($state) => ucfirst($state))
+                    ->color(fn($state) => $state),
 
+                /*
+                |--------------------------------------------------------------------------
+                | ORDER (NEW FIELD)
+                |--------------------------------------------------------------------------
+                */
+                TextColumn::make('order')
+                    ->label('Order')
+                    ->sortable()
+                    ->badge()
+                    ->color('gray'),
+
+                /*
+                |--------------------------------------------------------------------------
+                | DATES
+                |--------------------------------------------------------------------------
+                */
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime('M j, Y')
-                    ->sortable()
                     ->since()
-                    ->icon('heroicon-o-calendar')
-                    ->iconColor('success')
-                    ->tooltip(fn ($record) => $record->created_at?->format('F j, Y \a\t g:i A'))
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
-                    ->label('Last Modified')
+                    ->label('Updated')
                     ->dateTime('M j, Y')
-                    ->sortable()
                     ->since()
-                    ->icon('heroicon-o-pencil-square')
-                    ->iconColor('warning')
-                    ->tooltip(fn ($record) => $record->updated_at?->format('F j, Y \a\t g:i A'))
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('deleted_at')
-                    ->label('Deleted At')
+                    ->label('Deleted')
                     ->dateTime('M j, Y')
-                    ->sortable()
                     ->since()
                     ->color('danger')
-                    ->icon('heroicon-o-trash')
-                    ->iconColor('danger')
-                    ->tooltip(fn ($record) => $record->deleted_at?->format('F j, Y \a\t g:i A'))
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('created_at', 'desc')
+
+            /*
+            |--------------------------------------------------------------------------
+            | SORTING (use order first)
+            |--------------------------------------------------------------------------
+            */
+            ->defaultSort('order')
+
+            /*
+            |--------------------------------------------------------------------------
+            | FILTERS (ENUM-BASED, NOT DB QUERY)
+            |--------------------------------------------------------------------------
+            */
             ->filters([
-                TrashedFilter::make()
-                    ->label('Archived Images'),
+                TrashedFilter::make(),
 
                 SelectFilter::make('type')
-                    ->label('Image Type')
-                    ->options(function () {
-                        return Gallery::query()
-                            ->select('type')
-                            ->distinct()
-                            ->pluck('type', 'type')
-                            ->toArray();
-                    })
-                    ->searchable()
-                    ->preload()
-                    ->multiple(),
+                    ->options(Image::asSelectArray())
+                    ->multiple()
+                    ->preload(),
 
                 SelectFilter::make('flag')
-                    ->label('Status')
-                    ->options(function () {
-                        return Gallery::query()
-                            ->select('flag')
-                            ->distinct()
-                            ->pluck('flag', 'flag')
-                            ->toArray();
-                    })
-                    ->searchable()
-                    ->preload()
-                    ->multiple(),
+                    ->options(Flag::asSelectArray())
+                    ->multiple()
+                    ->preload(),
             ])
+
             ->filtersFormColumns(2)
+
+            /*
+            |--------------------------------------------------------------------------
+            | ACTIONS
+            |--------------------------------------------------------------------------
+            */
             ->recordActions([
                 EditAction::make()
                     ->iconButton()
-                    ->tooltip('Edit Image'),
+                    ->tooltip('Edit'),
             ])
+
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->label('Move to Trash')
-                        ->icon('heroicon-o-trash')
-                        ->color('warning'),
-
-                    ForceDeleteBulkAction::make()
-                        ->label('Delete Permanently')
-                        ->icon('heroicon-o-x-mark')
-                        ->color('danger'),
-
-                    RestoreBulkAction::make()
-                        ->label('Restore')
-                        ->icon('heroicon-o-arrow-path')
-                        ->color('success'),
-                ])
-                    ->label('Bulk Actions'),
+                    DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
+                ]),
             ])
-            ->emptyStateHeading('No Images Found')
-            ->emptyStateDescription('Upload your first image to start building your gallery.')
+
+            /*
+            |--------------------------------------------------------------------------
+            | UI SETTINGS
+            |--------------------------------------------------------------------------
+            */
+            ->emptyStateHeading('No Gallery Items')
+            ->emptyStateDescription('Start by adding images to your gallery.')
             ->emptyStateIcon('heroicon-o-photo')
+
             ->striped()
             ->paginated([10, 25, 50, 100])
-            ->extremePaginationLinks()
+            ->defaultPaginationPageOption(25)
             ->poll('30s');
     }
 }

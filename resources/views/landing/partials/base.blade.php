@@ -43,17 +43,18 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     @vite(['resources/css/landing/app.css', 'resources/js/landing/app.js'])
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     @filamentStyles
     @livewireStyles
 </head>
 
-<body class="w-full min-h-screen overflow-x-hidden antialiased bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+<body class="w-full overflow-x-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+
+    @include('landing.partials.navbar')
 
     @yield('content')
 

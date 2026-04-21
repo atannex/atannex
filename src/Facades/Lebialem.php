@@ -31,6 +31,7 @@ final class Lebialem
             'logo' => $this->getGalleryImage(Image::LOGO()),
             'favicon' => $this->getGalleryImage(Image::FAVICON()),
             'banner' => $this->getGalleryImage(Image::BANNER()),
+            'galleries' => $this->getGalleryImagesByType(Image::IMAGE()),
 
             'global_icons' => $this->getSocialMediaIcons(),
             'popularTags' => $this->tagService->popularTagsGlobal(10),
@@ -69,4 +70,13 @@ final class Lebialem
             ->values();
     }
 
+    protected function getGalleryImagesByType(Image $type): Collection
+    {
+        return Gallery::query()
+            ->where('flag', Flag::PUBLISHED)
+            ->where('type', $type)
+            ->orderBy('order')
+            ->limit(16)
+            ->get();
+    }
 }
