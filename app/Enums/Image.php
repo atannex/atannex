@@ -29,8 +29,8 @@ final class Image extends Enum
     #[Description('Favicon')]
     public const FAVICON = 'favicon';
 
-    #[Description('Gallery')]
-    public const GALLERY = 'gallery';
+    #[Description('Image')]
+    public const IMAGE = 'image';
 
     #[Description('Advertisement')]
     public const ADVERT = 'advert';

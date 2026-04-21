@@ -4,8 +4,10 @@ namespace App\Filament\Resources\Galleries\Schemas;
 
 use App\Enums\Flag;
 use App\Enums\Image;
+use App\Enums\TailwindColor;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
@@ -15,138 +17,129 @@ use Illuminate\Support\Facades\Storage;
 
 class GalleryForm
 {
-    /**
-     * Configure and return a Filament form Schema for gallery image management.
-     *
-     * Populates the provided Schema with a responsive two-column layout containing:
-     * - Image Configuration (type, original filename),
-     * - Status Management (publication status),
-     * - Image Upload (file upload with editor and validations).
-     *
-     * @param  Schema  $schema  The Schema instance to configure.
-     * @return Schema The configured Schema containing gallery form components.
-     */
     public static function configure(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                Grid::make(['default' => 1, 'lg' => 2])
-                    ->schema([
-                        Group::make()
-                            ->schema([
-                                Section::make('Image Configuration')
-                                    ->description('Define image type and classification')
-                                    ->icon('heroicon-o-cog-6-tooth')
-                                    ->schema([
-                                        Grid::make(1)
-                                            ->schema([
-                                                Select::make('type')
-                                                    ->label('Image Type')
-                                                    ->options(Image::asSelectArray())
-                                                    ->searchable()
-                                                    ->required()
-                                                    ->preload()
-                                                    ->native(false)
-                                                    ->default(Image::LOGO)
-                                                    ->prefixIcon('heroicon-o-tag')
-                                                    ->helperText('Categorize this image by its intended use')
-                                                    ->columnSpanFull(),
+        return $schema->components([
+            Group::make()
+                ->schema([
+                    Grid::make(['default' => 1, 'md' => 4, 'lg' => 4])
+                        ->schema([
+                            Group::make()
+                                ->schema([
+                                    Section::make('Configuration')
+                                        ->icon('heroicon-o-cog-6-tooth')
+                                        ->description('Gallery settings and properties')
+                                        ->schema([
+                                            Select::make('type')
+                                                ->label('Gallery Type')
+                                                ->options(Image::asSelectArray())
+                                                ->required()
+                                                ->searchable()
+                                                ->preload()
+                                                ->native(false)
+                                                ->default(Image::LOGO)
+                                                ->helperText('Choose the category for this gallery item'),
 
-                                                TextInput::make('original_name')
-                                                    ->label('Original Filename')
-                                                    ->placeholder('Auto-captured from upload')
-                                                    ->default(null)
-                                                    ->dehydrated()
-                                                    ->disabled()
-                                                    ->prefixIcon('heroicon-o-document')
-                                                    ->helperText('Original name preserved for reference')
-                                                    ->columnSpanFull(),
-                                            ]),
-                                    ])
-                                    ->compact()
-                                    ->collapsible()
-                                    ->persistCollapsed(),
+                                            Select::make('flag')
+                                                ->label('Review Status')
+                                                ->options(Flag::asSelectArray())
+                                                ->required()
+                                                ->default(Flag::PENDING_REVIEW)
+                                                ->native(false)
+                                                ->helperText('Set the current review status'),
 
-                                Section::make('Status Management')
-                                    ->description('Control visibility and publication status')
-                                    ->icon('heroicon-o-flag')
-                                    ->schema([
-                                        Grid::make(1)
-                                            ->schema([
-                                                Select::make('flag')
-                                                    ->label('Publication Status')
-                                                    ->options(Flag::asSelectArray())
-                                                    ->searchable()
-                                                    ->required()
-                                                    ->preload()
-                                                    ->native(false)
-                                                    ->default(Flag::DRAFT)
-                                                    ->prefixIcon('heroicon-o-flag')
-                                                    ->helperText('Current publication state of this image')
-                                                    ->columnSpanFull(),
-                                            ]),
-                                    ])
-                                    ->compact()
-                                    ->collapsible()
-                                    ->persistCollapsed(),
-                            ])
-                            ->columnSpan(['default' => 1, 'lg' => 1]),
+                                            Select::make('color')
+                                                ->label('Theme Color')
+                                                ->options(TailwindColor::asSelectArray())
+                                                ->nullable()
+                                                ->searchable()
+                                                ->preload()
+                                                ->native(false)
+                                                ->helperText('Optional accent color for styling'),
 
-                        Group::make()
-                            ->schema([
-                                Section::make('Image Upload')
-                                    ->description('Upload and manage your gallery image')
-                                    ->icon('heroicon-o-photo')
-                                    ->schema([
-                                        Grid::make(1)
-                                            ->schema([
-                                                FileUpload::make('image')
-                                                    ->label('Gallery Image')
-                                                    ->disk('public')
-                                                    ->visibility('public')
-                                                    ->directory('gallery')
-                                                    ->image()
-                                                    ->imageEditor()
+                                            TextInput::make('order')
+                                                ->label('Display Order')
+                                                ->numeric()
+                                                ->default(0)
+                                                ->minValue(0)
+                                                ->helperText('Lower numbers appear first in the gallery'),
+                                        ])
+                                        ->columnSpanFull(),
+                                ])
+                                ->columnSpan(['default' => 1, 'md' => 2, 'lg' => 2]),
 
-                                                    ->afterStateUpdated(function ($state, $record) {
-                                                        if ($record && $record->image && $record->image !== $state) {
-                                                            Storage::disk('public')->delete($record->image);
-                                                        }
-                                                    })
-                                                    ->imageEditorAspectRatios([
-                                                        '16:9' => '16:9 (Widescreen)',
-                                                        '4:3' => '4:3 (Standard)',
-                                                        '1:1' => '1:1 (Square)',
-                                                        '3:2' => '3:2 (Classic)',
-                                                        '21:9' => '21:9 (Ultrawide)',
-                                                    ])
-                                                    ->maxSize(5120)
-                                                    ->acceptedFileTypes([
-                                                        'image/jpeg',
-                                                        'image/png',
-                                                        'image/jpg',
-                                                        'image/webp',
-                                                        'image/gif',
-                                                        'image/svg+xml',
-                                                    ])
-                                                    ->helperText('Recommended: 1920×1080px (16:9) | Max size: 5MB | Formats: JPG, PNG, WebP, GIF, SVG')
-                                                    ->imagePreviewHeight('320')
-                                                    ->panelLayout('integrated')
-                                                    ->panelAspectRatio('16:9')
-                                                    ->uploadingMessage('Uploading your image...')
-                                                    ->removeUploadedFileButtonPosition('top-right')
-                                                    ->uploadProgressIndicatorPosition('center')
-                                                    ->loadingIndicatorPosition('center')
-                                                    ->required()
-                                                    ->columnSpanFull(),
-                                            ]),
-                                    ])
-                                    ->collapsible()
-                                    ->persistCollapsed(),
-                            ])
-                            ->columnSpan(['default' => 1, 'lg' => 1]),
-                    ])
-                    ->columnSpanFull(),
-            ]);
+                            Group::make()
+                                ->schema([
+                                    Section::make('Title')
+                                        ->icon('heroicon-o-tag')
+                                        ->description('Gallery name')
+                                        ->schema([
+                                            TextInput::make('title')
+                                                ->label('Gallery Title')
+                                                ->placeholder('e.g., Summer Collection 2024')
+                                                ->required()
+                                                ->maxLength(255)
+                                                ->helperText('Give your gallery a descriptive title')
+                                                ->hiddenLabel(),
+                                        ])
+                                        ->columnSpanFull()
+                                        ->compact(),
+                                    Section::make('Image')
+                                        ->icon('heroicon-o-arrow-up-tray')
+                                        ->description('Upload and edit')
+                                        ->schema([
+                                            FileUpload::make('image')
+                                                ->disk('public')
+                                                ->directory('gallery')
+                                                ->visibility('public')
+                                                ->image()
+                                                ->imageEditor()
+                                                ->imageEditorAspectRatioOptions([
+                                                    '16:9' => '16:9 (Landscape)',
+                                                    '4:3' => '4:3 (Standard)',
+                                                    '1:1' => '1:1 (Square)',
+                                                ])
+                                                ->maxSize(5120)
+                                                ->acceptedFileTypes([
+                                                    'image/jpeg',
+                                                    'image/png',
+                                                    'image/webp',
+                                                    'image/svg+xml',
+                                                ])
+                                                ->imagePreviewHeight('300')
+                                                ->dehydrateStateUsing(function ($state, $record) {
+                                                    if ($record && $record->image && $record->image !== $state) {
+                                                        Storage::disk('public')->delete($record->image);
+                                                    }
+                                                    return $state;
+                                                })
+                                                ->required()
+                                                ->hiddenLabel(),
+                                        ])
+                                        ->columnSpanFull()
+                                        ->compact(),
+                                    Section::make('Description')
+                                        ->icon('heroicon-o-document-text')
+                                        ->description('Details about this item')
+                                        ->collapsible()
+                                        ->collapsed(true)
+                                        ->schema([
+                                            Textarea::make('description')
+                                                ->label('Description')
+                                                ->placeholder('Enter optional details about this gallery item...')
+                                                ->rows(4)
+                                                ->maxLength(500)
+                                                ->helperText('500 characters max')
+                                                ->hiddenLabel(),
+                                        ])
+                                        ->columnSpanFull()
+                                        ->compact(),
+                                ])
+                                ->columnSpan(['default' => 1, 'md' => 2, 'lg' => 2]),
+                        ])
+                        ->columnSpanFull(),
+                ])
+                ->columnSpanFull(),
+        ]);
     }
 }
