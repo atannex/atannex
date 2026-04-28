@@ -12,8 +12,8 @@
         <div class="grid items-center gap-16 lg:grid-cols-2">
             <div class="space-y-8">
                 <div class="fade-up">
-                    <div class="badge-primary">
-                        <i class="fas fa-newspaper"></i>
+                    <div class="badge-primary w-fit">
+                        <i class="text-green-400 fas fa-newspaper"></i>
                         {{ __(' Local Stories. Community Voice.') }}
                     </div>
                 </div>
