@@ -6,14 +6,13 @@
 
 @section('content')
 
-<!-- PREMIUM HERO SECTION -->
-<section class="px-4 pt-20 pb-16 sm:pt-28 sm:pb-24 sm:px-6 md:px-8 lg:pt-32 lg:pb-28">
-    <div class="max-w-6xl mx-auto">
-        <div class="grid items-center gap-8 lg:grid-cols-2 sm:gap-12 lg:gap-16">
-            <div class="space-y-6 sm:space-y-8">
+<section class="px-6 pt-32 pb-24 md:px-8">
+    <div class="mx-auto max-w-7xl">
+        <div class="grid items-center gap-16 lg:grid-cols-2">
+            <div class="space-y-8">
                 <div class="fade-up">
                     <div class="badge-primary w-fit">
-                        <i class="text-red-400 fas fa-heart"></i>
+                        <i class="text-yellow-400 fas fa-heart"></i>
                         <span>Share Your Impact</span>
                     </div>
                 </div>
@@ -79,7 +78,7 @@
     </div>
 </section>
 
-<!-- PREMIUM FORM SECTION -->
+
 <section class="px-4 py-16 sm:py-24 md:py-32 sm:px-6 md:px-8 bg-gradient-to-b from-slate-900/30 to-slate-950/50">
     <div class="mx-auto max-w-7xl">
         <div class="grid items-start gap-8 lg:grid-cols-5 lg:gap-12 xl:gap-16">
@@ -130,17 +129,6 @@
                         <div>
                             <h4 class="mb-2 font-semibold text-white">Secure & Private</h4>
                             <p class="text-xs sm:text-sm text-slate-400">Your data protected with enterprise security</p>
-                        </div>
-                    </div>
-                    <!-- STATS SECTION -->
-                    <div class="grid grid-cols-2 gap-3 mt-6 sm:gap-4">
-                        <div class="stat-card">
-                            <div class="stat-number">450+</div>
-                            <p class="stat-label">Testimonials</p>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">50+</div>
-                            <p class="stat-label">Countries</p>
                         </div>
                     </div>
                 </div>
