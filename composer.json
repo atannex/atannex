@@ -33,27 +33,28 @@
     "require": {
         "php": "^8.3",
         "bensampo/laravel-enum": "^6.12",
-        "doctrine/dbal": "^4.4",
+        "doctrine/dbal": "^3.10",
         "filament/filament": "^4.0",
         "geoip2/geoip2": "^3.2",
         "jenssegers/agent": "^2.6",
         "jorenvanhocht/laravel-share": "^4.2",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1",
+        "laravel/sanctum": "^4.3",
+        "laravel/tinker": "^2.10",
         "laravel/ui": "^4.6",
-        "livewire/livewire": "^3.7",
+        "livewire/livewire": "^3.5",
         "mews/purifier": "^3.4",
         "spatie/laravel-permission": "^6.21",
         "spatie/laravel-sluggable": "^3.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.27",
+        "laravel/pail": "^1.2",
+        "laravel/pint": "^1.29",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "phpunit/phpunit": "^11.5"
     },
     "autoload": {
         "files": [
@@ -76,7 +77,10 @@
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@php artisan view:cache --ansi",
+            "@php artisan config:cache --ansi",
+            "@php artisan route:cache --ansi"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -93,6 +97,21 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
+        ],
+        "prod-build": [
+            "@php artisan config:cache --ansi",
+            "@php artisan route:cache --ansi",
+            "@php artisan view:cache --ansi",
+            "@php artisan event:cache --ansi",
+            "@php artisan optimize --ansi",
+            "composer install --optimize-autoloader --no-dev"
+        ],
+        "prod-clear": [
+            "@php artisan config:clear --ansi",
+            "@php artisan route:clear --ansi",
+            "@php artisan view:clear --ansi",
+            "@php artisan cache:clear --ansi",
+            "@php artisan event:clear --ansi"
         ]
     },
     "extra": {
@@ -109,6 +128,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "beta",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
